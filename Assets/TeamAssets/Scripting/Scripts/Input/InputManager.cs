@@ -32,9 +32,12 @@ public class InputManager : MonoBehaviour
     private void SubToPlayerControls()
     {
         playerInputActions.Player.Move.performed += context => MoveInput = context.ReadValue<Vector2>();
+        playerInputActions.Player.Move.performed += context => Debug.Log(MoveInput);
         playerInputActions.Player.Move.canceled += context => MoveInput = Vector2.zero;
 
+
         playerInputActions.Player.Look.performed += context => LookInput = context.ReadValue<Vector2>();
+        playerInputActions.Player.Look.performed += context => Debug.Log(LookInput);
         playerInputActions.Player.Look.canceled += context => LookInput = Vector2.zero;
 
         playerInputActions.Player.Jump.performed += Jump;
@@ -47,7 +50,7 @@ public class InputManager : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        //TO DO:
+        Debug.Log("Jumping");
     }
 
     private void JumpCanceled(InputAction.CallbackContext context)

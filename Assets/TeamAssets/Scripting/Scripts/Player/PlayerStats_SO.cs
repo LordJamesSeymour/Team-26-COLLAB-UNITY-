@@ -1,7 +1,7 @@
 using UnityEngine;
 // Use the CreateAssetMenu attribute to allow creating instances of this ScriptableObject from the Unity Editor.
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "ScriptableObjects/PlayerStats", order = 1)]
-public class SpawnManagerScriptableObject : ScriptableObject
+public class PlayerStats_SO : ScriptableObject
 {
     [Header("Player Defaults")]
     public float m_fPlayerRunSpeed;
