@@ -10,16 +10,45 @@ public class PlayerLocomotion : MonoBehaviour
 
     Vector3 moveDirection;
 
+	Collider m_cPlayerCollider;
+	float halfHeight;
+
     private void Awake()
     {
-        m_rigidbody = GetComponent<Rigidbody>();
-        m_rigidbody.freezeRotation = true;
-    }
+		// Grab the Rigid body and assign it
+		if (m_rigidbody == null)
+		{
+			m_rigidbody = GetComponent<Rigidbody>();
+		}
+		m_rigidbody.freezeRotation = true;
 
-    void PlayerInput(Vector2 InputV2)
+		m_cPlayerCollider = GetComponentInChildren<Collider>();
+		halfHeight = m_cPlayerCollider.bounds.extents.y;           // world half-height
+	}
+
+	private void FixedUpdate()
+	{
+		m_bIsGrounded = Physics.Raycast(m_cPlayerCollider.bounds.center, Vector3.down, halfHeight + 0.1f);
+
+		Debug.Log(transform.localScale.y);
+
+		Debug.Log(m_bIsGrounded);
+
+		MovePlayer();
+	}
+
+	public void PlayerInput(Vector2 InputV2)
     {
         moveDirection = m_tPlayerOrientation.forward * InputV2.y + m_tPlayerOrientation.right * InputV2.x;
     }
+
+	public void PlayerJump()
+	{
+		if (m_bIsGrounded)
+		{
+			m_rigidbody.AddForce(transform.up * playerStats_SO.m_fPlayerJumpForce, ForceMode.Impulse);
+		}
+	}
 
     void MovePlayer()
     {

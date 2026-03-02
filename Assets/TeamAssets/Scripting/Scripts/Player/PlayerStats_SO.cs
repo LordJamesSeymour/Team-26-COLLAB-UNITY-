@@ -6,6 +6,7 @@ public class PlayerStats_SO : ScriptableObject
     [Header("Player Defaults")]
     public float m_fPlayerRunSpeed;
     public float m_fPlayerWalkSpeed;
+    public float m_fPlayerJumpForce;
     public float m_fHealth;
 
     [Header("Forgiveness Mechanics")]
