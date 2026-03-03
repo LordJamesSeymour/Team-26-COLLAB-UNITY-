@@ -34,7 +34,9 @@ public class PlayerLocomotion : MonoBehaviour
 
 		Debug.Log(m_bIsGrounded);
 
-		MovePlayer();
+		PlayerMove();
+		PlayerDrag();
+
 	}
 
 	public void PlayerInput(Vector2 InputV2)
@@ -50,8 +52,15 @@ public class PlayerLocomotion : MonoBehaviour
 		}
 	}
 
-    void MovePlayer()
+    void PlayerMove()
     {
-        m_rigidbody.AddForce(moveDirection.normalized * playerStats_SO.m_fPlayerWalkSpeed, ForceMode.Acceleration);
-    }
+		if (m_bIsGrounded) m_rigidbody.AddForce(moveDirection.normalized * playerStats_SO.m_fPlayerWalkSpeed * playerStats_SO.m_fGroundMultiplier, ForceMode.Acceleration);
+		else m_rigidbody.AddForce(moveDirection.normalized * playerStats_SO.m_fPlayerWalkSpeed * playerStats_SO.m_fAirMultiplier, ForceMode.Acceleration);
+	}
+
+	void PlayerDrag()
+	{
+		if (m_bIsGrounded) m_rigidbody.linearDamping = playerStats_SO.m_fGroundDrag;
+		else m_rigidbody.linearDamping = playerStats_SO.m_fAirDrag;
+	}
 }
