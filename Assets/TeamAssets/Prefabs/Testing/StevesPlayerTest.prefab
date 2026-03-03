@@ -189,10 +189,10 @@ MonoBehaviour:
   switchCameraMode: 0
   firstPersonVirtualCamera: {fileID: 7560597107294530294}
   thirdPersonVirtualCamera: {fileID: 6974666901666297174}
+  firstPersonLookSensitivity: {x: 1, y: 1}
+  thirdPersonLookSensitivity: {x: 1, y: 1}
   firstPersonYawRoot: {fileID: 4793604642118477574}
   firstPersonPitchPivot: {fileID: 5899043399348286300}
-  firstPersonLookSensitivity: {x: 1, y: 1}
-  secondPersonLookSensitivity: {x: 1, y: 1}
 --- !u!1 &6215743623482771431
 GameObject:
   m_ObjectHideFlags: 0

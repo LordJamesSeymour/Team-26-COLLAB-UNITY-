@@ -19,15 +19,16 @@ namespace Group26.Player.Camera
         [SerializeField] private bool switchCameraMode = false; // Just for testing purposes, will be removed
         [SerializeField]private CinemachineCamera firstPersonVirtualCamera;
         [SerializeField] private CinemachineCamera thirdPersonVirtualCamera;
+
+        [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
+        [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
+
         private CameraMode currentCameraMode = CameraMode.ThirdPerson;
         private const int activeCameraPriority = 10;
         private const int inactiveCameraPriority = 0;
 
-        [SerializeField] private Transform firstPersonYawRoot; //Playerbody root (the pelvis)
-        [SerializeField] private Transform firstPersonPitchPivot; // In this case the Carried Cam Pivot
-
-        [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
-        [SerializeField] private Vector2 secondPersonLookSensitivity = Vector2.one;
+        [SerializeField] private Transform firstPersonYawRoot;
+        [SerializeField] private Transform firstPersonPitchPivot;
 
         private float firstPersonYaw;
         private float firstPersonPitch;
@@ -36,6 +37,9 @@ namespace Group26.Player.Camera
         {
             if(playerInput == null) playerInput = GetComponent<InputManager>();
             if(playerInput == null) Debug.LogError("No input manager found");
+
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
 
             currentCameraMode = CameraMode.ThirdPerson;
             UpdateCameraMode(currentCameraMode);
@@ -54,6 +58,10 @@ namespace Group26.Player.Camera
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
             }
+            else if(currentCameraMode == CameraMode.ThirdPerson)
+            {
+                // Apply third person look logic here if needed
+            }
         }
 
         private void UpdateCameraMode(CameraMode targetCam)
@@ -70,9 +78,8 @@ namespace Group26.Player.Camera
             }
         }
 
-        private void ApplyFirstPersonLook(Vector2 lookInput)
+        public void ApplyFirstPersonLook(Vector2 lookInput)
         {
-            Debug.Log("Looking in first person");
             float yawDelta = lookInput.x * firstPersonLookSensitivity.x;
             float pitchDelta = lookInput.y * firstPersonLookSensitivity.y;
 
