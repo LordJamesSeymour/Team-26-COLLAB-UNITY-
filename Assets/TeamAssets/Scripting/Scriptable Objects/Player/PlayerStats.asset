@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_fPlayerRunSpeed: 10
   m_fPlayerWalkSpeed: 5
-  m_fPlayerJumpForce: 5
+  m_fPlayerJumpForce: 10
   m_fHealth: 100
   m_fCoyoteTime: 2
   m_bJumpBuffering: 0
@@ -22,4 +22,4 @@ MonoBehaviour:
   m_fGroundDrag: 6
   m_fAirDrag: 2
   m_fGroundMultiplier: 10
-  m_fAirMultiplier: 0.4
+  m_fAirMultiplier: 0.7

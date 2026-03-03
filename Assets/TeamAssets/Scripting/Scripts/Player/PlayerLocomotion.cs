@@ -30,10 +30,6 @@ public class PlayerLocomotion : MonoBehaviour
 	{
 		m_bIsGrounded = Physics.Raycast(m_cPlayerCollider.bounds.center, Vector3.down, halfHeight + 0.1f);
 
-		Debug.Log(transform.localScale.y);
-
-		Debug.Log(m_bIsGrounded);
-
 		PlayerMove();
 		PlayerDrag();
 
