@@ -8,9 +8,17 @@ public class PlayerStats_SO : ScriptableObject
     public float m_fPlayerWalkSpeed;
     public float m_fPlayerJumpForce;
     public float m_fHealth;
+	[Space (20)]
 
     [Header("Forgiveness Mechanics")]
     public float m_fCoyoteTime;
     public bool m_bJumpBuffering;
     public float m_fInputTolerance;
+	[Space(20)]
+
+	[Header("Air & Drag")]
+	public float m_fGroundDrag;
+	public float m_fAirDrag;
+	public float m_fGroundMultiplier;
+	public float m_fAirMultiplier;
 }
