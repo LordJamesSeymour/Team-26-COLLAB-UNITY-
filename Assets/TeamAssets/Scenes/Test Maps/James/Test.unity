@@ -119,6 +119,9 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+<<<<<<<< HEAD:Assets/TeamAssets/Levels/Test Maps/James/Test.unity
+<<<<<<< Updated upstream:Assets/TeamAssets/Levels/Test Maps/James/Test.unity
+=======
 --- !u!1 &214794965
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,6 +662,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+>>>>>>> Stashed changes:Assets/TeamAssets/Scenes/Test Maps/James/Test.unity
+========
+--- !u!114 &801590174 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2826903269959655754, guid: 2a5ddddc37aaaca4d84a9dda940a6e58, type: 3}
+  m_PrefabInstance: {fileID: 8631607273200778349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 613b077b25ced1840ae954cf12b6ac7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+>>>>>>>> unstable:Assets/TeamAssets/Scenes/Test Maps/James/Test.unity
 --- !u!1 &1194070181
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,14 +1177,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+<<<<<<<< HEAD:Assets/TeamAssets/Levels/Test Maps/James/Test.unity
     - target: {fileID: 5546308429225596538, guid: 2a5ddddc37aaaca4d84a9dda940a6e58, type: 3}
+<<<<<<< Updated upstream:Assets/TeamAssets/Levels/Test Maps/James/Test.unity
+=======
       propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5546308429225596538, guid: 2a5ddddc37aaaca4d84a9dda940a6e58, type: 3}
+>>>>>>> Stashed changes:Assets/TeamAssets/Scenes/Test Maps/James/Test.unity
       propertyPath: m_Interpolate
       value: 1
       objectReference: {fileID: 0}
+========
+    - target: {fileID: 5643823206352719487, guid: 2a5ddddc37aaaca4d84a9dda940a6e58, type: 3}
+      propertyPath: m_scrPlayerLocomotion
+      value: 
+      objectReference: {fileID: 801590174}
+>>>>>>>> unstable:Assets/TeamAssets/Scenes/Test Maps/James/Test.unity
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
