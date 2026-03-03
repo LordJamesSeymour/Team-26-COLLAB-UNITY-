@@ -43,6 +43,9 @@ public class InputManager : MonoBehaviour
     #region Player Controls
     private void SubToPlayerControls()
     {
+        playerInputActions.Enable();
+
+        
 		playerInputActions.Player.Move.performed += context => playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
         playerInputActions.Player.Move.canceled += context => playerLocomotion.PlayerInput(Vector2.zero);
 		//playerInputActions.Player.Move.performed += context => Debug.Log(context.ReadValue<Vector2>());
@@ -56,8 +59,6 @@ public class InputManager : MonoBehaviour
         playerInputActions.Player.Jump.canceled += JumpCanceled;
 
         playerInputActions.Player.Interact.performed += Interact;
-
-        playerInputActions.Enable();
     }
 
     private void Jump(InputAction.CallbackContext context)

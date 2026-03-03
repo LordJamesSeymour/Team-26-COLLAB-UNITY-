@@ -57,12 +57,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1188907737244200173}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6819800876944416060}
+  m_Father: {fileID: 5899043399348286300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7560597107294530294
 MonoBehaviour:
@@ -107,6 +107,38 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!1 &1984725165503150449
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5899043399348286300}
+  m_Layer: 0
+  m_Name: CameraAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5899043399348286300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1984725165503150449}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3902231039127820044}
+  m_Father: {fileID: 6819800876944416060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4578625854220962983
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,6 +189,10 @@ MonoBehaviour:
   switchCameraMode: 0
   firstPersonVirtualCamera: {fileID: 7560597107294530294}
   thirdPersonVirtualCamera: {fileID: 6974666901666297174}
+  firstPersonYawRoot: {fileID: 4793604642118477574}
+  firstPersonPitchPivot: {fileID: 5899043399348286300}
+  firstPersonLookSensitivity: {x: 1, y: 1}
+  secondPersonLookSensitivity: {x: 1, y: 1}
 --- !u!1 &6215743623482771431
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +300,7 @@ Transform:
   m_LocalScale: {x: 0.7109, y: 0.23441915, z: 0.51241}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3902231039127820044}
+  - {fileID: 5899043399348286300}
   m_Father: {fileID: 4793604642118477574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4659362516770726134
@@ -354,7 +390,7 @@ GameObject:
   - component: {fileID: 6148131523982924336}
   - component: {fileID: 1404761733479900837}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

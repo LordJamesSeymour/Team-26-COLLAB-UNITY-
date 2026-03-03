@@ -542,6 +542,11 @@ Transform:
   - {fileID: 530978048}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &783362951 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5899043399348286300, guid: f5b6199f5a31ccd459d2fa23ff02dc49, type: 3}
+  m_PrefabInstance: {fileID: 31709886605917956}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1352343488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,6 +1109,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 763899072256571496, guid: f5b6199f5a31ccd459d2fa23ff02dc49, type: 3}
+      propertyPath: firstPersonPitchPivot
+      value: 
+      objectReference: {fileID: 783362951}
     - target: {fileID: 3857537836448684243, guid: f5b6199f5a31ccd459d2fa23ff02dc49, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1147,10 +1156,6 @@ PrefabInstance:
     - target: {fileID: 4578625854220962983, guid: f5b6199f5a31ccd459d2fa23ff02dc49, type: 3}
       propertyPath: m_Name
       value: StevesPlayerTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 6787846993538137205, guid: f5b6199f5a31ccd459d2fa23ff02dc49, type: 3}
-      propertyPath: m_Name
-      value: PlayerBody
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

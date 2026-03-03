@@ -5,7 +5,6 @@ public class CameraLook : MonoBehaviour
 {
 	[SerializeField] Transform PlayerTransform;
 
-
 	[SerializeField] private float sensX;
 	[SerializeField] private float sensY;
 
@@ -18,7 +17,6 @@ public class CameraLook : MonoBehaviour
 
 	float xRotation;
 	float yRotation;
-
 
 	private void Awake()
 	{
