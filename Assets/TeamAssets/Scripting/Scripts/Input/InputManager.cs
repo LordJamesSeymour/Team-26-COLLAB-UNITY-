@@ -3,7 +3,9 @@ using Group26.Player.Camera;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour
+namespace Group26.Player.Input
+{
+    public class InputManager : MonoBehaviour
 {
     [Header("Input References")]
     [Space(10)]
@@ -126,4 +128,5 @@ public class InputManager : MonoBehaviour
         if(reference == null || reference.action == null) return;
         if(reference.action.enabled) reference.action.Disable();
     }
+}
 }
