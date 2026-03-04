@@ -1,32 +1,42 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    private InputSystem_Actions playerInputActions;
+    private InputSystem_Actions m_playerInputActions;
 
-	[SerializeField] PlayerLocomotion playerLocomotion;
-	[SerializeField] CameraLook cameraLook;
+	[SerializeField] PlayerLocomotion m_playerLocomotion;
+	[SerializeField] CameraLook m_cameraLook;
+    [SerializeField] GrapplePrototype m_grapplePrototype;
 
-    [HideInInspector] public Vector2 MoveInput;
-    [HideInInspector] public Vector2 LookInput;
-    [HideInInspector] public bool jumpPressed;
-    [HideInInspector] public bool canInteract;
+    [HideInInspector] public Vector2 m_moveInput;
+    [HideInInspector] public Vector2 m_lookInput;
+    [HideInInspector] public bool m_bjumpPressed;
+    [HideInInspector] public bool m_bcanInteract;
+
+    public event Action GrappleAction;
 
 
     void Awake()
     {
-        playerInputActions = new InputSystem_Actions();
+        m_playerInputActions = new InputSystem_Actions();
 
-		if (playerLocomotion == null)
+		if (m_playerLocomotion == null)
 		{
-			playerLocomotion = GetComponent<PlayerLocomotion>();
+			m_playerLocomotion = GetComponent<PlayerLocomotion>();
 		}
 
-		if (cameraLook == null)
+		if (m_cameraLook == null)
 		{
 			Debug.LogError("No camera look script has been asigned!");
 		}
+
+        m_grapplePrototype = GetComponent<GrapplePrototype>();
+        if (m_grapplePrototype == null) {
+
+            Debug.LogError("No grapple prototype script has been assigned");
+        }
 	}
 
     void OnEnable()
@@ -36,34 +46,41 @@ public class InputManager : MonoBehaviour
 
     void OnDisable()
     {
-        playerInputActions.Disable();
+        m_playerInputActions.Disable();
     }
 
 
     #region Player Controls
     private void SubToPlayerControls()
     {
-        playerInputActions.Enable();
+        m_playerInputActions.Enable();
 
         
-		playerInputActions.Player.Move.performed += context => playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Move.canceled += context => playerLocomotion.PlayerInput(Vector2.zero);
+		m_playerInputActions.Player.Move.performed += context => m_playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
+        m_playerInputActions.Player.Move.canceled += context => m_playerLocomotion.PlayerInput(Vector2.zero);
 		//playerInputActions.Player.Move.performed += context => Debug.Log(context.ReadValue<Vector2>());
 
 
-		playerInputActions.Player.Look.performed += context => cameraLook.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Look.canceled += context => cameraLook.PlayerInput(Vector2.zero);
+		m_playerInputActions.Player.Look.performed += context => m_cameraLook.PlayerInput(context.ReadValue<Vector2>());
+        m_playerInputActions.Player.Look.canceled += context => m_cameraLook.PlayerInput(Vector2.zero);
 		//playerInputActions.Player.Look.performed += context => Debug.Log(context.ReadValue<Vector2>());
 
-		playerInputActions.Player.Jump.performed += Jump;
-        playerInputActions.Player.Jump.canceled += JumpCanceled;
+		m_playerInputActions.Player.Jump.performed += Jump;
+        m_playerInputActions.Player.Jump.canceled += JumpCanceled;
 
-        playerInputActions.Player.Interact.performed += Interact;
+        m_playerInputActions.Player.Interact.performed += Interact;
+
+        m_playerInputActions.Player.Grapple.performed += GrapplePerformed;
+    }
+
+    private void GrapplePerformed(InputAction.CallbackContext context)
+    {
+        GrappleAction.Invoke();
     }
 
     private void Jump(InputAction.CallbackContext context)
     {
-		playerLocomotion.PlayerJump();
+		m_playerLocomotion.PlayerJump();
 	}
 
     private void JumpCanceled(InputAction.CallbackContext context)
@@ -82,16 +99,16 @@ public class InputManager : MonoBehaviour
     {
         Debug.Log("Action mode now in PC controls");
 
-        playerInputActions.Player.Move.performed -= context => MoveInput = context.ReadValue<Vector2>();
-        playerInputActions.Player.Move.canceled -= context => MoveInput = Vector2.zero;
+        m_playerInputActions.Player.Move.performed -= context => m_moveInput = context.ReadValue<Vector2>();
+        m_playerInputActions.Player.Move.canceled -= context => m_moveInput = Vector2.zero;
 
-        playerInputActions.Player.Look.performed -= context => LookInput = context.ReadValue<Vector2>();
-        playerInputActions.Player.Look.canceled -= context => LookInput = Vector2.zero;
+        m_playerInputActions.Player.Look.performed -= context => m_lookInput = context.ReadValue<Vector2>();
+        m_playerInputActions.Player.Look.canceled -= context => m_lookInput = Vector2.zero;
 
-        playerInputActions.Player.Jump.performed -= Jump;
-        playerInputActions.Player.Jump.canceled -= JumpCanceled;
+        m_playerInputActions.Player.Jump.performed -= Jump;
+        m_playerInputActions.Player.Jump.canceled -= JumpCanceled;
 
-        playerInputActions.Player.Interact.performed -= Interact;
+        m_playerInputActions.Player.Interact.performed -= Interact;
     }
     #endregion
 }
