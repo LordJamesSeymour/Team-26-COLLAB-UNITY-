@@ -24,6 +24,7 @@ MonoBehaviour:
   m_fAirDrag: 2
   m_fGroundMultiplier: 10
   m_fAirMultiplier: 2
-  m_fWallrunGravity: 0
-  wallDistance: 0.5
-  minimumJumpHeight: 1.5
+  m_fWallrunGravity: 0.65
+  m_fWalljumpForce: 3
+  wallDistance: 0.6
+  minimumJumpHeight: 1.2
