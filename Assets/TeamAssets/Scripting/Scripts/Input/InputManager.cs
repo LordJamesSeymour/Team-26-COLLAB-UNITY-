@@ -43,23 +43,21 @@ public class InputManager : MonoBehaviour
     #region Player Controls
     private void SubToPlayerControls()
     {
-        playerInputActions.Enable();
+		playerInputActions.Enable();
 
-        
-		playerInputActions.Player.Move.performed += context => playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Move.canceled += context => playerLocomotion.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Move.performed += context => Debug.Log(context.ReadValue<Vector2>());
+		// Movement: store input continuously, locomotion will compute direction each FixedUpdate
+		playerInputActions.Player.Move.performed += ctx => playerLocomotion.SetMoveInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.SetMoveInput(Vector2.zero);
 
-
-		playerInputActions.Player.Look.performed += context => cameraLook.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Look.canceled += context => cameraLook.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Look.performed += context => Debug.Log(context.ReadValue<Vector2>());
+		// Look stays the same
+		playerInputActions.Player.Look.performed += ctx => cameraLook.PlayerInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Look.canceled += ctx => cameraLook.PlayerInput(Vector2.zero);
 
 		playerInputActions.Player.Jump.performed += Jump;
-        playerInputActions.Player.Jump.canceled += JumpCanceled;
+		playerInputActions.Player.Jump.canceled += JumpCanceled;
 
-        playerInputActions.Player.Interact.performed += Interact;
-    }
+		playerInputActions.Player.Interact.performed += Interact;
+	}
 
     private void Jump(InputAction.CallbackContext context)
     {
