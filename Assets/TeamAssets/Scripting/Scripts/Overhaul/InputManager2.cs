@@ -6,88 +6,99 @@ public class InputManager2 : MonoBehaviour
 	private InputSystem_Actions playerInputActions;
 
 	[SerializeField] PlayerController playerLocomotion;
-	[SerializeField] Sliding PlayerSlide;
+	[SerializeField] Sliding playerSlide;
 	[SerializeField] CameraController cameraLook;
+
+	bool callbacksHooked;
 
 	void Awake()
 	{
 		playerInputActions = new InputSystem_Actions();
+
+		if (playerLocomotion == null) playerLocomotion = GetComponent<PlayerController>();
+		if (playerSlide == null) playerSlide = GetComponent<Sliding>();
 	}
 
 	void OnEnable()
 	{
-		SubToPlayerControls();
+		playerInputActions.Enable();
+		HookCallbacks();
 	}
 
 	void OnDisable()
 	{
+		UnhookCallbacks();
 		playerInputActions.Disable();
 	}
 
-	private void SubToPlayerControls()
+	private void HookCallbacks()
 	{
-		playerInputActions.Enable();
+		if (callbacksHooked) return;
+		callbacksHooked = true;
 
-		playerInputActions.Player.Move.performed += ctx => playerLocomotion.GetInput(ctx.ReadValue<Vector2>());
-		playerInputActions.Player.Move.performed += ctx => PlayerSlide.GetInput(ctx.ReadValue<Vector2>());
-		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.GetInput(Vector2.zero);
-		playerInputActions.Player.Move.canceled += ctx => PlayerSlide.GetInput(Vector2.zero);
+		playerInputActions.Player.Move.performed += OnMove;
+		playerInputActions.Player.Move.canceled += OnMoveCanceled;
 
-		playerInputActions.Player.Look.performed += ctx => cameraLook.GetInput(ctx.ReadValue<Vector2>());
-		playerInputActions.Player.Look.canceled += ctx => cameraLook.GetInput(Vector2.zero);
+		playerInputActions.Player.Look.performed += OnLook;
+		playerInputActions.Player.Look.canceled += OnLookCanceled;
 
-		playerInputActions.Player.Jump.performed += Jump;
-		playerInputActions.Player.Jump.canceled += JumpCanceled;
+		playerInputActions.Player.Jump.performed += OnJump;
 
-		playerInputActions.Player.Sprint.performed += Sprint;
-		playerInputActions.Player.Sprint.canceled += SprintCanceled;
+		playerInputActions.Player.Sprint.performed += OnSprint;
+		playerInputActions.Player.Sprint.canceled += OnSprintCanceled;
 
-		playerInputActions.Player.Slide.performed += Slide;
-		playerInputActions.Player.Slide.canceled += SlideCanceled;
+		// Momentum slide: press starts slide; releasing does NOT end it
+		playerInputActions.Player.Slide.performed += OnSlide;
 
-		playerInputActions.Player.Crouch.performed += Crouch;
-		playerInputActions.Player.Crouch.canceled += CrouchCanceled;
-
+		playerInputActions.Player.Crouch.performed += OnCrouch;
+		playerInputActions.Player.Crouch.canceled += OnCrouchCanceled;
 	}
 
-	private void Jump(InputAction.CallbackContext context)
+	private void UnhookCallbacks()
 	{
-		playerLocomotion.Jump();
+		if (!callbacksHooked) return;
+		callbacksHooked = false;
+
+		playerInputActions.Player.Move.performed -= OnMove;
+		playerInputActions.Player.Move.canceled -= OnMoveCanceled;
+
+		playerInputActions.Player.Look.performed -= OnLook;
+		playerInputActions.Player.Look.canceled -= OnLookCanceled;
+
+		playerInputActions.Player.Jump.performed -= OnJump;
+
+		playerInputActions.Player.Sprint.performed -= OnSprint;
+		playerInputActions.Player.Sprint.canceled -= OnSprintCanceled;
+
+		playerInputActions.Player.Slide.performed -= OnSlide;
+
+		playerInputActions.Player.Crouch.performed -= OnCrouch;
+		playerInputActions.Player.Crouch.canceled -= OnCrouchCanceled;
 	}
 
-	private void JumpCanceled(InputAction.CallbackContext context)
+	private void OnMove(InputAction.CallbackContext ctx)
 	{
-		// optional (usually not needed for a press-type jump)
+		Vector2 v = ctx.ReadValue<Vector2>();
+		playerLocomotion.GetInput(v);
+		playerSlide.GetInput(v);
 	}
 
-	private void Sprint(InputAction.CallbackContext context)
+	private void OnMoveCanceled(InputAction.CallbackContext ctx)
 	{
-		playerLocomotion.Sprint(true);
-		
+		playerLocomotion.GetInput(Vector2.zero);
+		playerSlide.GetInput(Vector2.zero);
 	}
 
-	private void SprintCanceled(InputAction.CallbackContext context)
-	{
-		playerLocomotion.Sprint(false);
-	}
+	private void OnLook(InputAction.CallbackContext ctx) => cameraLook.GetInput(ctx.ReadValue<Vector2>());
+	private void OnLookCanceled(InputAction.CallbackContext ctx) => cameraLook.GetInput(Vector2.zero);
 
-	private void Slide(InputAction.CallbackContext context)
-	{
-		PlayerSlide.Slide(true);
-	}
+	private void OnJump(InputAction.CallbackContext ctx) => playerLocomotion.Jump();
 
-	private void SlideCanceled(InputAction.CallbackContext context)
-	{
-		PlayerSlide.Slide(false);
-	}
+	private void OnSprint(InputAction.CallbackContext ctx) => playerLocomotion.Sprint(true);
+	private void OnSprintCanceled(InputAction.CallbackContext ctx) => playerLocomotion.Sprint(false);
 
-	private void Crouch(InputAction.CallbackContext context)
-	{
-		playerLocomotion.Crouch(true);
-	}
+	private void OnSlide(InputAction.CallbackContext ctx) => playerSlide.Slide(true);
 
-	private void CrouchCanceled(InputAction.CallbackContext context)
-	{
-		playerLocomotion.Crouch(false);
-	}
+	private void OnCrouch(InputAction.CallbackContext ctx) => playerLocomotion.Crouch(true);
+	private void OnCrouchCanceled(InputAction.CallbackContext ctx) => playerLocomotion.Crouch(false);
 }
