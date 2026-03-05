@@ -24,8 +24,10 @@ MonoBehaviour:
   m_fGroundMultiplier: 10
   m_fAirMultiplier: 2
   m_fWallrunGravity: 0.65
-  m_fWalljumpForce: 6
+  m_fWalljumpForce: 10
   wallDistance: 0.6
   minimumJumpHeight: 1.2
   m_fWallrunDrag: 0.1
   m_fWallStickForce: 8
+  m_fWallrunMultiplier: 10
+  m_fWallrunVerticalInputScale: 0.3
