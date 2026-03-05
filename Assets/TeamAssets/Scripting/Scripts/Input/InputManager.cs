@@ -1,97 +1,92 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    private InputSystem_Actions playerInputActions;
+	private InputSystem_Actions playerInputActions;
 
 	[SerializeField] PlayerLocomotion playerLocomotion;
+	[SerializeField] Wallrun playerWallrun;
 	[SerializeField] CameraLook cameraLook;
 
-    [HideInInspector] public Vector2 MoveInput;
-    [HideInInspector] public Vector2 LookInput;
-    [HideInInspector] public bool jumpPressed;
-    [HideInInspector] public bool canInteract;
+	public event Action m_styleAction;
 
-
-    void Awake()
-    {
-        playerInputActions = new InputSystem_Actions();
+	void Awake()
+	{
+		playerInputActions = new InputSystem_Actions();
 
 		if (playerLocomotion == null)
-		{
 			playerLocomotion = GetComponent<PlayerLocomotion>();
-		}
+
+		if (playerWallrun == null)
+			playerWallrun = GetComponent<Wallrun>();
 
 		if (cameraLook == null)
-		{
-			Debug.LogError("No camera look script has been asigned!");
-		}
+			Debug.LogError("No camera look script has been assigned!");
 	}
 
-    void OnEnable()
-    {
-        SubToPlayerControls();
-    }
+	void OnEnable()
+	{
+		SubToPlayerControls();
+	}
 
-    void OnDisable()
-    {
-        playerInputActions.Disable();
-    }
+	void OnDisable()
+	{
+		playerInputActions.Disable();
+	}
 
+	private void SubToPlayerControls()
+	{
+		playerInputActions.Enable();
 
-    #region Player Controls
-    private void SubToPlayerControls()
-    {
-        playerInputActions.Enable();
+		playerInputActions.Player.Move.performed += ctx => playerLocomotion.SetMoveInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.SetMoveInput(Vector2.zero);
 
-        
-		playerInputActions.Player.Move.performed += context => playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Move.canceled += context => playerLocomotion.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Move.performed += context => Debug.Log(context.ReadValue<Vector2>());
+		playerInputActions.Player.Sprint.performed += Sprint;
+		playerInputActions.Player.Sprint.canceled += SprintCanceled;
 
-
-		playerInputActions.Player.Look.performed += context => cameraLook.PlayerInput(context.ReadValue<Vector2>());
-        playerInputActions.Player.Look.canceled += context => cameraLook.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Look.performed += context => Debug.Log(context.ReadValue<Vector2>());
+		playerInputActions.Player.Look.performed += ctx => cameraLook.PlayerInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Look.canceled += ctx => cameraLook.PlayerInput(Vector2.zero);
 
 		playerInputActions.Player.Jump.performed += Jump;
-        playerInputActions.Player.Jump.canceled += JumpCanceled;
+		playerInputActions.Player.Jump.canceled += JumpCanceled;
 
-        playerInputActions.Player.Interact.performed += Interact;
-    }
+		playerInputActions.Player.Interact.performed += Interact;
 
-    private void Jump(InputAction.CallbackContext context)
-    {
-		playerLocomotion.PlayerJump();
+		playerInputActions.Player.Style.performed += StyleButton;
 	}
 
-    private void JumpCanceled(InputAction.CallbackContext context)
-    {
-        //TO DO:
-    }
+	private void Jump(InputAction.CallbackContext context)
+	{
+		// Always send jump input to wallrun (it will only act if currently wallrunning)
+		playerLocomotion.PlayerJump();
+		playerWallrun.m_jumpRequested = true;
+	}
 
-    private void Interact(InputAction.CallbackContext context)
-    {
-        //TO DO:
-    }
+	private void JumpCanceled(InputAction.CallbackContext context)
+	{
+		// optional (usually not needed for a press-type jump)
+	}
 
+	private void Sprint(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(true);
+	}
 
-    // IN CASE WE NEED TO CHANGE THE CONTROL SCHEME.
-    private void UnsubFromPlayerControls()
-    {
-        Debug.Log("Action mode now in PC controls");
+	private void SprintCanceled(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(false);
+	}
 
-        playerInputActions.Player.Move.performed -= context => MoveInput = context.ReadValue<Vector2>();
-        playerInputActions.Player.Move.canceled -= context => MoveInput = Vector2.zero;
+	private void Interact(InputAction.CallbackContext context)
+	{
+		// TO DO:
+	}
 
-        playerInputActions.Player.Look.performed -= context => LookInput = context.ReadValue<Vector2>();
-        playerInputActions.Player.Look.canceled -= context => LookInput = Vector2.zero;
+	private void StyleButton(InputAction.CallbackContext context)
+	{
+		m_styleAction.Invoke();
+	}
 
-        playerInputActions.Player.Jump.performed -= Jump;
-        playerInputActions.Player.Jump.canceled -= JumpCanceled;
-
-        playerInputActions.Player.Interact.performed -= Interact;
-    }
-    #endregion
 }
