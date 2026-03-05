@@ -11,7 +11,7 @@ public class PlayerLocomotion : MonoBehaviour
 
 	Rigidbody m_rigidbody;
 
-	public float moveSpeed;
+	float moveSpeed;
 
 	// Store raw input, then build direction every FixedUpdate using CURRENT orientation.
 	Vector2 m_v2MoveInput;
@@ -25,8 +25,16 @@ public class PlayerLocomotion : MonoBehaviour
 	Collider m_cPlayerCollider;
 	float halfHeight;
 
-	// NEW: sprint state (set by input, used every tick)
+	// sprint state (set by input, used every tick)
 	bool m_isSprinting;
+
+	// Jump buffer runtime counter (time remaining)
+	float m_fJumpBufferCounter = 0f;
+
+	// Wallrun movement mode (set by Wallrun)
+	bool m_isWallRunning = false;
+	Vector3 m_wallNormal = Vector3.zero;
+	int m_wallSideSign = 0; // Right wall = +1, Left wall = -1
 
 	private void Awake()
 	{
@@ -45,34 +53,63 @@ public class PlayerLocomotion : MonoBehaviour
 	{
 		float dt = Time.fixedDeltaTime;
 
+		// Ground check
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
+
+		// Buffered jump triggers on landing
+		if (m_bIsGrounded && m_fJumpBufferCounter > 0f)
+			ConsumeBufferedJump();
+
+		// Tick buffer down (clamped)
+		if (m_fJumpBufferCounter > 0f)
+			m_fJumpBufferCounter = Mathf.Max(m_fJumpBufferCounter - dt, 0f);
 
 		// Cache slope result ONCE per tick (also updates m_rSlopeHit if true)
 		bool isOnSlope = OnSlope();
 
-		// Recompute direction using the latest orientation every physics tick.
-		moveDirection = (m_tPlayerOrientation.forward * m_v2MoveInput.y) +
-						(m_tPlayerOrientation.right * m_v2MoveInput.x);
-
 		UpdateMoveSpeed(dt);
 
-		PlayerMove(isOnSlope);
+		if (m_isWallRunning)
+		{
+			BuildWallrunMoveDirection();
+			PlayerMoveWallrun();
+		}
+		else
+		{
+			// Recompute direction using the latest orientation every physics tick.
+			moveDirection = (m_tPlayerOrientation.forward * m_v2MoveInput.y) +
+							(m_tPlayerOrientation.right * m_v2MoveInput.x);
+
+			PlayerMove(isOnSlope);
+		}
+
 		PlayerDrag();
 	}
 
 	// Called by InputManager
-	public void SetMoveInput(Vector2 input)
-	{
-		m_v2MoveInput = input;
-	}
+	public void SetMoveInput(Vector2 input) => m_v2MoveInput = input;
 
+	// Called by InputManager when jump is PRESSED (performed)
 	public void PlayerJump()
 	{
-		if (m_bIsGrounded)
+		m_fJumpBufferCounter = playerStats_SO.m_fJumpBufferTime;
+
+		bool groundedNow = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
+		if (groundedNow)
 		{
-			m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0, m_rigidbody.linearVelocity.z);
-			m_rigidbody.AddForce(transform.up * playerStats_SO.m_fPlayerJumpForce, ForceMode.Impulse);
+			m_bIsGrounded = true;
+			ConsumeBufferedJump();
 		}
+	}
+
+	void ConsumeBufferedJump()
+	{
+		m_fJumpBufferCounter = 0f;
+
+		m_rigidbody.linearVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
+		m_rigidbody.AddForce(transform.up * playerStats_SO.m_fPlayerJumpForce, ForceMode.Impulse);
+
+		m_bIsGrounded = false;
 	}
 
 	void PlayerMove(bool isOnSlope)
@@ -88,50 +125,85 @@ public class PlayerLocomotion : MonoBehaviour
 		else if (m_bIsGrounded && isOnSlope)
 		{
 			slopeMoveDir = Vector3.ProjectOnPlane(moveDirection, m_rSlopeHit.normal);
-
 			m_rigidbody.AddForce(slopeMoveDir.normalized * moveSpeed * playerStats_SO.m_fGroundMultiplier,
 				ForceMode.Acceleration);
 		}
-		else if (!m_bIsGrounded)
+		else
 		{
 			m_rigidbody.AddForce(moveDirection.normalized * moveSpeed * playerStats_SO.m_fAirMultiplier,
 				ForceMode.Acceleration);
 		}
 	}
 
+	// --- Wallrun movement (subtle mapping) ---
+	void BuildWallrunMoveDirection()
+	{
+		Vector3 wallForward = Vector3.ProjectOnPlane(m_tPlayerOrientation.forward, m_wallNormal);
+		if (wallForward.sqrMagnitude < 0.0001f)
+			wallForward = Vector3.Cross(Vector3.up, m_wallNormal);
+
+		wallForward.Normalize();
+
+		// A/D becomes up/down (subtle scale), inverted per wall side
+		float verticalInput = m_v2MoveInput.x * m_wallSideSign * playerStats_SO.m_fWallrunVerticalInputScale;
+
+		// IMPORTANT: no normalization => subtle diagonals (no "full power" snap)
+		moveDirection = (wallForward * m_v2MoveInput.y) + (Vector3.up * verticalInput);
+	}
+
+	void PlayerMoveWallrun()
+	{
+		if (moveDirection.sqrMagnitude < 0.0001f)
+			return;
+
+		// Uses moveSpeed, so sprinting affects wallrun too
+		m_rigidbody.AddForce(moveDirection * moveSpeed * playerStats_SO.m_fWallrunMultiplier,
+			ForceMode.Acceleration);
+	}
+
 	void PlayerDrag()
 	{
-		if (m_bIsGrounded) m_rigidbody.linearDamping = playerStats_SO.m_fGroundDrag;
-		else m_rigidbody.linearDamping = playerStats_SO.m_fAirDrag;
+		if (m_isWallRunning)
+		{
+			m_rigidbody.linearDamping = playerStats_SO.m_fWallrunDrag;
+			return;
+		}
+
+		m_rigidbody.linearDamping = m_bIsGrounded ? playerStats_SO.m_fGroundDrag : playerStats_SO.m_fAirDrag;
 	}
 
-	// CHANGED: this now sets sprint state only (no lerp here)
-	public void PlayerSprint(bool sprinting)
+	public void PlayerSprint(bool sprinting) => m_isSprinting = sprinting;
+
+	// Wallrun tells locomotion when to switch movement plane
+	public void SetWallrunState(bool wallRunning, Vector3 wallNormal, int wallSideSign)
 	{
-		m_isSprinting = sprinting;
+		m_isWallRunning = wallRunning;
+
+		if (!wallRunning)
+		{
+			m_wallNormal = Vector3.zero;
+			m_wallSideSign = 0;
+			return;
+		}
+
+		m_wallNormal = wallNormal.normalized;
+		m_wallSideSign = Mathf.Clamp(wallSideSign, -1, 1);
 	}
 
-	// NEW: speed smoothing runs every physics tick
 	void UpdateMoveSpeed(float dt)
 	{
-		float targetSpeed =
-			(m_isSprinting && m_bIsGrounded)
-				? playerStats_SO.m_fPlayerRunSpeed
-				: playerStats_SO.m_fPlayerWalkSpeed;
+		float targetSpeed = m_isWallRunning
+			? (m_isSprinting ? playerStats_SO.m_fPlayerRunSpeed : playerStats_SO.m_fPlayerWalkSpeed)
+			: ((m_isSprinting && m_bIsGrounded) ? playerStats_SO.m_fPlayerRunSpeed : playerStats_SO.m_fPlayerWalkSpeed);
 
-		// Option A: Keep your Lerp-style smoothing
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
-
-		// Option B (often nicer): true “units per second” acceleration
-		// moveSpeed = Mathf.MoveTowards(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
 	}
 
 	private bool OnSlope()
 	{
 		if (Physics.Raycast(transform.position, Vector3.down, out m_rSlopeHit, halfHeight + 0.35f))
-		{
 			return m_rSlopeHit.normal != Vector3.up;
-		}
+
 		return false;
 	}
 }

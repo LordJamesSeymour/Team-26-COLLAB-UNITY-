@@ -18,13 +18,14 @@ MonoBehaviour:
   m_fPlayerJumpForce: 10
   m_fHealth: 100
   m_fCoyoteTime: 2
-  m_bJumpBuffering: 0
-  m_fInputTolerance: 5
+  m_fJumpBufferTime: 0.15
   m_fGroundDrag: 6
   m_fAirDrag: 2
   m_fGroundMultiplier: 10
   m_fAirMultiplier: 2
   m_fWallrunGravity: 0.65
-  m_fWalljumpForce: 3
+  m_fWalljumpForce: 6
   wallDistance: 0.6
   minimumJumpHeight: 1.2
+  m_fWallrunDrag: 0.1
+  m_fWallStickForce: 8

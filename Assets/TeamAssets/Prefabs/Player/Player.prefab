@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3393218317760008079}
   - component: {fileID: 3069204680837131731}
-  - component: {fileID: 5643823206352719487}
   - component: {fileID: 2826903269959655754}
   - component: {fileID: 3871873334038455692}
   - component: {fileID: 5546308429225596538}
@@ -56,19 +55,6 @@ MonoBehaviour:
   playerLocomotion: {fileID: 2826903269959655754}
   playerWallrun: {fileID: 3871873334038455692}
   cameraLook: {fileID: 2605790215213301754}
---- !u!114 &5643823206352719487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2891090167608441013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19591825c6b6c27429edbb81e0587b17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_scrPlayerLocomotion: {fileID: 0}
 --- !u!114 &2826903269959655754
 MonoBehaviour:
   m_ObjectHideFlags: 0
