@@ -248,6 +248,7 @@ public class PlayerController : MonoBehaviour
 	public void Sprint(bool state)
 	{
 		m_bSprinting = state;
+		Debug.Log("Sprint");
 	}
 
 	public void Crouch(bool state)

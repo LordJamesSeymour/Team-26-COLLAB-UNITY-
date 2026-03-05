@@ -63,6 +63,7 @@ public class InputManager2 : MonoBehaviour
 	private void Sprint(InputAction.CallbackContext context)
 	{
 		playerLocomotion.Sprint(true);
+		
 	}
 
 	private void SprintCanceled(InputAction.CallbackContext context)
