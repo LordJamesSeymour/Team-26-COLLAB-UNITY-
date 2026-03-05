@@ -1,147 +1,81 @@
-using System;
-using Group26.Player.Camera;
-using Group26.Player.Locomotion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Group26.Player.Input
+public class InputManager : MonoBehaviour
 {
-    public class InputManager : MonoBehaviour
-    {
-        [Header("Input References")]
-        [Space(10)]
+	private InputSystem_Actions playerInputActions;
 
-        private InputSystem_Actions playerInputActions;
-        private PlayerLocomotion playerLocomotion;
-        private CameraModeManager cameraMode;
+	[SerializeField] PlayerLocomotion playerLocomotion;
+	[SerializeField] Wallrun playerWallrun;
+	[SerializeField] CameraLook cameraLook;
 
-        [Tooltip("Vector2 - WASD / Left Thumb Stick")]
-        [SerializeField] private InputActionReference moveAction;
+	void Awake()
+	{
+		playerInputActions = new InputSystem_Actions();
 
-        [Tooltip("Vector2 - Mouse Delta / Right Thumb Stick")]
-        [SerializeField] private InputActionReference lookAction;
+		if (playerLocomotion == null)
+			playerLocomotion = GetComponent<PlayerLocomotion>();
 
-        [Tooltip("Button - Jump")]
-        [SerializeField] private InputActionReference jumpAction;
+		if (playerWallrun == null)
+			playerWallrun = GetComponent<Wallrun>();
 
-        [Tooltip("Button - Crouch")]
-        [SerializeField] private InputActionReference crouchAction;
+		if (cameraLook == null)
+			Debug.LogError("No camera look script has been assigned!");
+	}
 
-        [Tooltip("Button - Sprint")]
-        [SerializeField] private InputActionReference sprintAction;
+	void OnEnable()
+	{
+		SubToPlayerControls();
+	}
 
-        [Tooltip("Button - Interact")]
-        [SerializeField] private InputActionReference interactAction;
+	void OnDisable()
+	{
+		playerInputActions.Disable();
+	}
 
-        [Tooltip("Button - Pausing game and triggering UI event")]
-        [SerializeField] private InputActionReference pauseAction;
+	private void SubToPlayerControls()
+	{
+		playerInputActions.Enable();
 
-        [HideInInspector] public Vector2 MoveInput { get; private set; }
-        [HideInInspector] public Vector2 LookInput { get; private set; }
-        
-        [HideInInspector] public bool canInteract;
+		playerInputActions.Player.Move.performed += ctx => playerLocomotion.SetMoveInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.SetMoveInput(Vector2.zero);
 
-        public event Action OnJumpPressed;
-        public event Action OnInteractPressed;
+		playerInputActions.Player.Sprint.performed += Sprint;
+		playerInputActions.Player.Sprint.canceled += SprintCanceled;
 
-        public bool isSprinting { get; private set; }
-        public bool isRequestingWallRun { get; set; }
+		playerInputActions.Player.Look.performed += ctx => cameraLook.PlayerInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Look.canceled += ctx => cameraLook.PlayerInput(Vector2.zero);
 
-        void Awake()
-        {
-            if (playerInputActions == null) playerInputActions = new InputSystem_Actions();
-            if (playerLocomotion == null) playerLocomotion = GetComponent<PlayerLocomotion>();
-            if (cameraMode == null) cameraMode = GetComponent<CameraModeManager>();
-        }
+		playerInputActions.Player.Jump.performed += Jump;
+		playerInputActions.Player.Jump.canceled += JumpCanceled;
 
-        void OnEnable()
-        {
-            SubToPlayerControls();
-        }
+		playerInputActions.Player.Interact.performed += Interact;
+	}
 
-        void OnDisable()
-        {
-            UnsubFromPlayerControls();
-        }
+	private void Jump(InputAction.CallbackContext context)
+	{
+		// Always send jump input to wallrun (it will only act if currently wallrunning)
+		playerLocomotion.PlayerJump();
+		playerWallrun.m_jumpRequested = true;
+	}
 
-        private void Update()
-        {
-            MoveInput = ReadVector2(moveAction);
-            LookInput = ReadVector2(lookAction);
-        }
+	private void JumpCanceled(InputAction.CallbackContext context)
+	{
+		// optional (usually not needed for a press-type jump)
+	}
 
-        private void SubToPlayerControls()
-        {
-            playerInputActions.Enable();
+	private void Sprint(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(true);
+	}
 
-            SubscribePerformed(jumpAction, HandleJump);
-            SubscribePerformed(interactAction, HandleInteract);
+	private void SprintCanceled(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(false);
+	}
 
-            SubscribeToggled(sprintAction, HandleSprintChanged);
-        }
-
-        private void UnsubFromPlayerControls()
-        {
-            playerInputActions.Disable();
-
-            UnsubscribePerformed(jumpAction, HandleJump);
-            UnsubscribePerformed(interactAction, HandleInteract);
-
-            UnsubscribeToggled(sprintAction, HandleSprintChanged);
-        }
-
-        private void HandleSprintChanged(InputAction.CallbackContext context)
-        {
-            if(context.performed)
-            {
-                isSprinting = true;
-            }
-            else if(context.canceled)
-            {
-                isSprinting = false;
-            }
-        }
-
-        private static Vector2 ReadVector2(InputActionReference reference)
-        {
-            return reference != null && reference.action != null ? reference.action.ReadValue<Vector2>() : Vector2.zero;
-        }
-
-        private void HandleJump(InputAction.CallbackContext context)
-        {
-            OnJumpPressed?.Invoke();
-            isRequestingWallRun = true;
-        }
-
-        private void HandleInteract(InputAction.CallbackContext context)
-        {
-            OnInteractPressed?.Invoke();
-        }
-
-        private static void SubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
-        {
-            if(reference == null || reference.action == null) return;
-            reference.action.performed += actionHandler;
-        }
-
-        private static void UnsubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
-        {
-            if (reference == null || reference.action == null) return;
-            reference.action.performed -= actionHandler;
-        }
-
-        private static void SubscribeToggled(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
-        {
-            if (reference == null || reference.action == null) return;
-            reference.action.performed += actionHandler;
-            reference.action.canceled += actionHandler;
-        }
-
-        private static void UnsubscribeToggled(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
-        {
-            if (reference == null || reference.action == null) return;
-            reference.action.performed -= actionHandler;
-            reference.action.canceled -= actionHandler;
-        }
-    }
+	private void Interact(InputAction.CallbackContext context)
+	{
+		// TO DO:
+	}
 }
