@@ -18,7 +18,7 @@ public class Sliding : MonoBehaviour
 	[Tooltip("Friction applied to velocity along the ground/slope.")]
 	[SerializeField] float slideFriction = 6f;
 
-	[Tooltip("Extra acceleration down slopes.")]
+	[Tooltip("Extra acceleration down slopes (lets ramps feel natural).")]
 	[SerializeField] float slopeGravity = 18f;
 
 	[Tooltip("Small force into the slope so you don't bounce off it.")]
@@ -29,23 +29,11 @@ public class Sliding : MonoBehaviour
 	[Tooltip("Ends slide when speed is very low.")]
 	[SerializeField] float minSpeedToKeepSliding = 1.5f;
 
-	[Header("Start/Stop Tweaks")]
-	[Tooltip("If your speed is below this, slide won't start (prevents flicker from standstill). Set to 0 if you want slide-from-idle.")]
-	[SerializeField] float minSpeedToStartSlide = 2.0f;
-
-	[Tooltip("Ignore the grounded-check for this long after starting (prevents scale/groundcheck flicker).")]
-	[SerializeField] float groundedGraceTime = 0.08f;
-
-	[Tooltip("Tiny downward impulse on start to keep contact (not the old slam).")]
-	[SerializeField] float startStickDownImpulse = 1.0f;
-
 	float slideTimer;
 	float startYScale;
 
 	float horizontalInput;
 	float verticalInput;
-
-	float slideStartedAt;
 
 	void Start()
 	{
@@ -61,10 +49,8 @@ public class Sliding : MonoBehaviour
 		if (!playerController.sliding)
 			return;
 
-		// Grace period so scaling doesn't instantly "unground" you and cancel the slide
-		bool inGrace = (Time.time - slideStartedAt) < groundedGraceTime;
-
-		if (!inGrace && !playerController.IsGrounded)
+		// If we leave the ground (jump/ledge), end slide
+		if (!playerController.IsGrounded)
 		{
 			EndSlide();
 			return;
@@ -74,9 +60,9 @@ public class Sliding : MonoBehaviour
 
 		SlidingMovement();
 
+		// End conditions
 		Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-		if (slideTimer <= 0f || (!inGrace && flatVel.magnitude < minSpeedToKeepSliding))
+		if (slideTimer <= 0f || flatVel.magnitude < minSpeedToKeepSliding)
 			EndSlide();
 	}
 
@@ -102,24 +88,12 @@ public class Sliding : MonoBehaviour
 
 	private void StartSlide()
 	{
-		// Don’t start slide if we’re not grounded (prevents ledge flicker)
-		if (!playerController.IsGrounded)
-			return;
-
-		// Optional: don’t start if basically stationary (prevents “instant end”)
-		Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-		if (flatVel.magnitude < minSpeedToStartSlide)
-			return;
-
 		playerController.sliding = true;
-		slideStartedAt = Time.time;
 
+		// Scale once (no repeated slamming)
 		playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
-		slideTimer = maxSlideTime;
 
-		// Gentle stick-down so ground check stays true after scaling
-		rb.linearVelocity = new Vector3(rb.linearVelocity.x, Mathf.Min(rb.linearVelocity.y, 0f), rb.linearVelocity.z);
-		rb.AddForce(Vector3.down * startStickDownImpulse, ForceMode.Impulse);
+		slideTimer = maxSlideTime;
 	}
 
 	private void SlidingMovement()
@@ -127,21 +101,29 @@ public class Sliding : MonoBehaviour
 		bool onSlope = playerController.OnSlope();
 		Vector3 slopeNormal = onSlope ? playerController.SlopeNormal : Vector3.up;
 
+		// Velocity along the surface
 		Vector3 velOnPlane = Vector3.ProjectOnPlane(rb.linearVelocity, slopeNormal);
 
+		// Steering direction along the surface
 		Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 		Vector3 inputOnPlane = Vector3.ProjectOnPlane(inputDirection, slopeNormal);
 
 		if (inputOnPlane.sqrMagnitude > 0.01f)
+		{
 			rb.AddForce(inputOnPlane.normalized * steerForce, ForceMode.Force);
+		}
 
+		// Friction: slows momentum over time (so ramps kill speed naturally)
 		rb.AddForce(-velOnPlane * slideFriction, ForceMode.Acceleration);
 
 		if (onSlope)
 		{
+			// Gravity component along slope: accelerates downhill,
+			// but if you have momentum up a ramp, you'll go up until you lose it.
 			Vector3 slopeDown = Vector3.ProjectOnPlane(Vector3.down, slopeNormal).normalized;
 			rb.AddForce(slopeDown * slopeGravity, ForceMode.Acceleration);
 
+			// Stick to slope (replaces your old "slam down" impulse)
 			rb.AddForce(-slopeNormal * stickToSlopeForce, ForceMode.Acceleration);
 		}
 	}
@@ -152,6 +134,7 @@ public class Sliding : MonoBehaviour
 		playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
 	}
 
+	// Called by PlayerController when jumping
 	public void ForceEndSlide()
 	{
 		if (playerController.sliding)

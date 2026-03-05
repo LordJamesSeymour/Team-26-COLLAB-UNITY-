@@ -47,8 +47,8 @@ public class InputManager2 : MonoBehaviour
 		playerInputActions.Player.Sprint.performed += OnSprint;
 		playerInputActions.Player.Sprint.canceled += OnSprintCanceled;
 
-		// Momentum slide: press starts slide; releasing does NOT end it
 		playerInputActions.Player.Slide.performed += OnSlide;
+		playerInputActions.Player.Slide.canceled += OnSlideCanceled;
 
 		playerInputActions.Player.Crouch.performed += OnCrouch;
 		playerInputActions.Player.Crouch.canceled += OnCrouchCanceled;
@@ -71,6 +71,7 @@ public class InputManager2 : MonoBehaviour
 		playerInputActions.Player.Sprint.canceled -= OnSprintCanceled;
 
 		playerInputActions.Player.Slide.performed -= OnSlide;
+		playerInputActions.Player.Slide.canceled -= OnSlideCanceled;
 
 		playerInputActions.Player.Crouch.performed -= OnCrouch;
 		playerInputActions.Player.Crouch.canceled -= OnCrouchCanceled;
@@ -98,6 +99,7 @@ public class InputManager2 : MonoBehaviour
 	private void OnSprintCanceled(InputAction.CallbackContext ctx) => playerLocomotion.Sprint(false);
 
 	private void OnSlide(InputAction.CallbackContext ctx) => playerSlide.Slide(true);
+	private void OnSlideCanceled(InputAction.CallbackContext ctx) => playerSlide.Slide(false);
 
 	private void OnCrouch(InputAction.CallbackContext ctx) => playerLocomotion.Crouch(true);
 	private void OnCrouchCanceled(InputAction.CallbackContext ctx) => playerLocomotion.Crouch(false);

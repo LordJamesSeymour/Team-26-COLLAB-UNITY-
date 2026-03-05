@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-[DefaultExecutionOrder(-100)]
 public class PlayerController : MonoBehaviour
 {
 	[Header("Movement")]
 	[SerializeField] float walkSpeed;
 	[SerializeField] float sprintSpeed;
+	[SerializeField] float slideSpeed;
 	[SerializeField] float groundDrag;
 
 	float moveSpeed;
@@ -57,11 +57,12 @@ public class PlayerController : MonoBehaviour
 	Rigidbody rb;
 
 	Collider m_cPlayerCollider;
-	Sliding slidingComp;
 
 	// Jump buffer + cooldown state
 	float jumpBufferTimer;
 	bool readyToJump = true;
+
+	Sliding slidingComp;
 
 	public bool IsGrounded => m_bIsGrounded;
 	public Vector3 SlopeNormal => slopeHit.normal;
@@ -80,20 +81,20 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		// Ground check first
+		// Ground check
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
 
-		// Drag: keep momentum while sliding
+		// Drag only when grounded AND not sliding (sliding should keep momentum)
 		rb.linearDamping = (m_bIsGrounded && !sliding) ? groundDrag : 0f;
 
-		// Update slopeHit once per tick
+		// Cache slope check once per FixedUpdate (updates slopeHit)
 		bool onSlope = OnSlope();
 
-		// Gravity: allow normal gravity during sliding
+		// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
 		rb.useGravity = !(onSlope && !exitingSlope && !sliding);
 
-		// State/speed before forces
-		StateHandler();
+		// State/speed first (so movement uses correct moveSpeed this frame)
+		StateHandler(onSlope);
 
 		// Jump buffer countdown
 		if (jumpBufferTimer > 0f)
@@ -101,7 +102,7 @@ public class PlayerController : MonoBehaviour
 
 		TryConsumeJumpBuffer();
 
-		// Sliding movement handled in Sliding.cs
+		// Sliding movement is handled by Sliding.cs
 		if (!sliding)
 		{
 			MovePlayer(onSlope);
@@ -109,12 +110,13 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void StateHandler()
+	void StateHandler(bool onSlope)
 	{
-		// Priority: sliding > crouch > sprint > walk > air
+		// Priority order matters: sliding > crouch > sprint > walk > air
 		if (sliding)
 		{
 			state = MovementState.sliding;
+			desiredMoveSpeed = slideSpeed;
 		}
 		else if (m_bIsGrounded && m_bCrouching)
 		{
@@ -134,7 +136,7 @@ public class PlayerController : MonoBehaviour
 		else
 		{
 			state = MovementState.air;
-			// keep desiredMoveSpeed as last grounded setting
+			// keep last desiredMoveSpeed in air so you don't snap speeds weirdly
 		}
 
 		if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
@@ -154,8 +156,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (m_cPlayerCollider == null) return false;
 
-		// Recompute extents because you scale for crouch/slide visuals
-		float halfHeight = m_cPlayerCollider.bounds.extents.y;
+		float halfHeight = m_cPlayerCollider.bounds.extents.y; // updates if collider/scale changes
 
 		if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
 		{
@@ -190,6 +191,7 @@ public class PlayerController : MonoBehaviour
 			{
 				float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
 				float slopeAngleIncrease = 1f + (slopeAngle / 90f);
+
 				time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
 			}
 			else
@@ -211,10 +213,11 @@ public class PlayerController : MonoBehaviour
 		{
 			rb.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
 
+			// small stick force so you don't "float" off slopes
 			if (rb.linearVelocity.y > 0f)
 				rb.AddForce(Vector3.down * 40f, ForceMode.Force);
 
-			return; // don't also apply flat forces
+			return; // IMPORTANT: don't also apply normal grounded force
 		}
 
 		if (m_bIsGrounded)
@@ -225,7 +228,7 @@ public class PlayerController : MonoBehaviour
 
 	private void SpeedControl(bool onSlope)
 	{
-		// Don't clamp while sliding (momentum owned by Sliding.cs)
+		// Don't clamp during sliding; Sliding.cs handles momentum/friction
 		if (sliding) return;
 
 		if (onSlope && !exitingSlope)
@@ -264,6 +267,7 @@ public class PlayerController : MonoBehaviour
 
 	public void Jump()
 	{
+		// buffer the press
 		jumpBufferTimer = jumpBufferTime;
 		TryConsumeJumpBuffer();
 	}
@@ -283,7 +287,7 @@ public class PlayerController : MonoBehaviour
 
 	private void ExecuteJump()
 	{
-		// Jump cancels slide immediately
+		// Jumping cancels slide cleanly
 		if (sliding && slidingComp != null)
 			slidingComp.ForceEndSlide();
 
