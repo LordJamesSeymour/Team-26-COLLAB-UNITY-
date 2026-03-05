@@ -74,9 +74,10 @@ GameObject:
   - component: {fileID: 3857537836448684243}
   - component: {fileID: 8350315115733706018}
   - component: {fileID: 763899072256571496}
-  - component: {fileID: 3227435889474539283}
   - component: {fileID: 2843043705676548855}
   - component: {fileID: 1174238867182992266}
+  - component: {fileID: 6903358778179062478}
+  - component: {fileID: 3227435889474539283}
   - component: {fileID: 4339390470356888742}
   m_Layer: 0
   m_Name: PlayerCharacter
@@ -145,19 +146,6 @@ MonoBehaviour:
   m_fovBlendLength: 0.4
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 1
---- !u!114 &3227435889474539283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4578625854220962983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19591825c6b6c27429edbb81e0587b17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_scrPlayerLocomotion: {fileID: 2843043705676548855}
 --- !u!114 &2843043705676548855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +181,35 @@ MonoBehaviour:
   m_tPlayerOrientation: {fileID: 4793604642118477574}
   m_player: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
   m_jumpRequested: 0
+--- !u!114 &6903358778179062478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578625854220962983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd290fd2f37e76349bba76f99d4299db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_bodyTransform: {fileID: 4793604642118477574}
+  m_cameraYawTransform: {fileID: 945726654243096202}
+  turnSpeedDegPerSec: 540
+  inputDeadzone: 0.1
+--- !u!114 &3227435889474539283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578625854220962983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19591825c6b6c27429edbb81e0587b17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_scrPlayerLocomotion: {fileID: 2843043705676548855}
 --- !u!54 &4339390470356888742
 Rigidbody:
   m_ObjectHideFlags: 0

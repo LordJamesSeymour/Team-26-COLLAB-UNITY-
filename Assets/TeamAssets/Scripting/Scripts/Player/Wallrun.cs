@@ -16,7 +16,6 @@ namespace Group26.Player.Locomotion
 
 		RaycastHit leftWallHit;
 		RaycastHit rightWallHit;
-
 		Rigidbody m_rigidbody;
 
 		// NEW: jump input buffer for FixedUpdate
