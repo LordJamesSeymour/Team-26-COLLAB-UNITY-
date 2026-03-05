@@ -1,81 +1,132 @@
+using System;
+using Group26.Player.Camera;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour
+namespace Group26.Player.Input
 {
-	private InputSystem_Actions playerInputActions;
+    public class InputManager : MonoBehaviour
+{
+    [Header("Input References")]
+    [Space(10)]
 
-	[SerializeField] PlayerLocomotion playerLocomotion;
-	[SerializeField] Wallrun playerWallrun;
-	[SerializeField] CameraLook cameraLook;
+    private InputSystem_Actions playerInputActions;
+	private PlayerLocomotion playerLocomotion;
+    private CameraModeManager cameraMode;
 
-	void Awake()
-	{
-		playerInputActions = new InputSystem_Actions();
+    [Tooltip("Vector2 - WASD / Left Thumb Stick")]
+    [SerializeField] private InputActionReference moveAction;
 
-		if (playerLocomotion == null)
-			playerLocomotion = GetComponent<PlayerLocomotion>();
+    [Tooltip("Vector2 - Mouse Delta / Right Thumb Stick")]
+    [SerializeField] private InputActionReference lookAction;
 
-		if (playerWallrun == null)
-			playerWallrun = GetComponent<Wallrun>();
+    [Tooltip("Button - Jump")]
+    [SerializeField] private InputActionReference jumpAction;
 
-		if (cameraLook == null)
-			Debug.LogError("No camera look script has been assigned!");
+    [Tooltip("Button - Crouch")]
+    [SerializeField] private InputActionReference crouchAction;
+
+    [Tooltip("Button - Sprint")]
+    [SerializeField] private InputActionReference sprintAction;
+
+    [Tooltip("Button - Interact")]
+    [SerializeField] private InputActionReference interactAction;
+
+    [Tooltip("Button - Pausing game and triggering UI event")]
+    [SerializeField] private InputActionReference pauseAction;
+
+    [HideInInspector] public Vector2 MoveInput { get; private set; }
+    [HideInInspector] public Vector2 LookInput { get; private set; }
+    
+    [HideInInspector] public bool canInteract;
+
+    public event Action OnJumpPressed;
+    public event Action OnInteractPressed;
+
+    void Awake()
+    {
+        if (playerInputActions == null) playerInputActions = new InputSystem_Actions();
+		if (playerLocomotion == null) playerLocomotion = GetComponent<PlayerLocomotion>();
+		if (cameraMode == null) cameraMode = GetComponent<CameraModeManager>();
 	}
 
-	void OnEnable()
-	{
-		SubToPlayerControls();
-	}
+    void OnEnable()
+    {
+        SubToPlayerControls();
+    }
 
-	void OnDisable()
-	{
-		playerInputActions.Disable();
-	}
+    void OnDisable()
+    {
+        UnsubFromPlayerControls();
+    }
 
-	private void SubToPlayerControls()
-	{
-		playerInputActions.Enable();
+    private void Update()
+    {
+        MoveInput = ReadVector2(moveAction);
+        LookInput = ReadVector2(lookAction);
+    }
 
-		playerInputActions.Player.Move.performed += ctx => playerLocomotion.SetMoveInput(ctx.ReadValue<Vector2>());
-		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.SetMoveInput(Vector2.zero);
+    private void SubToPlayerControls()
+    {
+        playerInputActions.Enable();
 
-		playerInputActions.Player.Sprint.performed += Sprint;
-		playerInputActions.Player.Sprint.canceled += SprintCanceled;
+        SubscribePerformed(jumpAction, HandleJump);
+        SubscribePerformed(interactAction, HandleInteract);
 
-		playerInputActions.Player.Look.performed += ctx => cameraLook.PlayerInput(ctx.ReadValue<Vector2>());
-		playerInputActions.Player.Look.canceled += ctx => cameraLook.PlayerInput(Vector2.zero);
+        SubscribePerformed(jumpAction, HandleJump);
+        SubscribePerformed(jumpAction, HandleJump);
+        SubscribePerformed(jumpAction, HandleJump);
+    }
 
-		playerInputActions.Player.Jump.performed += Jump;
-		playerInputActions.Player.Jump.canceled += JumpCanceled;
+    private void UnsubFromPlayerControls()
+    {
+        playerInputActions.Disable();
 
-		playerInputActions.Player.Interact.performed += Interact;
-	}
+        UnsubscribePerformed(jumpAction, HandleJump);
+        UnsubscribePerformed(interactAction, HandleInteract);
 
-	private void Jump(InputAction.CallbackContext context)
-	{
-		// Always send jump input to wallrun (it will only act if currently wallrunning)
-		playerLocomotion.PlayerJump();
-		playerWallrun.m_jumpRequested = true;
-	}
+        UnsubscribePerformed(jumpAction, HandleJump);
+        UnsubscribePerformed(jumpAction, HandleJump);
+        UnsubscribePerformed(jumpAction, HandleJump);
+    }
 
-	private void JumpCanceled(InputAction.CallbackContext context)
-	{
-		// optional (usually not needed for a press-type jump)
-	}
+    private static Vector2 ReadVector2(InputActionReference reference)
+    {
+        return reference != null && reference.action != null ? reference.action.ReadValue<Vector2>() : Vector2.zero;
+    }
 
-	private void Sprint(InputAction.CallbackContext context)
-	{
-		playerLocomotion.PlayerSprint(true);
-	}
+    private void HandleJump(InputAction.CallbackContext context)
+    {
+		OnJumpPressed?.Invoke();
+    }
 
-	private void SprintCanceled(InputAction.CallbackContext context)
-	{
-		playerLocomotion.PlayerSprint(false);
-	}
+    private void HandleInteract(InputAction.CallbackContext context)
+    {
+        OnInteractPressed?.Invoke();
+    }
 
-	private void Interact(InputAction.CallbackContext context)
-	{
-		// TO DO:
-	}
+    private static void SubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
+    {
+        if(reference == null || reference.action == null) return;
+        reference.action.performed += actionHandler;
+    }
+
+    private static void UnsubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
+    {
+        if (reference == null || reference.action == null) return;
+        reference.action.performed -= actionHandler;
+    }
+
+    private void EnableAction(InputActionReference reference)
+    {
+        if (reference == null || reference.action == null) return;
+        if (!reference.action.enabled) reference.action.Enable();
+    }
+
+    private void DisableAction(InputActionReference reference)
+    {
+        if(reference == null || reference.action == null) return;
+        if(reference.action.enabled) reference.action.Disable();
+    }
+}
 }
