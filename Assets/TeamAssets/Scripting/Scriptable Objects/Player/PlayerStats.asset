@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f9d7db3386b8b4da2bb01b8de81710, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
-  m_fPlayerRunSpeed: 10
+  m_fPlayerRunSpeed: 15
   m_fPlayerWalkSpeed: 5
-  m_fPlayerJumpForce: 5
+  m_fPlayerAcceleration: 10
+  m_fPlayerJumpForce: 10
   m_fHealth: 100
   m_fCoyoteTime: 2
   m_bJumpBuffering: 0
@@ -22,4 +23,8 @@ MonoBehaviour:
   m_fGroundDrag: 6
   m_fAirDrag: 2
   m_fGroundMultiplier: 10
-  m_fAirMultiplier: 0.4
+  m_fAirMultiplier: 2
+  m_fWallrunGravity: 0.65
+  m_fWalljumpForce: 3
+  wallDistance: 0.6
+  minimumJumpHeight: 1.2

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3069204680837131731}
   - component: {fileID: 5643823206352719487}
   - component: {fileID: 2826903269959655754}
+  - component: {fileID: 3871873334038455692}
   - component: {fileID: 5546308429225596538}
   m_Layer: 0
   m_Name: Player
@@ -37,6 +38,7 @@ Transform:
   - {fileID: 3123939012582144913}
   - {fileID: 1719314671375410956}
   - {fileID: 1141080659272144820}
+  - {fileID: 4811837257243177240}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3069204680837131731
@@ -52,11 +54,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerLocomotion: {fileID: 2826903269959655754}
+  playerWallrun: {fileID: 3871873334038455692}
   cameraLook: {fileID: 2605790215213301754}
-  MoveInput: {x: 0, y: 0}
-  LookInput: {x: 0, y: 0}
-  jumpPressed: 0
-  canInteract: 0
 --- !u!114 &5643823206352719487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,6 +84,26 @@ MonoBehaviour:
   m_bIsGrounded: 0
   m_tPlayerOrientation: {fileID: 3393218317760008079}
   playerStats_SO: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
+  m_lGround:
+    serializedVersion: 2
+    m_Bits: 8
+  m_tGroundCheck: {fileID: 4811837257243177240}
+  moveSpeed: 0
+--- !u!114 &3871873334038455692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2891090167608441013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dc173dca54525040a1f489eab6a6aa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_tPlayerOrientation: {fileID: 3393218317760008079}
+  m_player: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
+  m_jumpRequested: 0
 --- !u!54 &5546308429225596538
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -109,7 +128,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &3413988770203332561
@@ -281,6 +300,37 @@ Transform:
   - {fileID: 8814865240357753219}
   m_Father: {fileID: 3393218317760008079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4509223597319017815
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4811837257243177240}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4811837257243177240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4509223597319017815}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.039, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3393218317760008079}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5600539829476727563
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +425,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5600539829476727563}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: de0d1accb09334d458ff387121b874a7, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

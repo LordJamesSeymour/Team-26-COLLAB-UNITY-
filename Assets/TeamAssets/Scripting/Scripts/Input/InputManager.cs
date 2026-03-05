@@ -4,111 +4,89 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    private InputSystem_Actions m_playerInputActions;
+	private InputSystem_Actions m_playerInputActions;
 
-	[SerializeField] PlayerLocomotion m_playerLocomotion;
-	[SerializeField] CameraLook m_cameraLook;
-    [SerializeField] GrapplePrototype m_grapplePrototype;
+	[SerializeField] PlayerLocomotion playerLocomotion;
+	[SerializeField] Wallrun playerWallrun;
+	[SerializeField] CameraLook cameraLook;
 
-    [HideInInspector] public Vector2 m_moveInput;
-    [HideInInspector] public Vector2 m_lookInput;
-    [HideInInspector] public bool m_bjumpPressed;
-    [HideInInspector] public bool m_bcanInteract;
+	public event Action m_grappleAction;
 
-    public event Action GrappleAction;
+	void Awake()
+	{
+		m_playerInputActions = new InputSystem_Actions();
 
+		if (playerLocomotion == null)
+			playerLocomotion = GetComponent<PlayerLocomotion>();
 
-    void Awake()
-    {
-        m_playerInputActions = new InputSystem_Actions();
+		if (playerWallrun == null)
+			playerWallrun = GetComponent<Wallrun>();
 
-		if (m_playerLocomotion == null)
-		{
-			m_playerLocomotion = GetComponent<PlayerLocomotion>();
-		}
+		if (cameraLook == null)
+			Debug.LogError("No camera look script has been assigned!");
 
-		if (m_cameraLook == null)
-		{
-			Debug.LogError("No camera look script has been asigned!");
-		}
+    }
 
-        m_grapplePrototype = GetComponent<GrapplePrototype>();
-        if (m_grapplePrototype == null) {
-
-            Debug.LogError("No grapple prototype script has been assigned");
-        }
+	void OnEnable()
+	{
+		SubToPlayerControls();
 	}
 
-    void OnEnable()
-    {
-        SubToPlayerControls();
-    }
+	void OnDisable()
+	{
+		m_playerInputActions.Disable();
+	}
 
-    void OnDisable()
-    {
-        m_playerInputActions.Disable();
-    }
+	private void SubToPlayerControls()
+	{
+		m_playerInputActions.Enable();
 
+		m_playerInputActions.Player.Move.performed += ctx => playerLocomotion.SetMoveInput(ctx.ReadValue<Vector2>());
+		m_playerInputActions.Player.Move.canceled += ctx => playerLocomotion.SetMoveInput(Vector2.zero);
 
-    #region Player Controls
-    private void SubToPlayerControls()
-    {
-        m_playerInputActions.Enable();
+		m_playerInputActions.Player.Sprint.performed += Sprint;
+		m_playerInputActions.Player.Sprint.canceled += SprintCanceled;
 
-        
-		m_playerInputActions.Player.Move.performed += context => m_playerLocomotion.PlayerInput(context.ReadValue<Vector2>());
-        m_playerInputActions.Player.Move.canceled += context => m_playerLocomotion.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Move.performed += context => Debug.Log(context.ReadValue<Vector2>());
-
-
-		m_playerInputActions.Player.Look.performed += context => m_cameraLook.PlayerInput(context.ReadValue<Vector2>());
-        m_playerInputActions.Player.Look.canceled += context => m_cameraLook.PlayerInput(Vector2.zero);
-		//playerInputActions.Player.Look.performed += context => Debug.Log(context.ReadValue<Vector2>());
+		m_playerInputActions.Player.Look.performed += ctx => cameraLook.PlayerInput(ctx.ReadValue<Vector2>());
+		m_playerInputActions.Player.Look.canceled += ctx => cameraLook.PlayerInput(Vector2.zero);
 
 		m_playerInputActions.Player.Jump.performed += Jump;
-        m_playerInputActions.Player.Jump.canceled += JumpCanceled;
+		m_playerInputActions.Player.Jump.canceled += JumpCanceled;
 
-        m_playerInputActions.Player.Interact.performed += Interact;
+		m_playerInputActions.Player.Interact.performed += Interact;
 
-        m_playerInputActions.Player.Grapple.performed += GrapplePerformed;
+		m_playerInputActions.Player.Grapple.performed += GrapplePerformed;
     }
 
-    private void GrapplePerformed(InputAction.CallbackContext context)
-    {
-        GrappleAction.Invoke();
+	private void GrapplePerformed(InputAction.CallbackContext context)
+	{
+		m_grappleAction.Invoke();
     }
 
     private void Jump(InputAction.CallbackContext context)
-    {
-		m_playerLocomotion.PlayerJump();
+	{
+		// Always send jump input to wallrun (it will only act if currently wallrunning)
+		playerLocomotion.PlayerJump();
+		playerWallrun.m_jumpRequested = true;
 	}
 
-    private void JumpCanceled(InputAction.CallbackContext context)
-    {
-        //TO DO:
-    }
+	private void JumpCanceled(InputAction.CallbackContext context)
+	{
+		// optional (usually not needed for a press-type jump)
+	}
 
-    private void Interact(InputAction.CallbackContext context)
-    {
-        //TO DO:
-    }
+	private void Sprint(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(true);
+	}
 
+	private void SprintCanceled(InputAction.CallbackContext context)
+	{
+		playerLocomotion.PlayerSprint(false);
+	}
 
-    // IN CASE WE NEED TO CHANGE THE CONTROL SCHEME.
-    private void UnsubFromPlayerControls()
-    {
-        Debug.Log("Action mode now in PC controls");
-
-        m_playerInputActions.Player.Move.performed -= context => m_moveInput = context.ReadValue<Vector2>();
-        m_playerInputActions.Player.Move.canceled -= context => m_moveInput = Vector2.zero;
-
-        m_playerInputActions.Player.Look.performed -= context => m_lookInput = context.ReadValue<Vector2>();
-        m_playerInputActions.Player.Look.canceled -= context => m_lookInput = Vector2.zero;
-
-        m_playerInputActions.Player.Jump.performed -= Jump;
-        m_playerInputActions.Player.Jump.canceled -= JumpCanceled;
-
-        m_playerInputActions.Player.Interact.performed -= Interact;
-    }
-    #endregion
+	private void Interact(InputAction.CallbackContext context)
+	{
+		// TO DO:
+	}
 }

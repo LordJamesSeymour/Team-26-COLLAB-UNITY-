@@ -52,7 +52,7 @@ namespace Group26.Player.Camera
 
             if(currentCameraMode == CameraMode.FirstPerson)
             {
-                ApplyFirstPersonLook(playerInput?.m_lookInput ?? Vector2.zero);
+                //ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
             }
         }
 

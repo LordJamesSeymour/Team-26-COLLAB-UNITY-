@@ -3,14 +3,10 @@ using UnityEngine.EventSystems;
 
 public class CameraLook : MonoBehaviour
 {
-	[Header("Look settings")]
 	[SerializeField] Transform PlayerTransform;
 
 	[SerializeField] private float sensX;
 	[SerializeField] private float sensY;
-
-	[SerializeField] private float minX = -90.0f;
-	[SerializeField] private float maxX = 90.0f;
 
 	Camera cam;
 
@@ -43,6 +39,6 @@ public class CameraLook : MonoBehaviour
 		yRotation += mouseX * sensX * multiplier;
 		xRotation -= mouseY * sensY * multiplier;
 
-		xRotation = Mathf.Clamp(xRotation, minX, maxX);
+		xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 	}
 }

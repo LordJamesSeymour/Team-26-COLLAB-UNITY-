@@ -157,7 +157,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Grapple"",
                     ""type"": ""Button"",
-                    ""id"": ""8f36d85c-af32-428e-bedf-d2a718f41ffc"",
+                    ""id"": ""05370ae2-531b-407a-85cc-7a535f7e88e5"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -497,11 +497,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2a4ee22c-154d-406a-b0ee-958f0f029d5e"",
+                    ""id"": ""373ff08c-49da-4492-a8b5-a4f754e70aae"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Grapple"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
