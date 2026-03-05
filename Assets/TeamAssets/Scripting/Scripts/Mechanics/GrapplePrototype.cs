@@ -7,6 +7,7 @@ public class GrapplePrototype : MonoBehaviour
 
     [Header("Grapple properties")]
     [SerializeField] private Transform m_grappleOrigin;
+    [SerializeField] private float m_grappleRange = 50.0f;
 
     private InputManager m_inputManager;
 
@@ -23,6 +24,10 @@ public class GrapplePrototype : MonoBehaviour
     private void GrappleShoot()
     {
         Debug.Log("Started grappling");
-        //Physics.Raycast(m_grappleOrigin.position);
+        RaycastHit hit;
+        Physics.Raycast(m_grappleOrigin.position,transform.forward,out hit,m_grappleRange);
+        Vector3 rayduration = hit.point - m_grappleOrigin.position;
+        Debug.DrawRay(m_grappleOrigin.position, transform.forward, Color.red,rayduration.magnitude); 
+
     }
 }
