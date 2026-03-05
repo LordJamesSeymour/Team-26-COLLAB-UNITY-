@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,8 +8,16 @@ public class PlayerController : MonoBehaviour
 	[Header("Movement")]
 	[SerializeField] float walkSpeed;
 	[SerializeField] float sprintSpeed;
-	private float moveSpeed;
+	[SerializeField] float slideSpeed;
 	[SerializeField] float groundDrag;
+
+	private float moveSpeed;
+
+	private float desiredMoveSpeed;
+	private float lastDesiredMoveSpeed;
+
+	[SerializeField] float speedIncreaseMultiplier;
+	[SerializeField] float slopeIncreaseMultiplier;
 
 	[Header("Jumping")]
 	[SerializeField] float jumpForce;
@@ -36,8 +46,11 @@ public class PlayerController : MonoBehaviour
 		walking,
 		sprinting,
 		crouching,
+		sliding,
 		air
 	}
+
+	public bool sliding;
 
 	bool m_bIsGrounded;
 	bool m_bSprinting;
@@ -93,28 +106,54 @@ public class PlayerController : MonoBehaviour
 
 	void StateHandler()
 	{
-		if (m_bIsGrounded && m_bSprinting)
+		if (sliding)
+		{
+			state = MovementState.sliding;
+
+			if (OnSlope() && rb.linearVelocity.y < 0.1f)
+			{
+				desiredMoveSpeed = slideSpeed;
+			} else
+				desiredMoveSpeed = sprintSpeed;
+		}
+
+		else if (m_bIsGrounded && m_bSprinting)
 		{
 			state = MovementState.sprinting;
-			moveSpeed = sprintSpeed;
+			desiredMoveSpeed = sprintSpeed;
 		}
 		else if (m_bIsGrounded && !m_bSprinting)
 		{
 			state = MovementState.walking;
-			moveSpeed = walkSpeed;
+			desiredMoveSpeed = walkSpeed;
 		}
 		else if (m_bCrouching && m_bIsGrounded)
 		{
 			state = MovementState.crouching;
-			moveSpeed = crouchSpeed;
+			desiredMoveSpeed = crouchSpeed;
 		}
 		else if (!m_bIsGrounded)
 		{
 			state = MovementState.air;
 		}
+
+
+		// Check if desiredMoveSpeed has changed drastically
+
+		if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+		{
+			StopAllCoroutines();
+			StartCoroutine(SmoothlyLerpMovementSpeed());
+		}
+		else
+		{
+			moveSpeed = desiredMoveSpeed;
+		}
+
+			lastDesiredMoveSpeed = desiredMoveSpeed;
 	}
 
-	bool OnSlope()
+	public bool OnSlope()
 	{
 		if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.25f, m_lGround))
 		{
@@ -124,9 +163,9 @@ public class PlayerController : MonoBehaviour
 		return false;
 	}
 
-	private Vector3 GetSlopeMoveDirection()
+	public Vector3 GetSlopeMoveDirection(Vector3 direction)
 	{
-		return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
+		return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
 	}
 
 	public void GetInput(Vector2 input)
@@ -135,13 +174,40 @@ public class PlayerController : MonoBehaviour
 		verticalInput = input.y;
 	}
 
+	private IEnumerator SmoothlyLerpMovementSpeed()
+	{
+		// Smoothly lerp movement speed to desired value
+		float time = 0;
+		float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+		float startValue = moveSpeed;
+
+		while(time < difference)
+		{
+			moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+
+			if (OnSlope())
+			{
+				float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
+				float slopeAngleIncrease = 1 + (slopeAngle / 90f);
+
+				time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+			}
+			else
+				time += Time.deltaTime * speedIncreaseMultiplier;
+
+			yield return null;
+		}
+
+		moveSpeed = desiredMoveSpeed;
+	}
+
 	private void MovePlayer()
 	{
 		moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
 		if (OnSlope() && !exitingSlope)
 		{
-			rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+			rb.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
 
 			if (rb.linearVelocity.y > 0) rb.AddForce(Vector3.down * 80f, ForceMode.Force);
 		}

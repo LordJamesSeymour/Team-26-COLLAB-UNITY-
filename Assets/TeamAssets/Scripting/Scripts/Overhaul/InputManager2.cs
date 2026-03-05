@@ -6,6 +6,7 @@ public class InputManager2 : MonoBehaviour
 	private InputSystem_Actions playerInputActions;
 
 	[SerializeField] PlayerController playerLocomotion;
+	[SerializeField] Sliding PlayerSlide;
 	[SerializeField] CameraController cameraLook;
 
 	void Awake()
@@ -28,7 +29,9 @@ public class InputManager2 : MonoBehaviour
 		playerInputActions.Enable();
 
 		playerInputActions.Player.Move.performed += ctx => playerLocomotion.GetInput(ctx.ReadValue<Vector2>());
+		playerInputActions.Player.Move.performed += ctx => PlayerSlide.GetInput(ctx.ReadValue<Vector2>());
 		playerInputActions.Player.Move.canceled += ctx => playerLocomotion.GetInput(Vector2.zero);
+		playerInputActions.Player.Move.canceled += ctx => PlayerSlide.GetInput(Vector2.zero);
 
 		playerInputActions.Player.Look.performed += ctx => cameraLook.GetInput(ctx.ReadValue<Vector2>());
 		playerInputActions.Player.Look.canceled += ctx => cameraLook.GetInput(Vector2.zero);
@@ -38,6 +41,9 @@ public class InputManager2 : MonoBehaviour
 
 		playerInputActions.Player.Sprint.performed += Sprint;
 		playerInputActions.Player.Sprint.canceled += SprintCanceled;
+
+		playerInputActions.Player.Slide.performed += Slide;
+		playerInputActions.Player.Slide.canceled += SlideCanceled;
 
 		playerInputActions.Player.Crouch.performed += Crouch;
 		playerInputActions.Player.Crouch.canceled += CrouchCanceled;
@@ -62,6 +68,16 @@ public class InputManager2 : MonoBehaviour
 	private void SprintCanceled(InputAction.CallbackContext context)
 	{
 		playerLocomotion.Sprint(false);
+	}
+
+	private void Slide(InputAction.CallbackContext context)
+	{
+		PlayerSlide.Slide(true);
+	}
+
+	private void SlideCanceled(InputAction.CallbackContext context)
+	{
+		PlayerSlide.Slide(false);
 	}
 
 	private void Crouch(InputAction.CallbackContext context)
