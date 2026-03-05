@@ -1,8 +1,12 @@
-using System;
+using Group26.Player.Input;
 using UnityEngine;
 
-public class PlayerLocomotion : MonoBehaviour
+namespace Group26.Player.Locomotion
 {
+	public class PlayerLocomotion : MonoBehaviour
+{
+	private InputManager playerInput;
+
 	[SerializeField] bool m_bIsGrounded;
 	[SerializeField] Transform m_tPlayerOrientation;
 	[SerializeField] PlayerStats_SO playerStats_SO;
@@ -10,26 +14,35 @@ public class PlayerLocomotion : MonoBehaviour
 	[SerializeField] Transform m_tGroundCheck;
 
 	Rigidbody m_rigidbody;
-
 	public float moveSpeed;
 
 	// Store raw input, then build direction every FixedUpdate using CURRENT orientation.
 	Vector2 m_v2MoveInput;
 	Vector3 moveDirection;
 	Vector3 slopeMoveDir;
-
 	float m_fGroundDistance = 0.4f;
-
 	RaycastHit m_rSlopeHit;
-
 	Collider m_cPlayerCollider;
 	float halfHeight;
 
 	// NEW: sprint state (set by input, used every tick)
 	bool m_isSprinting;
 
-	private void Awake()
+        private void OnEnable()
+        {
+            playerInput.OnJumpPressed += PlayerJump;
+        }
+
+        private void OnDisable()
+        {
+            playerInput.OnJumpPressed -= PlayerJump;
+        }
+
+        private void Awake()
 	{
+		playerInput = GetComponent<InputManager>();
+		if(playerInput == null) Debug.LogError("No input manager found");
+
 		moveSpeed = playerStats_SO.m_fPlayerWalkSpeed;
 
 		if (m_rigidbody == null)
@@ -56,14 +69,16 @@ public class PlayerLocomotion : MonoBehaviour
 
 		UpdateMoveSpeed(dt);
 
+		SetMoveInput(playerInput.MoveInput);
 		PlayerMove(isOnSlope);
+		PlayerSprint(playerInput.isSprinting);
 		PlayerDrag();
 	}
 
-	// Called by InputManager
-	public void SetMoveInput(Vector2 input)
+	// Trying to pass in the MoveInput vector from InputManager?
+	public void SetMoveInput(Vector2 moveInput)
 	{
-		m_v2MoveInput = input;
+		m_v2MoveInput = moveInput;
 	}
 
 	public void PlayerJump()
@@ -122,7 +137,7 @@ public class PlayerLocomotion : MonoBehaviour
 		// Option A: Keep your Lerp-style smoothing
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
 
-		// Option B (often nicer): true “units per second” acceleration
+		// Option B (often nicer): true "units per second" acceleration
 		// moveSpeed = Mathf.MoveTowards(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
 	}
 
@@ -133,5 +148,6 @@ public class PlayerLocomotion : MonoBehaviour
 			return m_rSlopeHit.normal != Vector3.up;
 		}
 		return false;
+	}
 	}
 }

@@ -15,6 +15,11 @@ namespace Group26.Player.Camera
         [Header("Camera Settings")]
         [SerializeField] private Vector2 m_lookSensitivity = Vector2.one;
         [SerializeField] private Vector2 m_pitchLimits = new Vector2(-60f, 80f);
+        
+        [Header("Sprint Field of View")]
+        [SerializeField] private float m_normalFOV = 60f;
+        [SerializeField] private float m_sprintFOV = 70f;
+        [SerializeField] private float m_fovBlendLength = 0.25f;
 
         [Header("Body Turn To Camera")]
         [SerializeField, Range(0f, 0.5f)] private float m_bodyTurnSmoothTime = 0.12f;
@@ -23,6 +28,13 @@ namespace Group26.Player.Camera
         private float m_yaw;
         private float m_pitch;
         private float m_bodyYawVel;
+        
+        // FOV Transition variables
+        private bool m_isTransitioningFOV = false;
+        private bool m_targetSprintState = false;
+        private float m_fovTransitionTime = 0f;
+        private float m_startFOV;
+        private float m_targetFOV;
 
         private void Awake()
         {
@@ -48,10 +60,11 @@ namespace Group26.Player.Camera
         {
             ApplyCameraLook(playerInput.LookInput);
             UpdateBodyFacingDirection();
+            SprintFieldOfView(playerInput.isSprinting);
+            UpdateFOVTransition();
         }
 
-
-        public void ApplyCameraLook(Vector2 lookInput)
+        private void ApplyCameraLook(Vector2 lookInput)
         {
             m_yaw += lookInput.x * m_lookSensitivity.x * Time.deltaTime;
             m_pitch -= lookInput.y * m_lookSensitivity.y * Time.deltaTime;
@@ -60,7 +73,7 @@ namespace Group26.Player.Camera
             m_cameraPivot.rotation = Quaternion.Euler(m_pitch, m_yaw, 0f);
         }
 
-        public void UpdateBodyFacingDirection()
+        private void UpdateBodyFacingDirection()
         {
             float targetYaw = m_cameraPivot.eulerAngles.y;
 
@@ -71,6 +84,45 @@ namespace Group26.Player.Camera
 
             float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref m_bodyYawVel, m_bodyTurnSmoothTime);
             m_playerBody.rotation = Quaternion.Euler(0f, newYaw, 0f);
+        }
+
+        private void SprintFieldOfView(bool isSprinting)
+        {
+            // Only start a new transition if the sprint state has changed
+            if (m_targetSprintState != isSprinting)
+            {
+                m_targetSprintState = isSprinting;
+                StartFOVTransition(isSprinting);
+            }
+        }
+        
+        private void StartFOVTransition(bool toSprint)
+        {
+            m_startFOV = m_virtualCamera.Lens.FieldOfView;
+            m_targetFOV = toSprint ? m_sprintFOV : m_normalFOV;
+            m_fovTransitionTime = 0f;
+            m_isTransitioningFOV = true;
+        }
+        
+        private void UpdateFOVTransition()
+        {
+            if (!m_isTransitioningFOV) return;
+            
+            m_fovTransitionTime += Time.deltaTime;
+            float normalizedTime = m_fovTransitionTime / m_fovBlendLength;
+            
+            if (normalizedTime >= 1f)
+            {
+                // Transition complete
+                m_virtualCamera.Lens.FieldOfView = m_targetFOV;
+                m_isTransitioningFOV = false;
+            }
+            else
+            {
+                // Smooth interpolation using smoothstep for eased transition
+                float smoothedTime = Mathf.SmoothStep(0f, 1f, normalizedTime);
+                m_virtualCamera.Lens.FieldOfView = Mathf.Lerp(m_startFOV, m_targetFOV, smoothedTime);
+            }
         }
     }
 }
