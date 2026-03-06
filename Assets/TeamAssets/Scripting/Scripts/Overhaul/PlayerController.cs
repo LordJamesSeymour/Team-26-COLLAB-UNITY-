@@ -3,10 +3,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+	[Header("References")]
+	private InputManager2 inputManager;
+
 	[Header("Movement")]
 	[SerializeField] float walkSpeed;
 	[SerializeField] float sprintSpeed;
 	[SerializeField] float slideSpeed;
+	[SerializeField] float wallRunSpeed;
 	[SerializeField] float groundDrag;
 
 	float moveSpeed;
@@ -41,12 +45,13 @@ public class PlayerController : MonoBehaviour
 	RaycastHit slopeHit;
 
 	public MovementState state;
-	public enum MovementState { walking, sprinting, crouching, sliding, air }
+	public enum MovementState { walking, sprinting, crouching, sliding, air, wallRunning }
 
 	public bool sliding;
-	bool m_bIsGrounded;
-	bool m_bSprinting;
-	bool m_bCrouching;
+	public bool m_bIsGrounded;
+	public bool m_bSprinting;
+	public bool m_bCrouching;
+	public bool m_bIsWallRunning;
 
 	[SerializeField] Transform orientation;
 
@@ -67,8 +72,10 @@ public class PlayerController : MonoBehaviour
 	public bool IsGrounded => m_bIsGrounded;
 	public Vector3 SlopeNormal => slopeHit.normal;
 
-	private void Start()
+    private void Awake()
 	{
+		inputManager = GetComponent<InputManager2>();
+
 		rb = GetComponent<Rigidbody>();
 		rb.freezeRotation = true;
 
@@ -78,6 +85,16 @@ public class PlayerController : MonoBehaviour
 		m_cPlayerCollider = GetComponentInChildren<Collider>();
 		slidingComp = GetComponent<Sliding>();
 	}
+
+	    private void OnEnable()
+    {
+        inputManager.OnJumpPressed += Jump;
+    }
+
+	private void OnDisable()
+    {
+        inputManager.OnJumpPressed -= Jump;
+    }
 
 	private void FixedUpdate()
 	{
@@ -112,6 +129,12 @@ public class PlayerController : MonoBehaviour
 
 	void StateHandler(bool onSlope)
 	{
+		if(m_bIsWallRunning)
+		{
+			state = MovementState.wallRunning;
+			desiredMoveSpeed = wallRunSpeed;
+		}
+
 		// Priority order matters: sliding > crouch > sprint > walk > air
 		if (sliding)
 		{
@@ -224,6 +247,8 @@ public class PlayerController : MonoBehaviour
 			rb.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
 		else
 			rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+		if(!m_bIsWallRunning) rb.useGravity = !OnSlope();
 	}
 
 	private void SpeedControl(bool onSlope)
