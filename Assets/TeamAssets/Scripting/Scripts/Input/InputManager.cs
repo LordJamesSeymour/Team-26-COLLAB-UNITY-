@@ -10,7 +10,8 @@ public class InputManager : MonoBehaviour
 	[SerializeField] Wallrun playerWallrun;
 	[SerializeField] CameraLook cameraLook;
 
-	public event Action m_grappleAction;
+	public event Action m_startGrappleAction;
+	public event Action m_stopGrappleAction;
 
 	void Awake()
 	{
@@ -56,12 +57,18 @@ public class InputManager : MonoBehaviour
 		m_playerInputActions.Player.Interact.performed += Interact;
 
 		m_playerInputActions.Player.Grapple.performed += GrapplePerformed;
+		m_playerInputActions.Player.Grapple.canceled += GrappleCancelled;
     }
 
 	private void GrapplePerformed(InputAction.CallbackContext context)
 	{
-		m_grappleAction.Invoke();
+		m_startGrappleAction.Invoke();
     }
+
+	private void GrappleCancelled(InputAction.CallbackContext context)
+	{
+		m_stopGrappleAction.Invoke();
+	}
 
     private void Jump(InputAction.CallbackContext context)
 	{
