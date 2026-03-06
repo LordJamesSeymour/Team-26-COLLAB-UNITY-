@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float slideSpeed;
 	[SerializeField] float wallRunSpeed;
 	[SerializeField] float groundDrag;
+	[SerializeField] float dashSpeed;
+	[SerializeField] float dashSpeedChangeFactor;
+
+	public float maxYSpeed;
+
 
 	float moveSpeed;
 	float desiredMoveSpeed;
@@ -45,9 +50,19 @@ public class PlayerController : MonoBehaviour
 	RaycastHit slopeHit;
 
 	public MovementState state;
-	public enum MovementState { walking, sprinting, crouching, sliding, air, wallRunning }
+	public enum MovementState 
+	{ 
+		walking, 
+		sprinting, 
+		crouching, 
+		sliding, 
+		air,
+		wallRunning, 
+		dashing
+	}
 
-	public bool sliding;
+	public bool m_bSliding;
+	public bool m_bDashing;
 	public bool m_bIsGrounded;
 	public bool m_bSprinting;
 	public bool m_bCrouching;
@@ -102,13 +117,16 @@ public class PlayerController : MonoBehaviour
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
 
 		// Drag only when grounded AND not sliding (sliding should keep momentum)
-		rb.linearDamping = (m_bIsGrounded && !sliding) ? groundDrag : 0f;
+		if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+			rb.linearDamping = groundDrag;
+		else 
+			rb.angularDamping = 0;
 
-		// Cache slope check once per FixedUpdate (updates slopeHit)
-		bool onSlope = OnSlope();
+			// Cache slope check once per FixedUpdate (updates slopeHit)
+			bool onSlope = OnSlope();
 
 		// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
-		rb.useGravity = !(onSlope && !exitingSlope && !sliding);
+		rb.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
 
 		// State/speed first (so movement uses correct moveSpeed this frame)
 		StateHandler(onSlope);
@@ -120,23 +138,33 @@ public class PlayerController : MonoBehaviour
 		TryConsumeJumpBuffer();
 
 		// Sliding movement is handled by Sliding.cs
-		if (!sliding)
+		if (!m_bSliding)
 		{
 			MovePlayer(onSlope);
 			SpeedControl(onSlope);
 		}
 	}
 
+	private MovementState lastState;
+	private bool keepMomentum;
+
 	void StateHandler(bool onSlope)
 	{
-		if(m_bIsWallRunning)
+		if (m_bDashing)
+		{
+			state = MovementState.dashing;
+			desiredMoveSpeed = dashSpeed;
+			speedChangeFactor = dashSpeedChangeFactor;
+		}
+
+		else if(m_bIsWallRunning)
 		{
 			state = MovementState.wallRunning;
 			desiredMoveSpeed = wallRunSpeed;
 		}
 
 		// Priority order matters: sliding > crouch > sprint > walk > air
-		if (sliding)
+		else if (m_bSliding)
 		{
 			state = MovementState.sliding;
 			desiredMoveSpeed = slideSpeed;
@@ -159,20 +187,78 @@ public class PlayerController : MonoBehaviour
 		else
 		{
 			state = MovementState.air;
-			// keep last desiredMoveSpeed in air so you don't snap speeds weirdly
+
+			if (desiredMoveSpeed < sprintSpeed)
+				desiredMoveSpeed = walkSpeed;
+			else
+				desiredMoveSpeed = sprintSpeed;
 		}
 
 		if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
 		{
 			StopAllCoroutines();
-			StartCoroutine(SmoothlyLerpMovementSpeed());
+			StartCoroutine(SmoothlyLerpMoveSpeed());
 		}
 		else
 		{
+			StopAllCoroutines();
 			moveSpeed = desiredMoveSpeed;
 		}
 
+		bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
+		if (lastState == MovementState.dashing) keepMomentum = true;
+
+		if (desiredMoveSpeedHasChanged)
+		{
+			if (keepMomentum)
+			{
+				StopAllCoroutines();
+				StartCoroutine(SmoothlyLerpMoveSpeed());
+			}
+			else
+			{
+				StopAllCoroutines();
+				moveSpeed = desiredMoveSpeed;
+			}
+		}
+
 		lastDesiredMoveSpeed = desiredMoveSpeed;
+		lastState = state;
+	}
+
+	private float speedChangeFactor;
+	private IEnumerator SmoothlyLerpMoveSpeed()
+	{
+		float time = 0f;
+		float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+		float startValue = moveSpeed;
+
+		float boostFactor = speedChangeFactor;
+
+		while (time < difference)
+		{
+			moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+
+			time += Time.deltaTime;
+
+			if (OnSlope())
+			{
+				float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
+				float slopeAngleIncrease = 1f + (slopeAngle / 90f);
+
+				time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+			}
+			else
+			{
+				time += Time.deltaTime * speedIncreaseMultiplier;
+			}
+
+			yield return null;
+		}
+
+		moveSpeed = desiredMoveSpeed;
+		speedChangeFactor = 1f;
+		keepMomentum = false;
 	}
 
 	public bool OnSlope()
@@ -200,36 +286,10 @@ public class PlayerController : MonoBehaviour
 		verticalInput = input.y;
 	}
 
-	private IEnumerator SmoothlyLerpMovementSpeed()
-	{
-		float time = 0f;
-		float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
-		float startValue = moveSpeed;
-
-		while (time < difference)
-		{
-			moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
-
-			if (OnSlope())
-			{
-				float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
-				float slopeAngleIncrease = 1f + (slopeAngle / 90f);
-
-				time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
-			}
-			else
-			{
-				time += Time.deltaTime * speedIncreaseMultiplier;
-			}
-
-			yield return null;
-		}
-
-		moveSpeed = desiredMoveSpeed;
-	}
-
 	private void MovePlayer(bool onSlope)
 	{
+		if (state == MovementState.dashing) return;
+
 		moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
 		if (onSlope && !exitingSlope)
@@ -254,7 +314,7 @@ public class PlayerController : MonoBehaviour
 	private void SpeedControl(bool onSlope)
 	{
 		// Don't clamp during sliding; Sliding.cs handles momentum/friction
-		if (sliding) return;
+		if (m_bSliding) return;
 
 		if (onSlope && !exitingSlope)
 		{
@@ -271,6 +331,11 @@ public class PlayerController : MonoBehaviour
 				rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
 			}
 		}
+
+		// Limit Y velocity
+
+		if (maxYSpeed != 0 && rb.linearVelocity.y > maxYSpeed)
+			rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
 	}
 
 	public void Sprint(bool state) => m_bSprinting = state;
@@ -313,7 +378,7 @@ public class PlayerController : MonoBehaviour
 	private void ExecuteJump()
 	{
 		// Jumping cancels slide cleanly
-		if (sliding && slidingComp != null)
+		if (m_bSliding && slidingComp != null)
 			slidingComp.ForceEndSlide();
 
 		exitingSlope = true;

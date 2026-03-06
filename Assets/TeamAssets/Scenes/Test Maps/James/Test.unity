@@ -565,8 +565,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2145192225556803454, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-      propertyPath: wallRunSpeed
-      value: 8.5
+      propertyPath: dashSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2145192225556803454, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: dashSpeedChangeFactor
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2158282844565274224, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -608,10 +612,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2850125786089803041, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: playerDash
+      value: 
+      objectReference: {fileID: 844402643}
     - target: {fileID: 3240117176549791621, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
       propertyPath: CameraHolder
       value: 
       objectReference: {fileID: 1667874571}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: dashCd
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: dashForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: playerCam
+      value: 
+      objectReference: {fileID: 1149052998}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: orientation
+      value: 
+      objectReference: {fileID: 343088194}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: dashDuration
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: maxDashYSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: useCameraForward
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8324317394534824133, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
       propertyPath: m_Name
       value: TempPlayer
@@ -619,13 +655,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8324317394534824133, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 844402639}
-    - targetCorrespondingSourceObject: {fileID: 8324317394534824133, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 844402640}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
 --- !u!1 &735571668
 GameObject:
@@ -735,89 +765,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &844402633 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8324317394534824133, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+--- !u!114 &844402643 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3479261143446780926, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
   m_PrefabInstance: {fileID: 677446569}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &844402634 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3960751442372283223, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-  m_PrefabInstance: {fileID: 677446569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844402633}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e2d90293dfe720439ab62a25c18388b, type: 3}
+  m_Script: {fileID: 11500000, guid: e26b8461c9437a64589b5b1674c45231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &844402635 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2145192225556803454, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-  m_PrefabInstance: {fileID: 677446569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844402633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d003a0184591a5543b6048dd4e9885ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &844402636 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3240117176549791621, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
-  m_PrefabInstance: {fileID: 677446569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844402633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27e4c005e420fd14da7e6b12f6823d5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &844402639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844402633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerController: {fileID: 844402635}
-  playerSlide: {fileID: 844402634}
-  cameraLook: {fileID: 844402636}
-  wallRunning: {fileID: 844402640}
-  moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
---- !u!114 &844402640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844402633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8da2494f3a956ec40b9feb43753e8d7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orientation: {fileID: 343088194}
-  wallRunForce: 175
-  maxWallRunTimeSeconds: 2
-  wallRunJumpUpForce: 10
-  wallRunJumpSideForce: 15
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  wallCheckDistance: 0.75
-  minWallJumpHeight: 1
-  exitWallTime: 0.2
-  useGravity: 1
-  gravityCounterForce: 145
 --- !u!1 &892888568
 GameObject:
   m_ObjectHideFlags: 0

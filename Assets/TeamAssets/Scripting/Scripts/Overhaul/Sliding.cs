@@ -46,7 +46,7 @@ public class Sliding : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (!playerController.sliding)
+		if (!playerController.m_bSliding)
 			return;
 
 		// If we leave the ground (jump/ledge), end slide
@@ -76,19 +76,19 @@ public class Sliding : MonoBehaviour
 	{
 		if (pressed)
 		{
-			if (!playerController.sliding)
+			if (!playerController.m_bSliding)
 				StartSlide();
 		}
 		else
 		{
-			if (playerController.sliding)
+			if (playerController.m_bSliding)
 				EndSlide();
 		}
 	}
 
 	private void StartSlide()
 	{
-		playerController.sliding = true;
+		playerController.m_bSliding = true;
 
 		// Scale once (no repeated slamming)
 		playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
@@ -130,14 +130,14 @@ public class Sliding : MonoBehaviour
 
 	private void EndSlide()
 	{
-		playerController.sliding = false;
+		playerController.m_bSliding = false;
 		playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
 	}
 
 	// Called by PlayerController when jumping
 	public void ForceEndSlide()
 	{
-		if (playerController.sliding)
+		if (playerController.m_bSliding)
 			EndSlide();
 	}
 }
