@@ -781,7 +781,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 460971818516036053, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_requireGrappleForBoost
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5463207170980365835, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1073,7 +1073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 460971818516036053, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_requireGrappleForBoost
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5463207170980365835, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1789,7 +1789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 460971818516036053, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_requireGrappleForBoost
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5463207170980365835, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1854,11 +1854,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 460971818516036053, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_boostAmmount
-      value: 50
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 460971818516036053, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_requireGrappleForBoost
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5463207170980365835, guid: e990d2ce063b1c8478be108be342cb34, type: 3}
       propertyPath: m_LocalPosition.x

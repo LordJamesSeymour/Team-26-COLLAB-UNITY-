@@ -33,8 +33,7 @@ public class GrapplePointCode : MonoBehaviour
             //performing the boost
             if(other.attachedRigidbody != null && canboost)
             {
-                Debug.Log("Applying boost");
-                other.attachedRigidbody.AddForce(other.transform.TransformDirection(Vector3.forward) * m_boostAmmount,ForceMode.Impulse);
+                other.attachedRigidbody.AddForce(other.attachedRigidbody.linearVelocity.normalized * m_boostAmmount,ForceMode.Impulse);
             }
         }
     }
