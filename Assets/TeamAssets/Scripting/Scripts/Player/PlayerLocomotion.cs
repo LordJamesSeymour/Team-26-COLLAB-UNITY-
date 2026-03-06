@@ -28,6 +28,9 @@ namespace Group26.Player.Locomotion
 	// NEW: sprint state (set by input, used every tick)
 	bool m_isSprinting;
 
+	//NEW: momentum script
+	private SlopeMomentum m_momentumController;
+
         private void OnEnable()
         {
             playerInput.OnJumpPressed += PlayerJump;
@@ -49,6 +52,11 @@ namespace Group26.Player.Locomotion
 			m_rigidbody = GetComponent<Rigidbody>();
 
 		m_rigidbody.freezeRotation = true;
+
+		//CHANGED: get reference to momentum script
+		m_momentumController = GetComponent<SlopeMomentum>();
+		if (!m_momentumController)
+			Debug.LogError("no momentum script found");
 
 		m_cPlayerCollider = GetComponentInChildren<Collider>();
 		halfHeight = m_cPlayerCollider.bounds.extents.y; // world half-height
@@ -136,12 +144,15 @@ namespace Group26.Player.Locomotion
 
 		// Option A: Keep your Lerp-style smoothing
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
+		//CHANGED: add momentum to speed
+		moveSpeed += m_momentumController.m_momentum;
 
 		// Option B (often nicer): true "units per second" acceleration
 		// moveSpeed = Mathf.MoveTowards(moveSpeed, targetSpeed, playerStats_SO.m_fPlayerAcceleration * dt);
 	}
 
-	private bool OnSlope()
+	//CHANGED: Made this public so it can be accessed by slope momentum script
+	public bool OnSlope()
 	{
 		if (Physics.Raycast(transform.position, Vector3.down, out m_rSlopeHit, halfHeight + 0.35f))
 		{
@@ -149,5 +160,7 @@ namespace Group26.Player.Locomotion
 		}
 		return false;
 	}
+
+	public Vector3 GetDirection() { return moveDirection; }
 	}
 }
