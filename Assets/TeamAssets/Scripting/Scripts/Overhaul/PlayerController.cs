@@ -45,10 +45,11 @@ public class PlayerController : MonoBehaviour
 	RaycastHit slopeHit;
 
 	public MovementState state;
-	public enum MovementState { walking, sprinting, crouching, sliding, air, wallRunning }
+	public enum MovementState { walking, sprinting, crouching, sliding, air, wallRunning, dashing }
 
 	public bool sliding;
 	public bool m_bIsGrounded;
+	public bool m_bIsDashing;
 	public bool m_bSprinting;
 	public bool m_bCrouching;
 	public bool m_bIsWallRunning;
@@ -102,7 +103,7 @@ public class PlayerController : MonoBehaviour
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
 
 		// Drag only when grounded AND not sliding (sliding should keep momentum)
-		rb.linearDamping = (m_bIsGrounded && !sliding) ? groundDrag : 0f;
+		rb.linearDamping = (m_bIsGrounded && !sliding && !m_bIsDashing) ? groundDrag : 0f;
 
 		// Cache slope check once per FixedUpdate (updates slopeHit)
 		bool onSlope = OnSlope();
@@ -122,8 +123,9 @@ public class PlayerController : MonoBehaviour
 		// Sliding movement is handled by Sliding.cs
 		if (!sliding)
 		{
-			MovePlayer(onSlope);
-			SpeedControl(onSlope);
+			if (!m_bIsDashing)
+        		MovePlayer(onSlope);
+				SpeedControl(onSlope);
 		}
 	}
 

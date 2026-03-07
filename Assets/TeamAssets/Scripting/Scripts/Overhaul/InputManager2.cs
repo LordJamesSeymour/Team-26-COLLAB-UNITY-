@@ -8,6 +8,7 @@ public class InputManager2 : MonoBehaviour
 
 	[SerializeField] PlayerController playerController;
 	[SerializeField] Sliding playerSlide;
+	[SerializeField] PlayerDash playerDash;
 	[SerializeField] CameraController cameraLook;
 	[SerializeField] WallRunning wallRunning;
 
@@ -17,8 +18,9 @@ public class InputManager2 : MonoBehaviour
 	bool callbacksHooked;
 
 	public event Action OnJumpPressed;
+	public event Action OnDashPressed;
 
-	//[HideInInspector] public Vector2 MoveInput;
+	[HideInInspector] public Vector2 MoveInput;
 
 	void Awake()
 	{
@@ -26,6 +28,7 @@ public class InputManager2 : MonoBehaviour
 
 		if (playerController == null) playerController = GetComponent<PlayerController>();
 		if (playerSlide == null) playerSlide = GetComponent<Sliding>();
+		if (playerDash == null) playerDash = GetComponent<PlayerDash>();
 	}
 
 	void OnEnable()
@@ -63,6 +66,8 @@ public class InputManager2 : MonoBehaviour
 
 		playerInputActions.Player.Jump.performed += OnJump;
 
+		playerInputActions.Player.Dash.performed += OnDash;
+
 		playerInputActions.Player.Sprint.performed += OnSprint;
 		playerInputActions.Player.Sprint.canceled += OnSprintCanceled;
 
@@ -86,6 +91,8 @@ public class InputManager2 : MonoBehaviour
 
 		playerInputActions.Player.Jump.performed -= OnJump;
 
+		playerInputActions.Player.Dash.performed -= OnDash;
+
 		playerInputActions.Player.Sprint.performed -= OnSprint;
 		playerInputActions.Player.Sprint.canceled -= OnSprintCanceled;
 
@@ -102,6 +109,7 @@ public class InputManager2 : MonoBehaviour
 		playerController.GetInput(v);
 		wallRunning.GetInput(v);
 		playerSlide.GetInput(v);
+		//playerDash.GetInput(v);
 	}
 
 	private void OnMoveCanceled(InputAction.CallbackContext ctx)
@@ -116,6 +124,12 @@ public class InputManager2 : MonoBehaviour
 	private void OnJump(InputAction.CallbackContext ctx)
 	{
 		OnJumpPressed?.Invoke();
+	}
+
+	private void OnDash(InputAction.CallbackContext ctx)
+	{
+		Debug.Log("Dash input received.");
+		OnDashPressed?.Invoke();
 	}
 
 	private void OnSprint(InputAction.CallbackContext ctx) => playerController.Sprint(true);
