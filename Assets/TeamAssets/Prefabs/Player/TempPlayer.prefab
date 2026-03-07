@@ -96,7 +96,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9ccef3f3de776074d8193ec260c33c51, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -237,7 +237,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ab73a1efdb9399142b3493d81284e73b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -363,6 +363,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 2145192225556803454}
   playerSlide: {fileID: 3960751442372283223}
+  playerGrapple: {fileID: 0}
+  playerDash: {fileID: 3479261143446780926}
   cameraLook: {fileID: 3240117176549791621}
   wallRunning: {fileID: 3700124328398812999}
   moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -400,6 +402,9 @@ MonoBehaviour:
   slideSpeed: 30
   wallRunSpeed: 8.5
   groundDrag: 5
+  dashSpeed: 30
+  dashSpeedChangeFactor: 50
+  maxYSpeed: 0
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
   jumpForce: 12
@@ -414,7 +419,8 @@ MonoBehaviour:
     m_Bits: 8
   MaxSlopeAngle: 40
   state: 0
-  sliding: 0
+  m_bSliding: 0
+  m_bDashing: 0
   m_bIsGrounded: 0
   m_bSprinting: 0
   m_bCrouching: 0
@@ -481,12 +487,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e26b8461c9437a64589b5b1674c45231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orientation: {fileID: 0}
+  orientation: {fileID: 6853697012523858315}
   playerCam: {fileID: 0}
-  rb: {fileID: 0}
-  PlayerController: {fileID: 0}
-  InputManager: {fileID: 0}
-  dashForce: 0
+  dashForce: 30
   dashUpwardsForce: 0
-  dashDuration: 0
-  dashCd: 0
+  maxDashYSpeed: 15
+  dashDuration: 0.25
+  dashCd: 1.5
+  useCameraForward: 0
+  allowAllDirections: 1
+  disableGravity: 1
+  resetVel: 1

@@ -8,6 +8,7 @@ public class InputManager2 : MonoBehaviour
 
 	[SerializeField] PlayerController playerController;
 	[SerializeField] Sliding playerSlide;
+	[SerializeField] Grappling playerGrapple;
 	[SerializeField] Dashing playerDash;
 	[SerializeField] CameraController cameraLook;
 	[SerializeField] WallRunning wallRunning;
@@ -19,6 +20,7 @@ public class InputManager2 : MonoBehaviour
 
 	public event Action OnJumpPressed;
 	public event Action OnDashPressed;
+	public event Action OnInteractPressed;
 
 	//[HideInInspector] public Vector2 MoveInput;
 
@@ -28,6 +30,7 @@ public class InputManager2 : MonoBehaviour
 
 		if (playerController == null) playerController = GetComponent<PlayerController>();
 		if (playerSlide == null) playerSlide = GetComponent<Sliding>();
+		if (playerGrapple == null) playerGrapple = GetComponent<Grappling>();
 	}
 
 	void OnEnable()
@@ -67,6 +70,7 @@ public class InputManager2 : MonoBehaviour
 
 
 		playerInputActions.Player.Dash.performed += OnDash;
+		playerInputActions.Player.Interact.performed += OnInteract;
 
 
 		playerInputActions.Player.Sprint.performed += OnSprint;
@@ -128,6 +132,11 @@ public class InputManager2 : MonoBehaviour
 	private void OnDash(InputAction.CallbackContext ctx)
 	{
 		OnDashPressed?.Invoke();
+	}
+
+	private void OnInteract(InputAction.CallbackContext ctx)
+	{
+		OnInteractPressed?.Invoke();
 	}
 
 	private void OnSprint(InputAction.CallbackContext ctx) => playerController.Sprint(true);

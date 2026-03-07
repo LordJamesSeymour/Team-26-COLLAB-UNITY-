@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 	public MovementState state;
 	public enum MovementState 
 	{ 
+		freeze,
 		walking, 
 		sprinting, 
 		crouching, 
@@ -61,6 +62,8 @@ public class PlayerController : MonoBehaviour
 		dashing
 	}
 
+	public bool m_bActiveGrapple;
+	public bool m_bFreeze;
 	public bool m_bSliding;
 	public bool m_bDashing;
 	public bool m_bIsGrounded;
@@ -117,13 +120,20 @@ public class PlayerController : MonoBehaviour
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
 
 		// Drag only when grounded AND not sliding (sliding should keep momentum)
-		if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
-			rb.linearDamping = groundDrag;
-		else 
-			rb.angularDamping = 0;
 
-			// Cache slope check once per FixedUpdate (updates slopeHit)
-			bool onSlope = OnSlope();
+		if (m_bIsGrounded && !m_bActiveGrapple)
+		{
+			if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+				rb.linearDamping = groundDrag;
+			else
+				rb.linearDamping = 0;
+		}
+		else
+			rb.linearDamping = 0;
+
+
+		// Cache slope check once per FixedUpdate (updates slopeHit)
+		bool onSlope = OnSlope();
 
 		// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
 		rb.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
@@ -150,7 +160,14 @@ public class PlayerController : MonoBehaviour
 
 	void StateHandler(bool onSlope)
 	{
-		if (m_bDashing)
+		if (m_bFreeze)
+		{
+			state = MovementState.freeze;
+			moveSpeed = 0;
+			rb.linearVelocity = Vector3.zero;
+		}
+
+		else if (m_bDashing)
 		{
 			state = MovementState.dashing;
 			desiredMoveSpeed = dashSpeed;
@@ -261,23 +278,17 @@ public class PlayerController : MonoBehaviour
 		keepMomentum = false;
 	}
 
-	public bool OnSlope()
+	public Vector3 CalculateJumpVelocity(Vector3 StartPoint, Vector3 EndPoint, float tracjectoryHeight)
 	{
-		if (m_cPlayerCollider == null) return false;
+		float gravity = Physics.gravity.y;
+		float displacementY = EndPoint.y - StartPoint.y;
+		Vector3 displacementXZ = new Vector3(EndPoint.x - StartPoint.x, 0f, EndPoint.z - StartPoint.z);
 
-		float halfHeight = m_cPlayerCollider.bounds.extents.y; // updates if collider/scale changes
+		Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * tracjectoryHeight);
+		Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * tracjectoryHeight / gravity)
+			+ Mathf.Sqrt(2 * (displacementY - tracjectoryHeight) / gravity));
 
-		if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
-		{
-			float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-			return angle < MaxSlopeAngle && angle > 0f;
-		}
-		return false;
-	}
-
-	public Vector3 GetSlopeMoveDirection(Vector3 direction)
-	{
-		return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+		return velocityXZ + velocityY;
 	}
 
 	public void GetInput(Vector2 input)
@@ -288,6 +299,8 @@ public class PlayerController : MonoBehaviour
 
 	private void MovePlayer(bool onSlope)
 	{
+		if (m_bActiveGrapple) return;
+
 		if (state == MovementState.dashing) return;
 
 		moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -313,6 +326,8 @@ public class PlayerController : MonoBehaviour
 
 	private void SpeedControl(bool onSlope)
 	{
+		if (m_bActiveGrapple) return;
+
 		// Don't clamp during sliding; Sliding.cs handles momentum/friction
 		if (m_bSliding) return;
 
@@ -391,5 +406,57 @@ public class PlayerController : MonoBehaviour
 	{
 		readyToJump = true;
 		exitingSlope = false;
+	}
+
+	private bool enableMovementOnNextTouch;
+
+	public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
+	{
+		m_bActiveGrapple = true;
+
+		VelocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
+		Invoke(nameof(SetVelocity), 0.1f);
+	}
+
+	private Vector3 VelocityToSet;
+	private void SetVelocity()
+	{
+		enableMovementOnNextTouch = true;
+		rb.linearVelocity = VelocityToSet;
+	}
+
+	public void ResetRestrictions()
+	{
+		m_bActiveGrapple = false;
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (enableMovementOnNextTouch)
+		{
+			enableMovementOnNextTouch = false;
+			ResetRestrictions();
+
+			GetComponent<Grappling>().StopGrapple();
+		}
+	}
+
+	public bool OnSlope()
+	{
+		if (m_cPlayerCollider == null) return false;
+
+		float halfHeight = m_cPlayerCollider.bounds.extents.y; // updates if collider/scale changes
+
+		if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
+		{
+			float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+			return angle < MaxSlopeAngle && angle > 0f;
+		}
+		return false;
+	}
+
+	public Vector3 GetSlopeMoveDirection(Vector3 direction)
+	{
+		return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
 	}
 }
