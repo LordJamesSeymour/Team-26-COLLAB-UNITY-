@@ -6,9 +6,8 @@ public class SlopeMomentum : MonoBehaviour
 {
     private PlayerLocomotion m_locomotionScript;
     private float m_startSpeed;
-    private bool m_onSlope;     //I know there's a way for checking if the player is on a slope in the locomotion script but 
-                               //when testing in the slope momentum prototype scene, this doesn't always seem to detect when 
-                              //the player is on a slope so I am currently using a different method of slope detection
+    //private bool m_onSlope;
+
     public float m_momentum;
 
     [SerializeField] float m_maxMomentum;
@@ -23,30 +22,30 @@ public class SlopeMomentum : MonoBehaviour
             m_startSpeed = m_locomotionScript.moveSpeed;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "slope")
-        {
-            m_onSlope = true;
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "slope")
+    //    {
+    //        m_onSlope = true;
+    //    }
+    //}
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "slope")
-        {
-            m_onSlope = false;
-        }
-    }
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "slope")
+    //    {
+    //        m_onSlope = false;
+    //    }
+    //}
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(m_onSlope);
-        Debug.Log(m_locomotionScript.GetDirection());
-        Debug.Log(m_locomotionScript.moveSpeed);
-        Debug.Log(m_momentum);
-        if(m_onSlope &&  m_momentum < m_maxMomentum && m_locomotionScript.GetDirection().z >= 0.95)
+        //Debug.Log(m_onSlope);
+        //Debug.Log(m_locomotionScript.GetDirection());
+        //Debug.Log(m_locomotionScript.moveSpeed);
+        //Debug.Log(m_momentum);
+        if(m_locomotionScript.OnSlope() &&  m_momentum < m_maxMomentum && m_locomotionScript.GetDirection().z >= 0.95)
         {
             m_momentum += m_speedIncreaseFactor;
         }
