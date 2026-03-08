@@ -3020,6 +3020,7 @@ GameObject:
   - component: {fileID: 5215882891692540265}
   - component: {fileID: 7691324608274754951}
   - component: {fileID: 8222699186922893880}
+  - component: {fileID: 8747818357469391006}
   - component: {fileID: 8747818357469391004}
   - component: {fileID: 5211803741132476519}
   - component: {fileID: 7162448982173135950}
@@ -3378,7 +3379,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2743995669682620380}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27e4c005e420fd14da7e6b12f6823d5c, type: 3}
   m_Name: 
@@ -3411,6 +3412,31 @@ MonoBehaviour:
   overshootYAxis: 2
   missLineTime: 0.25
   grappleCooldown: 0.25
+--- !u!114 &8747818357469391006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2743995669682620380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ca2dff7a7311a46b403cfb75dbd94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerTransform: {fileID: 5215882891692540265}
+  m_cameraPivot: {fileID: 380043459}
+  switchCameraMode: 0
+  firstPersonVirtualCamera: {fileID: 146705733}
+  thirdPersonVirtualCamera: {fileID: 1610333672}
+  firstPersonLookSensitivity: {x: 1, y: 1}
+  thirdPersonLookSensitivity: {x: 1, y: 1}
+  m_firstPersonPitchLimits: {x: -85, y: 85}
+  firstPersonYawRoot: {fileID: 0}
+  firstPersonPitchPivot: {fileID: 0}
+  m_thirdPersonPitchLimits: {x: -60, y: 80}
+  m_bodyTurnSmoothTime: 0.12
+  m_turnWhenCameraYawOffsetExceeds: 25
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
