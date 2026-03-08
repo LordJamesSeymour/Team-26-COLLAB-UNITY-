@@ -847,6 +847,7 @@ MonoBehaviour:
   maxGrappleDistance: 25
   grappleDelayTime: 0
   overshootYAxis: 2
+  missLineTime: 0.25
   grappleCooldown: 0.25
 --- !u!1 &892888568
 GameObject:

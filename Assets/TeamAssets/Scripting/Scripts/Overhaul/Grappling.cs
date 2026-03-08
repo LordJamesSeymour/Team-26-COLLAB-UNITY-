@@ -23,9 +23,7 @@ public class Grappling : MonoBehaviour
 	[Header("Cooldown")]
 	[SerializeField] float grappleCooldown;
 	private float grappleCooldownTimer;
-
 	private bool m_bGrappling;
-
 	private int _grappleToken;
 
 	private void Awake()
@@ -81,11 +79,11 @@ public class Grappling : MonoBehaviour
 		if(grappleDelayTime <= 0)
 		{
 			if (didHit) Invoke(nameof(ExecuteGrapple_InvokeWrapper), grappleDelayTime);
-			else
+			else // Display line for a moment, then stop grapple
 			{
 				PlayerController.m_bFreeze = false;
 
-            	float t = Mathf.Max(missLineTime, 0.01f); // guarantee at least a frame
+            	float t = Mathf.Max(missLineTime, 0.01f); // Guarantees a frame at least for visual feedbcak
 
             	// Stop after a short visual delay, not grappleDelayTime
             	Invoke(nameof(StopGrapple_InvokeWrapper), t);
@@ -122,8 +120,6 @@ public class Grappling : MonoBehaviour
 	private void StopGrapple(int token)
 	{
 		if (token != _grappleToken) return;
-
-		Debug.Log("Stopping Grapple");
 
 		PlayerController.m_bFreeze = false;
 		m_bGrappling = false;
