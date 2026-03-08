@@ -1,11 +1,13 @@
 using UnityEngine;
+using Group26.Player.Movement;
+using Group26.Player.Inputs;
 
 public class WallRunning : MonoBehaviour
 {
     [Header("References")]
     public Transform orientation;
     private PlayerController playerController;
-    private InputManager2 inputManager;
+    private InputManager inputManager;
     private Rigidbody rb;
 
     [Header("Wall Running")]
@@ -42,7 +44,7 @@ public class WallRunning : MonoBehaviour
     {
         playerController = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
-        inputManager = GetComponent<InputManager2>();
+        inputManager = GetComponent<InputManager>();
 
     }
 

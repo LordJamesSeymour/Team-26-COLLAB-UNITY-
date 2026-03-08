@@ -1,10 +1,12 @@
-using Group26.Player.Camera;
 using UnityEngine;
+using Group26.Player.Camera;
+using Group26.Player.Movement;
+using Group26.Player.Inputs;
 
 public class Grappling : MonoBehaviour
 {
 	[Header("References")]
-	private InputManager2 InputManager;
+	private InputManager InputManager;
 	private CameraModeManager cameraModeManager;
 	[SerializeField] private Transform firstPersonCam; 
 	[SerializeField] private Transform thirdPersonCam;
@@ -32,7 +34,7 @@ public class Grappling : MonoBehaviour
 
 	private void Awake()
 	{
-		if (InputManager == null) InputManager = GetComponent<InputManager2>();
+		if (InputManager == null) InputManager = GetComponent<InputManager>();
 		if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
 		if (cameraModeManager == null) cameraModeManager = GetComponent<CameraModeManager>();
 

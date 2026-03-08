@@ -1,13 +1,15 @@
 using UnityEngine;
+using Group26.Player.Movement;
+using Group26.Player.Inputs;
 
 public class Dashing : MonoBehaviour
 {
 	[Header("References")]
 	[SerializeField] Transform orientation;
 	[SerializeField] Transform playerCam;
-	private InputManager2 InputManager;
-	private Rigidbody rb;
-	private PlayerController PlayerController;
+	private InputManager inputManager;
+	private Rigidbody rigidBody;
+	private PlayerController playerController;
 
 	[Header("Dashing")]
 	[SerializeField] float dashForce;
@@ -30,20 +32,20 @@ public class Dashing : MonoBehaviour
 
 	private void OnEnable()
 	{
-		if (InputManager == null)
-			InputManager = GetComponent<InputManager2>();
-		if (rb == null)
-			rb = GetComponent<Rigidbody>();
-		if (PlayerController)
-			PlayerController = GetComponent<PlayerController>();
+		if (inputManager == null)
+			inputManager = GetComponent<InputManager>();
+		if (rigidBody == null)
+			rigidBody = GetComponent<Rigidbody>();
+		if (playerController)
+			playerController = GetComponent<PlayerController>();
 
-		InputManager.OnDashPressed += Dash;
+		inputManager.OnDashPressed += Dash;
 	}
 
 	private void Start()
 	{
-		rb = GetComponent<Rigidbody>();
-		PlayerController = GetComponent<PlayerController>();
+		rigidBody = GetComponent<Rigidbody>();
+		playerController = GetComponent<PlayerController>();
 	}
 
 	private void FixedUpdate()
@@ -57,8 +59,8 @@ public class Dashing : MonoBehaviour
 		if (dashCdTimer > 0) return;
 		else dashCdTimer = dashCd;
 
-		PlayerController.m_bDashing = true;
-		PlayerController.maxYSpeed = maxDashYSpeed;
+		playerController.m_bDashing = true;
+		playerController.maxYSpeed = maxDashYSpeed;
 
 		Transform forwardT;
 		if (useCameraForward)
@@ -70,7 +72,7 @@ public class Dashing : MonoBehaviour
 		Vector3 forceToApply = direction * dashForce + orientation.up * dashUpwardsForce;
 
 		if (disableGravity)
-			rb.useGravity = false;
+			rigidBody.useGravity = false;
 
 		delayedForceToApply = forceToApply;
 		Invoke(nameof(DelayedDashForce), 0.025f);
@@ -81,19 +83,19 @@ public class Dashing : MonoBehaviour
 	private void DelayedDashForce()
 	{
 		if (resetVel)
-			rb.linearVelocity = Vector3.zero;
+			rigidBody.linearVelocity = Vector3.zero;
 
-		rb.AddForce(delayedForceToApply, ForceMode.Impulse); 
+		rigidBody.AddForce(delayedForceToApply, ForceMode.Impulse); 
 	}
 
 	private void ResetDash()
 	{
-		PlayerController.m_bDashing = false;
-		PlayerController.maxYSpeed = 0;
+		playerController.m_bDashing = false;
+		playerController.maxYSpeed = 0;
 
 
 		if (disableGravity)
-			rb.useGravity = true;
+			rigidBody.useGravity = true;
 
 	}
 

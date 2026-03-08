@@ -1,5 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using Group26.Player.Movement;
+using Group26.Player.Inputs;
 
 namespace Group26.Player.Camera
 {
@@ -11,7 +13,7 @@ namespace Group26.Player.Camera
 
     public class CameraModeManager : MonoBehaviour
     {
-        private InputManager2 playerInput;
+        private InputManager playerInput;
 
         private PlayerController playerController;
 
@@ -50,7 +52,7 @@ namespace Group26.Player.Camera
 
         private void Awake()
         {
-            if (playerInput == null) playerInput = GetComponent<InputManager2>();
+            if (playerInput == null) playerInput = GetComponent<InputManager>();
             if (playerInput == null) Debug.LogError("No input manager found");
             if (playerController == null) playerController = GetComponent<PlayerController>();
             if(playerController == null) Debug.LogError("No player controller found");
