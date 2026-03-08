@@ -7,7 +7,9 @@ public class GrapplingRope : MonoBehaviour
 	private Spring spring;
 	private LineRenderer lr;
 	private Vector3 currentGrapplePosition;
+
 	public SwingGun SwingGun;
+
 	public int quality;
 	public float damper;
 	public float strength;
@@ -15,17 +17,18 @@ public class GrapplingRope : MonoBehaviour
 	public float waveCount;
 	public float waveHeight;
 	public AnimationCurve affectCurve;
-	private PlayerController PlayerController;
 
 	void Awake()
 	{
 		lr = GetComponent<LineRenderer>();
 		spring = new Spring();
 		spring.SetTarget(0);
-		PlayerController = GetComponent<PlayerController>();
+
+		if (SwingGun != null && SwingGun.gunTip != null)
+			currentGrapplePosition = SwingGun.gunTip.position;
 	}
 
-	//Called after Update
+	// Called after Update
 	void LateUpdate()
 	{
 		DrawRope();
@@ -33,13 +36,18 @@ public class GrapplingRope : MonoBehaviour
 
 	void DrawRope()
 	{
-		//If not grappling, don't draw rope
-		if (!PlayerController.m_bActiveSwing)
+		if (SwingGun == null || SwingGun.gunTip == null)
+			return;
+
+		// If not grappling, don't draw rope
+		if (!SwingGun.IsSwinging())
 		{
 			currentGrapplePosition = SwingGun.gunTip.position;
 			spring.Reset();
+
 			if (lr.positionCount > 0)
 				lr.positionCount = 0;
+
 			return;
 		}
 

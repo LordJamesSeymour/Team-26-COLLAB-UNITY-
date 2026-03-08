@@ -26,6 +26,7 @@ public class SwingGun : MonoBehaviour
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
+		swingPoint = gunTip.position;
 	}
 
 	private void OnEnable()
@@ -69,7 +70,7 @@ public class SwingGun : MonoBehaviour
 
 	private void ApplySwingInput()
 	{
-		if (m_vMoveInput == Vector2.zero)
+		if (m_vMoveInput == Vector2.zero || joint == null)
 			return;
 
 		// Forwards
@@ -94,18 +95,25 @@ public class SwingGun : MonoBehaviour
 		}
 	}
 
-
 	private void StartSwing()
 	{
 		GetComponent<Grappling>().ForceStopGrapple();
 		PlayerController.ResetRestrictions();
 
-		PlayerController.m_bActiveSwing = true;
+		// Safety: remove any previous joint reference first
+		if (joint != null)
+		{
+			Destroy(joint);
+			joint = null;
+		}
+
+		PlayerController.m_bActiveSwing = false;
 
 		RaycastHit hit;
 		if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
 		{
 			swingPoint = hit.point;
+
 			joint = player.gameObject.AddComponent<SpringJoint>();
 			joint.autoConfigureConnectedAnchor = false;
 			joint.connectedAnchor = swingPoint;
@@ -118,6 +126,12 @@ public class SwingGun : MonoBehaviour
 			joint.spring = 4.5f;
 			joint.damper = 7f;
 			joint.massScale = 4.5f;
+
+			PlayerController.m_bActiveSwing = true;
+		}
+		else
+		{
+			swingPoint = gunTip.position;
 		}
 	}
 
@@ -126,10 +140,13 @@ public class SwingGun : MonoBehaviour
 		PlayerController.m_bActiveSwing = false;
 		m_bJumping = false;
 		m_vMoveInput = Vector2.zero;
-
+		swingPoint = gunTip.position;
 
 		if (joint != null)
+		{
 			Destroy(joint);
+			joint = null;
+		}
 	}
 
 	public void GetInput(Vector2 inputs)
@@ -150,5 +167,10 @@ public class SwingGun : MonoBehaviour
 	public Vector3 GetSwingPoint()
 	{
 		return swingPoint;
+	}
+
+	public bool IsSwinging()
+	{
+		return joint != null;
 	}
 }
