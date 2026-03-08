@@ -98,9 +98,13 @@ namespace Group26.Player.Camera
 
         private void Update()
         {
+
+
             if(currentCameraMode == CameraMode.FirstPerson)
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
+
+                cameraHolder = firstPersonVirtualCamera.transform; 
 
                 if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
@@ -115,9 +119,26 @@ namespace Group26.Player.Camera
                     DoTilt(0f);
                 }
             }
+
             else if(currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);
+
+                cameraHolder = thirdPersonVirtualCamera.transform;
+
+                if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
+                {
+                    DoTilt(5f);
+                }
+                else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
+                {
+                    DoTilt(-5f);
+                }
+                else
+                {
+                    DoTilt(0f);
+                }
+
                 UpdateBodyFacingDirection();
             }
             
@@ -190,14 +211,14 @@ namespace Group26.Player.Camera
 
         private void BurstFOVIncrease()
         {
-
+            // Going to be for Dashing, but can be used for other burst movements in the future as well 
         }
 
         private void HandleSprintFOV()
         {
             if (playerController == null) return;
             
-            bool isCurrentlySprinting = playerInput.isSprinting && playerController.IsGrounded || playerController.m_bIsWallRunning || playerController.m_bActiveGrapple;
+            bool isCurrentlySprinting = playerInput.isSprinting /*&& playerController.IsGrounded*/ || playerController.m_bIsWallRunning || playerController.m_bActiveGrapple;
             
             // Check if sprint state changed
             if (isCurrentlySprinting != isSprintingLastFrame)
