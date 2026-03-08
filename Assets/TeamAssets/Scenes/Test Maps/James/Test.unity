@@ -1151,29 +1151,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SwingGun: {fileID: 844402662}
-  m_iRopeResolution: 500
-  m_fDamper: 14
-  m_fStrength: 800
-  m_fVelocity: 15
-  m_fWaveCount: 3
-  m_fWaveHeight: 1
-  a_cAffectCurve:
+  quality: 500
+  damper: 14
+  strength: 800
+  velocity: 15
+  waveCount: 3
+  waveHeight: 1
+  affectCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.42367792
-      outSlope: 0.42367792
+      inSlope: 4.65743
+      outSlope: 4.65743
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.10093652
-      value: 0.042764574
-      inSlope: 0.18805611
-      outSlope: 0.18805611
+      time: 0.12799168
+      value: 0.5961123
+      inSlope: 1.9869108
+      outSlope: 1.9869108
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -1181,8 +1181,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -0.04756569
-      outSlope: -0.04756569
+      inSlope: -0.68360853
+      outSlope: -0.68360853
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
