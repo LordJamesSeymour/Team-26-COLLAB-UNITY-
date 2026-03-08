@@ -48,8 +48,8 @@ namespace Group26.Player.Inputs
         
         [HideInInspector] public bool canGrapple;
 
-        [HideInInspector] public bool isSprinting { get; set; }
-        [HideInInspector] public bool isCrouching { get; set; }
+        [HideInInspector] public bool isSprinting;
+        [HideInInspector] public bool isCrouching;
 
         public event Action OnJumpPressed;
         public event Action OnDashPressed;

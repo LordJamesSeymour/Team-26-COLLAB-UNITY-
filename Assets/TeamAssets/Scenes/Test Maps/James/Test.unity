@@ -3679,6 +3679,8 @@ MonoBehaviour:
     m_Bits: 64
   wallCheckDistance: 0.75
   minWallJumpHeight: 1
+  wallLeft: 0
+  wallRight: 0
   exitWallTime: 0.2
   useGravity: 1
   gravityCounterForce: 145
@@ -3732,6 +3734,8 @@ MonoBehaviour:
   cameraSwitchAction: {fileID: -2845367783233132378, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   pauseAction: {fileID: -8206455143520359253, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   canGrapple: 0
+  isSprinting: 0
+  isCrouching: 0
 --- !u!1 &8518270916203985749
 GameObject:
   m_ObjectHideFlags: 0
@@ -3788,6 +3792,7 @@ MonoBehaviour:
   m_cameraPivot: {fileID: 380043459}
   firstPersonVirtualCamera: {fileID: 146705733}
   thirdPersonVirtualCamera: {fileID: 1610333672}
+  cameraHolder: {fileID: 146705732}
   firstPersonLookSensitivity: {x: 14, y: 14}
   thirdPersonLookSensitivity: {x: 14, y: 14}
   currentCameraMode: 1
@@ -3797,6 +3802,10 @@ MonoBehaviour:
   m_thirdPersonPitchLimits: {x: -39.5, y: 40}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 7.5
+  defaultFOV: 60
+  sprintFOV: 75
+  fovTransitionDuration: 0.25
+  burstFOVTime: 0.15
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

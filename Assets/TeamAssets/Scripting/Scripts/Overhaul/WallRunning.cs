@@ -28,8 +28,8 @@ public class WallRunning : MonoBehaviour
     [SerializeField] private float minWallJumpHeight;
     private RaycastHit leftWallHit;
     private RaycastHit rightWallHit;
-    private bool wallLeft;
-    private bool wallRight;
+    [HideInInspector] public bool wallLeft;
+    [HideInInspector] public bool wallRight;
 
     [Header("Exiting Wall Settings")]
     private bool exitingWall;

@@ -1,7 +1,9 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using System.Collections;
 using Group26.Player.Movement;
 using Group26.Player.Inputs;
+using DG.Tweening;
 
 namespace Group26.Player.Camera
 {
@@ -14,8 +16,8 @@ namespace Group26.Player.Camera
     public class CameraModeManager : MonoBehaviour
     {
         private InputManager playerInput;
-
         private PlayerController playerController;
+        private WallRunning wallRunning;
 
         [SerializeField] private Transform m_playerTransform;
         [SerializeField] private Transform m_cameraPivot;
@@ -23,6 +25,8 @@ namespace Group26.Player.Camera
         [Header("Camera References & Settings")]
         [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
         [SerializeField] public CinemachineCamera thirdPersonVirtualCamera;
+
+        [SerializeField] private Transform cameraHolder;
 
         [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
         [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
@@ -49,28 +53,47 @@ namespace Group26.Player.Camera
         [SerializeField, Range(0f, 0.5f)] private float m_bodyTurnSmoothTime = 0.12f;
         [SerializeField, Range(0f, 180f)] private float m_turnWhenCameraYawOffsetExceeds = 25f; // degrees threshold to turn body
 
+        [Header("FOV Settings")]
+        [SerializeField] private float defaultFOV = 60f;
+        [SerializeField] private float sprintFOV = 75f;
+        [SerializeField] private float fovTransitionDuration = 0.25f;
+
+        [SerializeField, Range(0, 1f)] private float burstFOVTime = 0.15f;
+        
+        private bool isSprintingLastFrame = false;
+        private Coroutine fovTransitionCoroutine;
+
 
         private void Awake()
         {
             if (playerInput == null) playerInput = GetComponent<InputManager>();
             if (playerInput == null) Debug.LogError("No input manager found");
+
             if (playerController == null) playerController = GetComponent<PlayerController>();
-            if(playerController == null) Debug.LogError("No player controller found");
+            if (playerController == null) Debug.LogError("No player controller found");
+
+            if (wallRunning == null) wallRunning = GetComponent<WallRunning>();
+            if (wallRunning == null) Debug.LogError("No wall running script found");
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
 
             //currentCameraMode = CameraMode.FirstPerson;
             UpdateCameraMode(currentCameraMode);
+            
+            // Initialize FOV values
+            SetCameraFOV(defaultFOV);
         }
 
         private void OnEnable()
         {
             playerInput.OnCameraSwitchPressed += () => SwitchCameraMode();
+            playerInput.OnDashPressed += BurstFOVIncrease;
         }
         private void OnDisable()
         {
             playerInput.OnCameraSwitchPressed -= () => SwitchCameraMode();
+            playerInput.OnDashPressed -= BurstFOVIncrease;
         }
 
         private void Update()
@@ -78,12 +101,28 @@ namespace Group26.Player.Camera
             if(currentCameraMode == CameraMode.FirstPerson)
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
+
+                if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
+                {
+                    DoTilt(-5f);
+                }
+                else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
+                {
+                    DoTilt(5f);
+                }
+                else
+                {
+                    DoTilt(0f);
+                }
             }
             else if(currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);
                 UpdateBodyFacingDirection();
             }
+            
+            // Check for sprint state changes and update FOV
+            HandleSprintFOV();
         }
 
         private void SwitchCameraMode()
@@ -149,9 +188,96 @@ namespace Group26.Player.Camera
             m_playerTransform.rotation = Quaternion.Euler(0f, newYaw, 0f);
         }
 
-        private void TweenCamera()
+        private void BurstFOVIncrease()
         {
+
+        }
+
+        private void HandleSprintFOV()
+        {
+            if (playerController == null) return;
             
+            bool isCurrentlySprinting = playerInput.isSprinting && playerController.IsGrounded || playerController.m_bIsWallRunning || playerController.m_bActiveGrapple;
+            
+            // Check if sprint state changed
+            if (isCurrentlySprinting != isSprintingLastFrame)
+            {
+                float targetFOV = isCurrentlySprinting ? sprintFOV : defaultFOV;
+                StartFOVTransition(targetFOV);
+                isSprintingLastFrame = isCurrentlySprinting;
+            }
+        }
+        
+        private void StartFOVTransition(float targetFOV)
+        {
+            // Stop any existing FOV transition
+            if (fovTransitionCoroutine != null)
+            {
+                StopCoroutine(fovTransitionCoroutine);
+            }
+            
+            // Start new FOV transition
+            fovTransitionCoroutine = StartCoroutine(TransitionFOV(targetFOV));
+        }
+        
+        private IEnumerator TransitionFOV(float targetFOV)
+        {
+            float startFOV = GetCurrentCameraFOV();
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < fovTransitionDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / fovTransitionDuration;
+                
+                // Use smooth curve for more natural feeling
+                float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+                float currentFOV = Mathf.Lerp(startFOV, targetFOV, smoothProgress);
+                
+                SetCameraFOV(currentFOV);
+                
+                yield return null;
+            }
+            
+            // Ensure we end exactly at target FOV
+            SetCameraFOV(targetFOV);
+            fovTransitionCoroutine = null;
+        }
+        
+        private void SetCameraFOV(float fov)
+        {
+            if (firstPersonVirtualCamera != null && firstPersonVirtualCamera.Lens.FieldOfView != fov)
+            {
+                var lens = firstPersonVirtualCamera.Lens;
+                lens.FieldOfView = fov;
+                firstPersonVirtualCamera.Lens = lens;
+            }
+            
+            if (thirdPersonVirtualCamera != null && thirdPersonVirtualCamera.Lens.FieldOfView != fov)
+            {
+                var lens = thirdPersonVirtualCamera.Lens;
+                lens.FieldOfView = fov;
+                thirdPersonVirtualCamera.Lens = lens;
+            }
+        }
+        
+        private float GetCurrentCameraFOV()
+        {
+            if (currentCameraMode == CameraMode.FirstPerson && firstPersonVirtualCamera != null)
+            {
+                return firstPersonVirtualCamera.Lens.FieldOfView;
+            }
+            else if (currentCameraMode == CameraMode.ThirdPerson && thirdPersonVirtualCamera != null)
+            {
+                return thirdPersonVirtualCamera.Lens.FieldOfView;
+            }
+            
+            return defaultFOV;
+        }
+
+        private void DoTilt(float zTiltAmount)
+        {
+            cameraHolder.transform.DOLocalRotate(new Vector3(0,0, zTiltAmount), 0.25f);
         }
     }
 }
