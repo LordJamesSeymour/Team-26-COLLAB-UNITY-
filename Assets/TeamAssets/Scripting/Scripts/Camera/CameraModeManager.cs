@@ -56,12 +56,15 @@ namespace Group26.Player.Camera
         [Header("FOV Settings")]
         [SerializeField] private float defaultFOV = 60f;
         [SerializeField] private float sprintFOV = 75f;
-        [SerializeField] private float fovTransitionDuration = 0.25f;
-
-        [SerializeField, Range(0, 1f)] private float burstFOVTime = 0.15f;
+        [SerializeField, Range(0f, 0.5f)] private float fovTransitionDuration = 0.25f;
+        
+        [Header("Dash/Burst FOV Settings")]
+        [SerializeField] private float dashFOV = 85f;
+        [SerializeField, Range(0f, 0.25f)] private float burstTransitionDuration;
         
         private bool isSprintingLastFrame = false;
         private Coroutine fovTransitionCoroutine;
+        private Coroutine burstFOVCoroutine;
 
 
         private void Awake()
@@ -128,11 +131,11 @@ namespace Group26.Player.Camera
 
                 if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
-                    DoTilt(5f);
+                    DoTilt(-5f);
                 }
                 else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
                 {
-                    DoTilt(-5f);
+                    DoTilt(5f);
                 }
                 else
                 {
@@ -211,7 +214,61 @@ namespace Group26.Player.Camera
 
         private void BurstFOVIncrease()
         {
-            // Going to be for Dashing, but can be used for other burst movements in the future as well 
+            if(!playerController.m_bDashing) return;
+
+            // Stop any existing burst FOV effect
+            if (burstFOVCoroutine != null)
+            {
+                StopCoroutine(burstFOVCoroutine);
+            }
+            
+            // Start new burst FOV effect
+            burstFOVCoroutine = StartCoroutine(DoBurstFOV());
+        }
+        
+        private IEnumerator DoBurstFOV()
+        {
+            // Store the current FOV to return to
+            float originalFOV = GetCurrentCameraFOV();
+            float elapsedTime = 0f;
+            
+            // Phase 1: Smooth increase to dash FOV over burstTransitionDuration
+            while (elapsedTime < burstTransitionDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / burstTransitionDuration;
+                
+                // Use smooth curve for natural feeling
+                float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+                float currentFOV = Mathf.Lerp(originalFOV, dashFOV, smoothProgress);
+                
+                SetCameraFOV(currentFOV);
+                yield return null;
+            }
+            
+            // Ensure we're exactly at dash FOV
+            SetCameraFOV(dashFOV);
+            
+            // Phase 3: Smooth return to original FOV
+            elapsedTime = 0f;
+            while (elapsedTime < burstTransitionDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / burstTransitionDuration;
+                
+                // Use smooth curve for natural feeling
+                float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+                float currentFOV = Mathf.Lerp(dashFOV, originalFOV, smoothProgress);
+                
+                SetCameraFOV(currentFOV);
+                yield return null;
+            }
+            
+            // Ensure we end exactly at original FOV
+            SetCameraFOV(originalFOV);
+            
+            // Clear the coroutine reference
+            burstFOVCoroutine = null;
         }
 
         private void HandleSprintFOV()

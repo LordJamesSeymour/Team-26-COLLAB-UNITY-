@@ -49,7 +49,7 @@ namespace Group26.Player.Movement
 		[Header("Slope Handling")]
 		[SerializeField] float MaxSlopeAngle = 45f;
 		RaycastHit slopeHit;
-
+		
 		public MovementState state;
 		public enum MovementState 
 		{ 

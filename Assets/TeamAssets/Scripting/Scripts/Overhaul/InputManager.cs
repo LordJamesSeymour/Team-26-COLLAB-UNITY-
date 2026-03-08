@@ -51,6 +51,8 @@ namespace Group26.Player.Inputs
         [HideInInspector] public bool isSprinting;
         [HideInInspector] public bool isCrouching;
 
+        [HideInInspector] public bool isSwinging;
+
         public event Action OnJumpPressed;
         public event Action OnDashPressed;
         public event Action OnGrapplePressed;
@@ -90,6 +92,7 @@ namespace Group26.Player.Inputs
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             SubscribePerformed(pauseAction, HandlePause);
 
+            SubscribeToggled(swingAction, HandleSwingChanged);
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
         }
@@ -106,6 +109,7 @@ namespace Group26.Player.Inputs
 
             UnsubscribeToggled(sprintAction, HandleSprintChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
+            UnsubscribeToggled(swingAction, HandleSwingChanged);
         }
 
         private static Vector2 ReadVector2(InputActionReference reference)
@@ -159,6 +163,19 @@ namespace Group26.Player.Inputs
             else if (context.canceled)
             {
                 isCrouching = false;
+            }
+        }
+
+        private void HandleSwingChanged(InputAction.CallbackContext context)
+        {
+            // This is for toggling the swing state, which is used in the camera mode manager to determine whether to use swing camera settings or not
+            if (context.performed)
+            {
+                isSwinging = true;
+            }
+            else if (context.canceled)
+            {
+                isSwinging = false;
             }
         }
 

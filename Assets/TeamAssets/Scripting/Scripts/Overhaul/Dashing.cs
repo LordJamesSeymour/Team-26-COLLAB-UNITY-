@@ -18,7 +18,7 @@ public class Dashing : MonoBehaviour
 	[SerializeField] float dashDuration;
 
 	[Header("Cooldown")]
-	[SerializeField] float dashCd;
+	[SerializeField, Range(0f, 5f)] float dashCooldown;
 	private float dashCdTimer;
 
 	[Header("Settings")]
@@ -57,7 +57,7 @@ public class Dashing : MonoBehaviour
 	private void Dash()
 	{
 		if (dashCdTimer > 0) return;
-		else dashCdTimer = dashCd;
+		else dashCdTimer = dashCooldown;
 
 		playerController.m_bDashing = true;
 		playerController.maxYSpeed = maxDashYSpeed;
