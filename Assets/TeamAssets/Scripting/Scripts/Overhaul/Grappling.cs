@@ -126,4 +126,9 @@ public class Grappling : MonoBehaviour
 		grappleCooldownTimer = grappleCooldown;
 		lineRenderer.enabled = false;
 	}
+
+	public Vector3 GetGrapplePoint()
+	{
+		return grapplePoint;
+	}
 }

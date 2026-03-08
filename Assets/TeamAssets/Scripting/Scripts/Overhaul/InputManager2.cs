@@ -12,6 +12,7 @@ public class InputManager2 : MonoBehaviour
 	[SerializeField] Dashing playerDash;
 	[SerializeField] CameraController cameraLook;
 	[SerializeField] WallRunning wallRunning;
+	[SerializeField] SwingGun swingingGun;
 
 	[Tooltip("Vector2 - WASD / Left Thumb Stick")]
     [SerializeField] private InputActionReference moveAction;
@@ -19,8 +20,10 @@ public class InputManager2 : MonoBehaviour
 	bool callbacksHooked;
 
 	public event Action OnJumpPressed;
+	public event Action OnJumpRelease;
 	public event Action OnDashPressed;
 	public event Action OnInteractPressed;
+	public event Action OnInteractCanceled;
 
 	//[HideInInspector] public Vector2 MoveInput;
 
@@ -31,6 +34,7 @@ public class InputManager2 : MonoBehaviour
 		if (playerController == null) playerController = GetComponent<PlayerController>();
 		if (playerSlide == null) playerSlide = GetComponent<Sliding>();
 		if (playerGrapple == null) playerGrapple = GetComponent<Grappling>();
+		if (swingingGun == null) swingingGun = GetComponent<SwingGun>();
 	}
 
 	void OnEnable()
@@ -67,11 +71,13 @@ public class InputManager2 : MonoBehaviour
 		playerInputActions.Player.Look.canceled += OnLookCanceled;
 
 		playerInputActions.Player.Jump.performed += OnJump;
-
+		// NEEDS ADDING
+		playerInputActions.Player.Jump.canceled -= OnJumpCanceled;
 
 		playerInputActions.Player.Dash.performed += OnDash;
 		playerInputActions.Player.Interact.performed += OnInteract;
-
+		// NEEDS ADDING
+		playerInputActions.Player.Interact.canceled += OnInteractCancel;
 
 		playerInputActions.Player.Sprint.performed += OnSprint;
 		playerInputActions.Player.Sprint.canceled += OnSprintCanceled;
@@ -95,6 +101,13 @@ public class InputManager2 : MonoBehaviour
 		playerInputActions.Player.Look.canceled -= OnLookCanceled;
 
 		playerInputActions.Player.Jump.performed -= OnJump;
+		// NEEDS ADDING
+		playerInputActions.Player.Jump.canceled -= OnJumpCanceled;
+
+		playerInputActions.Player.Dash.performed -= OnDash;
+		playerInputActions.Player.Interact.performed -= OnInteract;
+		// NEEDS ADDING
+		playerInputActions.Player.Interact.canceled -= OnInteractCancel;
 
 		playerInputActions.Player.Sprint.performed -= OnSprint;
 		playerInputActions.Player.Sprint.canceled -= OnSprintCanceled;
@@ -113,6 +126,8 @@ public class InputManager2 : MonoBehaviour
 		wallRunning.GetInput(v);
 		playerSlide.GetInput(v);
 		playerDash.GetInput(v);
+		// NEEDS ADDING
+		swingingGun.GetInput(v);
 	}
 
 	private void OnMoveCanceled(InputAction.CallbackContext ctx)
@@ -128,6 +143,11 @@ public class InputManager2 : MonoBehaviour
 	{
 		OnJumpPressed?.Invoke();
 	}
+	// NEEDS ADDING
+	private void OnJumpCanceled(InputAction.CallbackContext ctx)
+	{
+		OnJumpRelease?.Invoke();
+	}
 
 	private void OnDash(InputAction.CallbackContext ctx)
 	{
@@ -137,6 +157,12 @@ public class InputManager2 : MonoBehaviour
 	private void OnInteract(InputAction.CallbackContext ctx)
 	{
 		OnInteractPressed?.Invoke();
+	}
+
+	// NEEDS ADDING
+	private void OnInteractCancel(InputAction.CallbackContext ctx)
+	{
+		OnInteractCanceled?.Invoke();
 	}
 
 	private void OnSprint(InputAction.CallbackContext ctx) => playerController.Sprint(true);

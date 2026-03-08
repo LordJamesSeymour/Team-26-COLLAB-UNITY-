@@ -296,6 +296,8 @@ GameObject:
   - component: {fileID: 3960751442372283223}
   - component: {fileID: 3700124328398812999}
   - component: {fileID: 3479261143446780926}
+  - component: {fileID: 197981751904706774}
+  - component: {fileID: 7334632145936771943}
   m_Layer: 0
   m_Name: TempPlayer
   m_TagString: Untagged
@@ -383,8 +385,8 @@ MonoBehaviour:
   Orientation: {fileID: 2158282844565274224}
   CameraHolder: {fileID: 0}
   CameraPos: {fileID: 6501610407929547093}
-  sensX: 0.25
-  sensY: 0.25
+  sensX: 0.1
+  sensY: 0.1
 --- !u!114 &2145192225556803454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,7 +420,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   MaxSlopeAngle: 40
-  state: 0
+  state: 1
+  m_bActiveGrapple: 0
+  m_bFreeze: 0
   m_bSliding: 0
   m_bDashing: 0
   m_bIsGrounded: 0
@@ -498,3 +502,47 @@ MonoBehaviour:
   allowAllDirections: 1
   disableGravity: 1
   resetVel: 1
+--- !u!114 &197981751904706774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324317394534824133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c417f69f252a7d84baa486260ca35733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cam: {fileID: 0}
+  gunTip: {fileID: 0}
+  m_grappableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  lineRenderer: {fileID: 0}
+  maxGrappleDistance: 25
+  grappleDelayTime: 0
+  overshootYAxis: 2
+  missLineTime: 0.25
+  grappleCooldown: 0.25
+--- !u!114 &7334632145936771943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324317394534824133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e50ec245d28d9a4db96fe909e3f6bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InputManager: {fileID: 0}
+  lr: {fileID: 0}
+  gunTip: {fileID: 0}
+  cam: {fileID: 0}
+  player: {fileID: 0}
+  m_lGrappable:
+    serializedVersion: 2
+    m_Bits: 0
+  maxSwingDistance: 25

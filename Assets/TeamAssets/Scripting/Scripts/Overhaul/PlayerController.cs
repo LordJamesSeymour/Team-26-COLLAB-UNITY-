@@ -11,8 +11,13 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float sprintSpeed;
 	[SerializeField] float slideSpeed;
 	[SerializeField] float wallRunSpeed;
-	[SerializeField] float groundDrag;
 	[SerializeField] float dashSpeed;
+
+	// NEEDS ADDING
+	[SerializeField] float swingSpeed;
+	// ++++++++++++
+
+	[SerializeField] float groundDrag;
 	[SerializeField] float dashSpeedChangeFactor;
 
 	public float maxYSpeed;
@@ -51,7 +56,10 @@ public class PlayerController : MonoBehaviour
 	public enum MovementState 
 	{ 
 		freeze,
-		walking, 
+		walking,
+		// NEEDS ADDING
+		swinging,
+		// ++++++++++++
 		sprinting, 
 		crouching, 
 		sliding, 
@@ -61,6 +69,9 @@ public class PlayerController : MonoBehaviour
 	}
 
 	public bool m_bActiveGrapple;
+	// NEEDS ADDING
+	public bool m_bActiveSwing;
+	// ++++++++++++
 	public bool m_bFreeze;
 	public bool m_bSliding;
 	public bool m_bDashing;
@@ -165,6 +176,14 @@ public class PlayerController : MonoBehaviour
 			rb.linearVelocity = Vector3.zero;
 		}
 
+		// NEEDS ADDING
+		else if (m_bActiveSwing)
+		{
+			state = MovementState.swinging;
+			moveSpeed = swingSpeed;
+		}
+		// ++++++++++++
+
 		else if (m_bDashing)
 		{
 			state = MovementState.dashing;
@@ -172,7 +191,7 @@ public class PlayerController : MonoBehaviour
 			speedChangeFactor = dashSpeedChangeFactor;
 		}
 
-		else if(m_bIsWallRunning)
+		else if (m_bIsWallRunning)
 		{
 			state = MovementState.wallRunning;
 			desiredMoveSpeed = wallRunSpeed;
@@ -294,11 +313,16 @@ public class PlayerController : MonoBehaviour
 	{
 		horizontalInput = input.x;
 		verticalInput = input.y;
+
+		Debug.Log("X: " + horizontalInput + " Y: " + verticalInput);
 	}
 
 	private void MovePlayer(bool onSlope)
 	{
 		if (m_bActiveGrapple) return;
+		// NEEDS ADDING
+		if (m_bActiveSwing) return;
+		// ++++++++++++
 
 		if (state == MovementState.dashing) return;
 
