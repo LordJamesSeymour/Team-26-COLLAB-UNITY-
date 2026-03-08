@@ -20,6 +20,11 @@ public class SwingGun : MonoBehaviour
 	[SerializeField] float forwardThrustForce;
 	[SerializeField] float extendedCableSpeed;
 
+	[Header("Prediction")]
+	[SerializeField] RaycastHit predictionHit;
+	[SerializeField] float predictionSphereCastRadius;
+	[SerializeField] Transform predictionPoint;
+
 	private Vector2 m_vMoveInput;
 	private bool m_bJumping;
 
@@ -49,9 +54,9 @@ public class SwingGun : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		// Do nothing unless currently swinging
-		if (joint == null)
-			return;
+		// OMD movement while swinging
+		ApplySwingInput();
+		CheckForSwingPoints();
 
 		// Pull towards swing point while jump is held
 		if (m_bJumping)
@@ -62,10 +67,44 @@ public class SwingGun : MonoBehaviour
 			float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 			joint.maxDistance = distanceFromPoint * 0.8f;
 			joint.minDistance = distanceFromPoint * 0.25f;
-		}
+		}	
+	}
 
-		// OMD movement while swinging
-		ApplySwingInput();
+	void CheckForSwingPoints()
+	{
+		if (joint != null) return;
+
+		RaycastHit sphereCastHit;
+		Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, out sphereCastHit, maxSwingDistance, m_lGrappable);
+
+		RaycastHit raycastHit;
+		Physics.Raycast(cam.position, cam.forward, out raycastHit, maxSwingDistance, m_lGrappable);
+
+
+		Vector3 realHitPoint;
+
+		// Option 1 - Direct hit
+		if (raycastHit.point != Vector3.zero)
+			realHitPoint = raycastHit.point;
+
+		// Option 2 - Indirect (predicted) hit
+		else if (sphereCastHit.point != Vector3.zero)
+			realHitPoint = sphereCastHit.point;
+
+		// Option 3 - Miss
+		else 
+			realHitPoint = Vector3.zero;
+
+		// Real hit point found
+		if(realHitPoint != Vector3.zero)
+		{
+			predictionPoint.gameObject.SetActive(true);
+			predictionPoint.position = realHitPoint;
+		}
+		else 
+			predictionPoint.gameObject.SetActive(false);
+
+		predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 	}
 
 	private void ApplySwingInput()
@@ -97,42 +136,45 @@ public class SwingGun : MonoBehaviour
 
 	private void StartSwing()
 	{
+		if (predictionHit.point == Vector3.zero) return;
+
 		GetComponent<Grappling>().ForceStopGrapple();
 		PlayerController.ResetRestrictions();
 
 		// Safety: remove any previous joint reference first
-		if (joint != null)
-		{
-			Destroy(joint);
-			joint = null;
-		}
+		//if (joint != null)
+		//{
+		//	Destroy(joint);
+		//	joint = null;
+		//}
 
-		PlayerController.m_bActiveSwing = false;
+		PlayerController.m_bActiveSwing = true;
+		swingPoint = predictionHit.point;
+		joint = player.gameObject.AddComponent<SpringJoint>();
+		joint.autoConfigureConnectedAnchor = false;
+		joint.connectedAnchor = swingPoint;
 
-		RaycastHit hit;
-		if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
-		{
-			swingPoint = hit.point;
+		float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
 
-			joint = player.gameObject.AddComponent<SpringJoint>();
-			joint.autoConfigureConnectedAnchor = false;
-			joint.connectedAnchor = swingPoint;
+		joint.maxDistance = distanceFromPoint * 0.8f;
+		joint.minDistance = distanceFromPoint * 0.25f;
 
-			float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
+		joint.spring = 4.5f;
+		joint.damper = 7f;
+		joint.massScale = 4.5f;
 
-			joint.maxDistance = distanceFromPoint * 0.8f;
-			joint.minDistance = distanceFromPoint * 0.25f;
 
-			joint.spring = 4.5f;
-			joint.damper = 7f;
-			joint.massScale = 4.5f;
 
-			PlayerController.m_bActiveSwing = true;
-		}
-		else
-		{
-			swingPoint = gunTip.position;
-		}
+		//RaycastHit hit;
+		//if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
+		//{
+			
+	
+		//}
+		//else
+		//{
+		//	swingPoint = gunTip.position;
+		//}
 	}
 
 	public void StopSwing()
