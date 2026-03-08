@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class WallRunning : MonoBehaviour
 {
-    [Header("Referernces")]
+    [Header("References")]
     public Transform orientation;
     private PlayerController playerController;
     private InputManager2 inputManager;
@@ -64,6 +64,7 @@ public class WallRunning : MonoBehaviour
 
     void FixedUpdate()
     {
+        GetInput(inputManager.MoveInput);
         if (playerController.m_bIsWallRunning) WallRunningMovement();
     }
 
@@ -78,7 +79,7 @@ public class WallRunning : MonoBehaviour
         return !Physics.Raycast(transform.position, Vector3.down, minWallJumpHeight, groundLayer);
     }
 
-    public void GetInput(Vector2 input)
+    private void GetInput(Vector2 input)
 	{
 		horizontalInput = input.x;
 		verticalInput = input.y;

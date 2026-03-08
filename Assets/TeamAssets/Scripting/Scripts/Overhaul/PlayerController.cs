@@ -65,8 +65,8 @@ public class PlayerController : MonoBehaviour
 	public bool m_bSliding;
 	public bool m_bDashing;
 	public bool m_bIsGrounded;
-	public bool m_bSprinting;
-	public bool m_bCrouching;
+	// public bool m_bSprinting;
+	// public bool m_bCrouching;
 	public bool m_bIsWallRunning;
 
 	[SerializeField] Transform orientation;
@@ -100,6 +100,9 @@ public class PlayerController : MonoBehaviour
 
 		m_cPlayerCollider = GetComponentInChildren<Collider>();
 		slidingComp = GetComponent<Sliding>();
+
+		//Vector2 moveInput = inputManager.MoveInput;
+		//GetInput(moveInput);
 	}
 
 	    private void OnEnable()
@@ -116,6 +119,8 @@ public class PlayerController : MonoBehaviour
 	{
 		// Ground check
 		m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
+
+		GetInput(inputManager.MoveInput);
 
 		// Drag only when grounded AND not sliding (sliding should keep momentum)
 
@@ -151,6 +156,8 @@ public class PlayerController : MonoBehaviour
 			MovePlayer(onSlope);
 			SpeedControl(onSlope);
 		}
+
+		Debug.Log($"State: {state}, MoveSpeed: {moveSpeed}, DesiredMoveSpeed: {desiredMoveSpeed}");
 	}
 
 	private MovementState lastState;
@@ -184,12 +191,12 @@ public class PlayerController : MonoBehaviour
 			state = MovementState.sliding;
 			desiredMoveSpeed = slideSpeed;
 		}
-		else if (m_bIsGrounded && m_bCrouching)
+		else if (m_bIsGrounded && inputManager.isCrouching)
 		{
 			state = MovementState.crouching;
 			desiredMoveSpeed = crouchSpeed;
 		}
-		else if (m_bIsGrounded && m_bSprinting)
+		else if (m_bIsGrounded && inputManager.isSprinting)
 		{
 			state = MovementState.sprinting;
 			desiredMoveSpeed = sprintSpeed;
@@ -290,7 +297,7 @@ public class PlayerController : MonoBehaviour
 		return velocityXZ + velocityY;
 	}
 
-	public void GetInput(Vector2 input)
+	private void GetInput(Vector2 input)
 	{
 		horizontalInput = input.x;
 		verticalInput = input.y;
@@ -352,11 +359,11 @@ public class PlayerController : MonoBehaviour
 			rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
 	}
 
-	public void Sprint(bool state) => m_bSprinting = state;
+	public void Sprint(bool state) => inputManager.isSprinting = state;
 
 	public void Crouch(bool state)
 	{
-		m_bCrouching = state;
+		inputManager.isCrouching = state;
 
 		if (state)
 		{

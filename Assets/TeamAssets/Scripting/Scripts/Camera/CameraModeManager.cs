@@ -13,18 +13,19 @@ namespace Group26.Player.Camera
     {
         private InputManager2 playerInput;
 
+        private PlayerController playerController;
+
         [SerializeField] private Transform m_playerTransform;
         [SerializeField] private Transform m_cameraPivot;
 
         [Header("Camera References & Settings")]
-        [SerializeField] private bool switchCameraMode = false; // Just for testing purposes
-        [SerializeField]private CinemachineCamera firstPersonVirtualCamera;
-        [SerializeField] private CinemachineCamera thirdPersonVirtualCamera;
+        [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
+        [SerializeField] public CinemachineCamera thirdPersonVirtualCamera;
 
         [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
         [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
 
-        private CameraMode currentCameraMode = CameraMode.ThirdPerson;
+        public CameraMode currentCameraMode = CameraMode.ThirdPerson;
         private const int activeCameraPriority = 10;
         private const int inactiveCameraPriority = 1;
 
@@ -49,25 +50,29 @@ namespace Group26.Player.Camera
 
         private void Awake()
         {
-            if(playerInput == null) playerInput = GetComponent<InputManager2>();
-            if(playerInput == null) Debug.LogError("No input manager found");
+            if (playerInput == null) playerInput = GetComponent<InputManager2>();
+            if (playerInput == null) Debug.LogError("No input manager found");
+            if (playerController == null) playerController = GetComponent<PlayerController>();
+            if(playerController == null) Debug.LogError("No player controller found");
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
 
-            currentCameraMode = CameraMode.ThirdPerson;
+            //currentCameraMode = CameraMode.FirstPerson;
             UpdateCameraMode(currentCameraMode);
+        }
+
+        private void OnEnable()
+        {
+            playerInput.OnCameraSwitchPressed += () => SwitchCameraMode();
+        }
+        private void OnDisable()
+        {
+            playerInput.OnCameraSwitchPressed -= () => SwitchCameraMode();
         }
 
         private void Update()
         {
-            if (switchCameraMode)
-            {
-                switchCameraMode = false;
-                currentCameraMode = currentCameraMode == CameraMode.FirstPerson ? CameraMode.ThirdPerson : CameraMode.FirstPerson;
-                UpdateCameraMode(currentCameraMode);
-            }
-
             if(currentCameraMode == CameraMode.FirstPerson)
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
@@ -75,7 +80,14 @@ namespace Group26.Player.Camera
             else if(currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);
+                UpdateBodyFacingDirection();
             }
+        }
+
+        private void SwitchCameraMode()
+        {
+            currentCameraMode = currentCameraMode == CameraMode.FirstPerson ? CameraMode.ThirdPerson : CameraMode.FirstPerson;
+            UpdateCameraMode(currentCameraMode);
         }
 
         private void UpdateCameraMode(CameraMode targetCam)
@@ -92,40 +104,40 @@ namespace Group26.Player.Camera
             }
         }
 
-        public void ApplyFirstPersonLook(Vector2 lookInput)
+        private void ApplyFirstPersonLook(Vector2 lookInput)
         {
-            float yawDelta = lookInput.x * firstPersonLookSensitivity.x;
-            float pitchDelta = lookInput.y * firstPersonLookSensitivity.y;
+            float yawDelta = lookInput.x * firstPersonLookSensitivity.x * Time.deltaTime;;
+            float pitchDelta = lookInput.y * firstPersonLookSensitivity.y * Time.deltaTime;;
 
             firstPersonYaw += yawDelta;
-            firstPersonPitch = Mathf.Clamp(firstPersonPitch - pitchDelta, -85f, 85f);
+            firstPersonPitch = Mathf.Clamp(firstPersonPitch - pitchDelta, m_firstPersonPitchLimits.x, m_firstPersonPitchLimits.y);
 
             firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
             firstPersonPitchPivot.localRotation = Quaternion.Euler(firstPersonPitch, 0f, 0f);
         }
 
-        public void ApplyThirdPersonLook(Vector2 lookInput)
+        private void ApplyThirdPersonLook(Vector2 lookInput)
         {
-            // m_yaw += lookInput.x * thirdPersonLookSensitivity.x * Time.deltaTime;
-            // m_pitch -= lookInput.y * thirdPersonLookSensitivity.y * Time.deltaTime;
-            // m_pitch = Mathf.Clamp(m_pitch, m_thirdPersonPitchLimits.x, m_thirdPersonPitchLimits.y);
+            m_yaw += lookInput.x * thirdPersonLookSensitivity.x * Time.deltaTime;
+            m_pitch -= lookInput.y * thirdPersonLookSensitivity.y * Time.deltaTime;
+            m_pitch = Mathf.Clamp(m_pitch, m_thirdPersonPitchLimits.x, m_thirdPersonPitchLimits.y);
 
-            // m_cameraPivot.rotation = Quaternion.Euler(m_pitch, m_yaw, 0f);
+            m_cameraPivot.rotation = Quaternion.Euler(m_pitch, m_yaw, 0f);
         }
 
-        public void UpdateBodyFacingDirection()
+        private void UpdateBodyFacingDirection()
         {
-            // if (currentCameraMode != CameraMode.ThirdPerson) return;
+            if (currentCameraMode != CameraMode.ThirdPerson) return;
             
-            // float targetYaw = m_cameraPivot.eulerAngles.y;
+            float targetYaw = m_cameraPivot.eulerAngles.y;
 
-            // float currentYaw = m_playerTransform.eulerAngles.y;
-            // float yawDifference = Mathf.DeltaAngle(currentYaw, targetYaw);
+            float currentYaw = m_playerTransform.eulerAngles.y;
+            float yawDifference = Mathf.DeltaAngle(currentYaw, targetYaw);
 
-            // if (Mathf.Abs(yawDifference) < m_turnWhenCameraYawOffsetExceeds) return;
+            if (Mathf.Abs(yawDifference) < m_turnWhenCameraYawOffsetExceeds) return;
 
-            // float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref m_bodyYawVel, m_bodyTurnSmoothTime);
-            // m_playerTransform.rotation = Quaternion.Euler(0f, newYaw, 0f);
+            float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref m_bodyYawVel, m_bodyTurnSmoothTime);
+            m_playerTransform.rotation = Quaternion.Euler(0f, newYaw, 0f);
         }
     }
 }

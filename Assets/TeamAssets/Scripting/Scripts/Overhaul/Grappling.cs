@@ -1,27 +1,31 @@
+using Group26.Player.Camera;
 using UnityEngine;
 
 public class Grappling : MonoBehaviour
 {
 	[Header("References")]
 	private InputManager2 InputManager;
-	[SerializeField] Transform Cam;
-	[SerializeField] Transform gunTip;
-	[SerializeField] LayerMask m_grappableLayer;
-	[SerializeField] LineRenderer lineRenderer;
+	private CameraModeManager cameraModeManager;
+	[SerializeField] private Transform firstPersonCam; 
+	[SerializeField] private Transform thirdPersonCam;
+	private Transform Cam;
+	[SerializeField] private Transform gunTip;
+	[SerializeField] private LayerMask m_grappableLayer;
+	[SerializeField] private LineRenderer lineRenderer;
 	private PlayerController PlayerController;
 	private Vector3 grapplePoint;
 
 	[Header("Grappling")]
-	[SerializeField] float maxGrappleDistance;
-	[SerializeField] float grappleDelayTime;
-	[SerializeField] float overshootYAxis;
+	[SerializeField] private float maxGrappleDistance;
+	[SerializeField] private float grappleDelayTime;
+	[SerializeField] private float overshootYAxis;
 
 	[Header("Miss Visual")]
     [Tooltip("How long to show the line when the grapple misses.")]
-    [SerializeField, Range(0f, 1f)] float missLineTime = 0.08f;
+    [SerializeField, Range(0f, 1f)] private float missLineTime = 0.08f;
 
 	[Header("Cooldown")]
-	[SerializeField] float grappleCooldown;
+	[SerializeField] private float grappleCooldown;
 	private float grappleCooldownTimer;
 	private bool m_bGrappling;
 	private int _grappleToken;
@@ -30,16 +34,21 @@ public class Grappling : MonoBehaviour
 	{
 		if (InputManager == null) InputManager = GetComponent<InputManager2>();
 		if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
+		if (cameraModeManager == null) cameraModeManager = GetComponent<CameraModeManager>();
+
+		Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
 	}
 
     void OnEnable()
     {
         InputManager.OnInteractPressed += StartGrapple;
+		InputManager.OnCameraSwitchPressed += () => lineRenderer.enabled = false; // Hide line when switching camera modes, to avoid weird line positions due to camera changes during grapple
     }
 
     void OnDisable()
     {
         InputManager.OnInteractPressed -= StartGrapple;
+		InputManager.OnCameraSwitchPressed -= () => lineRenderer.enabled = false;
 		CancelInvoke();
     }
 
@@ -57,6 +66,8 @@ public class Grappling : MonoBehaviour
 
 	void StartGrapple()
 	{
+		Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+
 		if (grappleCooldownTimer > 0) return;
 		if(m_bGrappling) return;
 

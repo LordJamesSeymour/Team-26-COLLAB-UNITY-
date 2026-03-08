@@ -29,8 +29,12 @@ public class InputManager2 : MonoBehaviour
 
 	[Tooltip("Button - Dash")]
     [SerializeField] private InputActionReference dashAction;
+
     [Tooltip("Button - Interact")]
     [SerializeField] private InputActionReference interactAction;
+
+    [Tooltip("Button - CameraSwitch")]
+    [SerializeField] private InputActionReference cameraSwitchAction;
 
     [Tooltip("Button - Pausing game and triggering UI event")]
     [SerializeField] private InputActionReference pauseAction;
@@ -40,9 +44,14 @@ public class InputManager2 : MonoBehaviour
     
     [HideInInspector] public bool canInteract;
 
+    [HideInInspector] public bool isSprinting { get; set; }
+    [HideInInspector] public bool isCrouching { get; set; }
+
     public event Action OnJumpPressed;
 	public event Action OnDashPressed;
     public event Action OnInteractPressed;
+    public event Action OnCameraSwitchPressed;
+    public event Action OnPausePressed;
 
     void Awake()
     {
@@ -73,10 +82,12 @@ public class InputManager2 : MonoBehaviour
 
         SubscribePerformed(jumpAction, HandleJump);
         SubscribePerformed(interactAction, HandleInteract);
+        SubscribePerformed(dashAction, HandleDash);
+        SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
+        SubscribePerformed(pauseAction, HandlePause);
 
-        SubscribePerformed(jumpAction, HandleJump);
-        SubscribePerformed(jumpAction, HandleJump);
-        SubscribePerformed(jumpAction, HandleJump);
+        SubscribeToggled(sprintAction, HandleSprintChanged);
+        SubscribeToggled(crouchAction, HandleCrouchChanged);
     }
 
     private void UnsubFromPlayerControls()
@@ -85,10 +96,12 @@ public class InputManager2 : MonoBehaviour
 
         UnsubscribePerformed(jumpAction, HandleJump);
         UnsubscribePerformed(interactAction, HandleInteract);
+        UnsubscribePerformed(dashAction, HandleDash);
+        UnsubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
+        UnsubscribePerformed(pauseAction, HandlePause);
 
-        UnsubscribePerformed(jumpAction, HandleJump);
-        UnsubscribePerformed(jumpAction, HandleJump);
-        UnsubscribePerformed(jumpAction, HandleJump);
+        UnsubscribeToggled(sprintAction, HandleSprintChanged);
+        UnsubscribeToggled(crouchAction, HandleCrouchChanged);
     }
 
     private static Vector2 ReadVector2(InputActionReference reference)
@@ -111,6 +124,40 @@ public class InputManager2 : MonoBehaviour
 		OnDashPressed?.Invoke();
 	}
 
+    private void HandleCameraSwitch(InputAction.CallbackContext context)
+    {
+        OnCameraSwitchPressed?.Invoke();
+    }
+
+    private void HandlePause(InputAction.CallbackContext context)
+    {
+        OnPausePressed?.Invoke();
+    }
+
+    private void HandleSprintChanged(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            isSprinting = true;
+        }
+        else if(context.canceled)
+        {
+            isSprinting = false;
+        }
+    }
+
+    private void HandleCrouchChanged(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            isCrouching = true;
+        }
+        else if (context.canceled)
+        {
+            isCrouching = false;
+        }
+    }
+
     private static void SubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
     {
         if(reference == null || reference.action == null) return;
@@ -123,16 +170,18 @@ public class InputManager2 : MonoBehaviour
         reference.action.performed -= actionHandler;
     }
 
-    private void EnableAction(InputActionReference reference)
+    private static void SubscribeToggled(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
     {
         if (reference == null || reference.action == null) return;
-        if (!reference.action.enabled) reference.action.Enable();
+        reference.action.performed += actionHandler;
+        reference.action.canceled += actionHandler;
     }
 
-    private void DisableAction(InputActionReference reference)
+    private static void UnsubscribeToggled(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
     {
-        if(reference == null || reference.action == null) return;
-        if(reference.action.enabled) reference.action.Disable();
+        if (reference == null || reference.action == null) return;
+        reference.action.performed -= actionHandler;
+        reference.action.canceled -= actionHandler;
     }
 }
 
