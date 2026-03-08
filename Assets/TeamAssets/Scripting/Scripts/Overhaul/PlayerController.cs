@@ -16,8 +16,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float dashSpeedChangeFactor;
 
 	public float maxYSpeed;
-
-
 	float moveSpeed;
 	float desiredMoveSpeed;
 	float lastDesiredMoveSpeed;
@@ -205,10 +203,11 @@ public class PlayerController : MonoBehaviour
 		{
 			state = MovementState.air;
 
-			if (desiredMoveSpeed < sprintSpeed)
-				desiredMoveSpeed = walkSpeed;
-			else
-				desiredMoveSpeed = sprintSpeed;
+			// This code breaks momentum after exiting a wallrun, but keeping for now just in case
+			// if (desiredMoveSpeed < sprintSpeed)
+			// 	desiredMoveSpeed = walkSpeed;
+			// else
+			// 	desiredMoveSpeed = sprintSpeed;
 		}
 
 		if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
@@ -437,7 +436,7 @@ public class PlayerController : MonoBehaviour
 			enableMovementOnNextTouch = false;
 			ResetRestrictions();
 
-			GetComponent<Grappling>().StopGrapple();
+			GetComponent<Grappling>().ForceStopGrapple();
 		}
 	}
 

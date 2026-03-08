@@ -695,6 +695,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3240117176549791621, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
+      propertyPath: sensX
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240117176549791621, guid: 7592a48ec6cff7e478ad8f732f7c8bc5, type: 3}
       propertyPath: CameraHolder
       value: 
       objectReference: {fileID: 1667874571}
@@ -836,14 +840,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cam: {fileID: 1149052998}
   gunTip: {fileID: 1130176966}
-  m_lGrappable:
+  m_grappableLayer:
     serializedVersion: 2
     m_Bits: 128
-  lr: {fileID: 1184709180}
+  lineRenderer: {fileID: 1184709180}
   maxGrappleDistance: 25
-  grappleDelayTime: 0.25
+  grappleDelayTime: 0
   overshootYAxis: 2
-  grapplingCd: 1
+  grappleCooldown: 0.25
 --- !u!1 &892888568
 GameObject:
   m_ObjectHideFlags: 0

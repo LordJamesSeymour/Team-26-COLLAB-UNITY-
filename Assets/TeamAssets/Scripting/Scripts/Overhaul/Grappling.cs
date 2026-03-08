@@ -3,76 +3,103 @@ using UnityEngine;
 public class Grappling : MonoBehaviour
 {
 	[Header("References")]
+	private InputManager2 InputManager;
 	[SerializeField] Transform Cam;
 	[SerializeField] Transform gunTip;
-	[SerializeField] LayerMask m_lGrappable;
-	[SerializeField] LineRenderer lr;
+	[SerializeField] LayerMask m_grappableLayer;
+	[SerializeField] LineRenderer lineRenderer;
 	private PlayerController PlayerController;
+	private Vector3 grapplePoint;
 
 	[Header("Grappling")]
 	[SerializeField] float maxGrappleDistance;
 	[SerializeField] float grappleDelayTime;
 	[SerializeField] float overshootYAxis;
 
-	private Vector3 grapplePoint;
+	[Header("Miss Visual")]
+    [Tooltip("How long to show the line when the grapple misses.")]
+    [SerializeField, Range(0f, 1f)] float missLineTime = 0.08f;
 
 	[Header("Cooldown")]
-	[SerializeField] float grapplingCd;
-	private float grapplingCdTimer;
+	[SerializeField] float grappleCooldown;
+	private float grappleCooldownTimer;
 
 	private bool m_bGrappling;
 
-	private InputManager2 InputManager;
+	private int _grappleToken;
 
-
-	private void OnEnable()
+	private void Awake()
 	{
 		if (InputManager == null) InputManager = GetComponent<InputManager2>();
 		if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
-
-		InputManager.OnInteractPressed += StartGrapple;
 	}
 
-	private void LateUpdate()
+    void OnEnable()
+    {
+        InputManager.OnInteractPressed += StartGrapple;
+    }
+
+    void OnDisable()
+    {
+        InputManager.OnInteractPressed -= StartGrapple;
+		CancelInvoke();
+    }
+
+    private void LateUpdate()
 	{
 		if (m_bGrappling)
-			lr.SetPosition(0, gunTip.position);
+			lineRenderer.SetPosition(0, gunTip.position);
 	}
 
 	private void FixedUpdate()
 	{
-		if (grapplingCdTimer > 0)
-			grapplingCdTimer -= Time.deltaTime;
+		if (grappleCooldownTimer > 0)
+			grappleCooldownTimer -= Time.deltaTime;
 	}
 
 	void StartGrapple()
 	{
-		if (grapplingCdTimer > 0) return;
+		if (grappleCooldownTimer > 0) return;
+		if(m_bGrappling) return;
 
 		m_bGrappling = true;
-		Debug.Log(m_bGrappling);
+		_grappleToken++;
+
+		CancelInvoke();
 
 		PlayerController.m_bFreeze = true;
 
-		RaycastHit hit;
-		if (Physics.Raycast(Cam.position, Cam.forward, out hit, maxGrappleDistance, m_lGrappable))
-		{
-			grapplePoint = hit.point;
+        bool didHit = Physics.Raycast(Cam.position, Cam.forward, out RaycastHit hit, maxGrappleDistance, m_grappableLayer);
+        grapplePoint = didHit ? hit.point : (Cam.position + Cam.forward * maxGrappleDistance);
 
-			Invoke(nameof(ExecuteGrapple), grappleDelayTime);
-		}
-		else
-		{
-			grapplePoint = Cam.position + Cam.forward * maxGrappleDistance;
-			Invoke(nameof(StopGrapple), grappleDelayTime);
-		}
+		lineRenderer.enabled = true;
+		lineRenderer.SetPosition(0, gunTip.position);
+		lineRenderer.SetPosition(1, grapplePoint);
 
-		lr.enabled = true;
-		lr.SetPosition(1, grapplePoint);
+		int tokenAtSchedule = _grappleToken;
+
+		if(grappleDelayTime <= 0)
+		{
+			if (didHit) Invoke(nameof(ExecuteGrapple_InvokeWrapper), grappleDelayTime);
+			else
+			{
+				PlayerController.m_bFreeze = false;
+
+            	float t = Mathf.Max(missLineTime, 0.01f); // guarantee at least a frame
+
+            	// Stop after a short visual delay, not grappleDelayTime
+            	Invoke(nameof(StopGrapple_InvokeWrapper), t);
+			}
+		}
 	}
 
-	void ExecuteGrapple()
+	private void ExecuteGrapple_InvokeWrapper() => ExecuteGrapple(_grappleToken);
+	private void StopGrapple_InvokeWrapper() => StopGrapple(_grappleToken);
+
+	void ExecuteGrapple(int token)
 	{
+		if(token != _grappleToken) return;
+
 		PlayerController.m_bFreeze = false;
 
 		Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
@@ -84,17 +111,23 @@ public class Grappling : MonoBehaviour
 
 		PlayerController.JumpToPosition(grapplePoint, highestPointOnArc);
 
-		Invoke(nameof(StopGrapple), 1f);
+		Invoke(nameof(StopGrapple_InvokeWrapper), 1f);
 	}
 
-	public void StopGrapple()
+	public void ForceStopGrapple()
 	{
+		StopGrapple(_grappleToken);
+	}
+
+	private void StopGrapple(int token)
+	{
+		if (token != _grappleToken) return;
+
 		Debug.Log("Stopping Grapple");
+
 		PlayerController.m_bFreeze = false;
-
 		m_bGrappling = false;
-		grapplingCdTimer  = grapplingCd;
-
-		lr.enabled = false;
+		grappleCooldownTimer = grappleCooldown;
+		lineRenderer.enabled = false;
 	}
 }
