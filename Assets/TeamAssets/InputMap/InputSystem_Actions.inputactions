@@ -78,9 +78,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
+                    "name": "Grapple",
                     "type": "Button",
                     "id": "eefce900-7f39-41e3-8e07-a23a170b6eac",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Swing",
+                    "type": "Button",
+                    "id": "e693bb6f-6996-4e35-a763-6300de0c28b4",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -487,7 +496,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Interact",
+                    "action": "Grapple",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -521,6 +530,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1be97324-aa1b-4e1d-9615-da96b6af1897",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

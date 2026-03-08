@@ -156,8 +156,6 @@ public class PlayerController : MonoBehaviour
 			MovePlayer(onSlope);
 			SpeedControl(onSlope);
 		}
-
-		Debug.Log($"State: {state}, MoveSpeed: {moveSpeed}, DesiredMoveSpeed: {desiredMoveSpeed}");
 	}
 
 	private MovementState lastState;

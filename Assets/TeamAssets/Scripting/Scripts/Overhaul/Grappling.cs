@@ -41,13 +41,13 @@ public class Grappling : MonoBehaviour
 
     void OnEnable()
     {
-        InputManager.OnInteractPressed += StartGrapple;
+        InputManager.OnGrapplePressed += StartGrapple;
 		InputManager.OnCameraSwitchPressed += () => lineRenderer.enabled = false; // Hide line when switching camera modes, to avoid weird line positions due to camera changes during grapple
     }
 
     void OnDisable()
     {
-        InputManager.OnInteractPressed -= StartGrapple;
+        InputManager.OnGrapplePressed -= StartGrapple;
 		InputManager.OnCameraSwitchPressed -= () => lineRenderer.enabled = false;
 		CancelInvoke();
     }

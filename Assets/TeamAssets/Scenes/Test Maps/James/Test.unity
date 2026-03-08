@@ -3172,7 +3172,7 @@ GameObject:
   - component: {fileID: 7339066969997968615}
   - component: {fileID: 8747818357469391005}
   m_Layer: 0
-  m_Name: TestPlayer
+  m_Name: PlayerOverhaul
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3471,10 +3471,11 @@ MonoBehaviour:
   crouchAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sprintAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   dashAction: {fileID: 1461705075683647243, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  interactAction: {fileID: -5307849159119217957, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  grappleAction: {fileID: -5307849159119217957, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  swingAction: {fileID: 5909169241875225471, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   cameraSwitchAction: {fileID: -2845367783233132378, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   pauseAction: {fileID: -8206455143520359253, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  canInteract: 0
+  canGrapple: 0
 --- !u!1 &8518270916203985749
 GameObject:
   m_ObjectHideFlags: 0
@@ -3538,8 +3539,8 @@ MonoBehaviour:
   firstPersonYawRoot: {fileID: 1436052211954865031}
   firstPersonPitchPivot: {fileID: 712305927}
   m_thirdPersonPitchLimits: {x: -39.5, y: 40}
-  m_bodyTurnSmoothTime: 0
-  m_turnWhenCameraYawOffsetExceeds: 0
+  m_bodyTurnSmoothTime: 0.1
+  m_turnWhenCameraYawOffsetExceeds: 7.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

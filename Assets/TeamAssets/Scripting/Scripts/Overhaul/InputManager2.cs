@@ -30,8 +30,11 @@ public class InputManager2 : MonoBehaviour
 	[Tooltip("Button - Dash")]
     [SerializeField] private InputActionReference dashAction;
 
-    [Tooltip("Button - Interact")]
-    [SerializeField] private InputActionReference interactAction;
+    [Tooltip("Button - Grapple")]
+    [SerializeField] private InputActionReference grappleAction;
+
+    [Tooltip("Button - Swing")]
+    [SerializeField] private InputActionReference swingAction;
 
     [Tooltip("Button - CameraSwitch")]
     [SerializeField] private InputActionReference cameraSwitchAction;
@@ -42,14 +45,14 @@ public class InputManager2 : MonoBehaviour
     [HideInInspector] public Vector2 MoveInput { get; private set; }
     [HideInInspector] public Vector2 LookInput { get; private set; }
     
-    [HideInInspector] public bool canInteract;
+    [HideInInspector] public bool canGrapple;
 
     [HideInInspector] public bool isSprinting { get; set; }
     [HideInInspector] public bool isCrouching { get; set; }
 
     public event Action OnJumpPressed;
 	public event Action OnDashPressed;
-    public event Action OnInteractPressed;
+    public event Action OnGrapplePressed;
     public event Action OnCameraSwitchPressed;
     public event Action OnPausePressed;
 
@@ -81,7 +84,7 @@ public class InputManager2 : MonoBehaviour
         playerInputActions.Enable();
 
         SubscribePerformed(jumpAction, HandleJump);
-        SubscribePerformed(interactAction, HandleInteract);
+        SubscribePerformed(grappleAction, HandleInteract);
         SubscribePerformed(dashAction, HandleDash);
         SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
         SubscribePerformed(pauseAction, HandlePause);
@@ -95,7 +98,7 @@ public class InputManager2 : MonoBehaviour
         playerInputActions.Disable();
 
         UnsubscribePerformed(jumpAction, HandleJump);
-        UnsubscribePerformed(interactAction, HandleInteract);
+        UnsubscribePerformed(grappleAction, HandleInteract);
         UnsubscribePerformed(dashAction, HandleDash);
         UnsubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
         UnsubscribePerformed(pauseAction, HandlePause);
@@ -116,7 +119,7 @@ public class InputManager2 : MonoBehaviour
 
     private void HandleInteract(InputAction.CallbackContext context)
     {
-        OnInteractPressed?.Invoke();
+        OnGrapplePressed?.Invoke();
     }
 
 	private void HandleDash(InputAction.CallbackContext context)
