@@ -32,8 +32,8 @@ public class SwingGun : MonoBehaviour
 
 	private void OnEnable()
 	{
-		InputManager.OnInteractPressed += StartSwing;
-		InputManager.OnInteractCanceled += StopSwing;
+		InputManager.OnSwingPressed += StartSwing;
+		InputManager.OnSwingRelease += StopSwing;
 
 		InputManager.OnJumpPressed += GetJump;
 		InputManager.OnJumpRelease += StopJump;
@@ -41,8 +41,8 @@ public class SwingGun : MonoBehaviour
 
 	private void OnDisable()
 	{
-		InputManager.OnInteractPressed -= StartSwing;
-		InputManager.OnInteractCanceled -= StopSwing;
+		InputManager.OnSwingPressed -= StartSwing;
+		InputManager.OnSwingRelease -= StopSwing;
 
 		InputManager.OnJumpPressed -= GetJump;
 		InputManager.OnJumpRelease -= StopJump;

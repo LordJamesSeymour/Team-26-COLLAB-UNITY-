@@ -34,12 +34,12 @@ public class Grappling : MonoBehaviour
 
     void OnEnable()
     {
-        InputManager.OnInteractPressed += StartGrapple;
+        InputManager.OnGrapplePressed += StartGrapple;
     }
 
     void OnDisable()
     {
-        InputManager.OnInteractPressed -= StartGrapple;
+        InputManager.OnGrapplePressed -= StartGrapple;
 		CancelInvoke();
     }
 

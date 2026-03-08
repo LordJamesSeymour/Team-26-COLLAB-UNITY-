@@ -22,7 +22,9 @@ public class InputManager2 : MonoBehaviour
 	public event Action OnJumpPressed;
 	public event Action OnJumpRelease;
 	public event Action OnDashPressed;
-	public event Action OnInteractPressed;
+	public event Action OnGrapplePressed;
+	public event Action OnSwingPressed;
+	public event Action OnSwingRelease;
 	public event Action OnInteractCanceled;
 
 	void Awake()
@@ -63,8 +65,10 @@ public class InputManager2 : MonoBehaviour
 
 		playerInputActions.Player.Dash.performed += OnDash;
 
-		playerInputActions.Player.Interact.performed += OnInteract;
-		playerInputActions.Player.Interact.canceled += OnInteractCancel;
+		playerInputActions.Player.Grapple.performed += OnGrapple;
+
+		playerInputActions.Player.Swing.performed += OnSwing;
+		playerInputActions.Player.Swing.canceled += OnSwingCanceled;
 
 		playerInputActions.Player.Sprint.performed += OnSprint;
 		playerInputActions.Player.Sprint.canceled += OnSprintCanceled;
@@ -92,8 +96,10 @@ public class InputManager2 : MonoBehaviour
 
 		playerInputActions.Player.Dash.performed -= OnDash;
 
-		playerInputActions.Player.Interact.performed -= OnInteract;
-		playerInputActions.Player.Interact.canceled -= OnInteractCancel;
+		playerInputActions.Player.Grapple.performed -= OnGrapple;
+
+		playerInputActions.Player.Swing.performed -= OnSwing;
+		playerInputActions.Player.Swing.canceled -= OnSwingCanceled;
 
 		playerInputActions.Player.Sprint.performed -= OnSprint;
 		playerInputActions.Player.Sprint.canceled -= OnSprintCanceled;
@@ -150,14 +156,19 @@ public class InputManager2 : MonoBehaviour
 		OnDashPressed?.Invoke();
 	}
 
-	private void OnInteract(InputAction.CallbackContext ctx)
+	private void OnGrapple(InputAction.CallbackContext ctx)
 	{
-		OnInteractPressed?.Invoke();
+		OnGrapplePressed?.Invoke();
 	}
 
-	private void OnInteractCancel(InputAction.CallbackContext ctx)
+	private void OnSwing(InputAction.CallbackContext ctx)
 	{
-		OnInteractCanceled?.Invoke();
+		OnSwingPressed?.Invoke();
+	}
+
+	private void OnSwingCanceled(InputAction.CallbackContext ctx)
+	{
+		OnSwingRelease?.Invoke();
 	}
 
 	private void OnSprint(InputAction.CallbackContext ctx)
