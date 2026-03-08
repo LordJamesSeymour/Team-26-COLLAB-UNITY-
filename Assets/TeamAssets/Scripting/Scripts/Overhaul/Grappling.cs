@@ -60,6 +60,8 @@ public class Grappling : MonoBehaviour
 		if (grappleCooldownTimer > 0) return;
 		if(m_bGrappling) return;
 
+		GetComponent<SwingGun>().StopSwing();
+
 		m_bGrappling = true;
 		_grappleToken++;
 

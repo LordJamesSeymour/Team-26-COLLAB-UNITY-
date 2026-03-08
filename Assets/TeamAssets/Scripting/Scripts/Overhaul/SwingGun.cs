@@ -4,15 +4,14 @@ public class SwingGun : MonoBehaviour
 {
 	[Header("References")]
 	[SerializeField] InputManager2 InputManager;
-	[SerializeField] LineRenderer lr;
-	[SerializeField] Transform gunTip, cam, player;
+	public Transform gunTip, cam, player;
 	[SerializeField] LayerMask m_lGrappable;
 	[SerializeField] PlayerController PlayerController;
 
 	[Header("Swinging")]
 	[SerializeField] float maxSwingDistance = 25f;
 	private Vector3 swingPoint;
-	private SpringJoint joint;
+	[HideInInspector] public SpringJoint joint;
 
 	[Header("OMDGear")]
 	[SerializeField] Transform Orientation;
@@ -23,7 +22,6 @@ public class SwingGun : MonoBehaviour
 
 	private Vector2 m_vMoveInput;
 	private bool m_bJumping;
-	private Vector3 currentGrapplePosition;
 
 	private void Awake()
 	{
@@ -46,11 +44,6 @@ public class SwingGun : MonoBehaviour
 
 		InputManager.OnJumpPressed -= GetJump;
 		InputManager.OnJumpRelease -= StopJump;
-	}
-
-	private void LateUpdate()
-	{
-		DrawRope();
 	}
 
 	private void FixedUpdate()
@@ -101,19 +94,11 @@ public class SwingGun : MonoBehaviour
 		}
 	}
 
-	private void DrawRope()
-	{
-		if (!joint) return;
-
-		currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, swingPoint, Time.deltaTime * 8f);
-
-		lr.SetPosition(0, gunTip.position);
-		lr.SetPosition(1, swingPoint);
-	}
 
 	private void StartSwing()
 	{
-		Debug.Log("Fire");
+		GetComponent<Grappling>().ForceStopGrapple();
+		PlayerController.ResetRestrictions();
 
 		PlayerController.m_bActiveSwing = true;
 
@@ -133,21 +118,15 @@ public class SwingGun : MonoBehaviour
 			joint.spring = 4.5f;
 			joint.damper = 7f;
 			joint.massScale = 4.5f;
-
-			lr.positionCount = 2;
-			currentGrapplePosition = gunTip.position;
 		}
 	}
 
-	private void StopSwing()
+	public void StopSwing()
 	{
-		Debug.Log("Unfire");
-
 		PlayerController.m_bActiveSwing = false;
 		m_bJumping = false;
 		m_vMoveInput = Vector2.zero;
 
-		lr.positionCount = 0;
 
 		if (joint != null)
 			Destroy(joint);
@@ -166,5 +145,10 @@ public class SwingGun : MonoBehaviour
 	private void StopJump()
 	{
 		m_bJumping = false;
+	}
+
+	public Vector3 GetSwingPoint()
+	{
+		return swingPoint;
 	}
 }
