@@ -54,9 +54,11 @@ public class SwingGun : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		// OMD movement while swinging
-		ApplySwingInput();
 		CheckForSwingPoints();
+
+		// Only run actual swing physics if a swing joint exists
+		if (joint == null)
+			return;
 
 		// Pull towards swing point while jump is held
 		if (m_bJumping)
@@ -67,7 +69,10 @@ public class SwingGun : MonoBehaviour
 			float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 			joint.maxDistance = distanceFromPoint * 0.8f;
 			joint.minDistance = distanceFromPoint * 0.25f;
-		}	
+		}
+
+		// OMD movement while swinging
+		ApplySwingInput();
 	}
 
 	void CheckForSwingPoints()
