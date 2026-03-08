@@ -2088,7 +2088,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.05
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 0
@@ -2116,8 +2116,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226302151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.5, z: 0.5137051}
+  m_LocalRotation: {x: 0.13052596, y: 0, z: 0, w: 0.99144495}
+  m_LocalPosition: {x: 1.5, y: 7.63, z: -5.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2147,14 +2147,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363824946}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.13052596, y: -0, z: -0, w: 0.99144495}
+  m_LocalPosition: {x: 1.5, y: 3.65, z: -5.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1610333671}
   m_Father: {fileID: 380043459}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
 --- !u!1 &1534821049
 GameObject:
   m_ObjectHideFlags: 0
@@ -2321,8 +2321,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610333670}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13917309, y: -0, z: -0, w: 0.9902681}
-  m_LocalPosition: {x: 1.25, y: 3, z: -5.1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2342,7 +2342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Priority:
     Enabled: 1
-    m_Value: 10
+    m_Value: 11
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -3527,7 +3527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5ca2dff7a7311a46b403cfb75dbd94d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerTransform: {fileID: 5215882891692540265}
+  m_playerTransform: {fileID: 1436052211954865031}
   m_cameraPivot: {fileID: 380043459}
   firstPersonVirtualCamera: {fileID: 146705733}
   thirdPersonVirtualCamera: {fileID: 1610333672}
@@ -3538,8 +3538,8 @@ MonoBehaviour:
   firstPersonYawRoot: {fileID: 1436052211954865031}
   firstPersonPitchPivot: {fileID: 712305927}
   m_thirdPersonPitchLimits: {x: -39.5, y: 40}
-  m_bodyTurnSmoothTime: 0.1
-  m_turnWhenCameraYawOffsetExceeds: 10
+  m_bodyTurnSmoothTime: 0
+  m_turnWhenCameraYawOffsetExceeds: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

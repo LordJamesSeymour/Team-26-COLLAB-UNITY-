@@ -94,11 +94,18 @@ namespace Group26.Player.Camera
         {
             if(targetCam == CameraMode.FirstPerson)
             {
+                firstPersonYaw = m_cameraPivot.eulerAngles.y;
+                firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
+
                 firstPersonVirtualCamera.Priority = activeCameraPriority;
                 thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
             }
             else
             {
+                // Sync TP yaw to current FP yaw (or player yaw) when entering TP
+                m_yaw = firstPersonYawRoot.eulerAngles.y;
+                m_pitch = Mathf.Clamp(m_pitch, m_thirdPersonPitchLimits.x, m_thirdPersonPitchLimits.y);
+
                 firstPersonVirtualCamera.Priority = inactiveCameraPriority;
                 thirdPersonVirtualCamera.Priority = activeCameraPriority;
             }
@@ -138,6 +145,11 @@ namespace Group26.Player.Camera
 
             float newYaw = Mathf.SmoothDampAngle(currentYaw, targetYaw, ref m_bodyYawVel, m_bodyTurnSmoothTime);
             m_playerTransform.rotation = Quaternion.Euler(0f, newYaw, 0f);
+        }
+
+        private void TweenCamera()
+        {
+            
         }
     }
 }
