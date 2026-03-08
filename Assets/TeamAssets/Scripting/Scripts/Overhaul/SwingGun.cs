@@ -2,19 +2,17 @@ using UnityEngine;
 
 public class SwingGun : MonoBehaviour
 {
-	[Header ("References")]
+	[Header("References")]
 	[SerializeField] InputManager2 InputManager;
 	[SerializeField] LineRenderer lr;
 	[SerializeField] Transform gunTip, cam, player;
 	[SerializeField] LayerMask m_lGrappable;
 	[SerializeField] PlayerController PlayerController;
 
-
 	[Header("Swinging")]
 	[SerializeField] float maxSwingDistance = 25f;
 	private Vector3 swingPoint;
 	private SpringJoint joint;
-
 
 	[Header("OMDGear")]
 	[SerializeField] Transform Orientation;
@@ -23,12 +21,16 @@ public class SwingGun : MonoBehaviour
 	[SerializeField] float forwardThrustForce;
 	[SerializeField] float extendedCableSpeed;
 
+	private Vector2 m_vMoveInput;
+	private bool m_bJumping;
+	private Vector3 currentGrapplePosition;
+
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		InputManager.OnInteractPressed += StartSwing;
 		InputManager.OnInteractCanceled += StopSwing;
@@ -37,15 +39,15 @@ public class SwingGun : MonoBehaviour
 		InputManager.OnJumpRelease += StopJump;
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		InputManager.OnInteractPressed -= StartSwing;
 		InputManager.OnInteractCanceled -= StopSwing;
 
 		InputManager.OnJumpPressed -= GetJump;
-
-		CancelInvoke();
+		InputManager.OnJumpRelease -= StopJump;
 	}
+
 	private void LateUpdate()
 	{
 		DrawRope();
@@ -53,20 +55,53 @@ public class SwingGun : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		// Do nothing unless currently swinging
+		if (joint == null)
+			return;
+
+		// Pull towards swing point while jump is held
 		if (m_bJumping)
 		{
 			Vector3 directionToPoint = swingPoint - transform.position;
-			rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
+			rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.fixedDeltaTime);
 
 			float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
 			joint.maxDistance = distanceFromPoint * 0.8f;
 			joint.minDistance = distanceFromPoint * 0.25f;
 		}
+
+		// OMD movement while swinging
+		ApplySwingInput();
 	}
 
-	private Vector3 currentGrapplePosition;
-	void DrawRope()
+	private void ApplySwingInput()
+	{
+		if (m_vMoveInput == Vector2.zero)
+			return;
+
+		// Forwards
+		if (m_vMoveInput.y > 0f)
+			rb.AddForce(Orientation.forward * forwardThrustForce * Time.fixedDeltaTime);
+
+		// Left
+		if (m_vMoveInput.x < 0f)
+			rb.AddForce(-Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+
+		// Right
+		if (m_vMoveInput.x > 0f)
+			rb.AddForce(Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+
+		// Backwards (extend cable)
+		if (m_vMoveInput.y < 0f)
+		{
+			float extendDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendedCableSpeed;
+
+			joint.maxDistance = extendDistanceFromPoint * 0.8f;
+			joint.minDistance = extendDistanceFromPoint * 0.25f;
+		}
+	}
+
+	private void DrawRope()
 	{
 		if (!joint) return;
 
@@ -92,11 +127,9 @@ public class SwingGun : MonoBehaviour
 
 			float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
 
-			// The distance grapple will attempt to keep from the grapple point
 			joint.maxDistance = distanceFromPoint * 0.8f;
 			joint.minDistance = distanceFromPoint * 0.25f;
 
-			// Customizable values
 			joint.spring = 4.5f;
 			joint.damper = 7f;
 			joint.massScale = 4.5f;
@@ -106,54 +139,31 @@ public class SwingGun : MonoBehaviour
 		}
 	}
 
-	void StopSwing()
+	private void StopSwing()
 	{
 		Debug.Log("Unfire");
 
 		PlayerController.m_bActiveSwing = false;
+		m_bJumping = false;
+		m_vMoveInput = Vector2.zero;
+
 		lr.positionCount = 0;
-		Destroy(joint);
+
+		if (joint != null)
+			Destroy(joint);
 	}
 
-	public void GetInput(Vector2 Inputs)
+	public void GetInput(Vector2 inputs)
 	{
-		// OMD Movement style for swinging:
-		
-		while (Inputs != new Vector2(0, 0))
-		{
-			//  Forwards
-			if (Inputs.y != 0 && Inputs.y > 0)
-				rb.AddForce(Orientation.right * forwardThrustForce * Time.deltaTime);
-			// Debug.Log("Forwards");
-
-			//  Left
-			if (Inputs.x != 0 && Inputs.x < 0)
-				rb.AddForce(-Orientation.right * horizontalThrustForce * Time.deltaTime);
-			// Debug.Log("Left");
-
-			//  Right
-			if (Inputs.x != 0 && Inputs.x > 0)
-				rb.AddForce(Orientation.right * horizontalThrustForce * Time.deltaTime);
-			// Debug.Log("Right");
-
-			//  Backwards (EXTEND CABLE)
-			if (Inputs.y != 0 && Inputs.y < 0)
-			{
-				float extendDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendedCableSpeed;
-
-				joint.maxDistance = extendDistanceFromPoint * 0.8f;
-				joint.minDistance = extendDistanceFromPoint * 0.25f;
-			}
-		}
+		m_vMoveInput = inputs;
 	}
 
-	private bool m_bJumping;
-	void GetJump()
+	private void GetJump()
 	{
 		m_bJumping = true;
 	}
 
-	void StopJump()
+	private void StopJump()
 	{
 		m_bJumping = false;
 	}
