@@ -48,8 +48,6 @@ public class InputManager : MonoBehaviour
 
 		playerInputActions.Player.Jump.performed += Jump;
 		playerInputActions.Player.Jump.canceled += JumpCanceled;
-
-		playerInputActions.Player.Interact.performed += Interact;
 	}
 
 	private void Jump(InputAction.CallbackContext context)
@@ -72,10 +70,5 @@ public class InputManager : MonoBehaviour
 	private void SprintCanceled(InputAction.CallbackContext context)
 	{
 		playerLocomotion.PlayerSprint(false);
-	}
-
-	private void Interact(InputAction.CallbackContext context)
-	{
-		// TO DO:
 	}
 }
