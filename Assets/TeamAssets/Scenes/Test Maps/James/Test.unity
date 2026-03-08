@@ -3346,13 +3346,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 5211803741132476519}
-  playerSlide: {fileID: 7162448982173135950}
-  playerGrapple: {fileID: 0}
-  playerDash: {fileID: 7339066969997968615}
-  cameraLook: {fileID: 8747818357469391004}
-  wallRunning: {fileID: 7406222836156794974}
   moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  crouchAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  sprintAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  dashAction: {fileID: 1461705075683647243, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  interactAction: {fileID: -5307849159119217957, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pauseAction: {fileID: -8206455143520359253, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  canInteract: 0
 --- !u!1 &8518270916203985749
 GameObject:
   m_ObjectHideFlags: 0
