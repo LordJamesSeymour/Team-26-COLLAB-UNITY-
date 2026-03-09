@@ -1,32 +1,39 @@
 using UnityEngine;
 using Group26.Player.Inputs;
+using Group26.Player.Camera;
 
 namespace Group26.Player.Movement
 {
     public class SwingGun : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private InputManager inputManager;
-        public Transform gunTip, cam, player;
+        private InputManager inputManager;
+        private CameraModeManager cameraModeManager;
+        
+        [SerializeField] private Transform firstPersonCam; 
+		[SerializeField] private Transform thirdPersonCam;
+		private Transform Cam;
+        public Transform gunTip;
+        [SerializeField] private Transform player;
         [SerializeField] private LayerMask m_GrappableLayer;
         private PlayerController playerController;
 
         [Header("Swinging")]
-        [SerializeField] float maxSwingDistance = 25f;
+        [SerializeField] private float maxSwingDistance = 25f;
         private Vector3 swingPoint;
         [HideInInspector] public SpringJoint joint;
 
         [Header("OMDGear")]
-        [SerializeField] Transform Orientation;
+        [SerializeField] private Transform Orientation;
         private Rigidbody rigidBody;
-        [SerializeField] float horizontalThrustForce;
-        [SerializeField] float forwardThrustForce;
-        [SerializeField] float extendedCableSpeed;
+        [SerializeField] private float horizontalThrustForce;
+        [SerializeField] private float forwardThrustForce;
+        [SerializeField] private float extendedCableSpeed;
 
         [Header("Prediction")]
-        [SerializeField] RaycastHit predictionHit;
-        [SerializeField] float predictionSphereCastRadius;
-        [SerializeField] Transform predictionPoint;
+        [SerializeField] private RaycastHit predictionHit;
+        [SerializeField] private float predictionSphereCastRadius;
+        [SerializeField] private Transform predictionPoint;
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -35,6 +42,8 @@ namespace Group26.Player.Movement
         {
             rigidBody = GetComponent<Rigidbody>();
             playerController = GetComponent<PlayerController>();
+            inputManager = GetComponent<InputManager>();
+            cameraModeManager = GetComponent<CameraModeManager>();
             if(rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
@@ -61,6 +70,7 @@ namespace Group26.Player.Movement
 
         private void FixedUpdate()
         {
+            GetInput(inputManager.MoveInput);
             CheckForSwingPoints();
 
             // Only run actual swing physics if a swing joint exists
@@ -85,11 +95,13 @@ namespace Group26.Player.Movement
         {
             if (joint != null) return;
 
+            Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+
             RaycastHit sphereCastHit;
-            Physics.SphereCast(cam.position, predictionSphereCastRadius, cam.forward, out sphereCastHit, maxSwingDistance, m_GrappableLayer);
+            Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_GrappableLayer);
 
             RaycastHit raycastHit;
-            Physics.Raycast(cam.position, cam.forward, out raycastHit, maxSwingDistance, m_GrappableLayer);
+            Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_GrappableLayer);
 
 
             Vector3 realHitPoint;
@@ -202,7 +214,7 @@ namespace Group26.Player.Movement
             }
         }
 
-        public void GetInput(Vector2 inputs)
+        private void GetInput(Vector2 inputs)
         {
             m_vMoveInput = inputs;
         }

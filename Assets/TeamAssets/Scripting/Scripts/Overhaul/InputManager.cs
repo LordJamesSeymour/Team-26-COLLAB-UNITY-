@@ -174,10 +174,12 @@ namespace Group26.Player.Inputs
             // This is for toggling the swing state, which is used in the camera mode manager to determine whether to use swing camera settings or not
             if (context.performed)
             {
+                OnSwingStarted?.Invoke();
                 isSwinging = true;
             }
             else if (context.canceled)
             {
+                OnSwingStopped?.Invoke();
                 isSwinging = false;
             }
         }

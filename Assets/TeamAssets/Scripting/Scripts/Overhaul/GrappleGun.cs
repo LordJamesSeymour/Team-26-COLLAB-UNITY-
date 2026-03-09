@@ -72,7 +72,7 @@ namespace Group26.Player.Movement
 			if (grappleCooldownTimer > 0)
 				grappleCooldownTimer -= Time.deltaTime;
 
-			//CheckForGrapplePoints();
+			CheckForGrapplePoints();
 		}
 
 		private void CheckForGrapplePoints()

@@ -26,7 +26,7 @@ namespace Group26.Player.Camera
         [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
         [SerializeField] public CinemachineCamera thirdPersonVirtualCamera;
 
-        [SerializeField] private Transform cameraHolder;
+        private Transform cameraHolder;
 
         [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
         [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
