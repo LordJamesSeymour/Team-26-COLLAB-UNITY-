@@ -1,13 +1,17 @@
-using Group26.Player.Locomotion;
+using Group26.Player.Inputs;
+using Group26.Player.Movement;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SlopeMomentum : MonoBehaviour
 {
-    private PlayerLocomotion m_locomotionScript;
+    private PlayerController m_movementScript;
     private float m_startSpeed;
     private int m_stopCheck;
+    //private Rigidbody m_rigidbody;
+    //private InputManager m_inputManager;
     //private bool m_onSlope;
 
     public float m_momentum;
@@ -21,11 +25,15 @@ public class SlopeMomentum : MonoBehaviour
 
     private void Awake()
     {
-        m_locomotionScript = GetComponent<PlayerLocomotion>();
-        if (!m_locomotionScript)
+        //m_rigidbody = GetComponent<Rigidbody>();
+        //if (!m_rigidbody)
+        //    Debug.LogError("No rigidbody attached to this object");
+
+        m_movementScript = GetComponent<PlayerController>();
+        if (!m_movementScript)
             Debug.LogError("no player locomotion script attached to this object");
         else
-            m_startSpeed = m_locomotionScript.moveSpeed;
+            m_startSpeed = m_movementScript.moveSpeed;
     }
 
     private IEnumerator SlowDown()
@@ -33,9 +41,9 @@ public class SlopeMomentum : MonoBehaviour
         switch (m_stopCheck)
         {
             case 0:
-                m_locomotionScript.moveSpeed = m_startSpeed;
+                m_movementScript.moveSpeed = m_startSpeed;
                 m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
-                m_locomotionScript.moveSpeed += m_momentum;
+                m_movementScript.moveSpeed += m_momentum;
                 m_stopCheck = 1;
                 break;
             default:
@@ -68,17 +76,17 @@ public class SlopeMomentum : MonoBehaviour
     {
         //Debug.Log(m_onSlope);
         //Debug.Log(m_locomotionScript.GetDirection());
-        Debug.Log(m_locomotionScript.moveSpeed);
+        Debug.Log(m_movementScript.moveSpeed);
         Debug.Log(m_momentum);
 
-        if (m_locomotionScript.OnSlope() &&  m_momentum < m_maxMomentum && m_locomotionScript.GetDirection().z >= 0.95)
+        if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95)
         {
             m_stopCheck = 0;
             m_momentum += m_speedIncreaseFactor;
         }
-        else if(m_locomotionScript.GetDirection() == Vector3.zero)
+        else if(m_movementScript.GetDirection() == Vector3.zero)
         {
-            if(m_locomotionScript.moveSpeed > m_startSpeed && m_momentum > m_minMomentum)
+            if(m_movementScript.moveSpeed > m_startSpeed && m_momentum > m_minMomentum)
             {
                 StartCoroutine(SlowDown());
             }

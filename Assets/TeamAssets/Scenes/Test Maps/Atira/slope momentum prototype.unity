@@ -1222,7 +1222,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_momentum: 0
   m_maxMomentum: 2
+  m_minMomentum: 0
   m_speedIncreaseFactor: 0.5
+  m_slowDownFactor: 0.02
+  m_playerStats_SO: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
 --- !u!1 &1323368463
 GameObject:
   m_ObjectHideFlags: 0
