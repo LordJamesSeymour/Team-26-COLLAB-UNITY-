@@ -57,6 +57,7 @@ namespace Group26.Player.Inputs
         public event Action OnJumpRelease;
         public event Action OnDashPressed;
         public event Action OnGrapplePressed;
+        public event Action OnGrappleStopped;
         public event Action OnSwingStarted;
         public event Action OnSwingStopped;
         public event Action OnCameraSwitchPressed;
@@ -90,7 +91,7 @@ namespace Group26.Player.Inputs
             playerInputActions.Enable();
 
             SubscribePerformed(jumpAction, HandleJump);
-            SubscribePerformed(grappleAction, HandleInteract);
+            SubscribeToggled(grappleAction, HandleInteract);
             SubscribePerformed(dashAction, HandleDash);
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             SubscribePerformed(pauseAction, HandlePause);
@@ -105,7 +106,7 @@ namespace Group26.Player.Inputs
             playerInputActions.Disable();
 
             UnsubscribePerformed(jumpAction, HandleJump);
-            UnsubscribePerformed(grappleAction, HandleInteract);
+            UnsubscribeToggled(grappleAction, HandleInteract);
             UnsubscribePerformed(dashAction, HandleDash);
             UnsubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             UnsubscribePerformed(pauseAction, HandlePause);
@@ -127,7 +128,14 @@ namespace Group26.Player.Inputs
 
         private void HandleInteract(InputAction.CallbackContext context)
         {
-            OnGrapplePressed?.Invoke();
+            if (context.performed)
+            {
+                OnGrapplePressed?.Invoke();
+            }
+            else if (context.canceled)
+            {
+                OnGrappleStopped?.Invoke();
+            }
         }
 
         private void HandleDash(InputAction.CallbackContext context)

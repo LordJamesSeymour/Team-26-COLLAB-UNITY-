@@ -107,9 +107,9 @@ namespace Group26.Player.Camera
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
 
-                cameraHolder = firstPersonVirtualCamera.transform; 
+                cameraHolder = firstPersonVirtualCamera.transform;
 
-                if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
+                if (playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
                     DoTilt(-5f);
                 }
@@ -129,7 +129,7 @@ namespace Group26.Player.Camera
 
                 cameraHolder = thirdPersonVirtualCamera.transform;
 
-                if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
+                if (playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
                     DoTilt(-5f);
                 }

@@ -51,13 +51,15 @@ namespace Group26.Player.Movement
 		void OnEnable()
 		{
 			InputManager.OnGrapplePressed += StartGrapple;
-			InputManager.OnCameraSwitchPressed += () => lineRenderer.enabled = false; // Hide line when switching camera modes, to avoid weird line positions due to camera changes during grapple
+            InputManager.OnGrappleStopped += ForceStopGrapple;
+            InputManager.OnCameraSwitchPressed += () => lineRenderer.enabled = false; // Hide line when switching camera modes, to avoid weird line positions due to camera changes during grapple
 		}
 
 		void OnDisable()
 		{
 			InputManager.OnGrapplePressed -= StartGrapple;
-			InputManager.OnCameraSwitchPressed -= () => lineRenderer.enabled = false;
+            InputManager.OnGrappleStopped -= ForceStopGrapple;
+            InputManager.OnCameraSwitchPressed -= () => lineRenderer.enabled = false;
 			CancelInvoke();
 		}
 
@@ -142,8 +144,6 @@ namespace Group26.Player.Movement
 
 			CancelInvoke();
 
-			PlayerController.m_bFreeze = true;
-
 			// bool didHit = Physics.Raycast(Cam.position, Cam.forward, out RaycastHit hit, maxGrappleDistance, m_grappableLayer);
 			// grapplePoint = didHit ? hit.point : (Cam.position + Cam.forward * maxGrappleDistance);
 
@@ -180,7 +180,10 @@ namespace Group26.Player.Movement
 
 		void ExecuteGrapple(int token)
 		{
-			if(token != _grappleToken) return;
+			if(!m_bGrappling) return;
+            PlayerController.m_bFreeze = true;
+
+            if (token != _grappleToken) return;
 
 			PlayerController.m_bFreeze = false;
 

@@ -55,7 +55,7 @@ namespace Group26.Player.Movement
 				dashCdTimer -= Time.deltaTime;
 		}
 
-		private void Dash()
+		public void Dash()
 		{
 			if (dashCdTimer > 0) return;
 			else dashCdTimer = dashCooldown;
