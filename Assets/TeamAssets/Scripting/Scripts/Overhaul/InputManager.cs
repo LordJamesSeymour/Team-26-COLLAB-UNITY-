@@ -54,8 +54,11 @@ namespace Group26.Player.Inputs
         [HideInInspector] public bool isSwinging;
 
         public event Action OnJumpPressed;
+        public event Action OnJumpRelease;
         public event Action OnDashPressed;
         public event Action OnGrapplePressed;
+        public event Action OnSwingStarted;
+        public event Action OnSwingStopped;
         public event Action OnCameraSwitchPressed;
         public event Action OnPausePressed;
 
@@ -91,10 +94,10 @@ namespace Group26.Player.Inputs
             SubscribePerformed(dashAction, HandleDash);
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             SubscribePerformed(pauseAction, HandlePause);
-
-            SubscribeToggled(swingAction, HandleSwingChanged);
+            
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
+            SubscribeToggled(swingAction, HandleSwingChanged);
         }
 
         private void UnsubFromPlayerControls()

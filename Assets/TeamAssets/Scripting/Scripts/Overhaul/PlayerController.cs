@@ -16,6 +16,7 @@ namespace Group26.Player.Movement
 		[SerializeField] float wallRunSpeed;
 		[SerializeField] float groundDrag;
 		[SerializeField] float dashSpeed;
+		[SerializeField] float swingSpeed;
 		[SerializeField] float dashSpeedChangeFactor;
 
 		public float maxYSpeed;
@@ -59,17 +60,17 @@ namespace Group26.Player.Movement
 			crouching, 
 			sliding, 
 			air,
+			swinging,
 			wallRunning, 
 			dashing
 		}
 
 		public bool m_bActiveGrapple;
+		public bool m_bActiveSwing;
 		public bool m_bFreeze;
 		public bool m_bSliding;
 		public bool m_bDashing;
 		public bool m_bIsGrounded;
-		// public bool m_bSprinting;
-		// public bool m_bCrouching;
 		public bool m_bIsWallRunning;
 
 		[SerializeField] Transform orientation;
@@ -178,6 +179,12 @@ namespace Group26.Player.Movement
 				state = MovementState.dashing;
 				desiredMoveSpeed = dashSpeed;
 				speedChangeFactor = dashSpeedChangeFactor;
+			}
+
+			else if (m_bActiveSwing)
+			{
+				state = MovementState.swinging;
+				moveSpeed = swingSpeed;
 			}
 
 			else if(m_bIsWallRunning)
@@ -307,8 +314,8 @@ namespace Group26.Player.Movement
 		private void MovePlayer(bool onSlope)
 		{
 			if (m_bActiveGrapple) return;
-
-			if (state == MovementState.dashing) return;
+			if (m_bActiveSwing) return;
+			if (m_bDashing) return;
 
 			moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -444,7 +451,7 @@ namespace Group26.Player.Movement
 				enableMovementOnNextTouch = false;
 				ResetRestrictions();
 
-				GetComponent<Grappling>().ForceStopGrapple();
+				GetComponent<GrappleGun>().ForceStopGrapple();
 			}
 		}
 

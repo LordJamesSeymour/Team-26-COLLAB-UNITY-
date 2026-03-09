@@ -4,7 +4,7 @@ using Group26.Player.Inputs;
 
 namespace Group26.Player.Movement
 {
-	public class Grappling : MonoBehaviour
+	public class GrappleGun : MonoBehaviour
 	{
 		[Header("References")]
 		private InputManager InputManager;
@@ -23,9 +23,14 @@ namespace Group26.Player.Movement
 		[SerializeField] private float grappleDelayTime;
 		[SerializeField] private float overshootYAxis;
 
-		[Header("Miss Visual")]
-		[Tooltip("How long to show the line when the grapple misses.")]
-		[SerializeField, Range(0f, 1f)] private float missLineTime = 0.08f;
+		[Header("Prediction")]
+		[SerializeField] RaycastHit predictionHit;
+		[SerializeField] float predictionSphereCastRadius;
+		[SerializeField] Transform predictionPoint;
+
+		// [Header("Miss Visual")]
+		// [Tooltip("How long to show the line when the grapple misses.")]
+		// [SerializeField, Range(0f, 1f)] private float missLineTime = 0.08f;
 
 		[Header("Cooldown")]
 		[SerializeField] private float grappleCooldown;
@@ -38,6 +43,7 @@ namespace Group26.Player.Movement
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
 			if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
 			if (cameraModeManager == null) cameraModeManager = GetComponent<CameraModeManager>();
+			if(predictionPoint != null) predictionPoint.gameObject.SetActive(false);
 
 			Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
 		}
@@ -65,6 +71,54 @@ namespace Group26.Player.Movement
 		{
 			if (grappleCooldownTimer > 0)
 				grappleCooldownTimer -= Time.deltaTime;
+
+			//CheckForGrapplePoints();
+		}
+
+		private void CheckForGrapplePoints()
+		{
+			if(m_bGrappling)
+			{
+				if(predictionPoint != null)
+					predictionPoint.gameObject.SetActive(false);
+				return;
+			}
+
+			RaycastHit sphereCastHit;
+			Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxGrappleDistance, m_grappableLayer);
+
+			RaycastHit raycastHit; 
+			Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxGrappleDistance, m_grappableLayer);
+
+			Vector3 realHitPoint;
+
+			// Option 1 - Direct hit
+			if (raycastHit.point != Vector3.zero)
+				realHitPoint = raycastHit.point;
+
+			// Option 2 - Indirect (predicted) hit
+			else if (sphereCastHit.point != Vector3.zero) // Do we need 2 Casts if sphere is doing most of the work?
+				realHitPoint = sphereCastHit.point;
+
+			// Option 3 - Miss
+			else
+				realHitPoint = Vector3.zero;
+
+			if (realHitPoint != Vector3.zero)
+			{
+				if (predictionPoint != null)
+				{
+					predictionPoint.gameObject.SetActive(true);
+					predictionPoint.position = realHitPoint;
+				}
+			}
+			else
+			{
+				if (predictionPoint != null)
+					predictionPoint.gameObject.SetActive(false);
+			}
+
+			predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 		}
 
 		void StartGrapple()
@@ -74,6 +128,15 @@ namespace Group26.Player.Movement
 			if (grappleCooldownTimer > 0) return;
 			if(m_bGrappling) return;
 
+			// Use the SAME cached prediction logic as SwingGun
+			if (predictionHit.point == Vector3.zero)
+			{
+				PlayerController.m_bFreeze = false;
+				return;
+			}
+
+			GetComponent<SwingGun>().StopSwing();
+
 			m_bGrappling = true;
 			_grappleToken++;
 
@@ -81,28 +144,35 @@ namespace Group26.Player.Movement
 
 			PlayerController.m_bFreeze = true;
 
-			bool didHit = Physics.Raycast(Cam.position, Cam.forward, out RaycastHit hit, maxGrappleDistance, m_grappableLayer);
-			grapplePoint = didHit ? hit.point : (Cam.position + Cam.forward * maxGrappleDistance);
+			// bool didHit = Physics.Raycast(Cam.position, Cam.forward, out RaycastHit hit, maxGrappleDistance, m_grappableLayer);
+			// grapplePoint = didHit ? hit.point : (Cam.position + Cam.forward * maxGrappleDistance);
 
-			lineRenderer.enabled = true;
-			lineRenderer.SetPosition(0, gunTip.position);
-			lineRenderer.SetPosition(1, grapplePoint);
+			// lineRenderer.enabled = true;
+			// lineRenderer.SetPosition(0, gunTip.position);
+			// lineRenderer.SetPosition(1, grapplePoint);
+
+			grapplePoint = predictionHit.point;
+
+			if(predictionPoint != null)
+				predictionPoint.gameObject.SetActive(false);
 
 			int tokenAtSchedule = _grappleToken;
 
-			if(grappleDelayTime <= 0)
-			{
-				if (didHit) Invoke(nameof(ExecuteGrapple_InvokeWrapper), grappleDelayTime);
-				else // Display line for a moment, then stop grapple
-				{
-					PlayerController.m_bFreeze = false;
+			Invoke(nameof(ExecuteGrapple_InvokeWrapper), Mathf.Max(grappleDelayTime, 0f));
 
-					float t = Mathf.Max(missLineTime, 0.01f); // Guarantees a frame at least for visual feedbcak
+			// if(grappleDelayTime <= 0)
+			// {
+			// 	if (didHit) Invoke(nameof(ExecuteGrapple_InvokeWrapper), grappleDelayTime);
+			// 	else // Display line for a moment, then stop grapple
+			// 	{
+			// 		PlayerController.m_bFreeze = false;
 
-					// Stop after a short visual delay, not grappleDelayTime
-					Invoke(nameof(StopGrapple_InvokeWrapper), t);
-				}
-			}
+			// 		//float t = Mathf.Max(missLineTime, 0.01f); // Guarantees a frame at least for visual feedbcak
+
+			// 		// Stop after a short visual delay, not grappleDelayTime
+			// 		Invoke(nameof(StopGrapple_InvokeWrapper), t);
+			// 	}
+			// }
 		}
 
 		private void ExecuteGrapple_InvokeWrapper() => ExecuteGrapple(_grappleToken);
@@ -139,6 +209,21 @@ namespace Group26.Player.Movement
 			m_bGrappling = false;
 			grappleCooldownTimer = grappleCooldown;
 			lineRenderer.enabled = false;
+		}
+
+		public Vector3 GetGrapplePoint()
+		{
+			return grapplePoint;
+		}
+
+		public Transform GetGunTip()
+		{
+			return gunTip;
+		}
+
+		public bool IsRopeActive()
+		{
+			return m_bGrappling;
 		}
 	}
 }
