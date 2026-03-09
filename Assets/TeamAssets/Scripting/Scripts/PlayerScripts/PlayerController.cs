@@ -201,8 +201,11 @@ namespace Group26.Player.Movement
 			}
 			else if (m_bIsGrounded && inputManager.isCrouching)
 			{
+				Debug.Log("Crouching");
 				state = MovementState.crouching;
 				desiredMoveSpeed = crouchSpeed;
+
+				//Crouch(inputManager.isCrouching);
 			}
 			else if (m_bIsGrounded && inputManager.isSprinting)
 			{
@@ -369,20 +372,18 @@ namespace Group26.Player.Movement
 
 		public void Sprint(bool state) => inputManager.isSprinting = state;
 
-		public void Crouch(bool state)
-		{
-			inputManager.isCrouching = state;
+		// public void Crouch(bool state) Fix later
+		// {
+		// 	inputManager.isCrouching = state;
 
-			if (state)
-			{
-				transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-				rb.AddForce(Vector3.down * 2f, ForceMode.Impulse);
-			}
-			else
-			{
-				transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-			}
-		}
+		// 	if (state)
+		// 	{
+		// 		transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+		// 		rb.AddForce(Vector3.down * 2f, ForceMode.Impulse);
+		// 	}
+		// 	else
+		// 		transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+		// }
 
 		public void Jump()
 		{
