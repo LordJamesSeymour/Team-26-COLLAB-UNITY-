@@ -106,7 +106,10 @@ namespace Group26.Player.Movement
 
 			m_cPlayerCollider = GetComponentInChildren<Collider>();
 			slidingComp = GetComponent<Sliding>();
+
 			m_momentumScript = GetComponent<SlopeMomentum>();
+			if(m_momentumScript == null)
+				Debug.LogWarning("No SlopeMomentum script found on player.");
 
 			//Vector2 moveInput = inputManager.MoveInput;
 			//GetInput(moveInput);
@@ -157,7 +160,10 @@ namespace Group26.Player.Movement
 
 			TryConsumeJumpBuffer();
 
-            moveSpeed += m_momentumScript.m_momentum;
+			if (m_momentumScript != null)
+			{
+				moveSpeed += m_momentumScript.m_momentum;
+			}
 
             // Sliding movement is handled by Sliding.cs
             if (!m_bSliding)
