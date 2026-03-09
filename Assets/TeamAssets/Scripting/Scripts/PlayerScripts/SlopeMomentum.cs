@@ -38,20 +38,22 @@ public class SlopeMomentum : MonoBehaviour
 
     private IEnumerator SlowDown()
     {
-        switch (m_stopCheck)
+        while(m_movementScript.moveSpeed > m_startSpeed && m_momentum > m_minMomentum)
         {
-            case 0:
-                m_movementScript.moveSpeed = m_startSpeed;
-                m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
-                m_movementScript.moveSpeed += m_momentum;
-                m_stopCheck = 1;
-                break;
-            default:
-                m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
-                break;
-        }
-
-        yield return new WaitForEndOfFrame();
+            switch (m_stopCheck)
+            {
+                case 0:
+                    m_movementScript.moveSpeed = m_startSpeed;
+                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    m_movementScript.moveSpeed += m_momentum;
+                    m_stopCheck = 1;
+                    break;
+                default:
+                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    break;
+            }
+            yield return new WaitForEndOfFrame();
+        }     
     }
 
     //Not currently using these methods but keeping them for now just in case
@@ -76,8 +78,8 @@ public class SlopeMomentum : MonoBehaviour
     {
         //Debug.Log(m_onSlope);
         //Debug.Log(m_locomotionScript.GetDirection());
-        Debug.Log(m_movementScript.moveSpeed);
-        Debug.Log(m_momentum);
+        Debug.Log("Speed: " + m_movementScript.moveSpeed);
+        Debug.Log("Momentum: " + m_momentum);
 
         if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95)
         {
