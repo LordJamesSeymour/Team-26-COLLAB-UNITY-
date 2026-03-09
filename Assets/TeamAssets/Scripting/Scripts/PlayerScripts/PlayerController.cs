@@ -20,8 +20,8 @@ namespace Group26.Player.Movement
 		[SerializeField] float dashSpeedChangeFactor;
 
 		public float maxYSpeed;
-		float moveSpeed;
-		float desiredMoveSpeed;
+		public float moveSpeed;       //CHANGE: made public
+        float desiredMoveSpeed;
 		float lastDesiredMoveSpeed;
 
 		[SerializeField] float speedIncreaseMultiplier = 1f;
@@ -89,6 +89,8 @@ namespace Group26.Player.Movement
 
 		Sliding slidingComp;
 
+		SlopeMomentum m_momentumScript;
+
 		public bool IsGrounded => m_bIsGrounded;
 		public Vector3 SlopeNormal => slopeHit.normal;
 
@@ -104,6 +106,7 @@ namespace Group26.Player.Movement
 
 			m_cPlayerCollider = GetComponentInChildren<Collider>();
 			slidingComp = GetComponent<Sliding>();
+			m_momentumScript = GetComponent<SlopeMomentum>();
 
 			//Vector2 moveInput = inputManager.MoveInput;
 			//GetInput(moveInput);
@@ -154,15 +157,17 @@ namespace Group26.Player.Movement
 
 			TryConsumeJumpBuffer();
 
-			// Sliding movement is handled by Sliding.cs
-			if (!m_bSliding)
+            moveSpeed += m_momentumScript.m_momentum;
+
+            // Sliding movement is handled by Sliding.cs
+            if (!m_bSliding)
 			{
 				MovePlayer(onSlope);
 				SpeedControl(onSlope);
 			}
-		}
+        }
 
-		private MovementState lastState;
+        private MovementState lastState;
 		private bool keepMomentum;
 
 		void StateHandler(bool onSlope)
@@ -264,14 +269,14 @@ namespace Group26.Player.Movement
 		private IEnumerator SmoothlyLerpMoveSpeed()
 		{
 			float time = 0f;
-			float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+            float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
 			float startValue = moveSpeed;
 
 			float boostFactor = speedChangeFactor;
 
-			while (time < difference)
+            while (time < difference)
 			{
-				moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+                moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
 
 				time += Time.deltaTime;
 
@@ -290,8 +295,8 @@ namespace Group26.Player.Movement
 				yield return null;
 			}
 
-			moveSpeed = desiredMoveSpeed;
-			speedChangeFactor = 1f;
+            moveSpeed = desiredMoveSpeed;
+            speedChangeFactor = 1f;
 			keepMomentum = false;
 		}
 
@@ -339,9 +344,9 @@ namespace Group26.Player.Movement
 				rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
 			if(!m_bIsWallRunning) rb.useGravity = !OnSlope();
-		}
+        }
 
-		private void SpeedControl(bool onSlope)
+        private void SpeedControl(bool onSlope)
 		{
 			if (m_bActiveGrapple) return;
 
@@ -474,5 +479,7 @@ namespace Group26.Player.Movement
 		{
 			return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
 		}
+
+		public Vector3 GetDirection() { return moveDir; }
 	}
 }
