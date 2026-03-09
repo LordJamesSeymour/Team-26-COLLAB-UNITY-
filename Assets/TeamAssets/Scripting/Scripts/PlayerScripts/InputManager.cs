@@ -43,6 +43,10 @@ namespace Group26.Player.Inputs
         [Tooltip("Button - Pausing game and triggering UI event")]
         [SerializeField] private InputActionReference pauseAction;
 
+        //Trick Button
+        [Tooltip("Button - Do a Trick")]
+        [SerializeField] private InputActionReference TrickAction;
+
         [HideInInspector] public Vector2 MoveInput { get; private set; }
         [HideInInspector] public Vector2 LookInput { get; private set; }
         
@@ -61,6 +65,9 @@ namespace Group26.Player.Inputs
         public event Action OnSwingStopped;
         public event Action OnCameraSwitchPressed;
         public event Action OnPausePressed;
+
+        //Trick Activation Button
+        public event Action OnTrickPressed;
 
         void Awake()
         {
@@ -98,6 +105,9 @@ namespace Group26.Player.Inputs
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
+
+            SubscribeToggled(TrickAction, HandleTrick);
+
         }
 
         private void UnsubFromPlayerControls()
@@ -113,12 +123,21 @@ namespace Group26.Player.Inputs
             UnsubscribeToggled(sprintAction, HandleSprintChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
             UnsubscribeToggled(swingAction, HandleSwingChanged);
+
+            UnsubscribeToggled(TrickAction, HandleTrick);
         }
 
         private static Vector2 ReadVector2(InputActionReference reference)
         {
             return reference != null && reference.action != null ? reference.action.ReadValue<Vector2>() : Vector2.zero;
         }
+
+        private void HandleTrick(InputAction.CallbackContext context)
+        {
+            //print("1");
+            OnTrickPressed?.Invoke();
+        }
+
 
         private void HandleJump(InputAction.CallbackContext context)
         {

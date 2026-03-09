@@ -198,6 +198,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trick"",
+                    ""type"": ""Button"",
+                    ""id"": ""06147ae1-13b8-405b-80b2-7c4d3cb1edf4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -627,6 +636,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Swing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7bba8286-3a86-4e3b-8e88-92d1bb1d4db9"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Trick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1226,6 +1246,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Swing = m_Player.FindAction("Swing", throwIfNotFound: true);
         m_Player_PauseAction = m_Player.FindAction("PauseAction", throwIfNotFound: true);
         m_Player_CameraSwitch = m_Player.FindAction("CameraSwitch", throwIfNotFound: true);
+        m_Player_Trick = m_Player.FindAction("Trick", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1331,6 +1352,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Swing;
     private readonly InputAction m_Player_PauseAction;
     private readonly InputAction m_Player_CameraSwitch;
+    private readonly InputAction m_Player_Trick;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1390,6 +1412,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/CameraSwitch".
         /// </summary>
         public InputAction @CameraSwitch => m_Wrapper.m_Player_CameraSwitch;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Trick".
+        /// </summary>
+        public InputAction @Trick => m_Wrapper.m_Player_Trick;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1452,6 +1478,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @CameraSwitch.started += instance.OnCameraSwitch;
             @CameraSwitch.performed += instance.OnCameraSwitch;
             @CameraSwitch.canceled += instance.OnCameraSwitch;
+            @Trick.started += instance.OnTrick;
+            @Trick.performed += instance.OnTrick;
+            @Trick.canceled += instance.OnTrick;
         }
 
         /// <summary>
@@ -1499,6 +1528,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @CameraSwitch.started -= instance.OnCameraSwitch;
             @CameraSwitch.performed -= instance.OnCameraSwitch;
             @CameraSwitch.canceled -= instance.OnCameraSwitch;
+            @Trick.started -= instance.OnTrick;
+            @Trick.performed -= instance.OnTrick;
+            @Trick.canceled -= instance.OnTrick;
         }
 
         /// <summary>
@@ -1883,6 +1915,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCameraSwitch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Trick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTrick(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

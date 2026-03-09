@@ -138,9 +138,12 @@ namespace Group26.Player.Movement
 			else
 				rb.linearDamping = 0;
 
+            if (state == MovementState.air)
+                rb.linearDamping = groundDrag;
 
-			// Cache slope check once per FixedUpdate (updates slopeHit)
-			bool onSlope = OnSlope();
+
+            // Cache slope check once per FixedUpdate (updates slopeHit)
+            bool onSlope = OnSlope();
 
 			// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
 			rb.useGravity = !(onSlope && !exitingSlope && !m_bSliding);

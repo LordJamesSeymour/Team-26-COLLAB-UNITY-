@@ -6,6 +6,7 @@ namespace Group26.Player.Movement
 {
 	public class GrappleGun : MonoBehaviour
 	{
+
 		[Header("References")]
 		private InputManager InputManager;
 		private CameraModeManager cameraModeManager;
@@ -40,6 +41,7 @@ namespace Group26.Player.Movement
 
 		private void Awake()
 		{
+
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
 			if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
 			if (cameraModeManager == null) cameraModeManager = GetComponent<CameraModeManager>();
