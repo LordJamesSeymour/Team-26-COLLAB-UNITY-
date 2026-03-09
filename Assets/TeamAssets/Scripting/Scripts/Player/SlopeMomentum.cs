@@ -22,6 +22,7 @@ public class SlopeMomentum : MonoBehaviour
             m_startSpeed = m_locomotionScript.moveSpeed;
     }
 
+    //Not currently using these methods but keeping them for now just in case
     //private void OnCollisionEnter(Collision collision)
     //{
     //    if (collision.gameObject.tag == "slope")
@@ -45,12 +46,15 @@ public class SlopeMomentum : MonoBehaviour
         //Debug.Log(m_locomotionScript.GetDirection());
         //Debug.Log(m_locomotionScript.moveSpeed);
         //Debug.Log(m_momentum);
+
         if(m_locomotionScript.OnSlope() &&  m_momentum < m_maxMomentum && m_locomotionScript.GetDirection().z >= 0.95)
         {
             m_momentum += m_speedIncreaseFactor;
         }
         else if(m_locomotionScript.GetDirection() == Vector3.zero)
         {
+
+            //reset momentum and speed
             m_momentum = 0.0f;
             m_locomotionScript.moveSpeed = m_startSpeed;
         }
