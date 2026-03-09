@@ -36,7 +36,7 @@ namespace Group26.Player.Movement
 		[SerializeField] private float grappleCooldown;
 		private float grappleCooldownTimer;
 		private bool m_bGrappling;
-		private int _grappleToken;
+		private int _grappleToken = 0;
 
 		private void Awake()
 		{
