@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - slope
+  - death zone
   layers:
   - Default
   - TransparentFX
