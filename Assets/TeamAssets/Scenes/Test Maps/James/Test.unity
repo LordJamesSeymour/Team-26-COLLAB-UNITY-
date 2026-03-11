@@ -2390,9 +2390,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '0
-
-'
+  m_text: 00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2689,11 +2687,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e2474e7439cea34994a5ff99e7fbdda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_autoStart: 1
+  m_bautoStart: 1
   m_timerDisplay: {fileID: 1637135530}
-  m_compressTime: 1
+  m_bcompressTime: 1
+  m_totalTimeSecs: 0
   m_elapsedTimeSecs: 0
-  m_elapsedTimeCompressed: 0
+  m_elapsedTimeMins: 0
 --- !u!1 &1801046042
 GameObject:
   m_ObjectHideFlags: 0

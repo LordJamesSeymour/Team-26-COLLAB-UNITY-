@@ -10,11 +10,9 @@ public class Timer : MonoBehaviour
     [SerializeField] private bool m_bcompressTime = true;
 
     [Header("Timer Info")]
+    public int m_totalTimeSecs = 0;
     public int m_elapsedTimeSecs = 0;
-    /// <summary>
-    /// The elapsed time compressed into minutes or hours
-    /// </summary>
-    public float m_elapsedTimeCompressed = 0;
+    public int m_elapsedTimeMins = 0;
 
     private void Start()
     {
@@ -29,23 +27,23 @@ public class Timer : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1);
-            m_elapsedTimeSecs++;
+            m_totalTimeSecs++;
 
             if (m_timerDisplay != null && !m_bcompressTime)
             {
-                m_timerDisplay.text = m_elapsedTimeSecs.ToString();
+                m_timerDisplay.text = m_totalTimeSecs.ToString();
             }
             else if (m_timerDisplay != null && m_bcompressTime)
             {
                 CompressTime();
-                m_timerDisplay.text = m_elapsedTimeCompressed.ToString();
+                m_timerDisplay.text = m_elapsedTimeMins.ToString("00") + ":" + m_elapsedTimeSecs.ToString("00");
             }
         }
     }
 
     public void ResetTimer()
     {
-        m_elapsedTimeSecs = 0;
+        m_totalTimeSecs = 0;
     }
 
     public void ResumeTimer()
@@ -60,26 +58,8 @@ public class Timer : MonoBehaviour
 
     private void CompressTime()
     {
-        int elapsedmins = 0;
-
-        if (m_elapsedTimeSecs > 60)
-        {
-            elapsedmins = m_elapsedTimeSecs / 60;
-        }
-
-        if(elapsedmins > 60)
-        {
-            m_elapsedTimeCompressed = elapsedmins / 60;
-        }
-        else if (elapsedmins > 0 && elapsedmins < 60)
-        {
-            m_elapsedTimeCompressed = elapsedmins;
-        }
-        else
-        {
-            m_elapsedTimeCompressed = m_elapsedTimeSecs;
-        }
-        m_elapsedTimeCompressed = Mathf.Floor(m_elapsedTimeCompressed * 100) / 100;
+        m_elapsedTimeSecs = m_totalTimeSecs % 60;
+        m_elapsedTimeMins = m_totalTimeSecs / 60;
     }
 
 }
