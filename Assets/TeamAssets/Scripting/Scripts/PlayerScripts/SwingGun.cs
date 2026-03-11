@@ -38,8 +38,12 @@ namespace Group26.Player.Movement
 
         [Header("Cancel parameters")]
         [SerializeField] private float m_cancelForce = 10.0f;
-        [SerializeField] private float m_cancelForceDelay = 0.1f;
-        private bool m_bApplyCancelForce = true;
+        private int m_swingTime = 0;
+        [SerializeField] private int m_swingTimeForCancelForce = 10;
+        /// <summary>
+        /// The maximum force added when cancelling the swing. The negated version of this will be used for the minum swing force.
+        /// </summary>
+        [SerializeField] private Vector3 m_maxCancelSwingForce = new Vector3(25.0f, 25.0f, 25.0f);
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -192,13 +196,14 @@ namespace Group26.Player.Movement
             joint.damper = 7f;
             joint.massScale = 4.5f;
 
-
+            m_swingTime = 0;
+            StartCoroutine(SwingTime());
 
             //RaycastHit hit;
             //if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
             //{
-                
-        
+
+
             //}
             //else
             //{
@@ -208,19 +213,21 @@ namespace Group26.Player.Movement
 
         public void StopSwing()
         {
+            StopCoroutine(SwingTime());
+
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
             swingPoint = gunTip.position;
 
-            if (rigidBody != null && joint != null && m_bApplyCancelForce)
-            {
-                Debug.Log("Applying force of: " + rigidBody.linearVelocity.normalized * m_cancelForce);
-                rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_cancelForce, ForceMode.Impulse);
-
+            if (rigidBody != null && joint != null)
+            { 
                 //Preventing cancel force spam
-                m_bApplyCancelForce = false;
-                StartCoroutine(CancelForceDelay());
+                if(m_swingTime >= m_swingTimeForCancelForce)
+                {
+                    Debug.Log("Applying force of: " + rigidBody.linearVelocity.normalized * m_cancelForce);
+                    rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_cancelForce, ForceMode.Impulse);
+                }
             }
             
             if (joint != null)
@@ -231,10 +238,13 @@ namespace Group26.Player.Movement
             
         }
 
-        private IEnumerator CancelForceDelay()
+        private IEnumerator SwingTime()
         {
-            yield return new WaitForSeconds(m_cancelForceDelay);
-            m_bApplyCancelForce = true;
+            while (playerController.m_bActiveSwing)
+            {
+                yield return new WaitForSeconds(0.1f);
+                m_swingTime++;
+            }
         }
 
         private void GetInput(Vector2 inputs)
