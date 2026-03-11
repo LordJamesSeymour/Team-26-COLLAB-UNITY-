@@ -40,10 +40,7 @@ namespace Group26.Player.Movement
         [SerializeField] private float m_cancelForce = 10.0f;
         private int m_swingTime = 0;
         [SerializeField] private int m_swingTimeForCancelForce = 10;
-        /// <summary>
-        /// The maximum force added when cancelling the swing. The negated version of this will be used for the minum swing force.
-        /// </summary>
-        [SerializeField] private Vector3 m_maxCancelSwingForce = new Vector3(25.0f, 25.0f, 25.0f);
+        [SerializeField] private float m_maxCancelSwingForce = 100.0f;
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -213,8 +210,6 @@ namespace Group26.Player.Movement
 
         public void StopSwing()
         {
-            StopCoroutine(SwingTime());
-
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
@@ -225,8 +220,10 @@ namespace Group26.Player.Movement
                 //Preventing cancel force spam
                 if(m_swingTime >= m_swingTimeForCancelForce)
                 {
-                    Debug.Log("Applying force of: " + rigidBody.linearVelocity.normalized * m_cancelForce);
                     rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_cancelForce, ForceMode.Impulse);
+
+                    //Clamps the velocity to avoid the cancel force being too high
+                    rigidBody.linearVelocity = Vector3.ClampMagnitude(rigidBody.linearVelocity,m_maxCancelSwingForce);
                 }
             }
             
