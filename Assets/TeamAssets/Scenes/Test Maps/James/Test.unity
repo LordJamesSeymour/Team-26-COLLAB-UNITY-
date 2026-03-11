@@ -576,6 +576,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1821288047658072069, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: useCameraForward
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_cancelForce
       value: 25
@@ -587,6 +591,10 @@ PrefabInstance:
     - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_cancelForceDelay
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: m_bPrintCancelForce
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_maxCancelSwingForce

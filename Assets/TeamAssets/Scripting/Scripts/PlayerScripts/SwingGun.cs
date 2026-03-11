@@ -2,6 +2,8 @@ using UnityEngine;
 using Group26.Player.Inputs;
 using Group26.Player.Camera;
 using System.Collections;
+using Unity.VisualScripting;
+using System.Linq;
 
 namespace Group26.Player.Movement
 {
@@ -39,8 +41,14 @@ namespace Group26.Player.Movement
         [Header("Cancel parameters")]
         [SerializeField] private float m_cancelForce = 10.0f;
         private int m_swingTime = 0;
-        [SerializeField] private int m_swingTimeForCancelForce = 10;
-        [SerializeField] private float m_maxCancelSwingForce = 100.0f;
+        [SerializeField] private float m_swingTimeForCancelForce = 1.0f;
+        /// <summary>
+        /// The maximum velocity after the cancel force is applied. The negated values are used for minium value.
+        /// </summary>
+        [SerializeField] private Vector3 m_maxCancelSwingForce = new Vector3(25.0f,25.0f,25.0f);
+        private bool m_bAppropriateSwingTime = false;
+        [SerializeField] private bool m_bPrintCancelForce = false;
+        private Coroutine[] m_activeSwingTimes;
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -193,7 +201,6 @@ namespace Group26.Player.Movement
             joint.damper = 7f;
             joint.massScale = 4.5f;
 
-            m_swingTime = 0;
             StartCoroutine(SwingTime());
 
             //RaycastHit hit;
@@ -210,21 +217,35 @@ namespace Group26.Player.Movement
 
         public void StopSwing()
         {
+            StopAllCoroutines();
+
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
             swingPoint = gunTip.position;
 
-            if (rigidBody != null && joint != null)
+            //m_bAppropriateSwingTime tries to prevent cancel force spam
+            if (rigidBody != null && joint != null && m_bAppropriateSwingTime)
             { 
-                //Preventing cancel force spam
-                if(m_swingTime >= m_swingTimeForCancelForce)
+                //Debug to print force added
+                Vector3 forceammount = rigidBody.linearVelocity.normalized * m_cancelForce;
+                if (m_bPrintCancelForce)
                 {
-                    rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_cancelForce, ForceMode.Impulse);
-
-                    //Clamps the velocity to avoid the cancel force being too high
-                    rigidBody.linearVelocity = Vector3.ClampMagnitude(rigidBody.linearVelocity,m_maxCancelSwingForce);
+                    Debug.Log("Added cancel force of: " + forceammount);
                 }
+                
+                rigidBody.AddForce(forceammount, ForceMode.Impulse);
+
+                //Clamps the velocity to avoid the cancel force being too high
+                
+                //Magnitude solution
+                //rigidBody.linearVelocity = Vector3.ClampMagnitude(rigidBody.linearVelocity,m_maxCancelSwingForce);
+                
+                Vector3 clampedVelocity = rigidBody.linearVelocity;
+                clampedVelocity.x = Mathf.Clamp(clampedVelocity.x, -m_maxCancelSwingForce.x, m_maxCancelSwingForce.x);
+                clampedVelocity.y = Mathf.Clamp(clampedVelocity.y, -m_maxCancelSwingForce.y, m_maxCancelSwingForce.y);
+                clampedVelocity.z = Mathf.Clamp(clampedVelocity.z, -m_maxCancelSwingForce.z, m_maxCancelSwingForce.z);
+                rigidBody.linearVelocity = clampedVelocity;
             }
             
             if (joint != null)
@@ -234,13 +255,23 @@ namespace Group26.Player.Movement
             }
             
         }
-
+        
         private IEnumerator SwingTime()
         {
-            while (playerController.m_bActiveSwing)
+            m_bAppropriateSwingTime = false;
+            yield return new WaitForSeconds(m_swingTimeForCancelForce);
+            //checks if the player is still swinging after the delay time
+            if (playerController != null)
             {
-                yield return new WaitForSeconds(0.1f);
-                m_swingTime++;
+                m_bAppropriateSwingTime = playerController.m_bActiveSwing;
+            }
+        }
+
+        private void StopAllCoroutinesOfType(Coroutine[] coroutines)
+        {
+            for (int i = 0; i < coroutines.Length; i++)
+            {
+                StopCoroutine(coroutines[i]);
             }
         }
 
