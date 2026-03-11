@@ -1,6 +1,7 @@
 using UnityEngine;
 using Group26.Player.Inputs;
 using Group26.Player.Camera;
+using System.Collections;
 
 namespace Group26.Player.Movement
 {
@@ -34,6 +35,11 @@ namespace Group26.Player.Movement
         [SerializeField] private RaycastHit predictionHit;
         [SerializeField] private float predictionSphereCastRadius;
         [SerializeField] private Transform predictionPoint;
+
+        [Header("Cancel parameters")]
+        [SerializeField] private float m_cancelForce = 10.0f;
+        [SerializeField] private float m_cancelForceDelay = 0.1f;
+        private bool m_bApplyCancelForce = true;
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -207,11 +213,28 @@ namespace Group26.Player.Movement
             m_vMoveInput = Vector2.zero;
             swingPoint = gunTip.position;
 
+            if (rigidBody != null && joint != null && m_bApplyCancelForce)
+            {
+                Debug.Log("Applying force of: " + rigidBody.linearVelocity.normalized * m_cancelForce);
+                rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_cancelForce, ForceMode.Impulse);
+
+                //Preventing cancel force spam
+                m_bApplyCancelForce = false;
+                StartCoroutine(CancelForceDelay());
+            }
+            
             if (joint != null)
             {
                 Destroy(joint);
                 joint = null;
             }
+            
+        }
+
+        private IEnumerator CancelForceDelay()
+        {
+            yield return new WaitForSeconds(m_cancelForceDelay);
+            m_bApplyCancelForce = true;
         }
 
         private void GetInput(Vector2 inputs)
