@@ -639,6 +639,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TEST_RESPAWN",
+                    "type": "Button",
+                    "id": "2effca73-809c-4470-a6d0-7ba59a812ea9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TEST_RESTART",
+                    "type": "Button",
+                    "id": "fa1e2aa8-105c-4206-884e-403f7e1a746a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1057,6 +1075,28 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1e16ac0-8acf-4d20-8675-11ba04b86b1b",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TEST_RESPAWN",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01f8bfae-47e5-485e-9060-31d5db1ffbbf",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TEST_RESTART",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
