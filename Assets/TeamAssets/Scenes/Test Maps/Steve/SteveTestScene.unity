@@ -667,6 +667,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 608019952}
     - target: {fileID: 4224991745201416715, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: overshootYAxis
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4224991745201416715, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
@@ -716,7 +720,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4865603522779230174, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6661257255942849801, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: wallRunJumpUpForce
@@ -736,6 +740,9 @@ PrefabInstance:
       insertIndex: 1
       addedObject: {fileID: 339946046}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4865603522779230174, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      insertIndex: 11
+      addedObject: {fileID: 1956009963}
     - targetCorrespondingSourceObject: {fileID: 7770454930999117134, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1672323216}
@@ -1587,6 +1594,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &623827484 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4865603522779230174, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+  m_PrefabInstance: {fileID: 433295105}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &646763721
 GameObject:
   m_ObjectHideFlags: 0
@@ -5188,6 +5200,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1946916328}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1956009963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623827484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7a088959ed49da4ba61cb6f60f7f566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_momentum: 0
+  m_maxMomentum: 10
+  m_minMomentum: 0
+  m_speedIncreaseFactor: 0.2
+  m_slowDownFactor: 0.005
+  m_playerStats_SO: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
 --- !u!1 &1999441104
 GameObject:
   m_ObjectHideFlags: 0
