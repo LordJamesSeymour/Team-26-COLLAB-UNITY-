@@ -36,7 +36,7 @@ namespace Group26.Player.Movement
 		[SerializeField] private float grappleCooldown;
 		private float grappleCooldownTimer;
 		private bool m_bGrappling;
-		private int _grappleToken;
+		private int _grappleToken = 0; 
 
 		private void Awake()
 		{
@@ -85,6 +85,8 @@ namespace Group26.Player.Movement
 					predictionPoint.gameObject.SetActive(false);
 				return;
 			}
+
+			Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
 
 			RaycastHit sphereCastHit;
 			Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxGrappleDistance, m_grappableLayer);
