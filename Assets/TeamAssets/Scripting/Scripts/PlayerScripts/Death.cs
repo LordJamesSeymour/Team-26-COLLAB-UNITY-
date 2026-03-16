@@ -7,7 +7,6 @@ public class Death : MonoBehaviour
 {
     [SerializeField] private GameObject m_respawnMenuPanel;
     [SerializeField] private Timer m_timerScript;
-    [SerializeField] private int m_sceneNum;
 
     [HideInInspector] public Vector3 m_respawnPoint;
     //[HideInInspector] public bool m_isDead;
@@ -36,8 +35,6 @@ public class Death : MonoBehaviour
 
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
-
-        //TEST_DeathZone.OnPlayerDead += PlayerDeath;
     }
 
     private IEnumerator Respawn()
@@ -62,7 +59,6 @@ public class Death : MonoBehaviour
         m_respawn = null;
 
         yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
-        //yield return new WaitUntil(() => transform.position == m_respawnPoint);
 
         //Time.timeScale = 1.0f;
         //m_timerScript.ResumeTimer();
@@ -81,7 +77,6 @@ public class Death : MonoBehaviour
         Debug.Log("Restarting");
 
         //NOTE: design have said to restart level when 'restart' is chosen
-        //SceneManager.LoadScene(m_sceneNum);
 
         transform.position = m_startPoint;
         m_timerScript.ResetTimer();
