@@ -535,6 +535,10 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
+    - target: {fileID: 4224991745201416715, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: grappleDelayTime
+      value: 0.13
+      objectReference: {fileID: 0}
     - target: {fileID: 4237640061233739527, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
