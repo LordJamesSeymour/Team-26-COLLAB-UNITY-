@@ -48,7 +48,7 @@ namespace Group26.Player.Movement
 			if(predictionPoint != null) predictionPoint.gameObject.SetActive(false);
 
 			Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
-		}
+        }
 
 		void OnEnable()
 		{
@@ -75,7 +75,9 @@ namespace Group26.Player.Movement
 				grappleCooldownTimer -= Time.deltaTime;
 
 			CheckForGrapplePoints();
-		}
+
+            Debug.Log(grappleCooldownTimer);
+        }
 
 		private void CheckForGrapplePoints()
 		{

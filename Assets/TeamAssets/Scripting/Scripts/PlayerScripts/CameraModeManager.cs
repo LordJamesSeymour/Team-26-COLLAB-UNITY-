@@ -25,6 +25,8 @@ namespace Group26.Player.Camera
         [Header("Camera References & Settings")]
         [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
         [SerializeField] public CinemachineCamera thirdPersonVirtualCamera;
+        [SerializeField] public CinemachineCamera leftWallRunningVirtualCamera;
+        [SerializeField] public CinemachineCamera rightWallRunningVirtualCamera;
 
         private Transform cameraHolder;
 
@@ -78,6 +80,11 @@ namespace Group26.Player.Camera
             if (wallRunning == null) wallRunning = GetComponent<WallRunning>();
             if (wallRunning == null) Debug.LogError("No wall running script found");
 
+            if (firstPersonVirtualCamera == null) Debug.LogWarning("First person virtual camera not assigned");
+            if (thirdPersonVirtualCamera == null) Debug.LogError("Third person virtual camera not assigned");
+            if (leftWallRunningVirtualCamera == null) Debug.LogError("Left wall running virtual camera not assigned");
+            if (rightWallRunningVirtualCamera == null) Debug.LogError("Right wall running virtual camera not assigned");
+
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -101,8 +108,6 @@ namespace Group26.Player.Camera
 
         private void Update()
         {
-
-
             if(currentCameraMode == CameraMode.FirstPerson)
             {
                 ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
@@ -131,15 +136,24 @@ namespace Group26.Player.Camera
 
                 if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
-                    DoTilt(-5f);
+                   leftWallRunningVirtualCamera.Priority = activeCameraPriority;
+                   rightWallRunningVirtualCamera.Priority = inactiveCameraPriority;
+
+                   thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
                 }
                 else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
                 {
-                    DoTilt(5f);
+                    leftWallRunningVirtualCamera.Priority = inactiveCameraPriority;
+                    rightWallRunningVirtualCamera.Priority = activeCameraPriority;
+
+                    thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
                 }
                 else
                 {
-                    DoTilt(0f);
+                    leftWallRunningVirtualCamera.Priority = inactiveCameraPriority;
+                    rightWallRunningVirtualCamera.Priority = inactiveCameraPriority;
+
+                    thirdPersonVirtualCamera.Priority = activeCameraPriority;
                 }
 
                 UpdateBodyFacingDirection();

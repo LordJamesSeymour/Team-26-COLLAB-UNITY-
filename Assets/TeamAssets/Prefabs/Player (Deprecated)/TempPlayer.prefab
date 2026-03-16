@@ -296,13 +296,14 @@ GameObject:
   - component: {fileID: 3960751442372283223}
   - component: {fileID: 3700124328398812999}
   - component: {fileID: 3479261143446780926}
+  - component: {fileID: 8774735702747500192}
   m_Layer: 0
   m_Name: TempPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2158282844565274224
 Transform:
   m_ObjectHideFlags: 0
@@ -361,13 +362,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 2145192225556803454}
-  playerSlide: {fileID: 3960751442372283223}
-  playerGrapple: {fileID: 0}
-  playerDash: {fileID: 3479261143446780926}
-  cameraLook: {fileID: 3240117176549791621}
-  wallRunning: {fileID: 3700124328398812999}
   moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  lookAction: {fileID: 0}
+  jumpAction: {fileID: 0}
+  crouchAction: {fileID: 0}
+  sprintAction: {fileID: 0}
+  dashAction: {fileID: 0}
+  grappleAction: {fileID: 0}
+  swingAction: {fileID: 0}
+  cameraSwitchAction: {fileID: 0}
+  pauseAction: {fileID: 0}
+  canGrapple: 0
+  isSprinting: 0
+  isCrouching: 0
+  isSwinging: 0
 --- !u!114 &3240117176549791621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,6 +411,7 @@ MonoBehaviour:
   wallRunSpeed: 8.5
   groundDrag: 5
   dashSpeed: 30
+  swingSpeed: 0
   dashSpeedChangeFactor: 50
   maxYSpeed: 0
   speedIncreaseMultiplier: 1.5
@@ -418,12 +427,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   MaxSlopeAngle: 40
-  state: 0
+  state: 1
+  m_bActiveGrapple: 0
+  m_bActiveSwing: 0
+  m_bFreeze: 0
   m_bSliding: 0
   m_bDashing: 0
   m_bIsGrounded: 0
-  m_bSprinting: 0
-  m_bCrouching: 0
   m_bIsWallRunning: 0
   orientation: {fileID: 2158282844565274224}
 --- !u!114 &3960751442372283223
@@ -472,6 +482,8 @@ MonoBehaviour:
     m_Bits: 64
   wallCheckDistance: 0.75
   minWallJumpHeight: 1
+  wallLeft: 0
+  wallRight: 0
   exitWallTime: 0.2
   useGravity: 1
   gravityCounterForce: 145
@@ -493,8 +505,33 @@ MonoBehaviour:
   dashUpwardsForce: 0
   maxDashYSpeed: 15
   dashDuration: 0.25
-  dashCd: 1.5
+  dashCooldown: 0
   useCameraForward: 0
   allowAllDirections: 1
   disableGravity: 1
   resetVel: 1
+--- !u!114 &8774735702747500192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324317394534824133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c417f69f252a7d84baa486260ca35733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstPersonCam: {fileID: 0}
+  thirdPersonCam: {fileID: 0}
+  gunTip: {fileID: 0}
+  m_grappableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  lineRenderer: {fileID: 0}
+  maxGrappleDistance: 25
+  grappleDelayTime: 0
+  overshootYAxis: 2
+  predictionSphereCastRadius: 0
+  predictionPoint: {fileID: 0}
+  grappleCooldown: 0.25
