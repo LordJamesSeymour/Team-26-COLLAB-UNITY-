@@ -474,7 +474,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_respawnMenuPanel: {fileID: 1572419665}
   m_timerScript: {fileID: 1479634492}
-  m_sceneNum: 1
   m_respawnPoint: {x: 0, y: 0, z: 0}
 --- !u!136 &282554037
 CapsuleCollider:
@@ -1980,7 +1979,7 @@ GameObject:
   - component: {fileID: 723011044}
   m_Layer: 0
   m_Name: checkpoint
-  m_TagString: Untagged
+  m_TagString: checkpoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1998,6 +1997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerDeathScript: {fileID: 282554036}
+  m_used: 0
 --- !u!65 &723011045
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4101,7 +4101,7 @@ GameObject:
   - component: {fileID: 1895750450}
   m_Layer: 0
   m_Name: checkpoint (1)
-  m_TagString: Untagged
+  m_TagString: checkpoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4119,6 +4119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerDeathScript: {fileID: 282554036}
+  m_used: 0
 --- !u!65 &1895750451
 BoxCollider:
   m_ObjectHideFlags: 0

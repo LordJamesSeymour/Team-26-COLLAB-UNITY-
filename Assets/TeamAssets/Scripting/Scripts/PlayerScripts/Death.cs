@@ -13,6 +13,7 @@ public class Death : MonoBehaviour
 
     private Rigidbody m_rigidbody;
     private Vector3 m_startPoint;
+    private GameObject[] m_checkpoints;
     private int m_totalTime;
     private bool m_buttonPressed = false;
 
@@ -35,6 +36,8 @@ public class Death : MonoBehaviour
 
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
+
+        m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
     }
 
     private IEnumerator Respawn()
@@ -79,8 +82,20 @@ public class Death : MonoBehaviour
         //NOTE: design have said to restart level when 'restart' is chosen
 
         transform.position = m_startPoint;
+        m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+
+        Debug.Log(m_checkpoints.Length);
+
+        if(m_checkpoints != null)
+        {
+            foreach(GameObject checkpoint in m_checkpoints)
+            {
+                checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
         m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
