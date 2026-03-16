@@ -8,8 +8,9 @@ namespace Group26.Player.Movement
 	{
 		[Header("References")]
 		private InputManager inputManager;
+		public GrapplePointScript grappleScript;
 
-		[Header("Movement")]
+        [Header("Movement")]
 		[SerializeField] float walkSpeed;
 		[SerializeField] float sprintSpeed;
 		[SerializeField] float slideSpeed;
@@ -50,7 +51,12 @@ namespace Group26.Player.Movement
 		[Header("Slope Handling")]
 		[SerializeField] float MaxSlopeAngle = 45f;
 		RaycastHit slopeHit;
-		
+
+		[Header("GrapplePoints")]
+		[SerializeField] private float m_pointBoostForce = 2.5f;
+		[SerializeField] private bool m_bGrapplePointBoost = true;
+
+        [Header("States etc")]
 		public MovementState state;
 		public enum MovementState 
 		{ 
@@ -98,7 +104,7 @@ namespace Group26.Player.Movement
 		{
 			inputManager = GetComponent<InputManager>();
 
-			rb = GetComponent<Rigidbody>();
+            rb = GetComponent<Rigidbody>();
 			rb.freezeRotation = true;
 
 			startYScale = transform.localScale.y;
@@ -111,21 +117,36 @@ namespace Group26.Player.Movement
 			if(m_momentumScript == null)
 				Debug.LogWarning("No SlopeMomentum script found on player.");
 
-			//Vector2 moveInput = inputManager.MoveInput;
-			//GetInput(moveInput);
 		}
 
-			private void OnEnable()
+		private void OnEnable()
 		{
 			inputManager.OnJumpPressed += Jump;
-		}
+
+			if (grappleScript != null)
+			{
+                grappleScript.PointBoost += PointBoost;
+            }
+			else
+			{
+				Debug.LogWarning("Script doesnt exist yet");
+			}
+        }
 
 		private void OnDisable()
 		{
 			inputManager.OnJumpPressed -= Jump;
-		}
+            grappleScript.PointBoost -= PointBoost;
+        }
 
-		private void FixedUpdate()
+		public void AssignGrapple(GrapplePointScript whatever)
+		{
+            grappleScript = whatever;
+            grappleScript.PointBoost += PointBoost;
+
+        }
+
+        private void FixedUpdate()
 		{
 			// Ground check
 			m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
@@ -487,5 +508,26 @@ namespace Group26.Player.Movement
 		}
 
 		public Vector3 GetDirection() { return moveDir; }
-	}
+
+        //Boost ran when the player collides with the grapple point
+        private void PointBoost()
+        {
+			if(rb == null)
+			{
+				rb = GetComponent<Rigidbody>();
+			}
+			//only errors if rb is still null after getting component
+			if (rb == null)
+			{
+				Debug.LogError("No rigidbody attached to player");
+			}
+			else
+			{
+				if (m_bGrapplePointBoost)
+				{
+					rb.AddForce(rb.linearVelocity.normalized * m_pointBoostForce,ForceMode.Impulse);
+				}
+			}
+        }
+    }	
 }

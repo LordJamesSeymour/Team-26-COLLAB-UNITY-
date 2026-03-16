@@ -1,3 +1,4 @@
+using Group26.Player.Movement;
 using System;
 using UnityEngine;
 
@@ -6,14 +7,39 @@ public class GrapplePointScript : MonoBehaviour
     //Events
     public event Action PointBoost;
 
-    [Header("Grapple point properties")]
-    [SerializeField] private float m_boostForce = 2.5f;
+    [Header("Debug")]
+    [SerializeField] private bool m_logEntry = false;
+    [SerializeField] private bool m_logPlayerEntry = false;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        GameObject collisionParent = collision.transform.parent.gameObject;
+
+        if (collisionParent.CompareTag("Player"))
         {
-            Debug.Log("Player collided");
+            //Sets the reference in the collisionParent to this object
+            PlayerController pc = collisionParent.GetComponent<PlayerController>();
+            if (pc == null)
+            {
+                Debug.LogError(collisionParent.name + " does not have an attachted player controller");
+            }
+            else
+            {
+                pc.AssignGrapple(this);
+            }
+            PointBoost?.Invoke();
+
+            //debug logging
+            if (m_logPlayerEntry)
+            {
+                Debug.Log("Player collided with + " + this.name);
+            }
+        }
+        
+        if (m_logEntry)
+        {
+            Debug.Log(collisionParent.name + " collided with " + this.name + ". " + collisionParent.name + " has the tag: " + collisionParent.tag);
         }
     }
 }
