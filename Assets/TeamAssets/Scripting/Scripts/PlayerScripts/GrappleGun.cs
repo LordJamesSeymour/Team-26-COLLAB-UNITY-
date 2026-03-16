@@ -36,8 +36,10 @@ namespace Group26.Player.Movement
 		[SerializeField] private float grappleCooldown;
 		private float grappleCooldownTimer;
 		private bool m_bGrappling;
-		private int _grappleToken = 0; 
+		private int _grappleToken = 0;
 
+		[Header("Debug")]
+		[SerializeField] private bool m_logGrappleDelay = false;		
 		private void Awake()
 		{
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
@@ -74,7 +76,10 @@ namespace Group26.Player.Movement
 
 			CheckForGrapplePoints();
 
-            Debug.Log(grappleCooldownTimer);
+			if (m_logGrappleDelay)
+			{
+                Debug.Log(grappleCooldownTimer);
+            }
         }
 
 		private void CheckForGrapplePoints()
