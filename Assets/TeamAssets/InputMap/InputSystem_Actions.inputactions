@@ -559,7 +559,7 @@
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Trick",
                     "isComposite": false,
                     "isPartOfComposite": false

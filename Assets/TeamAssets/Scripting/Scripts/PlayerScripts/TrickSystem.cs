@@ -16,6 +16,11 @@ public class TrickSystem : MonoBehaviour
     private int Buffer;
     public int TotalScore;
 
+    public int GrappleScoreLimit = 3;
+    public int CurrentGrappleScore;
+
+    public string LastState;
+
     public enum ActionState
     {
         sliding,
@@ -37,9 +42,6 @@ public class TrickSystem : MonoBehaviour
             Controller = GetComponent<PlayerController>();
             
         }
-        
-
-
 
         /*
         StateValidationCheck[0] = MovementState.wallRunning.ToString();
@@ -49,52 +51,29 @@ public class TrickSystem : MonoBehaviour
         */
     }
 
-
     private void OnEnable()
     {
+        //print("2");
         InputManager.OnTrickPressed += DoATrick;
     }
 
     private void OnDisable()
     {
+        //print("-2");
         InputManager.OnTrickPressed -= DoATrick;
     }
 
-    public void DoATrick()
+    public void DoATrick() //Currently bunch of debugs
     {
-        /*
-        print("Do a Flip!");
-        Object component = transform.GetChild(0); //Finds PlayerBody;
-        Object orb = GetComponent<Object>();
+        //print("Do a Flip!");
 
-        PlayerController controller = orb.GetComponent<PlayerController>();
-        //bool b = PlayerController..GetComponent<PlayerController>().
-        
-        if (Playe == null)
-        {
-            print("PlayerController is null");
-        }
-        
-        if (controller == null)
-        {
-            print("Controller is null");
-        }
+        print("Current State: " + Controller.state);
 
+        print(CurrentGrappleScore + "    Current");
+        print(GrappleScoreLimit + "   Limit");
 
-        if (component != null)
-        {
+        print(StateValidationCheck[1].ToString());
 
-            Renderer Renderer = component.GetComponent<Renderer>();
-            Color color = Renderer.material.color;
-            Renderer.material.SetColor("_BaseColor", Color.white);
-
-
-
-        }
-        */
-
-        print("Do a Flip!");
-        
 
     }
 
@@ -126,25 +105,57 @@ public class TrickSystem : MonoBehaviour
         
         Buffer += 1;
 
-        //print(Buffer);
+
+        //makes sure that you don't get 12x amount of point a second (if there is a better way to make this please tell me)
         if (Buffer == 12)
         {
-            for (int i = 0; i < StateValidationCheck.Length; i++)
+            for (int i = 0; i < StateValidationCheck.Length; i++) //cheks if current state matches any of the ones listed as "ActionState"
             {
                 if (Controller.state.ToString() == StateValidationCheck[i])
                 {
+                    /*
+                    if (Controller.state.ToString() == StateValidationCheck[1])
+                    {
+                        print("Swing");
 
-                    //fix ininite score bug with grapple 
-                    //fine tune the score system
-                    print("combo");
+                        if (CurrentGrappleScore < GrappleScoreLimit)
+                        {
+                            CurrentGrappleScore += 1;
+                            print(CurrentGrappleScore);
+                            TotalScore += 10;
+                            
+                        }
 
-                    TotalScore += 5;
+                        
+                        
+                    }
+                    */
+
+                    if (CurrentGrappleScore < GrappleScoreLimit)
+                    {
+                        CurrentGrappleScore += 1;
+                        print(CurrentGrappleScore);
+                        TotalScore += 10;
+
+                    }
+
+                    // Need to add pint decay upon doing same trick multiple times 
+
+                    LastState = Controller.state.ToString();
 
                     print("Current Score: " + TotalScore);
 
                     Buffer = 0;
                     break;
                 }
+
+                //Limits Amount of points gaied from hangingfrom grapple
+                if (CurrentGrappleScore >= GrappleScoreLimit && Controller.state.ToString() != LastState)
+                {
+                    print("Limit");
+                    CurrentGrappleScore = 0;
+                }
+
             }
         }
         else if (Buffer > 12) 

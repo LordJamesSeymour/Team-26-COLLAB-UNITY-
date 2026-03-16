@@ -655,9 +655,25 @@ PrefabInstance:
       value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: firstPersonLookSensitivity.x
+      value: 114
+      objectReference: {fileID: 0}
+    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: firstPersonLookSensitivity.y
+      value: 114
+      objectReference: {fileID: 0}
+    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: leftWallRunningVirtualCamera
       value: 
       objectReference: {fileID: 339946047}
+    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: thirdPersonLookSensitivity.x
+      value: 114
+      objectReference: {fileID: 0}
+    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: thirdPersonLookSensitivity.y
+      value: 114
+      objectReference: {fileID: 0}
     - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: rightWallRunningVirtualCamera
       value: 
@@ -743,6 +759,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4865603522779230174, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       insertIndex: 11
       addedObject: {fileID: 1956009963}
+    - targetCorrespondingSourceObject: {fileID: 4865603522779230174, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1956009964}
     - targetCorrespondingSourceObject: {fileID: 7770454930999117134, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1672323216}
@@ -5218,6 +5237,22 @@ MonoBehaviour:
   m_speedIncreaseFactor: 0.2
   m_slowDownFactor: 0.005
   m_playerStats_SO: {fileID: 11400000, guid: af0124e1b4e48fa49a1cfa76f2373a83, type: 2}
+--- !u!114 &1956009964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623827484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5253901ccbb40ef40ab04302c92a92dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TotalScore: 0
+  GrappleScoreLimit: 3
+  CurrentGrappleScore: 0
+  LastState: 
 --- !u!1 &1999441104
 GameObject:
   m_ObjectHideFlags: 0
