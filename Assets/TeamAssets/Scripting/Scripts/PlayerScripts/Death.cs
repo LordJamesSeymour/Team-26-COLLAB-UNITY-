@@ -1,20 +1,27 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Death : MonoBehaviour
 {
     [SerializeField] private GameObject m_respawnMenuPanel;
+    [SerializeField] private Timer m_timerScript;
+    [SerializeField] private int m_sceneNum;
 
     [HideInInspector] public Vector3 m_respawnPoint;
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
     private Vector3 m_startPoint;
+    private int m_totalTime;
     private bool m_buttonPressed = false;
 
     private InputAction m_respawnInput;
     private InputAction m_restartInput;
+
+    private Coroutine m_respawn;
+    private Coroutine m_restart;
 
     private void Awake()
     {
@@ -29,6 +36,7 @@ public class Death : MonoBehaviour
 
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
+
         //TEST_DeathZone.OnPlayerDead += PlayerDeath;
     }
 
@@ -45,7 +53,21 @@ public class Death : MonoBehaviour
         m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
+        if(m_respawnMenuPanel.activeSelf == false)
+        {
+            m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        }
+
         yield return new WaitForSeconds(0.5f);
+        m_respawn = null;
+
+        yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
+        //yield return new WaitUntil(() => transform.position == m_respawnPoint);
+
+        //Time.timeScale = 1.0f;
+        //m_timerScript.ResumeTimer();
+        m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        m_timerScript.m_paused = false;
     }
 
     private IEnumerator Restart()
@@ -58,11 +80,25 @@ public class Death : MonoBehaviour
 
         Debug.Log("Restarting");
 
+        //NOTE: design have said to restart level when 'restart' is chosen
+        //SceneManager.LoadScene(m_sceneNum);
+
         transform.position = m_startPoint;
+        m_timerScript.ResetTimer();
+        m_timerScript.UpdateTimerText("00:00");
         m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
         yield return new WaitForSeconds(0.5f);
+        m_restart = null;
+
+        yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
+        //m_timerScript.ResumeTimer();
+        //Time.timeScale = 1.0f;
+        //m_timerScript.ResetTimer();
+        m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        m_timerScript.m_paused = false;
+        //yield return new WaitForSeconds(0.5f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -74,6 +110,8 @@ public class Death : MonoBehaviour
             m_rigidbody.angularVelocity = Vector3.zero;
             m_rigidbody.isKinematic = true;
             m_respawnMenuPanel.SetActive(true);
+            m_timerScript.m_timerDisplay.gameObject.SetActive(false);
+            m_timerScript.m_paused = true;
             //StartCoroutine(Respawn());
         }
     }
@@ -81,14 +119,18 @@ public class Death : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf)
+        if(m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_respawn == null)
         {
-            StartCoroutine(Respawn());
+            StopCoroutine(Restart());
+            m_restart = null;
+            m_respawn = StartCoroutine(Respawn());
         }
 
-        if(m_restartInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf)
+        if(m_restartInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_restart == null)
         {
-            StartCoroutine(Restart());
+            StopCoroutine(Respawn());
+            m_respawn = null;
+            m_restart = StartCoroutine(Restart());
         }
     }
 }

@@ -6,13 +6,15 @@ public class Timer : MonoBehaviour
 {
     [Header("Timer Settings")]
     [SerializeField] private bool m_bautoStart = true;
-    [SerializeField] private TextMeshProUGUI m_timerDisplay;
+    [SerializeField] public TextMeshProUGUI m_timerDisplay;
     [SerializeField] private bool m_bcompressTime = true;
 
     [Header("Timer Info")]
     public int m_totalTimeSecs = 0;
     public int m_elapsedTimeSecs = 0;
     public int m_elapsedTimeMins = 0;
+
+    public bool m_paused = false;
 
     private void Start()
     {
@@ -27,7 +29,10 @@ public class Timer : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1);
-            m_totalTimeSecs++;
+            if(m_paused == false)
+            {
+                m_totalTimeSecs++;
+            }
 
             if (m_timerDisplay != null && !m_bcompressTime)
             {
@@ -62,4 +67,8 @@ public class Timer : MonoBehaviour
         m_elapsedTimeMins = m_totalTimeSecs / 60;
     }
 
+    public void UpdateTimerText(string updatedText)
+    {
+        m_timerDisplay.text = updatedText;
+    }
 }

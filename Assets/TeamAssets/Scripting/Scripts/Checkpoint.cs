@@ -11,6 +11,7 @@ public class Checkpoint : MonoBehaviour
 
     private void Awake()
     {
+        m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
         m_used = false;
         if(!m_checkpointsEnabled) gameObject.SetActive(false);
     }
