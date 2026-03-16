@@ -11,6 +11,12 @@ public class Grapple : MonoBehaviour
     /// The time the grapple debug ray will be visible for. This will do nothing if m_drawDebugRay is disabled.
     /// </summary>
     [SerializeField] private float m_debugRayDuration = 10.0f;
+    /// <summary>
+    /// Will only run if you hit an object
+    /// </summary>
+    [SerializeField] private bool m_logGrappleValidity = false;
+    [SerializeField] private bool m_logGrappleIterator = false;
+    [SerializeField] private bool m_logGrapplePointCollisions = false;
 
     [Header("Grapple properties")]
     [SerializeField] private Transform m_grappleOrigin;
@@ -62,6 +68,7 @@ public class Grapple : MonoBehaviour
         //checking validity of hit object for grappling
         if(hit.collider != null)
         {
+            //boolean variable instead of an if statement is used here to allow for the grapple anywhere boolean
             bool validgrapple = false;
             if (m_grappleAnywhere)
             {
@@ -70,6 +77,12 @@ public class Grapple : MonoBehaviour
             else
             {
                 validgrapple = hit.collider.gameObject.CompareTag("GrapplePoint");
+            }
+
+            //Logging grapple validity
+            if (m_logGrappleValidity)
+            {
+                Debug.Log("Grapple is valid: " + validgrapple);
             }
 
             if (validgrapple)
@@ -90,6 +103,10 @@ public class Grapple : MonoBehaviour
         {
             m_isGrappling = true;
             iters++;
+            if (m_logGrappleIterator)
+            {
+                Debug.Log("Grapple iteration: " + iters);
+            }
             //Applying a force towards the grappleObject
             if (m_rigidBody != null)
             {
@@ -97,7 +114,12 @@ public class Grapple : MonoBehaviour
                 direction = direction.normalized;
                 m_rigidBody.AddForce(direction * m_grappleForce, ForceMode.Impulse);
             }
-            yield return new WaitForSeconds(m_grappleForceDelay);
+            else
+            {
+                //breaks from the loop if the rigidbody is null as their is no point in running the code
+                break;
+            }
+                    yield return new WaitForSeconds(m_grappleForceDelay);
         }
         m_isGrappling = false;
     }
@@ -112,6 +134,10 @@ public class Grapple : MonoBehaviour
         if (other.gameObject.CompareTag("GrapplePoint")) {
             m_inGrapplePoint = true;
             StopGrappling();
+            if (m_logGrapplePointCollisions)
+            {
+                Debug.Log("Entered a grapple point");
+            }
         }
     }
 
@@ -120,6 +146,10 @@ public class Grapple : MonoBehaviour
         if (other.gameObject.CompareTag("GrapplePoint"))
         {
             m_inGrapplePoint = false;
+            if (m_logGrapplePointCollisions)
+            {
+                Debug.Log("Exited a grapple point");
+            }
         }
     }
 }
