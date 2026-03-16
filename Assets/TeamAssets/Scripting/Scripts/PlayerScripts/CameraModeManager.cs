@@ -134,6 +134,12 @@ namespace Group26.Player.Camera
 
                 cameraHolder = thirdPersonVirtualCamera.transform;
 
+                if(leftWallRunningVirtualCamera == null || rightWallRunningVirtualCamera == null)
+                {
+                    Debug.LogWarning("Wall running virtual cameras not assigned");
+                    return;
+                }
+
                 if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
                    leftWallRunningVirtualCamera.Priority = activeCameraPriority;
