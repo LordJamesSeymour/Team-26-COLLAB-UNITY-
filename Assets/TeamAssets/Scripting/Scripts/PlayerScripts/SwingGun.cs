@@ -81,7 +81,7 @@ namespace Group26.Player.Movement
             if (m_bClimbingRope)
             {
                 Vector3 directionToPoint = swingPoint - transform.position;
-                rigidBody.AddForce(directionToPoint.normalized * forwardThrustForce * Time.fixedDeltaTime);
+                rigidBody.AddForce(forwardThrustForce * Time.fixedDeltaTime * directionToPoint.normalized);
 
                 float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
                 joint.maxDistance = distanceFromPoint * 0.8f;
@@ -137,15 +137,15 @@ namespace Group26.Player.Movement
 
             // Forwards
             if (m_vMoveInput.y > 0f)
-                rigidBody.AddForce(Orientation.forward * forwardThrustForce * Time.fixedDeltaTime);
+                rigidBody.AddForce(forwardThrustForce * Time.fixedDeltaTime * Orientation.forward);
 
             // Left
             if (m_vMoveInput.x < 0f)
-                rigidBody.AddForce(-Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+                rigidBody.AddForce(horizontalThrustForce * Time.fixedDeltaTime * -Orientation.right);
 
             // Right
             if (m_vMoveInput.x > 0f)
-                rigidBody.AddForce(Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+                rigidBody.AddForce(horizontalThrustForce * Time.fixedDeltaTime * Orientation.right);
 
             // Backwards (extend cable)
             if (m_vMoveInput.y < 0f)

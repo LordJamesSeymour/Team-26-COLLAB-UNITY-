@@ -68,7 +68,11 @@ namespace Group26.Player.Movement
         void FixedUpdate()
         {
             GetInput(inputManager.MoveInput);
-            if (playerController.m_bIsWallRunning) WallRunningMovement();
+            if (playerController.m_bIsWallRunning && !playerController.m_bIsGrounded)
+            {
+                WallRunningMovement();
+                Debug.Log("Wall running");
+            }
         }
 
         private void CheckForWall()
@@ -90,7 +94,7 @@ namespace Group26.Player.Movement
 
         private void StateMachine()
         {
-            if ((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall)
+            if ((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall && !playerController.m_bIsGrounded)
             {
             StartWallRun();
 

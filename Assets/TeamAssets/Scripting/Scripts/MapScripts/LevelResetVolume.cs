@@ -1,3 +1,4 @@
+using Group26.Player.Movement;
 using UnityEngine;
 
 public class LevelResetVolume : MonoBehaviour
@@ -14,6 +15,13 @@ public class LevelResetVolume : MonoBehaviour
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+        }
+
+        //Resets grapple point if player respawns while grappling
+        SwingGun swingGun = root.GetComponent<SwingGun>();
+        if (swingGun != null)
+        {
+            swingGun.StopSwing();
         }
     }
 }

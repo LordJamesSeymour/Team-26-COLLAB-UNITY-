@@ -74,7 +74,7 @@ namespace Group26.Player.Movement
 
 			CheckForGrapplePoints();
 
-            Debug.Log(grappleCooldownTimer);
+            //Debug.Log(grappleCooldownTimer);
         }
 
 		private void CheckForGrapplePoints()
