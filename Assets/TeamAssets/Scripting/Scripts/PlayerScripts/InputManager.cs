@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Group26.Player.Camera;
+using Group26.Player.Movement;
 using UnityEngine.InputSystem;
 
 namespace Group26.Player.Inputs
@@ -12,6 +13,7 @@ namespace Group26.Player.Inputs
         private InputSystem_Actions playerInputActions;
         private PlayerLocomotion playerLocomotion;
         private CameraModeManager cameraMode;
+        private PlayerController playerController;
 
         [Tooltip("Vector2 - WASD / Left Thumb Stick")]
         [SerializeField] private InputActionReference moveAction;
@@ -45,12 +47,10 @@ namespace Group26.Player.Inputs
 
         [HideInInspector] public Vector2 MoveInput { get; private set; }
         [HideInInspector] public Vector2 LookInput { get; private set; }
-        
-        [HideInInspector] public bool canGrapple;
 
+        [HideInInspector] public bool canGrapple;
         [HideInInspector] public bool isSprinting;
         [HideInInspector] public bool isCrouching;
-
         [HideInInspector] public bool isSwinging;
 
         public event Action OnJumpPressed;
@@ -67,6 +67,7 @@ namespace Group26.Player.Inputs
             if (playerInputActions == null) playerInputActions = new InputSystem_Actions();
             if (playerLocomotion == null) playerLocomotion = GetComponent<PlayerLocomotion>();
             if (cameraMode == null) cameraMode = GetComponent<CameraModeManager>();
+            if (playerController == null) playerController = GetComponent<PlayerController>();
         }
 
         void OnEnable()
@@ -83,6 +84,35 @@ namespace Group26.Player.Inputs
         {
             MoveInput = ReadVector2(moveAction);
             LookInput = ReadVector2(lookAction);
+
+            if (IsRailLocked())
+            {
+                isSprinting = false;
+                isCrouching = false;
+
+                if (isSwinging)
+                {
+                    OnSwingStopped?.Invoke();
+                    isSwinging = false;
+                }
+            }
+        }
+
+        public void ClearRailBlockedInputs()
+        {
+            isSprinting = false;
+            isCrouching = false;
+
+            if (isSwinging)
+            {
+                OnSwingStopped?.Invoke();
+                isSwinging = false;
+            }
+        }
+
+        private bool IsRailLocked()
+        {
+            return playerController != null && playerController.IsOnRail;
         }
 
         private void SubToPlayerControls()
@@ -94,7 +124,7 @@ namespace Group26.Player.Inputs
             SubscribePerformed(dashAction, HandleDash);
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             SubscribePerformed(pauseAction, HandlePause);
-            
+
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
@@ -117,7 +147,9 @@ namespace Group26.Player.Inputs
 
         private static Vector2 ReadVector2(InputActionReference reference)
         {
-            return reference != null && reference.action != null ? reference.action.ReadValue<Vector2>() : Vector2.zero;
+            return reference != null && reference.action != null
+                ? reference.action.ReadValue<Vector2>()
+                : Vector2.zero;
         }
 
         private void HandleJump(InputAction.CallbackContext context)
@@ -127,11 +159,13 @@ namespace Group26.Player.Inputs
 
         private void HandleInteract(InputAction.CallbackContext context)
         {
+            if (IsRailLocked()) return;
             OnGrapplePressed?.Invoke();
         }
 
         private void HandleDash(InputAction.CallbackContext context)
         {
+            if (IsRailLocked()) return;
             OnDashPressed?.Invoke();
         }
 
@@ -147,31 +181,44 @@ namespace Group26.Player.Inputs
 
         private void HandleSprintChanged(InputAction.CallbackContext context)
         {
-            if(context.performed)
-            {
-                isSprinting = true;
-            }
-            else if(context.canceled)
+            if (IsRailLocked())
             {
                 isSprinting = false;
+                return;
             }
+
+            if (context.performed)
+                isSprinting = true;
+            else if (context.canceled)
+                isSprinting = false;
         }
 
         private void HandleCrouchChanged(InputAction.CallbackContext context)
         {
-            if (context.performed)
-            {
-                isCrouching = true;
-            }
-            else if (context.canceled)
+            if (IsRailLocked())
             {
                 isCrouching = false;
+                return;
             }
+
+            if (context.performed)
+                isCrouching = true;
+            else if (context.canceled)
+                isCrouching = false;
         }
 
         private void HandleSwingChanged(InputAction.CallbackContext context)
         {
-            // This is for toggling the swing state, which is used in the camera mode manager to determine whether to use swing camera settings or not
+            if (IsRailLocked())
+            {
+                if (isSwinging)
+                {
+                    OnSwingStopped?.Invoke();
+                    isSwinging = false;
+                }
+                return;
+            }
+
             if (context.performed)
             {
                 OnSwingStarted?.Invoke();
@@ -186,7 +233,7 @@ namespace Group26.Player.Inputs
 
         private static void SubscribePerformed(InputActionReference reference, Action<InputAction.CallbackContext> actionHandler)
         {
-            if(reference == null || reference.action == null) return;
+            if (reference == null || reference.action == null) return;
             reference.action.performed += actionHandler;
         }
 

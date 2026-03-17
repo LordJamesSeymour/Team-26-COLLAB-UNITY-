@@ -73,8 +73,6 @@ namespace Group26.Player.Movement
 				grappleCooldownTimer -= Time.deltaTime;
 
 			CheckForGrapplePoints();
-
-            Debug.Log(grappleCooldownTimer);
         }
 
 		private void CheckForGrapplePoints()
