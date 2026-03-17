@@ -11,21 +11,21 @@ namespace Group26.Player.Movement
 		public GrapplePointScript grappleScript;
 
         [Header("Movement")]
-		[SerializeField] float walkSpeed;
-		[SerializeField] float sprintSpeed;
-		[SerializeField] float slideSpeed;
-		[SerializeField] float wallRunSpeed;
-		[SerializeField] float groundDrag;
-		[SerializeField] float dashSpeed;
-		[SerializeField] float swingSpeed;
-		[SerializeField] float dashSpeedChangeFactor;
+		[SerializeField] private float walkSpeed;
+		[SerializeField] private float sprintSpeed;
+		[SerializeField] private float slideSpeed;
+		[SerializeField] private float wallRunSpeed;
+		[SerializeField] public float groundDrag;
+		[SerializeField] private float dashSpeed;
+		[SerializeField] private float swingSpeed;
+		[SerializeField] private float dashSpeedChangeFactor;
 
 		public float maxYSpeed;
 		public float moveSpeed;       //CHANGE: made public
         float desiredMoveSpeed;
 		float lastDesiredMoveSpeed;
 
-		[SerializeField] float speedIncreaseMultiplier = 1f;
+		[SerializeField] public float speedIncreaseMultiplier = 1f;
 		[SerializeField] float slopeIncreaseMultiplier = 1f;
 
 		[Header("Jumping")]
@@ -54,7 +54,7 @@ namespace Group26.Player.Movement
 
 		[Header("GrapplePoints")]
 		[SerializeField] private float m_pointBoostForce = 2.5f;
-		[SerializeField] private bool m_bGrapplePointBoost = true;
+		[SerializeField] private bool m_bGrappleBoosting;
 
         [Header("States etc")]
 		public MovementState state;
@@ -85,7 +85,7 @@ namespace Group26.Player.Movement
 		float verticalInput;
 
 		Vector3 moveDir;
-		Rigidbody rb;
+		Rigidbody rigidBody;
 
 		Collider m_cPlayerCollider;
 
@@ -104,8 +104,8 @@ namespace Group26.Player.Movement
 		{
 			inputManager = GetComponent<InputManager>();
 
-            rb = GetComponent<Rigidbody>();
-			rb.freezeRotation = true;
+            rigidBody = GetComponent<Rigidbody>();
+			rigidBody.freezeRotation = true;
 
 			startYScale = transform.localScale.y;
 			crouchYScale = startYScale / 2f;
@@ -123,14 +123,14 @@ namespace Group26.Player.Movement
 		{
 			inputManager.OnJumpPressed += Jump;
 
-			if (grappleScript != null)
-			{
-                grappleScript.PointBoost += PointBoost;
-            }
-			else
-			{
-				Debug.LogWarning("Script doesnt exist yet");
-			}
+			// if (grappleScript != null)
+			// {
+            //     grappleScript.PointBoost += PointBoost;
+            // }
+			// else
+			// {
+			// 	Debug.LogWarning("Grapple Script doesnt exist yet");
+			// }
         }
 
 		private void OnDisable()
@@ -139,11 +139,11 @@ namespace Group26.Player.Movement
             grappleScript.PointBoost -= PointBoost;
         }
 
-		public void AssignGrapple(GrapplePointScript whatever)
+		public void AssignGrapple(GrapplePointScript grappleScript)
 		{
-            grappleScript = whatever;
-            grappleScript.PointBoost += PointBoost;
-
+            this.grappleScript = grappleScript;
+            this.grappleScript.PointBoost += PointBoost;
+			Debug.Log("Grapple assigned to player controller and boost subscribed to grapple point event");
         }
 
         private void FixedUpdate()
@@ -158,19 +158,19 @@ namespace Group26.Player.Movement
 			if (m_bIsGrounded && !m_bActiveGrapple)
 			{
 				if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
-					rb.linearDamping = groundDrag;
+					rigidBody.linearDamping = groundDrag;
 				else
-					rb.linearDamping = 0;
+					rigidBody.linearDamping = 0;
 			}
 			else
-				rb.linearDamping = 0;
+				rigidBody.linearDamping = 0;
 
 
 			// Cache slope check once per FixedUpdate (updates slopeHit)
 			bool onSlope = OnSlope();
 
 			// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
-			rb.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
+			rigidBody.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
 
 			// State/speed first (so movement uses correct moveSpeed this frame)
 			StateHandler(onSlope);
@@ -203,7 +203,7 @@ namespace Group26.Player.Movement
 			{
 				state = MovementState.freeze;
 				moveSpeed = 0;
-				rb.linearVelocity = Vector3.zero;
+				rigidBody.linearVelocity = Vector3.zero;
 			}
 
 			else if (m_bDashing)
@@ -356,21 +356,21 @@ namespace Group26.Player.Movement
 
 			if (onSlope && !exitingSlope)
 			{
-				rb.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
+				rigidBody.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
 
 				// small stick force so you don't "float" off slopes
-				if (rb.linearVelocity.y > 0f)
-					rb.AddForce(Vector3.down * 40f, ForceMode.Force);
+				if (rigidBody.linearVelocity.y > 0f)
+					rigidBody.AddForce(Vector3.down * 40f, ForceMode.Force);
 
 				return; // IMPORTANT: don't also apply normal grounded force
 			}
 
 			if (m_bIsGrounded)
-				rb.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
+				rigidBody.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
 			else
-				rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+				rigidBody.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-			if(!m_bIsWallRunning) rb.useGravity = !OnSlope();
+			if(!m_bIsWallRunning) rigidBody.useGravity = !OnSlope();
         }
 
         private void SpeedControl(bool onSlope)
@@ -382,24 +382,24 @@ namespace Group26.Player.Movement
 
 			if (onSlope && !exitingSlope)
 			{
-				if (rb.linearVelocity.magnitude > moveSpeed)
-					rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+				if (rigidBody.linearVelocity.magnitude > moveSpeed)
+					rigidBody.linearVelocity = rigidBody.linearVelocity.normalized * moveSpeed;
 			}
 			else
 			{
-				Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+				Vector3 flatVel = new Vector3(rigidBody.linearVelocity.x, 0f, rigidBody.linearVelocity.z);
 
 				if (flatVel.magnitude > moveSpeed)
 				{
 					Vector3 limitedVel = flatVel.normalized * moveSpeed;
-					rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+					rigidBody.linearVelocity = new Vector3(limitedVel.x, rigidBody.linearVelocity.y, limitedVel.z);
 				}
 			}
 
 			// Limit Y velocity
 
-			if (maxYSpeed != 0 && rb.linearVelocity.y > maxYSpeed)
-				rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
+			if (maxYSpeed != 0 && rigidBody.linearVelocity.y > maxYSpeed)
+				rigidBody.linearVelocity = new Vector3(rigidBody.linearVelocity.x, maxYSpeed, rigidBody.linearVelocity.z);
 		}
 
 		public void Sprint(bool state) => inputManager.isSprinting = state;
@@ -445,8 +445,8 @@ namespace Group26.Player.Movement
 
 			exitingSlope = true;
 
-			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+			rigidBody.linearVelocity = new Vector3(rigidBody.linearVelocity.x, 0f, rigidBody.linearVelocity.z);
+			rigidBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 		}
 
 		private void ResetJump()
@@ -469,7 +469,7 @@ namespace Group26.Player.Movement
 		private void SetVelocity()
 		{
 			enableMovementOnNextTouch = true;
-			rb.linearVelocity = VelocityToSet;
+			rigidBody.linearVelocity = VelocityToSet;
 		}
 
 		public void ResetRestrictions()
@@ -509,23 +509,17 @@ namespace Group26.Player.Movement
 
 		public Vector3 GetDirection() { return moveDir; }
 
-        //Boost ran when the player collides with the grapple point
+        //Boost runs when the player collides with the grapple point
         private void PointBoost()
         {
-			if(rb == null)
+			if(rigidBody != null)
 			{
-				rb = GetComponent<Rigidbody>();
-			}
-			//only errors if rb is still null after getting component
-			if (rb == null)
-			{
-				Debug.LogError("No rigidbody attached to player");
-			}
-			else
-			{
-				if (m_bGrapplePointBoost)
+				Debug.Log("Rigidbody found in player controller");
+
+				if (m_bGrappleBoosting) // Currently this bool is never modified so nothing happens within the if statement
 				{
-					rb.AddForce(rb.linearVelocity.normalized * m_pointBoostForce,ForceMode.Impulse);
+					Debug.Log("Boosting player from grapple point");
+					rigidBody.AddForce(rigidBody.linearVelocity.normalized * m_pointBoostForce,ForceMode.Impulse);
 				}
 			}
         }

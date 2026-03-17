@@ -1,9 +1,6 @@
-using Group26.Player.Inputs;
 using Group26.Player.Movement;
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class SlopeMomentum : MonoBehaviour
 {
@@ -20,7 +17,7 @@ public class SlopeMomentum : MonoBehaviour
     [SerializeField] float m_minMomentum;
     [SerializeField] float m_speedIncreaseFactor;
     [SerializeField] float m_slowDownFactor;
-    [SerializeField] PlayerStats_SO m_playerStats_SO;
+    //[SerializeField] PlayerStats_SO m_playerStats_SO;
     
 
     private void Awake()
@@ -44,12 +41,12 @@ public class SlopeMomentum : MonoBehaviour
             {
                 case 0:
                     m_movementScript.moveSpeed = m_startSpeed;
-                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    m_momentum -= m_slowDownFactor * m_movementScript.groundDrag;
                     m_movementScript.moveSpeed += m_momentum;
                     m_stopCheck = 1;
                     break;
                 default:
-                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    m_momentum -= m_slowDownFactor * m_movementScript.groundDrag;
                     break;
             }
             yield return new WaitForEndOfFrame();
