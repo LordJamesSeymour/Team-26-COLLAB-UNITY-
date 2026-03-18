@@ -136,7 +136,7 @@ namespace Group26.Player.Movement
 		private void OnDisable()
 		{
 			inputManager.OnJumpPressed -= Jump;
-            grappleScript.PointBoost -= PointBoost;
+           if(grappleScript != null) grappleScript.PointBoost -= PointBoost;
         }
 
 		public void AssignGrapple(GrapplePointScript grappleScript)
