@@ -79,8 +79,6 @@ public class Death : MonoBehaviour
 
         Debug.Log("Restarting");
 
-        //NOTE: design have said to restart level when 'restart' is chosen
-
         transform.position = m_startPoint;
         m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
@@ -88,6 +86,8 @@ public class Death : MonoBehaviour
 
         Debug.Log(m_checkpoints.Length);
 
+        //NOTE: since the decision to remove the choice to respawn or restart, this may not be needed but is being kept here 
+        //      for now in case the way changing settings mid run requires it. If it doesn't this can be removed
         if(m_checkpoints != null)
         {
             foreach(GameObject checkpoint in m_checkpoints)
