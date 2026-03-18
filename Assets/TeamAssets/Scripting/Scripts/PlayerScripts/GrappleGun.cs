@@ -22,8 +22,13 @@ namespace Group26.Player.Movement
 		[SerializeField] private float maxGrappleDistance;
 		[SerializeField] private float grappleDelayTime;
 		[SerializeField] private float overshootYAxis;
+		/// <summary>
+		/// Testing variable to be set in editor. This toggles the prevention code where an extra ray checks if there is a wall in the way before beginning the grapple.
+		/// This variable will most likely be temporary, so it can be removed after testing.
+		/// </summary>
+		[SerializeField] private bool m_preventGrappleThroughWalls = true;
 
-		[Header("Prediction")]
+        [Header("Prediction")]
 		[SerializeField] RaycastHit predictionHit;
 		[SerializeField] float predictionSphereCastRadius;
 		[SerializeField] Transform predictionPoint;
@@ -40,7 +45,9 @@ namespace Group26.Player.Movement
 
 		[Header("Debug")]
 		[SerializeField] private bool m_logGrappleCooldown = false;
-		private void Awake()
+		[SerializeField] private bool m_logIncorrectLayerHits = false;
+		[SerializeField] private bool m_bDrawPredictionRays = false;
+        private void Awake()
 		{
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
 			if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
@@ -135,7 +142,7 @@ namespace Group26.Player.Movement
 			Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
 
 			if (grappleCooldownTimer > 0) return;
-			if(m_bGrappling) return;
+			if (m_bGrappling) return;
 
 			// Use the SAME cached prediction logic as SwingGun
 			if (predictionHit.point == Vector3.zero)
@@ -144,7 +151,38 @@ namespace Group26.Player.Movement
 				return;
 			}
 
-			GetComponent<SwingGun>().StopSwing();
+			if (m_preventGrappleThroughWalls)
+			{
+                //casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
+                RaycastHit obstaclePrevention;
+				Vector3 distance = predictionHit.point - Cam.position;
+                Physics.Raycast(Cam.position, distance.normalized, out obstaclePrevention, maxGrappleDistance);
+                if (obstaclePrevention.collider != null)
+                {
+                    if (m_bDrawPredictionRays)
+                    {
+						Vector3 direction = obstaclePrevention.point - Cam.position;
+                        Debug.DrawRay(Cam.position,direction.normalized * maxGrappleDistance,Color.red, 100.0f);
+                    }
+
+                    if (obstaclePrevention.collider.gameObject != null)
+                    {
+                        //layers need to be bit shifted to the left by 1 to be compared with a layer mask
+                        if ((1 << obstaclePrevention.collider.gameObject.layer) != m_grappableLayer.value)
+                        {
+                            if (m_logIncorrectLayerHits)
+                            {
+                                Debug.Log("Grapple cancelled because it hit an object with the layer: " + (1 << obstaclePrevention.collider.gameObject.layer) + " first, instead of the expected " + m_grappableLayer.value.ToString() + " layer");
+                                Debug.Log("Hit object is named: " + obstaclePrevention.collider.gameObject.name);
+                            }
+                            //PlayerController.m_bFreeze = false;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            GetComponent<SwingGun>().StopSwing();
 
 			m_bGrappling = true;
 			_grappleToken++;

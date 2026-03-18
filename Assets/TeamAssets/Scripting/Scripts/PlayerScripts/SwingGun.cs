@@ -15,13 +15,17 @@ namespace Group26.Player.Movement
 		private Transform Cam;
         public Transform gunTip;
         [SerializeField] private Transform player;
-        [SerializeField] private LayerMask m_GrappableLayer;
+        [SerializeField] private LayerMask m_grappableLayer;
         private PlayerController playerController;
 
         [Header("Swinging")]
         [SerializeField] private float maxSwingDistance = 25f;
         private Vector3 swingPoint;
         [HideInInspector] public SpringJoint joint;
+        /// <summary>
+        /// Testing variable for toggling the swing through walls prevention
+        /// </summary>
+        [SerializeField] private bool m_bpreventSwingingThroughWalls = true;
 
         [Header("OMDGear")]
         [SerializeField] private Transform Orientation;
@@ -34,6 +38,10 @@ namespace Group26.Player.Movement
         [SerializeField] private RaycastHit predictionHit;
         [SerializeField] private float predictionSphereCastRadius;
         [SerializeField] private Transform predictionPoint;
+
+        [Header("Debug")]
+        [SerializeField] private bool m_bDrawPredictionRays = false;
+        [SerializeField] private bool m_bLogIncorrectLayerHits = false;
 
         private Vector2 m_vMoveInput;
         private bool m_bClimbingRope;
@@ -98,10 +106,10 @@ namespace Group26.Player.Movement
             Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
 
             RaycastHit sphereCastHit;
-            Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_GrappableLayer);
+            Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_grappableLayer);
 
             RaycastHit raycastHit;
-            Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_GrappableLayer);
+            Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_grappableLayer);
 
 
             Vector3 realHitPoint;
@@ -160,6 +168,38 @@ namespace Group26.Player.Movement
         private void StartSwing()
         {
             if (predictionHit.point == Vector3.zero) return;
+
+            
+            if (m_bpreventSwingingThroughWalls)
+            {
+                //casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
+                RaycastHit obstaclePrevention;
+                Vector3 distance = predictionHit.point - Cam.position;
+                Physics.Raycast(Cam.position, distance.normalized, out obstaclePrevention, maxSwingDistance);
+                if (obstaclePrevention.collider != null)
+                {
+                    if (m_bDrawPredictionRays)
+                    {
+                        Vector3 direction = obstaclePrevention.point - Cam.position;
+                        Debug.DrawRay(Cam.position, direction.normalized * maxSwingDistance, Color.red, 100.0f);
+                }
+
+                    if (obstaclePrevention.collider.gameObject != null)
+                    {
+                        //layers need to be bit shifted to the left by 1 to be compared with a layer mask
+                        if ((1 << obstaclePrevention.collider.gameObject.layer) != m_grappableLayer.value)
+                        {
+                            if (m_bLogIncorrectLayerHits)
+                            {
+                                Debug.Log("Swing cancelled because it hit an object with the layer: " + (1 << obstaclePrevention.collider.gameObject.layer) + " first, instead of the expected " + m_grappableLayer.value.ToString() + " layer");
+                                Debug.Log("Hit object is named: " + obstaclePrevention.collider.gameObject.name);
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+
 
             GetComponent<GrappleGun>().ForceStopGrapple();
             playerController.ResetRestrictions();

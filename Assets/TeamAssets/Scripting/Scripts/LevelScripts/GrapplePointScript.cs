@@ -19,14 +19,14 @@ public class GrapplePointScript : MonoBehaviour
         if (collisionParent.CompareTag("Player"))
         {
             //Sets the reference in the collisionParent to this object
-            PlayerController pc = collisionParent.GetComponent<PlayerController>();
-            if (pc == null)
+            PlayerController playerController = collisionParent.GetComponent<PlayerController>();
+            if (playerController == null)
             {
                 Debug.LogError(collisionParent.name + " does not have an attachted player controller");
             }
             else
             {
-                pc.AssignGrapple(this);
+                playerController.AssignGrapple(this);
             }
             PointBoost?.Invoke();
 
