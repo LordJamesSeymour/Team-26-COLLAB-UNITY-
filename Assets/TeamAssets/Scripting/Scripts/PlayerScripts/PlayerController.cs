@@ -115,7 +115,7 @@ namespace Group26.Player.Movement
 			//GetInput(moveInput);
 		}
 
-			private void OnEnable()
+		private void OnEnable()
 		{
 			inputManager.OnJumpPressed += Jump;
 		}
