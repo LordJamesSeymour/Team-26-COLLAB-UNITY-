@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Death : MonoBehaviour
 {
-    [SerializeField] private GameObject m_respawnMenuPanel;
+    //[SerializeField] private GameObject m_respawnMenuPanel;
     [SerializeField] private Timer m_timerScript;
 
     [HideInInspector] public Vector3 m_respawnPoint;
@@ -45,27 +45,27 @@ public class Death : MonoBehaviour
         //respawns the player at their last checkpoint
         //player points don't need to change
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         Debug.Log("Respawning");
 
         transform.position = m_respawnPoint;
-        m_respawnMenuPanel.SetActive(false);
+        //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
-        if(m_respawnMenuPanel.activeSelf == false)
-        {
-            m_timerScript.m_timerDisplay.gameObject.SetActive(true);
-        }
+        //if(m_respawnMenuPanel.activeSelf == false)
+        //{
+        //    m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        //}
 
         yield return new WaitForSeconds(0.5f);
         m_respawn = null;
 
-        yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
+        //yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
 
         //Time.timeScale = 1.0f;
         //m_timerScript.ResumeTimer();
-        m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        //m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         m_timerScript.m_paused = false;
     }
 
@@ -96,17 +96,17 @@ public class Death : MonoBehaviour
             }
         }
 
-        m_respawnMenuPanel.SetActive(false);
+        //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
         yield return new WaitForSeconds(0.5f);
         m_restart = null;
 
-        yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
+        //yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
         //m_timerScript.ResumeTimer();
         //Time.timeScale = 1.0f;
         //m_timerScript.ResetTimer();
-        m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        //m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         m_timerScript.m_paused = false;
         //yield return new WaitForSeconds(0.5f);
     }
@@ -119,28 +119,40 @@ public class Death : MonoBehaviour
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             m_rigidbody.isKinematic = true;
-            m_respawnMenuPanel.SetActive(true);
-            m_timerScript.m_timerDisplay.gameObject.SetActive(false);
+            //m_respawnMenuPanel.SetActive(true);
+            //m_timerScript.m_timerDisplay.gameObject.SetActive(false);
             m_timerScript.m_paused = true;
-            //StartCoroutine(Respawn());
+
+            if (Checkpoint.m_checkpointsEnabled)
+            {
+                StopCoroutine(Restart());
+                m_restart = null;
+                m_respawn = StartCoroutine(Respawn());
+            }
+            else
+            {
+                StopCoroutine(Respawn());
+                m_respawn = null;
+                m_restart = StartCoroutine(Restart());
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_respawn == null)
-        {
-            StopCoroutine(Restart());
-            m_restart = null;
-            m_respawn = StartCoroutine(Respawn());
-        }
+        //if(m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_respawn == null)
+        //{
+        //    StopCoroutine(Restart());
+        //    m_restart = null;
+        //    m_respawn = StartCoroutine(Respawn());
+        //}
 
-        if(m_restartInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_restart == null)
-        {
-            StopCoroutine(Respawn());
-            m_respawn = null;
-            m_restart = StartCoroutine(Restart());
-        }
+        //if(m_restartInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_restart == null)
+        //{
+        //    StopCoroutine(Respawn());
+        //    m_respawn = null;
+        //    m_restart = StartCoroutine(Restart());
+        //}
     }
 }
