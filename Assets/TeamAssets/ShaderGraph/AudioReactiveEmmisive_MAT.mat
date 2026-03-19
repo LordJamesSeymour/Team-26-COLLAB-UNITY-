@@ -43,9 +43,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _Amplitude: 0
+    - _BackgroundAlpha: 0.35
+    - _BarAlpha: 0.85
     - _Bass: 0
-    - _GlowMultiplier: 15
+    - _GlowMultiplier: 12
     - _HeightMultiplier: 1
+    - _HighColorA: 0
+    - _HighColorB: 0
+    - _LowColorA: 0
+    - _LowColorB: 0
     - _Mid: 0
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -53,7 +59,12 @@ Material:
     m_Colors:
     - _BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighColor: {r: 0.94982725, g: 0.05188679, b: 1, a: 1}
+    - _HighColorA: {r: 0, g: 0.7890246, b: 1, a: 1}
+    - _HighColorB: {r: 1, g: 0, b: 0.8365736, a: 1}
     - _LowColor: {r: 0, g: 0.5277125, b: 0.9622641, a: 1}
+    - _LowColorA: {r: 0, g: 0.4137931, b: 1, a: 1}
+    - _LowColorB: {r: 0.41902542, g: 0, b: 1, a: 1}
+    - _TrebleColor: {r: 0.5284339, g: 0.21226415, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5300417508892185417
