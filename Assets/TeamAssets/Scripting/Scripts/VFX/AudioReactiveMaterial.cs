@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
-public class AudioReactiveMaterial : MonoBehaviour
+public class AudioAnalyzer : MonoBehaviour
 {
 	[Header("Audio")]
 	[SerializeField] private AudioSource audioSource;
@@ -13,6 +13,9 @@ public class AudioReactiveMaterial : MonoBehaviour
 	[SerializeField] private float sensitivity = 80f;
 	[SerializeField] private float riseSpeed = 20f;
 	[SerializeField] private float fallSpeed = 8f;
+
+	[Header("Layout")]
+	[SerializeField] private bool centerOut = true;
 
 	[Header("Shader Property Names")]
 	[SerializeField] private string spectrumTextureProperty = "_SpectrumTex";
@@ -48,10 +51,7 @@ public class AudioReactiveMaterial : MonoBehaviour
 
 	private void Update()
 	{
-		if (audioSource == null)
-			return;
-
-		if (!audioSource.isPlaying)
+		if (audioSource == null || !audioSource.isPlaying)
 			return;
 
 		audioSource.GetSpectrumData(spectrumSamples, 0, fftWindow);
@@ -99,14 +99,26 @@ public class AudioReactiveMaterial : MonoBehaviour
 
 	private void UpdateSpectrumTexture()
 	{
-		for (int i = 0; i < bandCount; i++)
+		for (int x = 0; x < bandCount; x++)
 		{
-			float v = smoothBands[i];
-			spectrumPixels[i] = new Color(v, 0f, 0f, 1f);
+			int bandIndex = centerOut ? GetCenterOutBandIndex(x) : x;
+			float v = smoothBands[bandIndex];
+			spectrumPixels[x] = new Color(v, 0f, 0f, 1f);
 		}
 
 		spectrumTexture.SetPixels(spectrumPixels);
 		spectrumTexture.Apply(false, false);
+	}
+
+	// 0 frequency band sits in the middle of the texture,
+	// higher bands spread toward both left and right edges.
+	private int GetCenterOutBandIndex(int textureX)
+	{
+		float u = (textureX + 0.5f) / bandCount;                // 0..1 across texture
+		float distanceFromCenter01 = Mathf.Abs(u - 0.5f) / 0.5f; // 0 at center, 1 at edges
+
+		int bandIndex = Mathf.RoundToInt(distanceFromCenter01 * (bandCount - 1));
+		return Mathf.Clamp(bandIndex, 0, bandCount - 1);
 	}
 
 	private void PushToMaterial()
