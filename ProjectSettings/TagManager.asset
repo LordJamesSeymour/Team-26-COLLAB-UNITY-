@@ -6,6 +6,7 @@ TagManager:
   tags:
   - slope
   - death zone
+  - checkpoint
   layers:
   - Default
   - TransparentFX
