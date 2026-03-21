@@ -3,19 +3,26 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class AudioAnalyzer : MonoBehaviour
 {
+	[Header("Audio Auto-Find")]
+	[SerializeField] private string playerTag = "Player";
+	[SerializeField] private bool searchInChildren = true;
+
 	[Header("Audio")]
-	[SerializeField] private AudioSource audioSource;
 	[SerializeField] private FFTWindow fftWindow = FFTWindow.BlackmanHarris;
-	[SerializeField, Range(64, 8192)] private int spectrumSampleCount = 512;
+	[SerializeField, Range(64, 8192)] private int spectrumSampleCount = 1024;
 
 	[Header("Bands")]
-	[SerializeField, Range(8, 256)] private int bandCount = 64;
+	[SerializeField, Range(32, 512)] private int bandCount = 256;
 	[SerializeField] private float sensitivity = 80f;
 	[SerializeField] private float riseSpeed = 20f;
 	[SerializeField] private float fallSpeed = 8f;
 
 	[Header("Layout")]
-	[SerializeField] private bool centerOut = true;
+	[SerializeField] private bool centerOut = false;
+
+	[Header("Curve Smoothing")]
+	[SerializeField, Range(0, 8)] private int curveSmoothRadius = 3;
+	[SerializeField, Range(0, 6)] private int curveSmoothPasses = 2;
 
 	[Header("Shader Property Names")]
 	[SerializeField] private string spectrumTextureProperty = "_SpectrumTex";
@@ -24,12 +31,17 @@ public class AudioAnalyzer : MonoBehaviour
 	[SerializeField] private string midProperty = "_Mid";
 	[SerializeField] private string trebleProperty = "_Treble";
 
+	private static AudioSource sharedAudioSource;
+
+	private AudioSource audioSource;
 	private Renderer targetRenderer;
 	private MaterialPropertyBlock propertyBlock;
 
 	private float[] spectrumSamples;
 	private float[] rawBands;
 	private float[] smoothBands;
+	private float[] displayBands;
+	private float[] smoothingBuffer;
 
 	private Texture2D spectrumTexture;
 	private Color[] spectrumPixels;
@@ -42,24 +54,58 @@ public class AudioAnalyzer : MonoBehaviour
 		spectrumSamples = new float[spectrumSampleCount];
 		rawBands = new float[bandCount];
 		smoothBands = new float[bandCount];
+		displayBands = new float[bandCount];
+		smoothingBuffer = new float[bandCount];
 		spectrumPixels = new Color[bandCount];
 
 		spectrumTexture = new Texture2D(bandCount, 1, TextureFormat.RFloat, false, true);
-		spectrumTexture.wrapMode = TextureWrapMode.Clamp;
+		spectrumTexture.wrapMode = TextureWrapMode.Repeat;
 		spectrumTexture.filterMode = FilterMode.Bilinear;
+	}
+
+	private void Start()
+	{
+		ResolveAudioSource();
 	}
 
 	private void Update()
 	{
-		if (audioSource == null || !audioSource.isPlaying)
+		if (audioSource == null)
+		{
+			ResolveAudioSource();
+			return;
+		}
+
+		if (!audioSource.isPlaying)
 			return;
 
 		audioSource.GetSpectrumData(spectrumSamples, 0, fftWindow);
 
 		BuildBands();
-		SmoothBands();
+		SmoothBandsOverTime();
+		SmoothBandsAcrossX();
 		UpdateSpectrumTexture();
 		PushToMaterial();
+	}
+
+	private void ResolveAudioSource()
+	{
+		if (sharedAudioSource != null)
+		{
+			audioSource = sharedAudioSource;
+			return;
+		}
+
+		GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+		if (player == null)
+			return;
+
+		audioSource = searchInChildren
+			? player.GetComponentInChildren<AudioSource>()
+			: player.GetComponent<AudioSource>();
+
+		if (audioSource != null)
+			sharedAudioSource = audioSource;
 	}
 
 	private void BuildBands()
@@ -85,7 +131,7 @@ public class AudioAnalyzer : MonoBehaviour
 		}
 	}
 
-	private void SmoothBands()
+	private void SmoothBandsOverTime()
 	{
 		float dt = Time.deltaTime;
 
@@ -97,12 +143,40 @@ public class AudioAnalyzer : MonoBehaviour
 		}
 	}
 
+	private void SmoothBandsAcrossX()
+	{
+		for (int i = 0; i < bandCount; i++)
+			displayBands[i] = smoothBands[i];
+
+		for (int pass = 0; pass < curveSmoothPasses; pass++)
+		{
+			for (int i = 0; i < bandCount; i++)
+			{
+				float sum = 0f;
+				float weightSum = 0f;
+
+				for (int offset = -curveSmoothRadius; offset <= curveSmoothRadius; offset++)
+				{
+					int index = Mathf.Clamp(i + offset, 0, bandCount - 1);
+					float weight = curveSmoothRadius + 1 - Mathf.Abs(offset);
+					sum += displayBands[index] * weight;
+					weightSum += weight;
+				}
+
+				smoothingBuffer[i] = sum / Mathf.Max(0.0001f, weightSum);
+			}
+
+			for (int i = 0; i < bandCount; i++)
+				displayBands[i] = smoothingBuffer[i];
+		}
+	}
+
 	private void UpdateSpectrumTexture()
 	{
 		for (int x = 0; x < bandCount; x++)
 		{
 			int bandIndex = centerOut ? GetCenterOutBandIndex(x) : x;
-			float v = smoothBands[bandIndex];
+			float v = displayBands[bandIndex];
 			spectrumPixels[x] = new Color(v, 0f, 0f, 1f);
 		}
 
@@ -110,13 +184,10 @@ public class AudioAnalyzer : MonoBehaviour
 		spectrumTexture.Apply(false, false);
 	}
 
-	// 0 frequency band sits in the middle of the texture,
-	// higher bands spread toward both left and right edges.
 	private int GetCenterOutBandIndex(int textureX)
 	{
-		float u = (textureX + 0.5f) / bandCount;                // 0..1 across texture
-		float distanceFromCenter01 = Mathf.Abs(u - 0.5f) / 0.5f; // 0 at center, 1 at edges
-
+		float u = (textureX + 0.5f) / bandCount;
+		float distanceFromCenter01 = Mathf.Abs(u - 0.5f) / 0.5f;
 		int bandIndex = Mathf.RoundToInt(distanceFromCenter01 * (bandCount - 1));
 		return Mathf.Clamp(bandIndex, 0, bandCount - 1);
 	}
@@ -139,12 +210,12 @@ public class AudioAnalyzer : MonoBehaviour
 
 	private float AverageRange(int start, int end)
 	{
-		start = Mathf.Clamp(start, 0, smoothBands.Length - 1);
-		end = Mathf.Clamp(end, start + 1, smoothBands.Length);
+		start = Mathf.Clamp(start, 0, displayBands.Length - 1);
+		end = Mathf.Clamp(end, start + 1, displayBands.Length);
 
 		float sum = 0f;
 		for (int i = start; i < end; i++)
-			sum += smoothBands[i];
+			sum += displayBands[i];
 
 		return sum / (end - start);
 	}

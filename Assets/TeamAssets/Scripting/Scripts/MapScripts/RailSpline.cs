@@ -49,11 +49,35 @@ namespace Group26.Player.Movement
 		[SerializeField] private float meshSegmentsPerUnit = 3f;
 		[SerializeField] private bool generateRailColliders = false;
 
+		[Header("Side Wall Meshes")]
+		[SerializeField] private bool generateSideWallMeshes = true;
+		[SerializeField] private Material sideWallMaterial;
+		[SerializeField] private LayerMask slopeStopMask = ~0;
+		[SerializeField] private float sideWallMaxDropDistance = 50f;
+		[SerializeField] private float sideWallSurfaceOffset = 0.02f;
+		[SerializeField] private bool generateSideWallColliders = false;
+		[SerializeField] private bool sideWallsDoubleSided = false;
+
+		[Header("Side Wall Visualizer UVs")]
+		[SerializeField] private float sideWallWaveformRepeatEveryWorldUnits = 4f;
+		[SerializeField] private float sideWallRepeatEveryWorldUnits = 4f;
+		[SerializeField] private bool sideWallUseAverageHeightForUv = true;
+		[SerializeField] private float sideWallAverageHeightScale = 1f;
+
+		[Header("Bridge Plane")]
+		[SerializeField] private bool generateBridgePlane = true;
+		[SerializeField] private Material bridgeMaterial;
+		[SerializeField] private float bridgeVerticalOffset = 0f;
+		[SerializeField] private bool bridgeDoubleSided = true;
+
 		[Header("Auto Trigger Generation")]
 		[SerializeField] private Vector3 triggerSize = new Vector3(2f, 2f, 2f);
 		[SerializeField] private string generatedPathName = "GeneratedPath_Auto";
 		[SerializeField] private string leftRailName = "LeftRailMesh_Auto";
 		[SerializeField] private string rightRailName = "RightRailMesh_Auto";
+		[SerializeField] private string leftWallName = "LeftWallMesh_Auto";
+		[SerializeField] private string rightWallName = "RightWallMesh_Auto";
+		[SerializeField] private string bridgePlaneName = "BridgePlane_Auto";
 		[SerializeField] private string entryTriggerName = "EntryTrigger";
 		[SerializeField] private string exitTriggerName = "ExitTrigger";
 		[SerializeField] private bool autoGenerateTriggers = true;
@@ -61,6 +85,9 @@ namespace Group26.Player.Movement
 		private SplineContainer generatedSplineContainer;
 		private Transform leftRailTransform;
 		private Transform rightRailTransform;
+		private Transform leftWallTransform;
+		private Transform rightWallTransform;
+		private Transform bridgePlaneTransform;
 
 		public SplineContainer SplineContainer => generatedSplineContainer != null ? generatedSplineContainer : sourceSplineContainer;
 		public float EntrySpeed => entrySpeed;
@@ -136,9 +163,16 @@ namespace Group26.Player.Movement
 			maxGeneratedKnots = Mathf.Max(minGeneratedKnots, maxGeneratedKnots);
 
 			railHalfSeparation = Mathf.Max(0.01f, railHalfSeparation);
+			railVerticalOffset = Mathf.Max(0f, railVerticalOffset);
 			railRadius = Mathf.Max(0.01f, railRadius);
 			railSides = Mathf.Max(3, railSides);
 			meshSegmentsPerUnit = Mathf.Max(0.5f, meshSegmentsPerUnit);
+
+			sideWallMaxDropDistance = Mathf.Max(0.01f, sideWallMaxDropDistance);
+			sideWallSurfaceOffset = Mathf.Max(0f, sideWallSurfaceOffset);
+			sideWallWaveformRepeatEveryWorldUnits = Mathf.Max(0.01f, sideWallWaveformRepeatEveryWorldUnits);
+			sideWallRepeatEveryWorldUnits = Mathf.Max(0.01f, sideWallRepeatEveryWorldUnits);
+			sideWallAverageHeightScale = Mathf.Max(0.01f, sideWallAverageHeightScale);
 
 			triggerSize.x = Mathf.Max(0.01f, triggerSize.x);
 			triggerSize.y = Mathf.Max(0.01f, triggerSize.y);
@@ -153,7 +187,7 @@ namespace Group26.Player.Movement
 			EnsureGeneratedObjects();
 			BuildRuntimeSpline();
 			SyncGeneratedTriggers();
-			BuildTwinRailMeshes();
+			BuildGeneratedGeometry();
 		}
 
 		private void EnsureGeneratedObjects()
@@ -161,21 +195,30 @@ namespace Group26.Player.Movement
 			generatedSplineContainer = GetOrCreateSplineChild(generatedPathName);
 			leftRailTransform = GetOrCreateChild(leftRailName);
 			rightRailTransform = GetOrCreateChild(rightRailName);
+			leftWallTransform = GetOrCreateChild(leftWallName);
+			rightWallTransform = GetOrCreateChild(rightWallName);
+			bridgePlaneTransform = GetOrCreateChild(bridgePlaneName);
 
 			generatedSplineContainer.transform.SetParent(transform, false);
 			generatedSplineContainer.transform.localPosition = Vector3.zero;
 			generatedSplineContainer.transform.localRotation = Quaternion.identity;
 			generatedSplineContainer.transform.localScale = Vector3.one;
 
-			leftRailTransform.SetParent(transform, false);
-			leftRailTransform.localPosition = Vector3.zero;
-			leftRailTransform.localRotation = Quaternion.identity;
-			leftRailTransform.localScale = Vector3.one;
+			ResetChildTransform(leftRailTransform);
+			ResetChildTransform(rightRailTransform);
+			ResetChildTransform(leftWallTransform);
+			ResetChildTransform(rightWallTransform);
+			ResetChildTransform(bridgePlaneTransform);
+		}
 
-			rightRailTransform.SetParent(transform, false);
-			rightRailTransform.localPosition = Vector3.zero;
-			rightRailTransform.localRotation = Quaternion.identity;
-			rightRailTransform.localScale = Vector3.one;
+		private void ResetChildTransform(Transform t)
+		{
+			if (t == null) return;
+
+			t.SetParent(transform, false);
+			t.localPosition = Vector3.zero;
+			t.localRotation = Quaternion.identity;
+			t.localScale = Vector3.one;
 		}
 
 		private SplineContainer GetOrCreateSplineChild(string childName)
@@ -334,7 +377,7 @@ namespace Group26.Player.Movement
 					else
 						Destroy(wrongExit);
 #else
-                    Destroy(wrongExit);
+					Destroy(wrongExit);
 #endif
 				}
 
@@ -355,7 +398,7 @@ namespace Group26.Player.Movement
 					else
 						Destroy(wrongEntry);
 #else
-                    Destroy(wrongEntry);
+					Destroy(wrongEntry);
 #endif
 				}
 			}
@@ -379,15 +422,8 @@ namespace Group26.Player.Movement
 				triggerTransform.rotation = Quaternion.LookRotation(tangent, up);
 		}
 
-		private void BuildTwinRailMeshes()
+		private void BuildGeneratedGeometry()
 		{
-			if (!generateRailMeshes)
-			{
-				DisableMeshChild(leftRailTransform);
-				DisableMeshChild(rightRailTransform);
-				return;
-			}
-
 			SplineContainer runtimeSpline = SplineContainer;
 			if (runtimeSpline == null || runtimeSpline.Spline == null || runtimeSpline.Spline.Count < 2)
 				return;
@@ -395,10 +431,12 @@ namespace Group26.Player.Movement
 			float worldLength = Mathf.Max(0.01f, runtimeSpline.CalculateLength());
 			int ringCount = Mathf.Max(4, Mathf.CeilToInt(worldLength * meshSegmentsPerUnit) + 1);
 
-			Vector3[] leftCenters = new Vector3[ringCount];
-			Vector3[] rightCenters = new Vector3[ringCount];
-			Vector3[] forwards = new Vector3[ringCount];
-			Vector3[] ups = new Vector3[ringCount];
+			Vector3[] leftUpper = new Vector3[ringCount];
+			Vector3[] rightUpper = new Vector3[ringCount];
+			Vector3[] leftLower = new Vector3[ringCount];
+			Vector3[] rightLower = new Vector3[ringCount];
+			Vector3[] railForwards = new Vector3[ringCount];
+			Vector3[] railUps = new Vector3[ringCount];
 
 			for (int i = 0; i < ringCount; i++)
 			{
@@ -420,23 +458,143 @@ namespace Group26.Player.Movement
 				if (worldRight.sqrMagnitude < 0.0001f)
 					worldRight = transform.right;
 
-				Vector3 localPos = transform.InverseTransformPoint(worldPos);
-				Vector3 localForward = transform.InverseTransformDirection(worldForward).normalized;
-				Vector3 localUp = transform.InverseTransformDirection(worldUp).normalized;
-				Vector3 localRight = transform.InverseTransformDirection(worldRight).normalized;
+				Vector3 leftUpperWorld = worldPos + worldUp * railVerticalOffset - worldRight * railHalfSeparation;
+				Vector3 rightUpperWorld = worldPos + worldUp * railVerticalOffset + worldRight * railHalfSeparation;
 
-				Vector3 centerOffset = localUp * railVerticalOffset;
-				leftCenters[i] = localPos + centerOffset - localRight * railHalfSeparation;
-				rightCenters[i] = localPos + centerOffset + localRight * railHalfSeparation;
-				forwards[i] = localForward;
-				ups[i] = localUp;
+				Vector3 leftLowerWorld = ResolveWallBottom(leftUpperWorld);
+				Vector3 rightLowerWorld = ResolveWallBottom(rightUpperWorld);
+
+				leftUpper[i] = transform.InverseTransformPoint(leftUpperWorld);
+				rightUpper[i] = transform.InverseTransformPoint(rightUpperWorld);
+				leftLower[i] = transform.InverseTransformPoint(leftLowerWorld);
+				rightLower[i] = transform.InverseTransformPoint(rightLowerWorld);
+
+				railForwards[i] = transform.InverseTransformDirection(worldForward).normalized;
+				railUps[i] = transform.InverseTransformDirection(worldUp).normalized;
 			}
 
-			BuildRailMeshObject(leftRailTransform, leftCenters, forwards, ups, "LeftRailMesh");
-			BuildRailMeshObject(rightRailTransform, rightCenters, forwards, ups, "RightRailMesh");
+			if (generateRailMeshes)
+			{
+				BuildRailTubeObject(leftRailTransform, leftUpper, railForwards, railUps, "LeftRailMesh");
+				BuildRailTubeObject(rightRailTransform, rightUpper, railForwards, railUps, "RightRailMesh");
+			}
+			else
+			{
+				ClearGeneratedMesh(leftRailTransform, true);
+				ClearGeneratedMesh(rightRailTransform, true);
+			}
+
+			if (generateSideWallMeshes)
+			{
+				float leftAverageWallHeight = GetAverageWallHeight(leftUpper, leftLower);
+				float rightAverageWallHeight = GetAverageWallHeight(rightUpper, rightLower);
+
+				float leftUvReferenceHeight = sideWallUseAverageHeightForUv ? leftAverageWallHeight : -1f;
+				float rightUvReferenceHeight = sideWallUseAverageHeightForUv ? rightAverageWallHeight : -1f;
+
+				BuildRibbonObject(
+					leftWallTransform,
+					leftUpper,
+					leftLower,
+					"LeftWallMesh",
+					sideWallMaterial,
+					sideWallsDoubleSided,
+					generateSideWallColliders,
+					true,
+					true,
+					sideWallWaveformRepeatEveryWorldUnits,
+					sideWallRepeatEveryWorldUnits,
+					leftUvReferenceHeight,
+					sideWallAverageHeightScale);
+
+				BuildRibbonObject(
+					rightWallTransform,
+					rightUpper,
+					rightLower,
+					"RightWallMesh",
+					sideWallMaterial,
+					sideWallsDoubleSided,
+					generateSideWallColliders,
+					true,
+					false,
+					sideWallWaveformRepeatEveryWorldUnits,
+					sideWallRepeatEveryWorldUnits,
+					rightUvReferenceHeight,
+					sideWallAverageHeightScale);
+			}
+			else
+			{
+				ClearGeneratedMesh(leftWallTransform, true);
+				ClearGeneratedMesh(rightWallTransform, true);
+			}
+
+			if (generateBridgePlane)
+			{
+				Vector3[] bridgeLeft = new Vector3[ringCount];
+				Vector3[] bridgeRight = new Vector3[ringCount];
+
+				for (int i = 0; i < ringCount; i++)
+				{
+					Vector3 offset = railUps[i] * bridgeVerticalOffset;
+					bridgeLeft[i] = leftUpper[i] + offset;
+					bridgeRight[i] = rightUpper[i] + offset;
+				}
+
+				BuildRibbonObject(
+					bridgePlaneTransform,
+					bridgeLeft,
+					bridgeRight,
+					"BridgePlane",
+					bridgeMaterial,
+					bridgeDoubleSided,
+					false,
+					false,
+					false,
+					1f,
+					1f,
+					-1f,
+					1f);
+			}
+			else
+			{
+				ClearGeneratedMesh(bridgePlaneTransform, true);
+			}
 		}
 
-		private void BuildRailMeshObject(Transform target, Vector3[] centers, Vector3[] forwards, Vector3[] ups, string meshName)
+		private float GetAverageWallHeight(Vector3[] upper, Vector3[] lower)
+		{
+			if (upper == null || lower == null || upper.Length == 0 || lower.Length != upper.Length)
+				return 1f;
+
+			float sum = 0f;
+			for (int i = 0; i < upper.Length; i++)
+				sum += Vector3.Distance(upper[i], lower[i]);
+
+			return Mathf.Max(0.01f, sum / upper.Length);
+		}
+
+		private Vector3 ResolveWallBottom(Vector3 upperWorldPoint)
+		{
+			if (Physics.Raycast(
+				upperWorldPoint,
+				Vector3.down,
+				out RaycastHit hit,
+				sideWallMaxDropDistance,
+				slopeStopMask,
+				QueryTriggerInteraction.Ignore))
+			{
+				return hit.point + Vector3.up * sideWallSurfaceOffset;
+			}
+
+			return upperWorldPoint + Vector3.down * sideWallMaxDropDistance;
+		}
+
+		private void BuildRailTubeObject(
+			Transform target,
+			Vector3[] centers,
+			Vector3[] forwards,
+			Vector3[] ups,
+			string meshName)
 		{
 			if (target == null)
 				return;
@@ -455,8 +613,7 @@ namespace Group26.Player.Movement
 			Mesh mesh = meshFilter.sharedMesh;
 			if (mesh == null)
 			{
-				mesh = new Mesh();
-				mesh.name = meshName;
+				mesh = new Mesh { name = meshName };
 				meshFilter.sharedMesh = mesh;
 			}
 			else
@@ -478,22 +635,85 @@ namespace Group26.Player.Movement
 			}
 			else
 			{
-				MeshCollider collider = target.GetComponent<MeshCollider>();
-				if (collider != null)
-				{
-#if UNITY_EDITOR
-					if (!Application.isPlaying)
-						DestroyImmediate(collider);
-					else
-						Destroy(collider);
-#else
-                    Destroy(collider);
-#endif
-				}
+				RemoveMeshCollider(target.gameObject);
 			}
 		}
 
-		private void DisableMeshChild(Transform target)
+		private void BuildRibbonObject(
+			Transform target,
+			Vector3[] edgeA,
+			Vector3[] edgeB,
+			string meshName,
+			Material material,
+			bool doubleSided,
+			bool addCollider,
+			bool useVisualizerWallUvs,
+			bool flipFacing,
+			float waveformRepeatEveryWorldUnits,
+			float detailRepeatEveryWorldUnits,
+			float averageHeightForUv,
+			float verticalUvScale)
+		{
+			if (target == null)
+				return;
+
+			MeshFilter meshFilter = target.GetComponent<MeshFilter>();
+			if (meshFilter == null)
+				meshFilter = target.gameObject.AddComponent<MeshFilter>();
+
+			MeshRenderer meshRenderer = target.GetComponent<MeshRenderer>();
+			if (meshRenderer == null)
+				meshRenderer = target.gameObject.AddComponent<MeshRenderer>();
+
+			if (material != null)
+				meshRenderer.sharedMaterial = material;
+
+			Mesh mesh = meshFilter.sharedMesh;
+			if (mesh == null)
+			{
+				mesh = new Mesh { name = meshName };
+				meshFilter.sharedMesh = mesh;
+			}
+			else
+			{
+				mesh.Clear();
+			}
+
+			if (useVisualizerWallUvs)
+			{
+				RailMeshUtility.BuildRibbonMeshForVisualizerWall(
+					mesh,
+					edgeA,
+					edgeB,
+					doubleSided,
+					flipFacing,
+					waveformRepeatEveryWorldUnits,
+					detailRepeatEveryWorldUnits,
+					averageHeightForUv,
+					verticalUvScale);
+			}
+			else
+			{
+				RailMeshUtility.BuildRibbonMesh(mesh, edgeA, edgeB, doubleSided);
+			}
+
+			if (addCollider)
+			{
+				MeshCollider collider = target.GetComponent<MeshCollider>();
+				if (collider == null)
+					collider = target.gameObject.AddComponent<MeshCollider>();
+
+				collider.sharedMesh = null;
+				collider.sharedMesh = mesh;
+				collider.convex = false;
+			}
+			else
+			{
+				RemoveMeshCollider(target.gameObject);
+			}
+		}
+
+		private void ClearGeneratedMesh(Transform target, bool removeCollider)
 		{
 			if (target == null)
 				return;
@@ -501,6 +721,25 @@ namespace Group26.Player.Movement
 			MeshFilter meshFilter = target.GetComponent<MeshFilter>();
 			if (meshFilter != null && meshFilter.sharedMesh != null)
 				meshFilter.sharedMesh.Clear();
+
+			if (removeCollider)
+				RemoveMeshCollider(target.gameObject);
+		}
+
+		private void RemoveMeshCollider(GameObject go)
+		{
+			MeshCollider collider = go.GetComponent<MeshCollider>();
+			if (collider == null)
+				return;
+
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+				DestroyImmediate(collider);
+			else
+				Destroy(collider);
+#else
+			Destroy(collider);
+#endif
 		}
 
 		private static List<Vector3> ApplyChaikinOpen(List<Vector3> input)

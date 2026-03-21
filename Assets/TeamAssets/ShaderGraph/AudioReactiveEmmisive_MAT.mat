@@ -46,7 +46,7 @@ Material:
     - _BackgroundAlpha: 0.35
     - _BarAlpha: 0.85
     - _Bass: 0
-    - _GlowMultiplier: 12
+    - _GlowMultiplier: 7
     - _HeightMultiplier: 1
     - _HighColorA: 0
     - _HighColorB: 0
@@ -57,7 +57,7 @@ Material:
     - _QueueOffset: 0
     - _Treble: 0
     m_Colors:
-    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BackgroundColor: {r: 0, g: 0.27331832, b: 0.3490566, a: 1}
     - _HighColor: {r: 0.94982725, g: 0.05188679, b: 1, a: 1}
     - _HighColorA: {r: 0, g: 0.7890246, b: 1, a: 1}
     - _HighColorB: {r: 1, g: 0, b: 0.8365736, a: 1}
