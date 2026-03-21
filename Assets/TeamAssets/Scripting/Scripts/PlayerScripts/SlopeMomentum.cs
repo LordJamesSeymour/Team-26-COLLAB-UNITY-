@@ -20,7 +20,7 @@ public class SlopeMomentum : MonoBehaviour
     [SerializeField] float m_minMomentum;
     [SerializeField] float m_speedIncreaseFactor;
     [SerializeField] float m_slowDownFactor;
-    [SerializeField] PlayerStats_SO m_playerStats_SO;
+    //[SerializeField] PlayerStats_SO m_playerStats_SO;
     
 
     private void Awake()
@@ -44,12 +44,12 @@ public class SlopeMomentum : MonoBehaviour
             {
                 case 0:
                     m_movementScript.moveSpeed = m_startSpeed;
-                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    m_momentum -= m_slowDownFactor * m_movementScript.groundDrag;
                     m_movementScript.moveSpeed += m_momentum;
                     m_stopCheck = 1;
                     break;
                 default:
-                    m_momentum -= m_slowDownFactor * m_playerStats_SO.m_fGroundDrag;
+                    m_momentum -= m_slowDownFactor * m_movementScript.groundDrag;
                     break;
             }
             yield return new WaitForEndOfFrame();
@@ -78,13 +78,15 @@ public class SlopeMomentum : MonoBehaviour
     {
         //Debug.Log(m_onSlope);
         //Debug.Log(m_locomotionScript.GetDirection());
-        //Debug.Log("Speed: " + m_movementScript.moveSpeed);
-        //Debug.Log("Momentum: " + m_momentum);
+        Debug.Log("Speed: " + m_movementScript.moveSpeed);
+        Debug.Log("Momentum: " + m_momentum);
+        Debug.Log("Angle: " + m_movementScript.GetSlopeAngle());
+        Debug.Log("Speed Increase Factor: " + m_speedIncreaseFactor * (1 + (m_movementScript.GetSlopeAngle() / 10)));
 
         if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95)
         {
             m_stopCheck = 0;
-            m_momentum += m_speedIncreaseFactor;
+            m_momentum += m_speedIncreaseFactor * (1 + (m_movementScript.GetSlopeAngle() / 10));
         }
         else if(m_movementScript.GetDirection() == Vector3.zero)
         {

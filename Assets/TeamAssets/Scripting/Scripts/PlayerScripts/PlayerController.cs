@@ -14,7 +14,7 @@ namespace Group26.Player.Movement
 		[SerializeField] float sprintSpeed;
 		[SerializeField] float slideSpeed;
 		[SerializeField] float wallRunSpeed;
-		[SerializeField] float groundDrag;
+		[SerializeField] public float groundDrag;
 		[SerializeField] float dashSpeed;
 		[SerializeField] float swingSpeed;
 		[SerializeField] float dashSpeedChangeFactor;
@@ -480,6 +480,20 @@ namespace Group26.Player.Movement
 			}
 			return false;
 		}
+
+		public float GetSlopeAngle()
+		{
+            if (m_cPlayerCollider == null) return 0.0f;
+
+            float halfHeight = m_cPlayerCollider.bounds.extents.y; // updates if collider/scale changes
+
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
+            {
+                float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                return angle;
+            }
+			return 0.0f;
+        }
 
 		public Vector3 GetSlopeMoveDirection(Vector3 direction)
 		{
