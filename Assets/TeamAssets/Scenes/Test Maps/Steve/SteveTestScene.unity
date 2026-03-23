@@ -668,11 +668,11 @@ PrefabInstance:
       objectReference: {fileID: 339946047}
     - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: thirdPersonLookSensitivity.x
-      value: 114
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: thirdPersonLookSensitivity.y
-      value: 114
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: rightWallRunningVirtualCamera
@@ -692,15 +692,15 @@ PrefabInstance:
       objectReference: {fileID: 608019952}
     - target: {fileID: 4237640061233739527, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 182.89072
+      value: -98.75
       objectReference: {fileID: 0}
     - target: {fileID: 4237640061233739527, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 1.47
       objectReference: {fileID: 0}
     - target: {fileID: 4237640061233739527, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 4237640061233739527, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3743,7 +3743,7 @@ Transform:
   m_GameObject: {fileID: 1226302151}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.70710677, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 182.37701, y: 2.02, z: 0.000000059604645}
+  m_LocalPosition: {x: -99.2637, y: 1.99, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5249,9 +5249,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5253901ccbb40ef40ab04302c92a92dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PointMultiplier: 1
+  PointsDecay: 0.5
   TotalScore: 0
-  GrappleScoreLimit: 3
-  CurrentGrappleScore: 0
+  Timer: 1
+  CurrentTimer: 0
+  MaxTimer: 1
+  WallRunningTimer: 0
+  WallRunningPointsEnabled: 1
+  ActionScoreLimit: 3
+  CurrentActionScore: 0
   LastState: 
 --- !u!1 &1999441104
 GameObject:

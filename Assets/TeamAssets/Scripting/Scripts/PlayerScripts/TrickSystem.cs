@@ -1,4 +1,5 @@
 using Group26.Player.Inputs;
+using System.Collections;
 using UnityEngine;
 
 namespace Group26.Player.Movement
@@ -10,11 +11,24 @@ namespace Group26.Player.Movement
         private string[] StateValidationCheck;
 
         private int Buffer;
+        public float PointMultiplier = 1;
+        public float PointsDecay = 0.5f;
         public int TotalScore;
+
+        //timers
+        public int Timer = 1;
+        public float CurrentTimer = 0;
+        public float MaxTimer = 0;
+
+        public float WallRunningTimer = 0;
+        public bool WallRunningPointsEnabled = true;
+
+        public bool SwingingPointsEnabled = true;
+
+
 
         public int ActionScoreLimit = 3;
         public int CurrentActionScore;
-
 
         public string LastState;
 
@@ -94,77 +108,42 @@ namespace Group26.Player.Movement
                 if (playerController.state == PlayerController.MovementState.dashing)
                 {
                     Debug.Log("Dash");
-                    TotalScore += 5;
 
+                    PointsCalculation(5, PointMultiplier);
+                    DecayCalculation(PlayerController.MovementState.dashing.ToString());
                 }
 
                 if (playerController.state == PlayerController.MovementState.wallRunning)
                 {
                     Debug.Log("Wall Running");
-                    TotalScore += 7;
+                    if (WallRunningPointsEnabled)
+                    {
+                        WallRunningPointsEnabled = false;
+                        DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
+                        PointsCalculation(7, PointMultiplier);
+                    }
+                    
                 }
 
                 if (playerController.state == PlayerController.MovementState.swinging)
                 {
                     Debug.Log("Swinging");
-                    TotalScore += 7;
+                    if (SwingingPointsEnabled)
+                    {
+                        SwingingPointsEnabled = false;
+                        PointsCalculation(7, PointMultiplier);
+                        DecayCalculation(PlayerController.MovementState.swinging.ToString());
+                    }
                 }
 
                 if (playerController.state == PlayerController.MovementState.sliding)
                 {
                     Debug.Log("Sliding");
-                    TotalScore += 5;
+                    PointsCalculation(5, PointMultiplier);
+                    DecayCalculation(PlayerController.MovementState.sliding.ToString());
                 }
 
-                //for (int i = 0; i < StateValidationCheck.Length; i++) //cheks if current state matches any of the ones listed as "ActionState"
-                //{
-                //    if (playerController.state.ToString() == StateValidationCheck[i])
-                //    {
-
-                //        /*
-                //        if (Controller.state.ToString() == StateValidationCheck[1])
-                //        {
-                //            print("Swing");
-
-                //            if (CurrentGrappleScore < GrappleScoreLimit)
-                //            {
-                //                CurrentGrappleScore += 1;
-                //                print(CurrentGrappleScore);
-                //                TotalScore += 10;
-
-                //            }
-
-
-
-                //        }
-                //        */
-
-                //        if (CurrentActionScore < ActionScoreLimit)
-                //        {
-                //            CurrentActionScore += 1;
-                //            //print(CurrentActionScore);
-                //            TotalScore += (10 / (1 + CurrentActionScore));
-
-                //        }
-
-                //        // +++ Need to add point decay upon doing same trick multiple times 
-
-                //        LastState = playerController.state.ToString();
-
-                //        print("Current Score: " + TotalScore);
-
-                //        Buffer = 0;
-                //        break;
-                //    }
-
-                //    //Limits Amount of points gaied from hangingfrom grapple
-                //    if (CurrentActionScore >= ActionScoreLimit && playerController.state.ToString() != LastState)
-                //    {
-                //        //print("Limit");
-                //        CurrentActionScore = 0;
-                //    }
-
-                //}
+                
             }
             else if (Buffer > 12)
             {
@@ -177,13 +156,67 @@ namespace Group26.Player.Movement
         public void PointsCalculation(int Points, float Decay)
         {
             TotalScore += (int)(Points * Decay);
+            print(TotalScore);
         }
 
+        public void DecayCalculation(string State)
+        {
+            if (State == LastState)
+            {
+                PointMultiplier -= PointsDecay;
+                PointMultiplier = Mathf.Clamp(PointMultiplier, 0, 1);
+            }
+
+            if (State != LastState)
+            {
+                PointMultiplier += PointsDecay;
+                PointMultiplier = Mathf.Clamp(PointMultiplier, 0, 3);
+            }
+
+            LastState = State;
+        }
+
+        public bool Delayed(float TimerDuration)
+        {
+            float CurrentTime = 0;
+
+            if (CurrentTime < TimerDuration)
+            {
+                print("false");
+                CurrentTime += Time.deltaTime;
+                print(CurrentTime);
+                return false;
+            }
+
+            if (CurrentTime >= TimerDuration)
+            {
+                print("true");
+                CurrentTime = 0;
+                return true;
+            }
+
+            return false;
+        }
 
         // Update is called once per frame
         void Update()
         {
+            if (CurrentTimer < MaxTimer)
+            {
+                //print("false");
+                CurrentTimer += Time.deltaTime;
+                
 
+            }
+
+            if (CurrentTimer >= MaxTimer)
+            {
+                //print("true");
+                WallRunningPointsEnabled = true;
+                SwingingPointsEnabled = true;
+                CurrentTimer = 0;
+
+            }
 
 
 
