@@ -15,10 +15,10 @@ public class Death : MonoBehaviour
     private Vector3 m_startPoint;
     private GameObject[] m_checkpoints;
     private int m_totalTime;
-    private bool m_buttonPressed = false;
+    //private bool m_buttonPressed = false;
 
-    private InputAction m_respawnInput;
-    private InputAction m_restartInput;
+    //private InputAction m_respawnInput;
+    //private InputAction m_restartInput;
 
     private Coroutine m_respawn;
     private Coroutine m_restart;
@@ -34,8 +34,8 @@ public class Death : MonoBehaviour
             Debug.Log("No rigidbody attached to this object");
         }
 
-        m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
-        m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
+        //m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
+        //m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
 
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
     }
