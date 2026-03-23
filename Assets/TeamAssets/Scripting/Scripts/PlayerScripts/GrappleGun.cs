@@ -166,7 +166,8 @@ namespace Group26.Player.Movement
 				}
 				else
 				{
-					camera = Cam;
+                    Debug.LogWarning("No main cam reference set in the GrappleGun script, obstacle prevent ray may be inaccurate");
+                    camera = Cam;
 				}
 
 				//casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
