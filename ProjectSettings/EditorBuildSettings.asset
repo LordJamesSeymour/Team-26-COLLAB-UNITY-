@@ -5,18 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Defaults/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/TeamAssets/Scenes/LevelEditor/LevelEditorMenu.unity
-    guid: fb542f9f102469441b12297c44e8b4b7
-  - enabled: 1
-    path: Assets/TeamAssets/Scenes/LevelEditor/LevelEditorTemplate.unity
-    guid: faaaea20be5210143b370ff3d1e9517c
-  - enabled: 1
-    path: Assets/TeamAssets/Scenes/LevelEditor/EmptyCustomLevel.unity
-    guid: f6b567d11b0f47a49810ef4a8edac7c7
+    path: Assets/TeamAssets/Scenes/Test Maps/Atira/checkpoints.unity
+    guid: 411451ef7f63dc9408a627569c4b471a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

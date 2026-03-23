@@ -4,13 +4,14 @@ public class Checkpoint : MonoBehaviour
 {
     [SerializeField] Death m_playerDeathScript;
 
-    public bool m_used { get; private set; }
+    [HideInInspector] public bool m_used;
     public static bool m_checkpointsEnabled;    //this is static as if one checkpoint is disabled, all of them are
                                                 //this variable is the one set in the settings menu when the player decides if
                                                 //checkpoints are enabled or not
 
     private void Awake()
     {
+        //m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
         m_used = false;
         if(!m_checkpointsEnabled) gameObject.SetActive(false);
     }

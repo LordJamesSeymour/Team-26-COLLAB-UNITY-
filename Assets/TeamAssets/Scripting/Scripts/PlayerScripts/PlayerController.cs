@@ -1,590 +1,785 @@
 using UnityEngine;
 using System.Collections;
 using Group26.Player.Inputs;
-using Unity.VisualScripting;
+using Unity.Mathematics;
+using UnityEngine.Splines;
 
 namespace Group26.Player.Movement
 {
-	public class PlayerController : MonoBehaviour
-	{
-		[Header("References")]
-		private InputManager inputManager;
-		public GrapplePointScript grappleScript;
+    public class PlayerController : MonoBehaviour
+    {
+        [Header("References")]
+        private InputManager inputManager;
+        private GrapplePointScript grappleScript;
 
         [Header("Movement")]
-		[SerializeField] private float walkSpeed;
-		[SerializeField] private float sprintSpeed;
-		[SerializeField] private float slideSpeed;
-		[SerializeField] private float wallRunSpeed;
-		[SerializeField] public float groundDrag;
-		[SerializeField] private float dashSpeed;
-		[SerializeField] private float swingSpeed;
-		[SerializeField] private float dashSpeedChangeFactor;
+        [SerializeField] float walkSpeed;
+        [SerializeField] float sprintSpeed;
+        [SerializeField] float slideSpeed;
+        [SerializeField] float wallRunSpeed;
+        [SerializeField] float dashSpeed;
+        [SerializeField] float swingSpeed;
+        [SerializeField] float dashSpeedChangeFactor;
 
-		public float maxYSpeed;
-		public float moveSpeed;       //CHANGE: made public
+        public float groundDrag;
+
+        public float maxYSpeed;
+        public float moveSpeed;
         float desiredMoveSpeed;
-		float lastDesiredMoveSpeed;
+        float lastDesiredMoveSpeed;
 
-		[SerializeField] public float speedIncreaseMultiplier = 1f;
-		[SerializeField] float slopeIncreaseMultiplier = 1f;
+        [SerializeField] float speedIncreaseMultiplier = 1f;
+        [SerializeField] float slopeIncreaseMultiplier = 1f;
 
-		[Header("Jumping")]
-		[SerializeField] float jumpForce;
-		[SerializeField] float jumpCooldown = 0.1f;
-		[SerializeField] float airMultiplier = 0.4f;
+        [Header("Jumping")]
+        [SerializeField] float jumpForce;
+        [SerializeField] float jumpCooldown = 0.1f;
+        [SerializeField] float airMultiplier = 0.4f;
 
-		[Header("Jump Buffering")]
-		[SerializeField] float jumpBufferTime = 0.15f;
+        [Header("Jump Buffering")]
+        [SerializeField] float jumpBufferTime = 0.15f;
 
-		bool exitingSlope;
+        bool exitingSlope;
 
-		[Header("Crouching")]
-		[SerializeField] float crouchSpeed;
-		float startYScale;
-		float crouchYScale;
+        [Header("Crouching")]
+        [SerializeField] float crouchSpeed;
+        float startYScale;
+        float crouchYScale;
 
-		[Header("Ground Check")]
-		[SerializeField] float m_fGroundDistance = 0.15f;
-		[SerializeField] Transform m_tGroundCheck;
-		[SerializeField] LayerMask m_lGround;
+        [Header("Ground Check")]
+        [SerializeField] float m_fGroundDistance = 0.15f;
+        [SerializeField] Transform m_tGroundCheck;
+        [SerializeField] LayerMask m_lGround;
 
-		[Header("Slope Handling")]
-		[SerializeField] float MaxSlopeAngle = 45f;
-		RaycastHit slopeHit;
+        [Header("Slope Handling")]
+        [SerializeField] float MaxSlopeAngle = 45f;
+        RaycastHit slopeHit;
 
-		[Header("GrapplePoints")]
-		[SerializeField] private float m_pointBoostForce = 3.5f;
-		[SerializeField] private bool m_bGrappleBoosting = true;
-		/// <summary>
-		/// The maximum speed the player can move at for the point boost force to be applied.
-		/// If the player is moving faster than this, they will not be boosted.
-		/// </summary>
-		[SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
-		/// <summary>
-		/// 
-		/// </summary>
-		[SerializeField] private bool m_bLogPointBoostForce = false;
-		/// <summary>
-		/// Testing variable meant to be set in editor. 
-		/// This is used for testing the differnet force modes within the grapple point boost mechanic.
-		/// </summary>
-		[SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.Force;
-		private enum pointBoostModes
-		{
-			velocity,
-			speed,
-			lookDirection
-		};
-		/// <summary>
-		/// Modes for how the point boost launch's force calculation will occur. This will be removed after a version is settled on.
-		/// </summary>
-		[SerializeField] private pointBoostModes m_pointBoostMode;
-		[SerializeField] private Transform m_camera;
+        [Header("Rail System")]
+        [SerializeField] float railJumpUpForce = 6f;
+        [SerializeField] float railExitForwardBoost = 2f;
 
-		[Header("States etc")]
-		public MovementState state;
-		public enum MovementState 
-		{ 
-			freeze,
-			walking, 
-			sprinting, 
-			crouching, 
-			sliding, 
-			air,
-			swinging,
-			wallRunning, 
-			dashing
-		}
+        [Header("GrapplePoints")]
+        [SerializeField] private float m_pointBoostForce = 3.5f;
+        [SerializeField] private bool m_bGrappleBoosting = true;
+        /// <summary>
+        /// The maximum speed the player can move at for the point boost force to be applied.
+        /// If the player is moving faster than this, they will not be boosted.
+        /// </summary>
+        [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
+        /// <summary>
+        /// 
+        /// </summary>
+        [SerializeField] private bool m_bLogPointBoostForce = false;
+        /// <summary>
+        /// Testing variable meant to be set in editor. 
+        /// This is used for testing the differnet force modes within the grapple point boost mechanic.
+        /// </summary>
+        [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.Force;
+        private enum pointBoostModes
+        {
+            velocity,
+            speed,
+            lookDirection,
+            lookandspeed
+        };
+        /// <summary>
+        /// Modes for how the point boost launch's force calculation will occur. This will be removed after a version is settled on.
+        /// </summary>
+        [SerializeField] private pointBoostModes m_pointBoostMode;
+        [SerializeField] private Transform m_camera;
 
-		public bool m_bActiveGrapple;
-		public bool m_bActiveSwing;
-		public bool m_bFreeze;
-		public bool m_bSliding;
-		public bool m_bDashing;
-		public bool m_bIsGrounded;
-		public bool m_bIsWallRunning;
 
-		[SerializeField] Transform orientation;
-
-		float horizontalInput;
-		float verticalInput;
-
-		Vector3 moveDir;
-		Rigidbody rigidBody;
-
-		Collider m_cPlayerCollider;
-
-		// Jump buffer + cooldown state
-		float jumpBufferTimer;
-		bool readyToJump = true;
-
-		Sliding slidingComp;
-
-		SlopeMomentum m_momentumScript;
-
-		public bool IsGrounded => m_bIsGrounded;
-		public Vector3 SlopeNormal => slopeHit.normal;
-
-		private void Awake()
-		{
-			inputManager = GetComponent<InputManager>();
-
-            rigidBody = GetComponent<Rigidbody>();
-			rigidBody.freezeRotation = true;
-
-			startYScale = transform.localScale.y;
-			crouchYScale = startYScale / 2f;
-
-			m_cPlayerCollider = GetComponentInChildren<Collider>();
-			slidingComp = GetComponent<Sliding>();
-
-			m_momentumScript = GetComponent<SlopeMomentum>();
-			if(m_momentumScript == null)
-				Debug.LogWarning("No SlopeMomentum script found on player.");
-
-		}
-
-		private void OnEnable()
-		{
-			inputManager.OnJumpPressed += Jump;
-
-			// if (grappleScript != null)
-			// {
-            //     grappleScript.PointBoost += PointBoost;
-            // }
-			// else
-			// {
-			// 	Debug.LogWarning("Grapple Script doesnt exist yet");
-			// }
+        public MovementState state;
+        public enum MovementState
+        {
+            freeze,
+            walking,
+            sprinting,
+            crouching,
+            sliding,
+            air,
+            swinging,
+            wallRunning,
+            dashing,
+            rail
         }
 
-		private void OnDisable()
-		{
-			inputManager.OnJumpPressed -= Jump;
-           if(grappleScript != null) grappleScript.PointBoost -= PointBoost;
-        }
+        public bool m_bActiveGrapple;
+        public bool m_bActiveSwing;
+        public bool m_bFreeze;
+        public bool m_bSliding;
+        public bool m_bDashing;
+        public bool m_bIsGrounded;
+        public bool m_bIsWallRunning;
+        public bool m_bOnRail;
 
-		public void AssignGrapple(GrapplePointScript grappleScript)
-		{
-            this.grappleScript = grappleScript;
-            this.grappleScript.PointBoost += PointBoost;
-        }
+        public bool IsOnRail => m_bOnRail;
 
-        private void FixedUpdate()
-		{
-			// Ground check
-			m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
+        [SerializeField] Transform orientation;
 
-			GetInput(inputManager.MoveInput);
+        float horizontalInput;
+        float verticalInput;
 
-			// Drag only when grounded AND not sliding (sliding should keep momentum)
+        Vector3 moveDir;
+        Rigidbody rb;
 
-			if (m_bIsGrounded && !m_bActiveGrapple)
-			{
-				if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
-					rigidBody.linearDamping = groundDrag;
-				else
-					rigidBody.linearDamping = 0;
-			}
-			else
-				rigidBody.linearDamping = 0;
+        Collider m_cPlayerCollider;
 
+        float jumpBufferTimer;
+        bool readyToJump = true;
 
-			// Cache slope check once per FixedUpdate (updates slopeHit)
-			bool onSlope = OnSlope();
-
-			// Only disable gravity for your custom "stick-to-slope" movement WHEN NOT sliding
-			rigidBody.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
-
-			// State/speed first (so movement uses correct moveSpeed this frame)
-			StateHandler(onSlope);
-
-			// Jump buffer countdown
-			if (jumpBufferTimer > 0f)
-				jumpBufferTimer -= Time.fixedDeltaTime;
-
-			TryConsumeJumpBuffer();
-
-			if (m_momentumScript != null)
-			{
-				moveSpeed += m_momentumScript.m_momentum;
-			}
-
-            // Sliding movement is handled by Sliding.cs
-            if (!m_bSliding)
-			{
-				MovePlayer(onSlope);
-				SpeedControl(onSlope);
-			}
-        }
+        Sliding slidingComp;
+        SlopeMomentum m_momentumScript;
 
         private MovementState lastState;
-		private bool keepMomentum;
+        private bool keepMomentum;
+        private float speedChangeFactor = 1f;
 
-		void StateHandler(bool onSlope)
-		{
-			if (m_bFreeze)
-			{
-				state = MovementState.freeze;
-				moveSpeed = 0;
-				rigidBody.linearVelocity = Vector3.zero;
-			}
+        private bool enableMovementOnNextTouch;
+        private Vector3 VelocityToSet;
 
-			else if (m_bDashing)
-			{
-				state = MovementState.dashing;
-				desiredMoveSpeed = dashSpeed;
-				speedChangeFactor = dashSpeedChangeFactor;
-			}
+        RailSpline currentRail;
+        float currentRailT;
+        float currentRailSpeed;
 
-			else if (m_bActiveSwing)
-			{
-				state = MovementState.swinging;
-				moveSpeed = swingSpeed;
-			}
+        public bool IsGrounded => m_bIsGrounded;
+        public Vector3 SlopeNormal => slopeHit.normal;
 
-			else if(m_bIsWallRunning)
-			{
-				state = MovementState.wallRunning;
-				desiredMoveSpeed = wallRunSpeed;
-			}
+        private void Awake()
+        {
+            inputManager = GetComponent<InputManager>();
 
-			// Priority order matters: sliding > crouch > sprint > walk > air
-			else if (m_bSliding)
-			{
-				state = MovementState.sliding;
-				desiredMoveSpeed = slideSpeed;
-			}
-			else if (m_bIsGrounded && inputManager.isCrouching)
-			{
-				Debug.Log("Crouching");
-				state = MovementState.crouching;
-				desiredMoveSpeed = crouchSpeed;
+            rb = GetComponent<Rigidbody>();
+            rb.freezeRotation = true;
 
-				//Crouch(inputManager.isCrouching);
-			}
-			else if (m_bIsGrounded && inputManager.isSprinting)
-			{
-				state = MovementState.sprinting;
-				desiredMoveSpeed = sprintSpeed;
-			}
-			else if (m_bIsGrounded)
-			{
-				state = MovementState.walking;
-				desiredMoveSpeed = walkSpeed;
-			}
-			else
-			{
-				state = MovementState.air;
+            startYScale = transform.localScale.y;
+            crouchYScale = startYScale / 2f;
 
-				// This code breaks momentum after exiting a wallrun, but keeping for now just in case
-				// if (desiredMoveSpeed < sprintSpeed)
-				// 	desiredMoveSpeed = walkSpeed;
-				// else
-				// 	desiredMoveSpeed = sprintSpeed;
-			}
+            m_cPlayerCollider = GetComponentInChildren<Collider>();
+            slidingComp = GetComponent<Sliding>();
 
-			if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
-			{
-				StopAllCoroutines();
-				StartCoroutine(SmoothlyLerpMoveSpeed());
-			}
-			else
-			{
-				StopAllCoroutines();
-				moveSpeed = desiredMoveSpeed;
-			}
+            m_momentumScript = GetComponent<SlopeMomentum>();
+            if (m_momentumScript == null)
+                Debug.LogWarning("No SlopeMomentum script found on player.");
+        }
 
-			bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
-			if (lastState == MovementState.dashing) keepMomentum = true;
+        private void OnEnable()
+        {
+            inputManager.OnJumpPressed += Jump;
+        }
 
-			if (desiredMoveSpeedHasChanged)
-			{
-				if (keepMomentum)
-				{
-					StopAllCoroutines();
-					StartCoroutine(SmoothlyLerpMoveSpeed());
-				}
-				else
-				{
-					StopAllCoroutines();
-					moveSpeed = desiredMoveSpeed;
-				}
-			}
+        private void OnDisable()
+        {
+            inputManager.OnJumpPressed -= Jump;
 
-			lastDesiredMoveSpeed = desiredMoveSpeed;
-			lastState = state;
-		}
 
-		private float speedChangeFactor;
-		private IEnumerator SmoothlyLerpMoveSpeed()
-		{
-			float time = 0f;
+            if (grappleScript != null) grappleScript.PointBoost -= PointBoost;
+        }
+
+        public void AssignGrapple(GrapplePointScript grappleScriptParameter)
+        {
+            //unsubscribing to the old pointBoost event
+            if(grappleScript != null) grappleScript.PointBoost -= PointBoost;
+
+            //saving the new script and subscribing to the new event
+            grappleScript = grappleScriptParameter;
+            grappleScript.PointBoost += PointBoost;
+        }
+
+
+        private void FixedUpdate()
+        {
+            m_bIsGrounded = Physics.CheckSphere(m_tGroundCheck.position, m_fGroundDistance, m_lGround);
+
+            GetInput(inputManager.MoveInput);
+
+            if (m_bOnRail)
+            {
+                UpdateRailMovement(Time.fixedDeltaTime);
+                return;
+            }
+
+            if (m_bIsGrounded && !m_bActiveGrapple)
+            {
+                if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+                    rb.linearDamping = groundDrag;
+                else
+                    rb.linearDamping = 0f;
+            }
+            else
+            {
+                rb.linearDamping = 0f;
+            }
+
+            bool onSlope = OnSlope();
+
+            rb.useGravity = !(onSlope && !exitingSlope && !m_bSliding);
+
+            StateHandler(onSlope);
+
+            if (jumpBufferTimer > 0f)
+                jumpBufferTimer -= Time.fixedDeltaTime;
+
+            TryConsumeJumpBuffer();
+
+            if (m_momentumScript != null)
+                moveSpeed += m_momentumScript.m_momentum;
+
+            if (!m_bSliding)
+            {
+                MovePlayer(onSlope);
+                SpeedControl(onSlope);
+            }
+        }
+
+        void StateHandler(bool onSlope)
+        {
+            if (m_bOnRail)
+            {
+                state = MovementState.rail;
+                desiredMoveSpeed = 0f;
+                moveSpeed = 0f;
+                return;
+            }
+
+            if (m_bFreeze)
+            {
+                state = MovementState.freeze;
+                moveSpeed = 0f;
+                rb.linearVelocity = Vector3.zero;
+            }
+            else if (m_bDashing)
+            {
+                state = MovementState.dashing;
+                desiredMoveSpeed = dashSpeed;
+                speedChangeFactor = dashSpeedChangeFactor;
+            }
+            else if (m_bActiveSwing)
+            {
+                state = MovementState.swinging;
+                moveSpeed = swingSpeed;
+            }
+            else if (m_bIsWallRunning)
+            {
+                state = MovementState.wallRunning;
+                desiredMoveSpeed = wallRunSpeed;
+            }
+            else if (m_bSliding)
+            {
+                state = MovementState.sliding;
+                desiredMoveSpeed = slideSpeed;
+            }
+            else if (m_bIsGrounded && inputManager.isCrouching)
+            {
+                state = MovementState.crouching;
+                desiredMoveSpeed = crouchSpeed;
+            }
+            else if (m_bIsGrounded && inputManager.isSprinting)
+            {
+                state = MovementState.sprinting;
+                desiredMoveSpeed = sprintSpeed;
+            }
+            else if (m_bIsGrounded)
+            {
+                state = MovementState.walking;
+                desiredMoveSpeed = walkSpeed;
+            }
+            else
+            {
+                state = MovementState.air;
+            }
+
+            if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
+            {
+                StopAllCoroutines();
+                StartCoroutine(SmoothlyLerpMoveSpeed());
+            }
+            else
+            {
+                StopAllCoroutines();
+                moveSpeed = desiredMoveSpeed;
+            }
+
+            bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
+            if (lastState == MovementState.dashing)
+                keepMomentum = true;
+
+            if (desiredMoveSpeedHasChanged)
+            {
+                if (keepMomentum)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(SmoothlyLerpMoveSpeed());
+                }
+                else
+                {
+                    StopAllCoroutines();
+                    moveSpeed = desiredMoveSpeed;
+                }
+            }
+
+            lastDesiredMoveSpeed = desiredMoveSpeed;
+            lastState = state;
+        }
+
+        private IEnumerator SmoothlyLerpMoveSpeed()
+        {
+            float time = 0f;
             float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
-			float startValue = moveSpeed;
-
-			float boostFactor = speedChangeFactor;
+            float startValue = moveSpeed;
 
             while (time < difference)
-			{
+            {
                 moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
 
-				time += Time.deltaTime;
+                time += Time.deltaTime;
 
-				if (OnSlope())
-				{
-					float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
-					float slopeAngleIncrease = 1f + (slopeAngle / 90f);
+                if (OnSlope())
+                {
+                    float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                    float slopeAngleIncrease = 1f + (slopeAngle / 90f);
 
-					time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
-				}
-				else
-				{
-					time += Time.deltaTime * speedIncreaseMultiplier;
-				}
+                    time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+                }
+                else
+                {
+                    time += Time.deltaTime * speedIncreaseMultiplier;
+                }
 
-				yield return null;
-			}
+                yield return null;
+            }
 
             moveSpeed = desiredMoveSpeed;
             speedChangeFactor = 1f;
-			keepMomentum = false;
-		}
+            keepMomentum = false;
+        }
 
-		public Vector3 CalculateJumpVelocity(Vector3 StartPoint, Vector3 EndPoint, float tracjectoryHeight)
-		{
-			float gravity = Physics.gravity.y;
-			float displacementY = EndPoint.y - StartPoint.y;
-			Vector3 displacementXZ = new Vector3(EndPoint.x - StartPoint.x, 0f, EndPoint.z - StartPoint.z);
+        public Vector3 CalculateJumpVelocity(Vector3 StartPoint, Vector3 EndPoint, float tracjectoryHeight)
+        {
+            float gravity = Physics.gravity.y;
+            float displacementY = EndPoint.y - StartPoint.y;
+            Vector3 displacementXZ = new Vector3(EndPoint.x - StartPoint.x, 0f, EndPoint.z - StartPoint.z);
 
-			Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * tracjectoryHeight);
-			Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * tracjectoryHeight / gravity)
-				+ Mathf.Sqrt(2 * (displacementY - tracjectoryHeight) / gravity));
+            Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * tracjectoryHeight);
+            Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * tracjectoryHeight / gravity)
+                + Mathf.Sqrt(2 * (displacementY - tracjectoryHeight) / gravity));
 
-			return velocityXZ + velocityY;
-		}
+            return velocityXZ + velocityY;
+        }
 
-		private void GetInput(Vector2 input)
-		{
-			horizontalInput = input.x;
-			verticalInput = input.y;
-		}
+        private void GetInput(Vector2 input)
+        {
+            horizontalInput = input.x;
+            verticalInput = input.y;
+        }
 
-		private void MovePlayer(bool onSlope)
-		{
-			if (m_bActiveGrapple) return;
-			if (m_bActiveSwing) return;
-			if (m_bDashing) return;
+        private void MovePlayer(bool onSlope)
+        {
+            if (m_bActiveGrapple) return;
+            if (m_bActiveSwing) return;
+            if (m_bDashing) return;
+            if (m_bOnRail) return;
 
-			moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-			if (onSlope && !exitingSlope)
-			{
-				rigidBody.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
+            if (onSlope && !exitingSlope)
+            {
+                rb.AddForce(GetSlopeMoveDirection(moveDir) * moveSpeed * 20f, ForceMode.Force);
 
-				// small stick force so you don't "float" off slopes
-				if (rigidBody.linearVelocity.y > 0f)
-					rigidBody.AddForce(Vector3.down * 40f, ForceMode.Force);
+                if (rb.linearVelocity.y > 0f)
+                    rb.AddForce(Vector3.down * 40f, ForceMode.Force);
 
-				return; // IMPORTANT: don't also apply normal grounded force
-			}
+                return;
+            }
 
-			if (m_bIsGrounded)
-				rigidBody.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
-			else
-				rigidBody.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            if (m_bIsGrounded)
+                rb.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
+            else
+                rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-			if(!m_bIsWallRunning) rigidBody.useGravity = !OnSlope();
+            if (!m_bIsWallRunning)
+                rb.useGravity = !OnSlope();
         }
 
         private void SpeedControl(bool onSlope)
-		{
-			if (m_bActiveGrapple) return;
-
-			// Don't clamp during sliding; Sliding.cs handles momentum/friction
-			if (m_bSliding) return;
-
-			if (onSlope && !exitingSlope)
-			{
-				if (rigidBody.linearVelocity.magnitude > moveSpeed)
-					rigidBody.linearVelocity = rigidBody.linearVelocity.normalized * moveSpeed;
-			}
-			else
-			{
-				Vector3 flatVel = new Vector3(rigidBody.linearVelocity.x, 0f, rigidBody.linearVelocity.z);
-
-				if (flatVel.magnitude > moveSpeed)
-				{
-					Vector3 limitedVel = flatVel.normalized * moveSpeed;
-					rigidBody.linearVelocity = new Vector3(limitedVel.x, rigidBody.linearVelocity.y, limitedVel.z);
-				}
-			}
-
-			// Limit Y velocity
-
-			if (maxYSpeed != 0 && rigidBody.linearVelocity.y > maxYSpeed)
-				rigidBody.linearVelocity = new Vector3(rigidBody.linearVelocity.x, maxYSpeed, rigidBody.linearVelocity.z);
-		}
-
-		public void Sprint(bool state) => inputManager.isSprinting = state;
-
-		// public void Crouch(bool state) Fix later
-		// {
-		// 	inputManager.isCrouching = state;
-
-		// 	if (state)
-		// 	{
-		// 		transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-		// 		rb.AddForce(Vector3.down * 2f, ForceMode.Impulse);
-		// 	}
-		// 	else
-		// 		transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-		// }
-
-		public void Jump()
-		{
-			// buffer the press
-			jumpBufferTimer = jumpBufferTime;
-			TryConsumeJumpBuffer();
-		}
-
-		private void TryConsumeJumpBuffer()
-		{
-			if (!readyToJump) return;
-			if (jumpBufferTimer <= 0f) return;
-			if (!m_bIsGrounded) return;
-
-			ExecuteJump();
-
-			jumpBufferTimer = 0f;
-			readyToJump = false;
-			Invoke(nameof(ResetJump), jumpCooldown);
-		}
-
-		private void ExecuteJump()
-		{
-			// Jumping cancels slide cleanly
-			if (m_bSliding && slidingComp != null)
-				slidingComp.ForceEndSlide();
-
-			exitingSlope = true;
-
-			rigidBody.linearVelocity = new Vector3(rigidBody.linearVelocity.x, 0f, rigidBody.linearVelocity.z);
-			rigidBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-		}
-
-		private void ResetJump()
-		{
-			readyToJump = true;
-			exitingSlope = false;
-		}
-
-		private bool enableMovementOnNextTouch;
-
-		public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
-		{
-			m_bActiveGrapple = true;
-
-			VelocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
-			Invoke(nameof(SetVelocity), 0.1f);
-		}
-
-		private Vector3 VelocityToSet;
-		private void SetVelocity()
-		{
-			enableMovementOnNextTouch = true;
-			rigidBody.linearVelocity = VelocityToSet;
-		}
-
-		public void ResetRestrictions()
-		{
-			m_bActiveGrapple = false;
-		}
-
-		private void OnCollisionEnter(Collision collision)
-		{
-			if (enableMovementOnNextTouch)
-			{
-				enableMovementOnNextTouch = false;
-				ResetRestrictions();
-
-				GetComponent<GrappleGun>().ForceStopGrapple();
-			}
-		}
-
-		public bool OnSlope()
-		{
-			if (m_cPlayerCollider == null) return false;
-
-			float halfHeight = m_cPlayerCollider.bounds.extents.y; // updates if collider/scale changes
-
-			if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
-			{
-				float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-				return angle < MaxSlopeAngle && angle > 0f;
-			}
-			return false;
-		}
-
-		public Vector3 GetSlopeMoveDirection(Vector3 direction)
-		{
-			return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
-		}
-
-		public Vector3 GetDirection() { return moveDir; }
-
-        //Boost runs when the player collides with the grapple point
-        private void PointBoost()
         {
-			if(rigidBody != null)
-			{
-				Vector3 boostForce = CalculateBoostForce();
-                if (m_bGrappleBoosting && rigidBody.linearVelocity.magnitude <= m_maxSpeedForBoostApplication)
-				{
-					//This only runs if the player is moving at or below the max speed for boost application
-					rigidBody.AddForce(boostForce,ForceMode.Impulse);
-					if (m_bLogPointBoostForce)
-					{
-						Debug.Log("Hit a grapple point! Applying force of: " + boostForce);
-					}
-					return;//lets me log the speed being too high without actually needing to check the speed value a second time
-				}
+            if (m_bActiveGrapple) return;
+            if (m_bSliding) return;
+            if (m_bOnRail) return;
 
-				if (m_bLogPointBoostForce && m_bGrappleBoosting)
-				{
-                    Debug.Log("Hit a grapple point, but the player is moving too fast to apply a force");
+            if (onSlope && !exitingSlope)
+            {
+                if (rb.linearVelocity.magnitude > moveSpeed)
+                    rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+            }
+            else
+            {
+                Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+                if (flatVel.magnitude > moveSpeed)
+                {
+                    Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                    rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
                 }
-			}
+            }
+
+            if (maxYSpeed != 0 && rb.linearVelocity.y > maxYSpeed)
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
         }
 
-		private Vector3 CalculateBoostForce()
-		{
-			Vector3 boostForce = Vector3.zero;
-			if (rigidBody != null) {
+        public void Sprint(bool state)
+        {
+            Debug.LogWarning("Sprint(bool) is deprecated. Sprint state is owned by InputManager.");
+        }
+
+        public void Jump()
+        {
+            if (m_bOnRail)
+            {
+                ForceExitRail(true);
+                return;
+            }
+
+            jumpBufferTimer = jumpBufferTime;
+            TryConsumeJumpBuffer();
+        }
+
+        private void TryConsumeJumpBuffer()
+        {
+            if (!readyToJump) return;
+            if (jumpBufferTimer <= 0f) return;
+            if (!m_bIsGrounded) return;
+            if (m_bOnRail) return;
+
+            ExecuteJump();
+
+            jumpBufferTimer = 0f;
+            readyToJump = false;
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+
+        private void ExecuteJump()
+        {
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
+
+            exitingSlope = true;
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+
+        private void ResetJump()
+        {
+            readyToJump = true;
+            exitingSlope = false;
+        }
+
+        public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
+        {
+            if (m_bOnRail) return;
+
+            m_bActiveGrapple = true;
+
+            VelocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
+            Invoke(nameof(SetVelocity), 0.1f);
+        }
+
+        private void SetVelocity()
+        {
+            enableMovementOnNextTouch = true;
+            rb.linearVelocity = VelocityToSet;
+        }
+
+        public void ResetRestrictions()
+        {
+            if (m_bOnRail) return;
+            m_bActiveGrapple = false;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (enableMovementOnNextTouch)
+            {
+                enableMovementOnNextTouch = false;
+                ResetRestrictions();
+
+                GrappleGun grapple = GetComponent<GrappleGun>();
+                if (grapple != null)
+                    grapple.ForceStopGrapple();
+            }
+        }
+
+        public bool OnSlope()
+        {
+            if (m_cPlayerCollider == null) return false;
+
+            float halfHeight = m_cPlayerCollider.bounds.extents.y;
+
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
+            {
+                float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                return angle < MaxSlopeAngle && angle > 0f;
+            }
+            return false;
+        }
+
+        public Vector3 GetSlopeMoveDirection(Vector3 direction)
+        {
+            return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+        }
+
+        public Vector3 GetDirection()
+        {
+            return moveDir;
+        }
+
+        public void EnterRail(RailSpline rail)
+        {
+            if (rail == null || rail.SplineContainer == null)
+                return;
+
+            Spline spline = rail.SplineContainer.Spline;
+            if (spline == null || spline.Count < 2)
+                return;
+
+            if (m_bOnRail && currentRail == rail)
+                return;
+
+            Vector3 incomingVelocity = rb.linearVelocity;
+
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
+
+            inputManager?.ClearRailBlockedInputs();
+
+            StopAllCoroutines();
+
+            m_bActiveGrapple = false;
+            m_bActiveSwing = false;
+            m_bDashing = false;
+            m_bSliding = false;
+            m_bIsWallRunning = false;
+            m_bFreeze = false;
+            exitingSlope = false;
+
+            moveSpeed = 0f;
+            desiredMoveSpeed = 0f;
+            jumpBufferTimer = 0f;
+
+            currentRail = rail;
+            m_bOnRail = true;
+            state = MovementState.rail;
+
+            rb.useGravity = false;
+            rb.linearDamping = 0f;
+            rb.angularVelocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
+
+            Vector3 localPlayerPos = rail.SplineContainer.transform.InverseTransformPoint(transform.position);
+
+            SplineUtility.GetNearestPoint(
+                spline,
+                (float3)localPlayerPos,
+                out float3 nearestLocal,
+                out float nearestT,
+                rail.NearestPointResolution,
+                rail.NearestPointIterations);
+
+            currentRailT = nearestT;
+            currentRailSpeed = Mathf.Clamp(
+                Mathf.Max(rail.EntrySpeed, incomingVelocity.magnitude),
+                rail.MinSpeed,
+                rail.MaxSpeed);
+
+            SnapToRail();
+        }
+
+        private void SnapToRail()
+        {
+            if (!m_bOnRail || currentRail == null)
+                return;
+
+            Vector3 worldPos = currentRail.SplineContainer.EvaluatePosition(currentRailT);
+            Vector3 up = currentRail.UseSplineUp
+                ? ((Vector3)currentRail.SplineContainer.EvaluateUpVector(currentRailT)).normalized
+                : Vector3.up;
+
+            rb.MovePosition(worldPos + up * currentRail.RideOffset);
+        }
+
+        private void UpdateRailMovement(float deltaTime)
+        {
+            if (!m_bOnRail || currentRail == null)
+                return;
+
+            inputManager?.ClearRailBlockedInputs();
+
+            m_bActiveGrapple = false;
+            m_bActiveSwing = false;
+            m_bDashing = false;
+            m_bSliding = false;
+            m_bIsWallRunning = false;
+            m_bFreeze = false;
+
+            state = MovementState.rail;
+            rb.useGravity = false;
+            rb.linearDamping = 0f;
+            rb.angularVelocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
+
+            float railInput = Mathf.Clamp(inputManager.MoveInput.y, -1f, 1f);
+
+            if (railInput > 0.01f)
+            {
+                currentRailSpeed += railInput * currentRail.Acceleration * deltaTime;
+            }
+            else if (railInput < -0.01f)
+            {
+                currentRailSpeed -= (-railInput) * currentRail.BrakeDeceleration * deltaTime;
+            }
+            else
+            {
+                currentRailSpeed -= currentRail.PassiveDeceleration * deltaTime;
+            }
+
+            currentRailSpeed = Mathf.Clamp(currentRailSpeed, currentRail.MinSpeed, currentRail.MaxSpeed);
+
+            Spline spline = currentRail.SplineContainer.Spline;
+
+            float3 localPoint = SplineUtility.GetPointAtLinearDistance(
+                spline,
+                currentRailT,
+                currentRailSpeed * deltaTime,
+                out float newT);
+
+            currentRailT = Mathf.Clamp01(newT);
+
+            Vector3 worldPos = currentRail.SplineContainer.transform.TransformPoint((Vector3)localPoint);
+            Vector3 up = currentRail.UseSplineUp
+                ? ((Vector3)currentRail.SplineContainer.EvaluateUpVector(currentRailT)).normalized
+                : Vector3.up;
+
+            rb.MovePosition(worldPos + up * currentRail.RideOffset);
+
+            if (currentRail.AutoExitAtEnd && currentRailT >= 0.999f)
+            {
+                ForceExitRail(false);
+            }
+        }
+
+        public void ForceExitRail(bool jumpedOff)
+        {
+            if (!m_bOnRail)
+                return;
+
+            Vector3 exitDirection = transform.forward;
+
+            if (currentRail != null && currentRail.SplineContainer != null)
+            {
+                Vector3 tangent = ((Vector3)currentRail.SplineContainer.EvaluateTangent(currentRailT)).normalized;
+                tangent.y = 0f;
+
+                if (tangent.sqrMagnitude > 0.0001f)
+                    exitDirection = tangent.normalized;
+            }
+
+            m_bOnRail = false;
+            currentRail = null;
+            currentRailT = 0f;
+            currentRailSpeed = 0f;
+
+            m_bActiveGrapple = false;
+            m_bActiveSwing = false;
+            m_bDashing = false;
+            m_bSliding = false;
+            m_bIsWallRunning = false;
+            m_bFreeze = false;
+            exitingSlope = false;
+
+            desiredMoveSpeed = 0f;
+            moveSpeed = 0f;
+            jumpBufferTimer = 0f;
+
+            rb.useGravity = true;
+            rb.linearDamping = 0f;
+            rb.angularVelocity = Vector3.zero;
+
+            Vector3 exitVelocity = exitDirection * railExitForwardBoost;
+
+            if (jumpedOff)
+                exitVelocity += Vector3.up * railJumpUpForce;
+
+            rb.linearVelocity = exitVelocity;
+            state = MovementState.air;
+
+            inputManager?.ClearRailBlockedInputs();
+        }
+
+        private void PointBoost()
+        {
+            if (rb != null)
+            {
+                Vector3 boostForce = CalculateBoostForce();
+                if (m_bGrappleBoosting && rb.linearVelocity.magnitude <= m_maxSpeedForBoostApplication)
+                {
+                    if (m_bLogPointBoostForce)
+                    {
+                        Debug.Log("Hit a grapple point! Applying force of: " + boostForce);
+                    }
+                    //This only runs if the player is moving at or below the max speed for boost application
+                    rb.AddForce(boostForce, ForceMode.Impulse);
+                    return;//lets me log the speed being too high without actually needing to check the speed value a second time
+                }
+
+                if (m_bLogPointBoostForce && m_bGrappleBoosting)
+                {
+                    Debug.Log("Hit a grapple point, but the player is moving too fast to apply a force");
+                }
+            }
+        }
+
+        private Vector3 CalculateBoostForce()
+        {
+            //maybe add some upwards force to the boost?
+            Vector3 boostForce = Vector3.zero;
+            if (rb != null)
+            {
                 switch (m_pointBoostMode)
                 {
                     case pointBoostModes.velocity:
-                        boostForce = rigidBody.linearVelocity.normalized * m_pointBoostForce;
+                        boostForce = rb.linearVelocity.normalized * m_pointBoostForce;
                         break;
 
                     case pointBoostModes.speed:
-                        boostForce = Vector3.one * rigidBody.linearVelocity.magnitude * m_pointBoostForce;
-                    break;
+                        boostForce = Vector3.one * rb.linearVelocity.magnitude * m_pointBoostForce;
+                        break;
 
                     case pointBoostModes.lookDirection:
-						if (m_camera == null)
-						{
-							Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
-						}
-						else
-						{
+                        if (m_camera == null)
+                        {
+                            Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
+                        }
+                        else
+                        {
                             boostForce = m_camera.forward * m_pointBoostForce;
                         }
-						break;
+                        break;
+                    case pointBoostModes.lookandspeed:
+                        if(m_camera == null)
+                        {
+                            Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
+                        }
+                        else
+                        {
+                            boostForce = (m_camera.forward * rb.linearVelocity.magnitude) * m_pointBoostForce;
+                        }
+                            break;
                 }
             }
-			return boostForce;
-		}
-    }	
+            return boostForce;
+        }
+    }
+
 }
