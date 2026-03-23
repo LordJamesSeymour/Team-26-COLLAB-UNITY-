@@ -11,26 +11,22 @@ namespace Group26.Player.Movement
         private string[] StateValidationCheck;
 
         private int Buffer;
-        public float PointMultiplier = 1;
-        public float PointsDecay = 0.5f;
-        public int TotalScore;
+        
 
-        //timers
-        public int Timer = 1;
-        public float CurrentTimer = 0;
-        public float MaxTimer = 0;
+        [Header("Combo")]
+        [SerializeField] public int TotalScore;
+        [SerializeField] public float DefaultPointMultiplier = 1;
+        [SerializeField] public float ComboDecay = 0.5f;
 
-        public float WallRunningTimer = 0;
-        public bool WallRunningPointsEnabled = true;
+        [Header("Timers")]
+        [SerializeField] public float MaxTimer = 0;
+        [SerializeField] private float CurrentTimer = 0;
+        
+        private bool WallRunningPointsEnabled = true;
+        private bool SwingingPointsEnabled = true;
 
-        public bool SwingingPointsEnabled = true;
-
-
-
-        public int ActionScoreLimit = 3;
-        public int CurrentActionScore;
-
-        public string LastState;
+        [Header("States")]
+        [SerializeField] private string LastState = "default";
 
         //public enum ActionState
         //{
@@ -109,7 +105,7 @@ namespace Group26.Player.Movement
                 {
                     Debug.Log("Dash");
 
-                    PointsCalculation(5, PointMultiplier);
+                    PointsCalculation(5, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.dashing.ToString());
                 }
 
@@ -120,7 +116,7 @@ namespace Group26.Player.Movement
                     {
                         WallRunningPointsEnabled = false;
                         DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
-                        PointsCalculation(7, PointMultiplier);
+                        PointsCalculation(7, DefaultPointMultiplier);
                     }
                     
                 }
@@ -131,7 +127,7 @@ namespace Group26.Player.Movement
                     if (SwingingPointsEnabled)
                     {
                         SwingingPointsEnabled = false;
-                        PointsCalculation(7, PointMultiplier);
+                        PointsCalculation(7, DefaultPointMultiplier);
                         DecayCalculation(PlayerController.MovementState.swinging.ToString());
                     }
                 }
@@ -139,7 +135,7 @@ namespace Group26.Player.Movement
                 if (playerController.state == PlayerController.MovementState.sliding)
                 {
                     Debug.Log("Sliding");
-                    PointsCalculation(5, PointMultiplier);
+                    PointsCalculation(5, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.sliding.ToString());
                 }
 
@@ -161,42 +157,28 @@ namespace Group26.Player.Movement
 
         public void DecayCalculation(string State)
         {
+
+            if (State == null)
+            {
+                Debug.Log("Decay Calculation state is NULL");
+                return;
+            }
+
             if (State == LastState)
             {
-                PointMultiplier -= PointsDecay;
-                PointMultiplier = Mathf.Clamp(PointMultiplier, 0, 1);
+                DefaultPointMultiplier -= ComboDecay;
+                DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 1);
             }
 
             if (State != LastState)
             {
-                PointMultiplier += PointsDecay;
-                PointMultiplier = Mathf.Clamp(PointMultiplier, 0, 3);
+                DefaultPointMultiplier += ComboDecay;
+                DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 3);
             }
 
             LastState = State;
         }
 
-        public bool Delayed(float TimerDuration)
-        {
-            float CurrentTime = 0;
-
-            if (CurrentTime < TimerDuration)
-            {
-                print("false");
-                CurrentTime += Time.deltaTime;
-                print(CurrentTime);
-                return false;
-            }
-
-            if (CurrentTime >= TimerDuration)
-            {
-                print("true");
-                CurrentTime = 0;
-                return true;
-            }
-
-            return false;
-        }
 
         // Update is called once per frame
         void Update()
