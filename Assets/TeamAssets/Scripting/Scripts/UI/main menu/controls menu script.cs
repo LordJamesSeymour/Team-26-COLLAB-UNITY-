@@ -5,13 +5,18 @@ using UnityEngine.UI;
 public class controlsmenuscript : MonoBehaviour
 {
     private InputAction m_navInputs;
+    private InputAction m_selectInput;
     private bool m_onExitButton = false;
+    private Button m_tempButton;
+    private Button m_currentButton;
+    private buttonnavscript m_buttonScript;
     //private int m_currentButtonInt;
 
-    public bool m_enabled;
+    [HideInInspector] public bool m_enabled = false;
 
-    [SerializeField] Image m_controllerControlsImage;
-    [SerializeField] Image m_keyboardControlsImage;
+    [SerializeField] Image m_controlsImage;
+    [SerializeField] Sprite m_controllerControlsPicture;
+    [SerializeField] Sprite m_keyboardControlsPicture;
     [SerializeField] Button m_keyboardButton;
     [SerializeField] Button m_controllerButton;
     [SerializeField] Button m_exitButton;
@@ -20,7 +25,23 @@ public class controlsmenuscript : MonoBehaviour
     private void Awake()
     {
         m_navInputs = InputSystem.actions.FindAction("Navigate");
+        m_selectInput = InputSystem.actions.FindAction("Select");
+
+        m_buttonScript = GetComponent<buttonnavscript>();
+        if (!m_buttonScript)
+            Debug.LogError("no button script attached");
+
         m_keyboardButton.image.sprite = m_buttonSprites[1];
+        //m_currentButton = m_keyboardButton;
+        m_controlsImage.sprite = m_keyboardControlsPicture;
+    }
+
+    public void ToggleControlsMenuOff(bool toggle)
+    {
+        m_buttonScript.m_controlsPanel.SetActive(false);
+        m_buttonScript.m_mainMenuPanel.SetActive(true);
+        m_buttonScript.m_mainMenuPanelEnabled = true;
+        m_enabled = false;
     }
 
     //public void OnPointerEnter(int i)
@@ -53,6 +74,8 @@ public class controlsmenuscript : MonoBehaviour
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_onExitButton = false;
+                //m_currentButton = m_keyboardButton;
+                m_controlsImage.sprite = m_keyboardControlsPicture;
                 break;
             case 1:
                 //if the controller button is pressed
@@ -60,6 +83,8 @@ public class controlsmenuscript : MonoBehaviour
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
                 m_onExitButton = false;
+                //m_currentButton = m_controllerButton;
+                m_controlsImage.sprite = m_controllerControlsPicture;
                 break;
             case 2:
                 //if the exit button is pressed
@@ -67,6 +92,7 @@ public class controlsmenuscript : MonoBehaviour
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
                 m_onExitButton = true;
+                //m_currentButton = m_exitButton;
                 break;
         }
     }
@@ -81,6 +107,8 @@ public class controlsmenuscript : MonoBehaviour
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_controllerButton.image.sprite = m_buttonSprites[1];
+                //m_currentButton = m_controllerButton;
+                m_controlsImage.sprite = m_controllerControlsPicture;
                 //m_currentButtonInt = 1;
             }
             else if(m_navInputs.ReadValue<Vector2>() == Vector2.left && m_onExitButton == false)
@@ -88,6 +116,8 @@ public class controlsmenuscript : MonoBehaviour
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_keyboardButton.image.sprite = m_buttonSprites[1];
+                //m_currentButton = m_keyboardButton;
+                m_controlsImage.sprite = m_keyboardControlsPicture;
                 //m_currentButtonInt = 0;
             }
             else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
@@ -96,14 +126,23 @@ public class controlsmenuscript : MonoBehaviour
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[1];
                 m_onExitButton = true;
+                m_tempButton = m_currentButton;
+                m_currentButton = m_exitButton;
             }
             else if(m_navInputs.ReadValue<Vector2>() == Vector2.up && m_onExitButton)
             {
-                m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[0];
-                m_keyboardButton.image.sprite = m_buttonSprites[1];
                 m_onExitButton = false;
+                m_currentButton = m_tempButton;
+                m_currentButton.image.sprite = m_buttonSprites[1];
             }
+        }
+
+        if(m_enabled && m_selectInput.WasReleasedThisDynamicUpdate() && m_onExitButton)
+        {
+            Debug.Log("exiting");
+
+            m_exitButton.onClick.Invoke();
         }
     }
 }
