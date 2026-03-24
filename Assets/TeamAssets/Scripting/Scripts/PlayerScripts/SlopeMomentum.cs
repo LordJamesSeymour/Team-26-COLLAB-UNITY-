@@ -1,9 +1,6 @@
-using Group26.Player.Inputs;
 using Group26.Player.Movement;
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class SlopeMomentum : MonoBehaviour
 {
