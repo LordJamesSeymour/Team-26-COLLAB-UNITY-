@@ -4679,7 +4679,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1806306208
 Transform:
   m_ObjectHideFlags: 0
@@ -5963,7 +5963,7 @@ MonoBehaviour:
   m_maincam: {fileID: 1226302156}
   maxGrappleDistance: 25
   grappleDelayTime: 0
-  overshootYAxis: 0
+  straightGrappleSpeed: 35
   m_preventGrappleThroughWalls: 1
   m_ignoredGrapplePredictionLayer:
     serializedVersion: 2
@@ -6738,7 +6738,7 @@ MonoBehaviour:
   m_bLogPointBoostForce: 0
   m_pointBoostForceMode: 1
   m_pointBoostMode: 0
-  m_camera: {fileID: 0}
+  m_camera: {fileID: 1226302156}
   state: 1
   m_bActiveGrapple: 0
   m_bActiveSwing: 0
