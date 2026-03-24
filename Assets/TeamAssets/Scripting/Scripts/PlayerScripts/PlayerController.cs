@@ -62,22 +62,16 @@ namespace Group26.Player.Movement
 
         [Header("Grapple Point Settings")]
         [Space(10)]
-        [SerializeField] private float m_pointBoostForce = 3.5f;
+        [SerializeField] private float m_pointBoostForce = 12f;
         [SerializeField] private bool m_bGrappleBoosting = true;
+        [SerializeField] private bool m_bLimitPointBoostBySpeed = false;
         [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
+        [SerializeField] private bool m_bResetVelocityBeforePointBoost = true;
         [SerializeField] private bool m_bLogPointBoostForce = false;
-        [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.Force;
+        [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.VelocityChange;
 
-        private enum pointBoostModes
-        {
-            velocity,
-            speed,
-            lookDirection,
-            lookandspeed
-        };
-
-        [SerializeField] private pointBoostModes m_pointBoostMode;
-        [SerializeField] private Transform m_camera;
+        [Header("Straight Grapple")]
+        [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
 
         public MovementState state;
         public enum MovementState
@@ -165,18 +159,6 @@ namespace Group26.Player.Movement
         private void OnDisable()
         {
             inputManager.OnJumpPressed -= Jump;
-
-            if (grappleScript != null)
-                grappleScript.PointBoost -= PointBoost;
-        }
-
-        public void AssignGrapple(GrapplePointScript grappleScriptParameter)
-        {
-            if (grappleScript != null)
-                grappleScript.PointBoost -= PointBoost;
-
-            grappleScript = grappleScriptParameter;
-            grappleScript.PointBoost += PointBoost;
         }
 
         private void FixedUpdate()
@@ -242,18 +224,14 @@ namespace Group26.Player.Movement
             rb.linearDamping = 0f;
             rb.angularVelocity = Vector3.zero;
 
-            if (distanceToTarget <= 0.001f)
+            if (distanceToTarget <= m_straightGrappleReleaseDistance)
             {
-                rb.linearVelocity = Vector3.zero;
+                ReleaseGrappleMovement();
                 return;
             }
 
             float safeSpeed = Mathf.Max(m_straightGrappleSpeed, 0.01f);
             Vector3 desiredVelocity = toTarget.normalized * safeSpeed;
-
-            float maxStepDistance = safeSpeed * deltaTime;
-            if (distanceToTarget <= maxStepDistance)
-                desiredVelocity = toTarget / Mathf.Max(deltaTime, 0.0001f);
 
             rb.linearVelocity = desiredVelocity;
         }
@@ -523,7 +501,6 @@ namespace Group26.Player.Movement
             m_straightGrappleTarget = targetPosition;
             m_straightGrappleSpeed = Mathf.Max(grappleSpeed, 0.01f);
 
-            rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
 
@@ -769,74 +746,6 @@ namespace Group26.Player.Movement
             state = MovementState.air;
 
             inputManager?.ClearRailBlockedInputs();
-        }
-
-        private void PointBoost()
-        {
-            if (rb != null)
-            {
-                Vector3 boostForce = CalculateBoostForce();
-                if (m_bGrappleBoosting && rb.linearVelocity.magnitude <= m_maxSpeedForBoostApplication)
-                {
-                    if (m_bLogPointBoostForce)
-                    {
-                        Debug.Log("Hit a grapple point! Applying force of: " + boostForce);
-                    }
-
-                    rb.AddForce(boostForce, ForceMode.Impulse);
-                    ReleaseGrappleMovement();
-                    return;
-                }
-
-                if (m_bLogPointBoostForce && m_bGrappleBoosting)
-                {
-                    Debug.Log("Hit a grapple point, but the player is moving too fast to apply a force");
-                }
-
-                if (m_bActiveGrapple)
-                    ReleaseGrappleMovement();
-            }
-        }
-
-        private Vector3 CalculateBoostForce()
-        {
-            Vector3 boostForce = Vector3.zero;
-            if (rb != null)
-            {
-                switch (m_pointBoostMode)
-                {
-                    case pointBoostModes.velocity:
-                        boostForce = rb.linearVelocity.normalized * m_pointBoostForce;
-                        break;
-
-                    case pointBoostModes.speed:
-                        boostForce = Vector3.one * rb.linearVelocity.magnitude * m_pointBoostForce;
-                        break;
-
-                    case pointBoostModes.lookDirection:
-                        if (m_camera == null)
-                        {
-                            Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
-                        }
-                        else
-                        {
-                            boostForce = m_camera.forward * m_pointBoostForce;
-                        }
-                        break;
-
-                    case pointBoostModes.lookandspeed:
-                        if (m_camera == null)
-                        {
-                            Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
-                        }
-                        else
-                        {
-                            boostForce = (m_camera.forward * rb.linearVelocity.magnitude) * m_pointBoostForce;
-                        }
-                        break;
-                }
-            }
-            return boostForce;
         }
     }
 }

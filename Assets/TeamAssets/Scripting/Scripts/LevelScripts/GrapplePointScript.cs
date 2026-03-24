@@ -1,49 +1,36 @@
 using Group26.Player.Movement;
-using System;
 using UnityEngine;
 
 namespace Group26.Player.Utility
 {
-    public class GrapplePointScript : MonoBehaviour
-    {
-        //Events
-        public event Action PointBoost;
+	public class GrapplePointScript : MonoBehaviour
+	{
+		private void OnTriggerEnter(Collider collision)
+		{
+			GameObject collisionObject = null;
 
-        [Header("Debug")]
-        [SerializeField] private bool m_logEntry = false;
-        [SerializeField] private bool m_logPlayerEntry = false;
+			if (collision.attachedRigidbody != null)
+				collisionObject = collision.attachedRigidbody.gameObject;
+			else
+				collisionObject = collision.transform.root.gameObject;
 
+			if (collisionObject == null)
+				return;
 
-        private void OnTriggerEnter(Collider collision)
-        {
-            GameObject collisionParent = collision.transform.parent.gameObject;
-
-            if (collisionParent.CompareTag("Player"))
-            {
-                //Sets the reference in the collisionParent to this object
-                PlayerController playerController = collisionParent.GetComponent<PlayerController>();
-                if (playerController == null)
-                {
-                    Debug.LogError(collisionParent.name + " does not have an attached player controller");
-                }
-                else
-                {
-                    playerController.AssignGrapple(this);
-                }
-                PointBoost?.Invoke();
-
-                //debug logging
-                if (m_logPlayerEntry)
-                {
-                    Debug.Log("Player collided with + " + this.name);
-                }
-            }
-            
-            if (m_logEntry)
-            {
-                Debug.Log(collisionParent.name + " collided with " + this.name + ". " + collisionParent.name + " has the tag: " + collisionParent.tag);
-            }
-        }
-    }
+			if (collisionObject.CompareTag("Player"))
+			{
+				PlayerController playerController = collisionObject.GetComponent<PlayerController>();
+				GrappleBoosting GrappleBoost = collisionObject.GetComponent<GrappleBoosting>();
+				if (playerController == null)
+				{
+					Debug.LogError(collisionObject.name + " does not have an attached PlayerController");
+				}
+				else
+				{
+					playerController.m_bDashing = true;
+					GrappleBoost.InvokeBoost();
+				}
+			}
+		}
+	}
 }
-

@@ -763,9 +763,9 @@ GameObject:
   - component: {fileID: 7350818907136474129}
   - component: {fileID: 1790286465206029165}
   - component: {fileID: 8710749752973827846}
-  - component: {fileID: 7696723449168277478}
   - component: {fileID: 6661257255942849801}
   - component: {fileID: 1821288047658072069}
+  - component: {fileID: 1490892436793691755}
   - component: {fileID: 4224991745201416715}
   - component: {fileID: 3507836174453789863}
   - component: {fileID: 4996376241722719725}
@@ -921,11 +921,12 @@ MonoBehaviour:
   railExitForwardBoost: 2
   m_pointBoostForce: 25
   m_bGrappleBoosting: 1
+  m_bLimitPointBoostBySpeed: 0
   m_maxSpeedForBoostApplication: 20
+  m_bResetVelocityBeforePointBoost: 0
   m_bLogPointBoostForce: 0
-  m_pointBoostForceMode: 0
-  m_pointBoostMode: 0
-  m_camera: {fileID: 6300552020826728571}
+  m_pointBoostForceMode: 1
+  m_straightGrappleReleaseDistance: 1
   state: 1
   m_bActiveGrapple: 0
   m_bActiveSwing: 0
@@ -936,27 +937,6 @@ MonoBehaviour:
   m_bIsWallRunning: 0
   m_bOnRail: 0
   orientation: {fileID: 927507460318148860}
---- !u!114 &7696723449168277478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4865603522779230174}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e2d90293dfe720439ab62a25c18388b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orientation: {fileID: 7306254835580216032}
-  playerObj: {fileID: 4237640061233739527}
-  maxSlideTime: 0.75
-  steerForce: 35
-  slideFriction: 6
-  slopeGravity: 18
-  stickToSlopeForce: 25
-  slideYScale: 0.5
-  minSpeedToKeepSliding: 1.5
 --- !u!114 &6661257255942849801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003,9 +983,32 @@ MonoBehaviour:
   playerCam: {fileID: 5901004435384487027}
   dashForce: 30
   dashUpwardsForce: 0
-  maxDashYSpeed: 15
-  dashDuration: 0.25
-  dashCooldown: 1
+  maxDashYSpeed: 40
+  dashDuration: 1
+  dashCooldown: 3
+  useCameraForward: 0
+  allowAllDirections: 1
+  disableGravity: 1
+  resetVel: 1
+--- !u!114 &1490892436793691755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4865603522779230174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1c0f9c28f4c84a4b8af674d24902bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orientation: {fileID: 927507460318148860}
+  playerCam: {fileID: 5901004435384487027}
+  grappleForce: 75
+  grappleUpwardForce: 10
+  maxGrappleYSpeed: 75
+  grappleDuration: 0.75
+  grappleCooldown: 0.5
   useCameraForward: 0
   allowAllDirections: 1
   disableGravity: 1
@@ -1290,7 +1293,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 5b896a6f44a8abf44a0ccc75f3f9b599, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
