@@ -60,6 +60,7 @@ namespace Group26.Player.Movement
         [SerializeField] float railExitForwardBoost = 2f;
 
         [Header("GrapplePoints")]
+        [Space(10)]
         [SerializeField] private float m_pointBoostForce = 3.5f;
         [SerializeField] private bool m_bGrappleBoosting = true;
         /// <summary>
