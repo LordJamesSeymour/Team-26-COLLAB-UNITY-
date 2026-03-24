@@ -60,6 +60,7 @@ namespace Group26.Player.Movement
         [SerializeField] float railExitForwardBoost = 2f;
 
         [Header("GrapplePoints")]
+        [Space(10)]
         [SerializeField] private float m_pointBoostForce = 3.5f;
         [SerializeField] private bool m_bGrappleBoosting = true;
         /// <summary>
@@ -80,7 +81,8 @@ namespace Group26.Player.Movement
         {
             velocity,
             speed,
-            lookDirection
+            lookDirection,
+            lookandspeed
         };
         /// <summary>
         /// Modes for how the point boost launch's force calculation will occur. This will be removed after a version is settled on.
@@ -176,10 +178,14 @@ namespace Group26.Player.Movement
             if (grappleScript != null) grappleScript.PointBoost -= PointBoost;
         }
 
-        public void AssignGrapple(GrapplePointScript grappleScript)
+        public void AssignGrapple(GrapplePointScript grappleScriptParameter)
         {
-            this.grappleScript = grappleScript;
-            this.grappleScript.PointBoost += PointBoost;
+            //unsubscribing to the old pointBoost event
+            if(grappleScript != null) grappleScript.PointBoost -= PointBoost;
+
+            //saving the new script and subscribing to the new event
+            grappleScript = grappleScriptParameter;
+            grappleScript.PointBoost += PointBoost;
         }
 
 
@@ -737,6 +743,7 @@ namespace Group26.Player.Movement
 
         private Vector3 CalculateBoostForce()
         {
+            //maybe add some upwards force to the boost?
             Vector3 boostForce = Vector3.zero;
             if (rb != null)
             {
@@ -760,6 +767,16 @@ namespace Group26.Player.Movement
                             boostForce = m_camera.forward * m_pointBoostForce;
                         }
                         break;
+                    case pointBoostModes.lookandspeed:
+                        if(m_camera == null)
+                        {
+                            Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
+                        }
+                        else
+                        {
+                            boostForce = (m_camera.forward * rb.linearVelocity.magnitude) * m_pointBoostForce;
+                        }
+                            break;
                 }
             }
             return boostForce;
