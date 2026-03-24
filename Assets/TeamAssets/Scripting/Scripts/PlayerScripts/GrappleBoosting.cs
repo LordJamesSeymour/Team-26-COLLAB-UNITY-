@@ -1,26 +1,24 @@
 using UnityEngine;
-using Group26.Player.Inputs;
 
 namespace Group26.Player.Movement
 {
-	public class Dashing : MonoBehaviour
+	public class GrappleBoosting : MonoBehaviour
 	{
 		[Header("References")]
 		[SerializeField] Transform orientation;
 		[SerializeField] Transform playerCam;
-		private InputManager inputManager;
 		private Rigidbody rigidBody;
 		private PlayerController playerController;
 
 		[Header("Dashing")]
-		[SerializeField] float dashForce;
-		[SerializeField] float dashUpwardsForce;
-		[SerializeField] float maxDashYSpeed;
-		[SerializeField] float dashDuration;
+		[SerializeField] float grappleForce;
+		[SerializeField] float grappleUpwardForce;
+		[SerializeField] float maxGrappleYSpeed;
+		[SerializeField] float grappleDuration;
 
 		[Header("Cooldown")]
-		[SerializeField, Range(0f, 5f)] float dashCooldown;
-		private float dashCdTimer;
+		[SerializeField, Range(0f, 5f)] float grappleCooldown;
+		private float grappleCdTimer;
 
 		[Header("Settings")]
 		[SerializeField] bool useCameraForward = true;
@@ -33,14 +31,10 @@ namespace Group26.Player.Movement
 
 		private void OnEnable()
 		{
-			if (inputManager == null)
-				inputManager = GetComponent<InputManager>();
 			if (rigidBody == null)
 				rigidBody = GetComponent<Rigidbody>();
 			if (playerController)
 				playerController = GetComponent<PlayerController>();
-
-			inputManager.OnDashPressed += Dash;
 		}
 
 		private void Start()
@@ -51,20 +45,20 @@ namespace Group26.Player.Movement
 
 		private void FixedUpdate()
 		{
-			if (dashCdTimer > 0)
-				dashCdTimer -= Time.deltaTime;
+			if (grappleCdTimer > 0)
+				grappleCdTimer -= Time.deltaTime;
 		}
-		public void InvokeDash()
+		public void InvokeBoost()
 		{
-			Dash();
+			GrappleDash();
 		}
-		private void Dash()
+		private void GrappleDash()
 		{
-			if (dashCdTimer > 0) return;
-			else dashCdTimer = dashCooldown;
+			if (grappleCdTimer > 0) return;
+			else grappleCdTimer = grappleCooldown;
 
 			playerController.m_bDashing = true;
-			playerController.maxYSpeed = maxDashYSpeed;
+			playerController.maxYSpeed = maxGrappleYSpeed;
 
 			Transform forwardT;
 			if (useCameraForward)
@@ -73,18 +67,18 @@ namespace Group26.Player.Movement
 				forwardT = orientation;
 
 			Vector3 direction = GetDirection(forwardT);
-			Vector3 forceToApply = direction * dashForce + orientation.up * dashUpwardsForce;
+			Vector3 forceToApply = direction * grappleForce + orientation.up * grappleUpwardForce;
 
 			if (disableGravity)
 				rigidBody.useGravity = false;
 
 			delayedForceToApply = forceToApply;
-			Invoke(nameof(DelayedDashForce), 0.125f);
-			Invoke(nameof(ResetDash), dashDuration);
+			Invoke(nameof(DelayedGrappleForce), 0.125f);
+			Invoke(nameof(ResetGrappleDash), grappleDuration);
 		}
 
 		private Vector3 delayedForceToApply;
-		private void DelayedDashForce()
+		private void DelayedGrappleForce()
 		{
 			if (resetVel)
 				rigidBody.linearVelocity = Vector3.zero;
@@ -92,15 +86,13 @@ namespace Group26.Player.Movement
 			rigidBody.AddForce(delayedForceToApply, ForceMode.VelocityChange); 
 		}
 
-		private void ResetDash()
+		private void ResetGrappleDash()
 		{
 			playerController.m_bDashing = false;
 			playerController.maxYSpeed = 0;
 
-
 			if (disableGravity)
 				rigidBody.useGravity = true;
-
 		}
 
 		public void GetInput(Vector2 Inputs)
