@@ -38,6 +38,8 @@ namespace Group26.Player.Movement
         [SerializeField] private RaycastHit predictionHit;
         [SerializeField] private float predictionSphereCastRadius;
         [SerializeField] private Transform predictionPoint;
+        [SerializeField] private LayerMask m_ignoredSwingPredictionLayer;
+        [SerializeField] private Transform m_maincam;
 
         [Header("Debug")]
         [SerializeField] private bool m_bDrawPredictionRays = false;
@@ -56,6 +58,9 @@ namespace Group26.Player.Movement
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
             swingPoint = gunTip.position;
+
+            //~ inverts the layermask bits
+            m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
         }
 
         private void OnEnable()
@@ -172,16 +177,27 @@ namespace Group26.Player.Movement
             
             if (m_bpreventSwingingThroughWalls)
             {
+                Transform camera = null;
+                if(m_maincam != null)
+                {
+                    camera = m_maincam;
+                }
+                else
+                {
+                    Debug.LogWarning("No main cam reference set in the SwingGun script, obstacle prevent ray may be inaccurate");
+                    camera = Cam;
+                }
+
                 //casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
                 RaycastHit obstaclePrevention;
-                Vector3 distance = predictionHit.point - Cam.position;
-                Physics.Raycast(Cam.position, distance.normalized, out obstaclePrevention, maxSwingDistance);
+                Vector3 distance = predictionHit.point - camera.position;
+                Physics.Raycast(camera.position, distance.normalized, out obstaclePrevention, maxSwingDistance,m_ignoredSwingPredictionLayer);
                 if (obstaclePrevention.collider != null)
                 {
                     if (m_bDrawPredictionRays)
                     {
-                        Vector3 direction = obstaclePrevention.point - Cam.position;
-                        Debug.DrawRay(Cam.position, direction.normalized * maxSwingDistance, Color.red, 100.0f);
+                        Vector3 direction = obstaclePrevention.point - camera.position;
+                        Debug.DrawRay(camera.position, direction.normalized * maxSwingDistance, Color.red, 100.0f);
                 }
 
                     if (obstaclePrevention.collider.gameObject != null)

@@ -2,6 +2,7 @@ using UnityEngine;
 using Group26.Player.Camera;
 using Group26.Player.Inputs;
 
+
 namespace Group26.Player.Movement
 {
 	public class GrappleGun : MonoBehaviour
@@ -17,6 +18,7 @@ namespace Group26.Player.Movement
 		[SerializeField] private LineRenderer lineRenderer;
 		private PlayerController PlayerController;
 		private Vector3 grapplePoint;
+		[SerializeField] private Transform m_maincam;
 
 		[Header("Grappling")]
 		[SerializeField] private float maxGrappleDistance;
@@ -27,6 +29,7 @@ namespace Group26.Player.Movement
 		/// This variable will most likely be temporary, so it can be removed after testing.
 		/// </summary>
 		[SerializeField] private bool m_preventGrappleThroughWalls = true;
+		[SerializeField] private LayerMask m_ignoredGrapplePredictionLayer;
 
         [Header("Prediction")]
 		[SerializeField] RaycastHit predictionHit;
@@ -55,6 +58,9 @@ namespace Group26.Player.Movement
 			if(predictionPoint != null) predictionPoint.gameObject.SetActive(false);
 
 			Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+
+			//~ inverts the layermask bits
+			m_ignoredGrapplePredictionLayer = ~m_ignoredGrapplePredictionLayer;
         }
 
 		void OnEnable()
@@ -153,16 +159,27 @@ namespace Group26.Player.Movement
 
 			if (m_preventGrappleThroughWalls)
 			{
-                //casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
-                RaycastHit obstaclePrevention;
-				Vector3 distance = predictionHit.point - Cam.position;
-                Physics.Raycast(Cam.position, distance.normalized, out obstaclePrevention, maxGrappleDistance);
+				Transform camera = null;
+				if(m_maincam != null)
+				{
+					camera = m_maincam;
+				}
+				else
+				{
+                    Debug.LogWarning("No main cam reference set in the GrappleGun script, obstacle prevent ray may be inaccurate");
+                    camera = Cam;
+				}
+
+				//casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
+				RaycastHit obstaclePrevention;
+				Vector3 distance = predictionHit.point - camera.position;
+                Physics.Raycast(camera.position, distance.normalized, out obstaclePrevention, maxGrappleDistance,m_ignoredGrapplePredictionLayer);
                 if (obstaclePrevention.collider != null)
                 {
                     if (m_bDrawPredictionRays)
                     {
-						Vector3 direction = obstaclePrevention.point - Cam.position;
-                        Debug.DrawRay(Cam.position,direction.normalized * maxGrappleDistance,Color.red, 100.0f);
+						Vector3 direction = obstaclePrevention.point - camera.position;
+                        Debug.DrawRay(camera.position,direction.normalized * maxGrappleDistance,Color.red, 100.0f);
                     }
 
                     if (obstaclePrevention.collider.gameObject != null)

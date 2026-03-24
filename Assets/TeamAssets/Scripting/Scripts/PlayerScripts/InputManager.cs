@@ -11,7 +11,6 @@ namespace Group26.Player.Inputs
         [Header("Input References")]
         [Space(10)]
         private InputSystem_Actions playerInputActions;
-        private PlayerLocomotion playerLocomotion;
         private CameraModeManager cameraMode;
         private PlayerController playerController;
 
@@ -65,7 +64,6 @@ namespace Group26.Player.Inputs
         void Awake()
         {
             if (playerInputActions == null) playerInputActions = new InputSystem_Actions();
-            if (playerLocomotion == null) playerLocomotion = GetComponent<PlayerLocomotion>();
             if (cameraMode == null) cameraMode = GetComponent<CameraModeManager>();
             if (playerController == null) playerController = GetComponent<PlayerController>();
         }
