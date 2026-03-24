@@ -64,20 +64,10 @@ namespace Group26.Player.Movement
         [Space(10)]
         [SerializeField] private float m_pointBoostForce = 3.5f;
         [SerializeField] private bool m_bGrappleBoosting = true;
-        /// <summary>
-        /// The maximum speed the player can move at for the point boost force to be applied.
-        /// If the player is moving faster than this, they will not be boosted.
-        /// </summary>
         [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
-        /// <summary>
-        /// 
-        /// </summary>
         [SerializeField] private bool m_bLogPointBoostForce = false;
-        /// <summary>
-        /// Testing variable meant to be set in editor. 
-        /// This is used for testing the differnet force modes within the grapple point boost mechanic.
-        /// </summary>
         [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.Force;
+
         private enum pointBoostModes
         {
             velocity,
@@ -85,12 +75,9 @@ namespace Group26.Player.Movement
             lookDirection,
             lookandspeed
         };
-        /// <summary>
-        /// Modes for how the point boost launch's force calculation will occur. This will be removed after a version is settled on.
-        /// </summary>
+
         [SerializeField] private pointBoostModes m_pointBoostMode;
         [SerializeField] private Transform m_camera;
-
 
         public MovementState state;
         public enum MovementState
@@ -141,6 +128,10 @@ namespace Group26.Player.Movement
         private bool enableMovementOnNextTouch;
         private Vector3 VelocityToSet;
 
+        private bool m_bStraightGrappleMovement;
+        private Vector3 m_straightGrappleTarget;
+        private float m_straightGrappleSpeed;
+
         RailSpline currentRail;
         float currentRailT;
         float currentRailSpeed;
@@ -175,20 +166,18 @@ namespace Group26.Player.Movement
         {
             inputManager.OnJumpPressed -= Jump;
 
-
-            if (grappleScript != null) grappleScript.PointBoost -= PointBoost;
+            if (grappleScript != null)
+                grappleScript.PointBoost -= PointBoost;
         }
 
         public void AssignGrapple(GrapplePointScript grappleScriptParameter)
         {
-            //unsubscribing to the old pointBoost event
-            if(grappleScript != null) grappleScript.PointBoost -= PointBoost;
+            if (grappleScript != null)
+                grappleScript.PointBoost -= PointBoost;
 
-            //saving the new script and subscribing to the new event
             grappleScript = grappleScriptParameter;
             grappleScript.PointBoost += PointBoost;
         }
-
 
         private void FixedUpdate()
         {
@@ -199,6 +188,12 @@ namespace Group26.Player.Movement
             if (m_bOnRail)
             {
                 UpdateRailMovement(Time.fixedDeltaTime);
+                return;
+            }
+
+            if (m_bActiveGrapple && m_bStraightGrappleMovement)
+            {
+                UpdateStraightGrappleMovement(Time.fixedDeltaTime);
                 return;
             }
 
@@ -233,6 +228,34 @@ namespace Group26.Player.Movement
                 MovePlayer(onSlope);
                 SpeedControl(onSlope);
             }
+        }
+
+        private void UpdateStraightGrappleMovement(float deltaTime)
+        {
+            if (!m_bActiveGrapple || !m_bStraightGrappleMovement)
+                return;
+
+            Vector3 toTarget = m_straightGrappleTarget - transform.position;
+            float distanceToTarget = toTarget.magnitude;
+
+            rb.useGravity = false;
+            rb.linearDamping = 0f;
+            rb.angularVelocity = Vector3.zero;
+
+            if (distanceToTarget <= 0.001f)
+            {
+                rb.linearVelocity = Vector3.zero;
+                return;
+            }
+
+            float safeSpeed = Mathf.Max(m_straightGrappleSpeed, 0.01f);
+            Vector3 desiredVelocity = toTarget.normalized * safeSpeed;
+
+            float maxStepDistance = safeSpeed * deltaTime;
+            if (distanceToTarget <= maxStepDistance)
+                desiredVelocity = toTarget / Mathf.Max(deltaTime, 0.0001f);
+
+            rb.linearVelocity = desiredVelocity;
         }
 
         void StateHandler(bool onSlope)
@@ -483,9 +506,25 @@ namespace Group26.Player.Movement
             if (m_bOnRail) return;
 
             m_bActiveGrapple = true;
+            m_bStraightGrappleMovement = false;
 
             VelocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
             Invoke(nameof(SetVelocity), 0.1f);
+        }
+
+        public void GrappleToPositionStraight(Vector3 targetPosition, float grappleSpeed)
+        {
+            if (m_bOnRail) return;
+
+            m_bActiveGrapple = true;
+            m_bStraightGrappleMovement = true;
+            enableMovementOnNextTouch = true;
+
+            m_straightGrappleTarget = targetPosition;
+            m_straightGrappleSpeed = Mathf.Max(grappleSpeed, 0.01f);
+
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
 
         private void SetVelocity()
@@ -497,7 +536,12 @@ namespace Group26.Player.Movement
         public void ResetRestrictions()
         {
             if (m_bOnRail) return;
+
             m_bActiveGrapple = false;
+            m_bStraightGrappleMovement = false;
+            enableMovementOnNextTouch = false;
+            m_straightGrappleSpeed = 0f;
+            m_straightGrappleTarget = Vector3.zero;
         }
 
         private void ReleaseGrappleMovement()
@@ -512,7 +556,7 @@ namespace Group26.Player.Movement
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (enableMovementOnNextTouch)
+            if (enableMovementOnNextTouch && m_bActiveGrapple)
             {
                 ReleaseGrappleMovement();
             }
@@ -564,6 +608,7 @@ namespace Group26.Player.Movement
             StopAllCoroutines();
 
             m_bActiveGrapple = false;
+            m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
             m_bDashing = false;
             m_bSliding = false;
@@ -624,6 +669,7 @@ namespace Group26.Player.Movement
             inputManager?.ClearRailBlockedInputs();
 
             m_bActiveGrapple = false;
+            m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
             m_bDashing = false;
             m_bSliding = false;
@@ -698,6 +744,7 @@ namespace Group26.Player.Movement
             currentRailSpeed = 0f;
 
             m_bActiveGrapple = false;
+            m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
             m_bDashing = false;
             m_bSliding = false;
@@ -735,10 +782,10 @@ namespace Group26.Player.Movement
                     {
                         Debug.Log("Hit a grapple point! Applying force of: " + boostForce);
                     }
-                    //This only runs if the player is moving at or below the max speed for boost application
+
                     rb.AddForce(boostForce, ForceMode.Impulse);
                     ReleaseGrappleMovement();
-                    return;//lets me log the speed being too high without actually needing to check the speed value a second time
+                    return;
                 }
 
                 if (m_bLogPointBoostForce && m_bGrappleBoosting)
@@ -753,7 +800,6 @@ namespace Group26.Player.Movement
 
         private Vector3 CalculateBoostForce()
         {
-            //maybe add some upwards force to the boost?
             Vector3 boostForce = Vector3.zero;
             if (rb != null)
             {
@@ -777,8 +823,9 @@ namespace Group26.Player.Movement
                             boostForce = m_camera.forward * m_pointBoostForce;
                         }
                         break;
+
                     case pointBoostModes.lookandspeed:
-                        if(m_camera == null)
+                        if (m_camera == null)
                         {
                             Debug.LogWarning("No camera transform reference is given within the PlayerController. The point boost will not occur");
                         }
@@ -786,11 +833,10 @@ namespace Group26.Player.Movement
                         {
                             boostForce = (m_camera.forward * rb.linearVelocity.magnitude) * m_pointBoostForce;
                         }
-                            break;
+                        break;
                 }
             }
             return boostForce;
         }
     }
-
 }
