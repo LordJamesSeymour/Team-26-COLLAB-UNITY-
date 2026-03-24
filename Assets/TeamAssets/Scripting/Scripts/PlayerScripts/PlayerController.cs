@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Group26.Player.Inputs;
+using Group26.Player.Utility;
 using Unity.Mathematics;
 using UnityEngine.Splines;
 
@@ -59,7 +60,7 @@ namespace Group26.Player.Movement
         [SerializeField] float railJumpUpForce = 6f;
         [SerializeField] float railExitForwardBoost = 2f;
 
-        [Header("GrapplePoints")]
+        [Header("Grapple Point Settings")]
         [Space(10)]
         [SerializeField] private float m_pointBoostForce = 3.5f;
         [SerializeField] private bool m_bGrappleBoosting = true;
@@ -499,16 +500,21 @@ namespace Group26.Player.Movement
             m_bActiveGrapple = false;
         }
 
+        private void ReleaseGrappleMovement()
+        {
+            enableMovementOnNextTouch = false;
+            ResetRestrictions();
+
+            GrappleGun grapple = GetComponent<GrappleGun>();
+            if (grapple != null)
+                grapple.ForceStopGrapple();
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (enableMovementOnNextTouch)
             {
-                enableMovementOnNextTouch = false;
-                ResetRestrictions();
-
-                GrappleGun grapple = GetComponent<GrappleGun>();
-                if (grapple != null)
-                    grapple.ForceStopGrapple();
+                ReleaseGrappleMovement();
             }
         }
 
@@ -731,6 +737,7 @@ namespace Group26.Player.Movement
                     }
                     //This only runs if the player is moving at or below the max speed for boost application
                     rb.AddForce(boostForce, ForceMode.Impulse);
+                    ReleaseGrappleMovement();
                     return;//lets me log the speed being too high without actually needing to check the speed value a second time
                 }
 
@@ -738,6 +745,9 @@ namespace Group26.Player.Movement
                 {
                     Debug.Log("Hit a grapple point, but the player is moving too fast to apply a force");
                 }
+
+                if (m_bActiveGrapple)
+                    ReleaseGrappleMovement();
             }
         }
 

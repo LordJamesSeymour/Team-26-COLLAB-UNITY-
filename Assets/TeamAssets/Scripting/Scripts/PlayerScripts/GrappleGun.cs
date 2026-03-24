@@ -1,7 +1,7 @@
 using UnityEngine;
 using Group26.Player.Camera;
 using Group26.Player.Inputs;
-using UnityEngine.Rendering;
+
 
 namespace Group26.Player.Movement
 {
