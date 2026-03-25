@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -67,7 +68,7 @@ public class buttonnavscript : MonoBehaviour
         //m_currentButton.colors = m_buttonColorBlock;
     }
 
-    public void ToggleControlsMenuOn()
+    public IEnumerator ToggleControlsMenuOn()
     {
         //if (m_mainMenuPanelEnabled)
         //{
@@ -87,7 +88,14 @@ public class buttonnavscript : MonoBehaviour
         m_controlsPanel.SetActive(true);
         m_mainMenuPanel.SetActive(false);
         m_mainMenuPanelEnabled = false;
+        yield return new WaitUntil(() => m_controlsPanel.activeSelf == true);
         m_controlsScreenScript.m_enabled = true;
+    }
+
+    public void RunMenuToggle()
+    {
+        Debug.Log("entering");
+        StartCoroutine(ToggleControlsMenuOn());
     }
 
     // Update is called once per frame

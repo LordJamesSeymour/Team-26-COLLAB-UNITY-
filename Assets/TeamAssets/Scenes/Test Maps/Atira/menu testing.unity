@@ -205,8 +205,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1106575634}
         m_TargetAssemblyTypeName: controlsmenuscript, Assembly-CSharp
-        m_MethodName: ToggleControlsMenuOff
-        m_Mode: 6
+        m_MethodName: RunToggleMenuOff
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -475,7 +475,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1106575632}
         m_TargetAssemblyTypeName: buttonnavscript, Assembly-CSharp
-        m_MethodName: ToggleControlsMenuOn
+        m_MethodName: RunMenuToggle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
