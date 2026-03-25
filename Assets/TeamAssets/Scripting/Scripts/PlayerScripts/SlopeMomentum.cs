@@ -7,6 +7,7 @@ public class SlopeMomentum : MonoBehaviour
     private PlayerController m_movementScript;
     private float m_startSpeed;
     private int m_stopCheck;
+    private Vector3 m_pos;
     //private Rigidbody m_rigidbody;
     //private InputManager m_inputManager;
     //private bool m_onSlope;
@@ -25,6 +26,7 @@ public class SlopeMomentum : MonoBehaviour
         //m_rigidbody = GetComponent<Rigidbody>();
         //if (!m_rigidbody)
         //    Debug.LogError("No rigidbody attached to this object");
+        m_pos = transform.position;
 
         m_movementScript = GetComponent<PlayerController>();
         if (!m_movementScript)
@@ -77,8 +79,11 @@ public class SlopeMomentum : MonoBehaviour
         //Debug.Log(m_locomotionScript.GetDirection());
         //Debug.Log("Speed: " + m_movementScript.moveSpeed);
         //Debug.Log("Momentum: " + m_momentum);
+        Debug.Log("dir: " + m_movementScript.GetDirection().z);
+        Debug.Log("transform: " + transform.position.y);
+        Debug.Log("pos: " + m_pos.y);
 
-        if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95)
+        if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95 && transform.position.y < m_pos.y)
         {
             m_stopCheck = 0;
             m_momentum += m_speedIncreaseFactor;
@@ -98,5 +103,7 @@ public class SlopeMomentum : MonoBehaviour
             
             //m_locomotionScript.moveSpeed = m_startSpeed;
         }
+
+        m_pos = transform.position;
     }
 }
