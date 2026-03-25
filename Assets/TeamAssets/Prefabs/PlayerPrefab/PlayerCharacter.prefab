@@ -761,8 +761,8 @@ GameObject:
   - component: {fileID: 4237640061233739527}
   - component: {fileID: 8393748187415252751}
   - component: {fileID: 7350818907136474129}
-  - component: {fileID: 1790286465206029165}
   - component: {fileID: 8710749752973827846}
+  - component: {fileID: 1790286465206029165}
   - component: {fileID: 6661257255942849801}
   - component: {fileID: 1821288047658072069}
   - component: {fileID: 1490892436793691755}
@@ -850,38 +850,6 @@ MonoBehaviour:
   isSprinting: 0
   isCrouching: 0
   isSwinging: 0
---- !u!114 &1790286465206029165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4865603522779230174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5ca2dff7a7311a46b403cfb75dbd94d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_playerTransform: {fileID: 927507460318148860}
-  m_cameraPivot: {fileID: 1916522504268831409}
-  firstPersonVirtualCamera: {fileID: 3614716235256775216}
-  thirdPersonVirtualCamera: {fileID: 4048706516660936606}
-  leftWallRunningVirtualCamera: {fileID: 5847422709827377981}
-  rightWallRunningVirtualCamera: {fileID: 1528728448840712767}
-  firstPersonLookSensitivity: {x: 14, y: 14}
-  thirdPersonLookSensitivity: {x: 14, y: 14}
-  currentCameraMode: 1
-  m_firstPersonPitchLimits: {x: -85, y: 85}
-  firstPersonYawRoot: {fileID: 927507460318148860}
-  firstPersonPitchPivot: {fileID: 36624122892362830}
-  m_thirdPersonPitchLimits: {x: -50, y: 40}
-  m_bodyTurnSmoothTime: 0.1
-  m_turnWhenCameraYawOffsetExceeds: 1
-  defaultFOV: 60
-  sprintFOV: 75
-  fovTransitionDuration: 0.25
-  dashFOV: 85
-  burstTransitionDuration: 0.1
 --- !u!114 &8710749752973827846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,6 +905,38 @@ MonoBehaviour:
   m_bIsWallRunning: 0
   m_bOnRail: 0
   orientation: {fileID: 927507460318148860}
+--- !u!114 &1790286465206029165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4865603522779230174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ca2dff7a7311a46b403cfb75dbd94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerTransform: {fileID: 927507460318148860}
+  m_cameraPivot: {fileID: 1916522504268831409}
+  firstPersonVirtualCamera: {fileID: 3614716235256775216}
+  thirdPersonVirtualCamera: {fileID: 4048706516660936606}
+  leftWallRunningVirtualCamera: {fileID: 5847422709827377981}
+  rightWallRunningVirtualCamera: {fileID: 1528728448840712767}
+  firstPersonLookSensitivity: {x: 14, y: 14}
+  thirdPersonLookSensitivity: {x: 14, y: 14}
+  currentCameraMode: 1
+  m_firstPersonPitchLimits: {x: -85, y: 85}
+  firstPersonYawRoot: {fileID: 927507460318148860}
+  firstPersonPitchPivot: {fileID: 36624122892362830}
+  m_thirdPersonPitchLimits: {x: -50, y: 40}
+  m_bodyTurnSmoothTime: 0.1
+  m_turnWhenCameraYawOffsetExceeds: 1
+  defaultFOV: 60
+  sprintFOV: 75
+  fovTransitionDuration: 0.25
+  dashFOV: 85
+  burstTransitionDuration: 0.1
 --- !u!114 &6661257255942849801
 MonoBehaviour:
   m_ObjectHideFlags: 0
