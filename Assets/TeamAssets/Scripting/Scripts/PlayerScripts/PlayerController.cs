@@ -553,6 +553,19 @@ namespace Group26.Player.Movement
             return false;
         }
 
+        public float GetSlopeAngle()
+        {
+            if (m_cPlayerCollider == null) return 0f;
+
+            float halfHeight = m_cPlayerCollider.bounds.extents.y;
+
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, halfHeight + 0.35f, m_lGround))
+            {
+                return Vector3.Angle(Vector3.up, slopeHit.normal);
+            }
+            return 0f;
+        }
+
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
         {
             return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
