@@ -9,6 +9,7 @@ namespace Group26.Player.Movement
 		[SerializeField] Transform playerCam;
 		private Rigidbody rigidBody;
 		private PlayerController playerController;
+		private GrappleGun grappleGun;
 
 		[Header("Dashing")]
 		[SerializeField] float grappleForce;
@@ -35,6 +36,8 @@ namespace Group26.Player.Movement
 				rigidBody = GetComponent<Rigidbody>();
 			if (playerController)
 				playerController = GetComponent<PlayerController>();
+			if (grappleGun == null)
+				grappleGun = GetComponent<GrappleGun>();
 		}
 
 		private void Start()
@@ -75,6 +78,8 @@ namespace Group26.Player.Movement
 			delayedForceToApply = forceToApply;
 			Invoke(nameof(DelayedGrappleForce), 0.125f);
 			Invoke(nameof(ResetGrappleDash), grappleDuration);
+
+			grappleGun.ForceStopGrapple();
 		}
 
 		private Vector3 delayedForceToApply;
