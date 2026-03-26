@@ -34,7 +34,7 @@ namespace Group26.Player.Movement
 		{
 			if (rigidBody == null)
 				rigidBody = GetComponent<Rigidbody>();
-			if (playerController)
+			if (playerController == null)
 				playerController = GetComponent<PlayerController>();
 			if (grappleGun == null)
 				grappleGun = GetComponent<GrappleGun>();
@@ -60,8 +60,7 @@ namespace Group26.Player.Movement
 			if (grappleCdTimer > 0) return;
 			else grappleCdTimer = grappleCooldown;
 
-			playerController.m_bDashing = true;
-			playerController.maxYSpeed = maxGrappleYSpeed;
+			playerController.BeginDashState(maxGrappleYSpeed);
 
 			Transform forwardT;
 			if (useCameraForward)
@@ -88,13 +87,13 @@ namespace Group26.Player.Movement
 			if (resetVel)
 				rigidBody.linearVelocity = Vector3.zero;
 
-			rigidBody.AddForce(delayedForceToApply, ForceMode.VelocityChange); 
+			rigidBody.AddForce(delayedForceToApply, ForceMode.VelocityChange);
+			playerController.ReleaseDashMovementLock();
 		}
 
 		private void ResetGrappleDash()
 		{
-			playerController.m_bDashing = false;
-			playerController.maxYSpeed = 0;
+			playerController.EndDashState();
 
 			if (disableGravity)
 				rigidBody.useGravity = true;

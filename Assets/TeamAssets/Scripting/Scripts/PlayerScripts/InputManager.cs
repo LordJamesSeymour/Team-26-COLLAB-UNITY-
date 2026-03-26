@@ -51,11 +51,13 @@ namespace Group26.Player.Inputs
         [HideInInspector] public bool isSprinting;
         [HideInInspector] public bool isCrouching;
         [HideInInspector] public bool isSwinging;
+        [HideInInspector] public bool isGrappling;
 
         public event Action OnJumpPressed;
         public event Action OnJumpRelease;
         public event Action OnDashPressed;
         public event Action OnGrapplePressed;
+        public event Action OnGrappleReleased;
         public event Action OnSwingStarted;
         public event Action OnSwingStopped;
         public event Action OnCameraSwitchPressed;
@@ -118,11 +120,12 @@ namespace Group26.Player.Inputs
             playerInputActions.Enable();
 
             SubscribePerformed(jumpAction, HandleJump);
-            SubscribePerformed(grappleAction, HandleInteract);
+            //SubscribePerformed(grappleAction, HandleInteract);
             SubscribePerformed(dashAction, HandleDash);
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             SubscribePerformed(pauseAction, HandlePause);
 
+                SubscribeToggled(grappleAction, HandleGrappleChanged);
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
@@ -133,11 +136,12 @@ namespace Group26.Player.Inputs
             playerInputActions.Disable();
 
             UnsubscribePerformed(jumpAction, HandleJump);
-            UnsubscribePerformed(grappleAction, HandleInteract);
+            //UnsubscribePerformed(grappleAction, HandleInteract);
             UnsubscribePerformed(dashAction, HandleDash);
             UnsubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
             UnsubscribePerformed(pauseAction, HandlePause);
 
+                UnsubscribeToggled(grappleAction, HandleGrappleChanged);
             UnsubscribeToggled(sprintAction, HandleSprintChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
             UnsubscribeToggled(swingAction, HandleSwingChanged);
@@ -226,6 +230,31 @@ namespace Group26.Player.Inputs
             {
                 OnSwingStopped?.Invoke();
                 isSwinging = false;
+            }
+        }
+
+        private void HandleGrappleChanged(InputAction.CallbackContext context)
+        {
+            if(IsRailLocked())
+            {
+                if (isGrappling)
+                {
+                    OnGrappleReleased?.Invoke();
+                    isGrappling = false;
+                }
+            }
+            else
+            {
+                if (context.performed)
+                {
+                    OnGrapplePressed?.Invoke();
+                    isGrappling = true;
+                }
+                else if (context.canceled)
+                {
+                    OnGrappleReleased?.Invoke();
+                    isGrappling = false;
+                }
             }
         }
 

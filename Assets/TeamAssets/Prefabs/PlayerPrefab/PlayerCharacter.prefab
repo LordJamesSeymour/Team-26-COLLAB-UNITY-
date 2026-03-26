@@ -850,6 +850,7 @@ MonoBehaviour:
   isSprinting: 0
   isCrouching: 0
   isSwinging: 0
+  isGrappling: 0
 --- !u!114 &8710749752973827846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887,13 +888,6 @@ MonoBehaviour:
   MaxSlopeAngle: 40
   railJumpUpForce: 6
   railExitForwardBoost: 2
-  m_pointBoostForce: 25
-  m_bGrappleBoosting: 1
-  m_bLimitPointBoostBySpeed: 0
-  m_maxSpeedForBoostApplication: 20
-  m_bResetVelocityBeforePointBoost: 0
-  m_bLogPointBoostForce: 0
-  m_pointBoostForceMode: 1
   m_straightGrappleReleaseDistance: 1
   state: 1
   m_bActiveGrapple: 0
@@ -924,19 +918,19 @@ MonoBehaviour:
   leftWallRunningVirtualCamera: {fileID: 5847422709827377981}
   rightWallRunningVirtualCamera: {fileID: 1528728448840712767}
   firstPersonLookSensitivity: {x: 14, y: 14}
-  thirdPersonLookSensitivity: {x: 14, y: 14}
+  thirdPersonLookSensitivity: {x: 10, y: 10}
   currentCameraMode: 1
   m_firstPersonPitchLimits: {x: -85, y: 85}
   firstPersonYawRoot: {fileID: 927507460318148860}
   firstPersonPitchPivot: {fileID: 36624122892362830}
   m_thirdPersonPitchLimits: {x: -50, y: 40}
-  m_bodyTurnSmoothTime: 0.1
-  m_turnWhenCameraYawOffsetExceeds: 1
+  m_bodyTurnSmoothTime: 0
+  m_turnWhenCameraYawOffsetExceeds: 0
   defaultFOV: 60
   sprintFOV: 75
   fovTransitionDuration: 0.25
   dashFOV: 85
-  burstTransitionDuration: 0.1
+  burstTransitionDuration: 0.075
 --- !u!114 &6661257255942849801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,8 +978,8 @@ MonoBehaviour:
   dashForce: 30
   dashUpwardsForce: 0
   maxDashYSpeed: 40
-  dashDuration: 1
-  dashCooldown: 3
+  dashDuration: 0.2
+  dashCooldown: 1
   useCameraForward: 0
   allowAllDirections: 1
   disableGravity: 1
@@ -1003,8 +997,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 927507460318148860}
-  playerCam: {fileID: 5901004435384487027}
-  grappleForce: 75
+  playerCam: {fileID: 0}
+  grappleForce: 85
   grappleUpwardForce: 10
   maxGrappleYSpeed: 75
   grappleDuration: 0.75

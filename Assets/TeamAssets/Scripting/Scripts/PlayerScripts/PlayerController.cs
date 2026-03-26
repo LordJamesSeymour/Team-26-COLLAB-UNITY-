@@ -60,15 +60,15 @@ namespace Group26.Player.Movement
         [SerializeField] float railJumpUpForce = 6f;
         [SerializeField] float railExitForwardBoost = 2f;
 
-        [Header("Grapple Point Settings")]
-        [Space(10)]
-        [SerializeField] private float m_pointBoostForce = 12f;
-        [SerializeField] private bool m_bGrappleBoosting = true;
-        [SerializeField] private bool m_bLimitPointBoostBySpeed = false;
-        [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
-        [SerializeField] private bool m_bResetVelocityBeforePointBoost = true;
-        [SerializeField] private bool m_bLogPointBoostForce = false;
-        [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.VelocityChange;
+        // [Header("Grapple Point Settings")]
+        // [Space(10)]
+        // [SerializeField] private float m_pointBoostForce = 12f;
+        // [SerializeField] private bool m_bGrappleBoosting = true;
+        // [SerializeField] private bool m_bLimitPointBoostBySpeed = false;
+        // [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
+        // [SerializeField] private bool m_bResetVelocityBeforePointBoost = true;
+        // [SerializeField] private bool m_bLogPointBoostForce = false;
+        // [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.VelocityChange;
 
         [Header("Straight Grapple")]
         [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
@@ -93,6 +93,7 @@ namespace Group26.Player.Movement
         public bool m_bFreeze;
         public bool m_bSliding;
         public bool m_bDashing;
+        private bool m_bDashMovementLocked = true;
         public bool m_bIsGrounded;
         public bool m_bIsWallRunning;
         public bool m_bOnRail;
@@ -381,7 +382,7 @@ namespace Group26.Player.Movement
         {
             if (m_bActiveGrapple) return;
             if (m_bActiveSwing) return;
-            if (m_bDashing) return;
+            if (m_bDashing && m_bDashMovementLocked) return;
             if (m_bOnRail) return;
 
             moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -429,11 +430,6 @@ namespace Group26.Player.Movement
 
             if (maxYSpeed != 0 && rb.linearVelocity.y > maxYSpeed)
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
-        }
-
-        public void Sprint(bool state)
-        {
-            Debug.LogWarning("Sprint(bool) is deprecated. Sprint state is owned by InputManager.");
         }
 
         public void Jump()
@@ -521,6 +517,28 @@ namespace Group26.Player.Movement
             m_straightGrappleTarget = Vector3.zero;
         }
 
+        public void BeginDashState(float dashMaxYSpeed, bool lockMovement = true)
+        {
+            m_bDashing = true;
+            m_bDashMovementLocked = lockMovement;
+            maxYSpeed = dashMaxYSpeed;
+        }
+
+        public void ReleaseDashMovementLock()
+        {
+            if (!m_bDashing)
+                return;
+
+            m_bDashMovementLocked = false;
+        }
+
+        public void EndDashState()
+        {
+            m_bDashing = false;
+            m_bDashMovementLocked = true;
+            maxYSpeed = 0f;
+        }
+
         private void ReleaseGrappleMovement()
         {
             enableMovementOnNextTouch = false;
@@ -600,11 +618,11 @@ namespace Group26.Player.Movement
             m_bActiveGrapple = false;
             m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
-            m_bDashing = false;
             m_bSliding = false;
             m_bIsWallRunning = false;
             m_bFreeze = false;
             exitingSlope = false;
+            EndDashState();
 
             moveSpeed = 0f;
             desiredMoveSpeed = 0f;
@@ -661,10 +679,10 @@ namespace Group26.Player.Movement
             m_bActiveGrapple = false;
             m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
-            m_bDashing = false;
             m_bSliding = false;
             m_bIsWallRunning = false;
             m_bFreeze = false;
+            EndDashState();
 
             state = MovementState.rail;
             rb.useGravity = false;
@@ -736,11 +754,11 @@ namespace Group26.Player.Movement
             m_bActiveGrapple = false;
             m_bStraightGrappleMovement = false;
             m_bActiveSwing = false;
-            m_bDashing = false;
             m_bSliding = false;
             m_bIsWallRunning = false;
             m_bFreeze = false;
             exitingSlope = false;
+            EndDashState();
 
             desiredMoveSpeed = 0f;
             moveSpeed = 0f;

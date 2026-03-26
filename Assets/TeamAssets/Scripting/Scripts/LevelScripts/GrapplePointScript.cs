@@ -20,15 +20,18 @@ namespace Group26.Player.Utility
 			if (collisionObject.CompareTag("Player"))
 			{
 				PlayerController playerController = collisionObject.GetComponent<PlayerController>();
-				GrappleBoosting GrappleBoost = collisionObject.GetComponent<GrappleBoosting>();
+				GrappleBoosting grappleBoost = collisionObject.GetComponent<GrappleBoosting>();
 				if (playerController == null)
 				{
 					Debug.LogError(collisionObject.name + " does not have an attached PlayerController");
 				}
+				else if (grappleBoost == null)
+				{
+					Debug.LogError(collisionObject.name + " does not have an attached GrappleBoosting component");
+				}
 				else
 				{
-					playerController.m_bDashing = true;
-					GrappleBoost.InvokeBoost();
+					grappleBoost.InvokeBoost();
 				}
 			}
 		}

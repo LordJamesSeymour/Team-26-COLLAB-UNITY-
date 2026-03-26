@@ -65,9 +65,9 @@ namespace Group26.Player.Camera
         [SerializeField, Range(0f, 0.25f)] private float burstTransitionDuration;
         
         private bool isSprintingLastFrame = false;
+        private bool isBursting;
         private Coroutine fovTransitionCoroutine;
         private Coroutine burstFOVCoroutine;
-
 
         private void Awake()
         {
@@ -235,6 +235,8 @@ namespace Group26.Player.Camera
         private void BurstFOVIncrease()
         {
             if(!playerController.m_bDashing) return;
+            if(isBursting) return;
+            isBursting = true;
 
             // Stop any existing burst FOV effect
             if (burstFOVCoroutine != null)
@@ -289,6 +291,7 @@ namespace Group26.Player.Camera
             
             // Clear the coroutine reference
             burstFOVCoroutine = null;
+            isBursting = false;
         }
 
         private void HandleSprintFOV()

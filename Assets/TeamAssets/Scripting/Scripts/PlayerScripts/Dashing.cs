@@ -28,6 +28,8 @@ namespace Group26.Player.Movement
 		[SerializeField] bool disableGravity = true;
 		[SerializeField] bool resetVel = true;
 
+		private int dashToken = 0;
+
 		private float horizontalinput;
 		private float verticalinput;
 
@@ -37,7 +39,7 @@ namespace Group26.Player.Movement
 				inputManager = GetComponent<InputManager>();
 			if (rigidBody == null)
 				rigidBody = GetComponent<Rigidbody>();
-			if (playerController)
+			if (playerController == null)
 				playerController = GetComponent<PlayerController>();
 
 			inputManager.OnDashPressed += Dash;
@@ -45,8 +47,10 @@ namespace Group26.Player.Movement
 
 		private void Start()
 		{
-			rigidBody = GetComponent<Rigidbody>();
-			playerController = GetComponent<PlayerController>();
+			if (rigidBody == null)
+				rigidBody = GetComponent<Rigidbody>();
+			if (playerController == null)
+				playerController = GetComponent<PlayerController>();
 		}
 
 		private void FixedUpdate()
@@ -61,10 +65,12 @@ namespace Group26.Player.Movement
 		private void Dash()
 		{
 			if (dashCdTimer > 0) return;
+			if(dashToken == 1) return;
 			else dashCdTimer = dashCooldown;
 
-			playerController.m_bDashing = true;
-			playerController.maxYSpeed = maxDashYSpeed;
+			dashToken++;
+
+			playerController.BeginDashState(maxDashYSpeed);
 
 			Transform forwardT;
 			if (useCameraForward)
@@ -94,9 +100,8 @@ namespace Group26.Player.Movement
 
 		private void ResetDash()
 		{
-			playerController.m_bDashing = false;
-			playerController.maxYSpeed = 0;
-
+			playerController.EndDashState();
+			dashToken = 0;
 
 			if (disableGravity)
 				rigidBody.useGravity = true;

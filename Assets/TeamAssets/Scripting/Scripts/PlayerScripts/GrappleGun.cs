@@ -59,12 +59,16 @@ namespace Group26.Player.Movement
         private void OnEnable()
         {
             InputManager.OnGrapplePressed += StartGrapple;
+            InputManager.OnGrappleReleased += StopGrapple;
+
             InputManager.OnCameraSwitchPressed += HandleCameraSwitch;
         }
 
         private void OnDisable()
         {
             InputManager.OnGrapplePressed -= StartGrapple;
+            InputManager.OnGrappleReleased -= StopGrapple;
+
             InputManager.OnCameraSwitchPressed -= HandleCameraSwitch;
             CancelInvoke();
         }
@@ -201,6 +205,11 @@ namespace Group26.Player.Movement
                 predictionPoint.gameObject.SetActive(false);
 
             Invoke(nameof(ExecuteGrapple_InvokeWrapper), Mathf.Max(grappleDelayTime, 0f));
+        }
+
+        private void StopGrapple()
+        {
+            ForceStopGrapple();
         }
 
         private void ExecuteGrapple_InvokeWrapper() => ExecuteGrapple(_grappleToken);
