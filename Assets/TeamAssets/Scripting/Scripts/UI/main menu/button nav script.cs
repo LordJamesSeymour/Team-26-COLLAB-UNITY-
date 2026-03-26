@@ -13,11 +13,13 @@ public class buttonnavscript : MonoBehaviour
     private Color m_highlightedColour;
     private ColorBlock m_buttonColorBlock;
     private controlsmenuscript m_controlsScreenScript;
+    private levelselectionmenuscript m_levelScreenScript;
     [HideInInspector] public bool m_mainMenuPanelEnabled = true;
     //private Vector2 direction;
 
     [SerializeField] public GameObject m_mainMenuPanel;
     [SerializeField] public GameObject m_controlsPanel;
+    [SerializeField] public GameObject m_levelsPanel;
     [SerializeField] Button[] m_buttons;
     [SerializeField] Sprite[] m_buttonSprites;
 
@@ -29,6 +31,10 @@ public class buttonnavscript : MonoBehaviour
         m_controlsScreenScript = GetComponent<controlsmenuscript>();
         if (!m_controlsScreenScript)
             Debug.Log("no controls screen script attached");
+
+        m_levelScreenScript = GetComponent<levelselectionmenuscript>();
+        if ((!m_levelScreenScript))
+            Debug.Log("no level select screen script attached");
         //m_normalColour = m_buttons[0].colors.normalColor;
         //m_highlightedColour = m_buttons[0].colors.highlightedColor;
         //Debug.Log(m_highlightedColour);
@@ -68,7 +74,7 @@ public class buttonnavscript : MonoBehaviour
         //m_currentButton.colors = m_buttonColorBlock;
     }
 
-    public IEnumerator ToggleMenuOn(GameObject menu)
+    private IEnumerator ToggleControlsMenuOn(GameObject menu)
     {
         //if (m_mainMenuPanelEnabled)
         //{
@@ -92,10 +98,23 @@ public class buttonnavscript : MonoBehaviour
         m_controlsScreenScript.m_enabled = true;
     }
 
-    public void RunMenuToggle(GameObject menu)
+    private IEnumerator ToggleLevelMenuOn(GameObject menu)
     {
-        Debug.Log("entering");
-        StartCoroutine(ToggleMenuOn(menu));
+        menu.SetActive(true);
+        m_mainMenuPanel.SetActive(false);
+        m_mainMenuPanelEnabled = false;
+        yield return new WaitUntil(() => menu.activeSelf == true);
+        m_levelScreenScript.m_enabled = true;
+    }
+
+    public void RunControlsMenuToggle(GameObject menu)
+    {
+        StartCoroutine(ToggleControlsMenuOn(menu));
+    }
+
+    public void RunLevelMenuToggle(GameObject menu)
+    {
+        StartCoroutine(ToggleLevelMenuOn(menu));
     }
 
     // Update is called once per frame

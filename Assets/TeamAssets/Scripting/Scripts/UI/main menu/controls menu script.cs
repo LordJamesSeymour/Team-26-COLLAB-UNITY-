@@ -3,29 +3,28 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class controlsmenuscript : MonoBehaviour
+public class controlsmenuscript : menuscreenscript
 {
-    private InputAction m_navInputs;
-    private InputAction m_selectInput;
-    private bool m_onExitButton = false;
+    //private InputAction m_navInputs;
+    //private InputAction m_selectInput;
+    //private bool m_onExitButton = false;
     private Button m_tempButton;
-    private Button m_currentButton;
+    //private Button m_currentButton;
     private buttonnavscript m_buttonScript;
 
-    [HideInInspector] public bool m_enabled = false;
+    //[HideInInspector] public bool m_enabled = false;
 
     [SerializeField] Image m_controlsImage;
     [SerializeField] Sprite m_controllerControlsPicture;
     [SerializeField] Sprite m_keyboardControlsPicture;
     [SerializeField] Button m_keyboardButton;
     [SerializeField] Button m_controllerButton;
-    [SerializeField] Button m_exitButton;
-    [SerializeField] Sprite[] m_buttonSprites;
+    //[SerializeField] Button m_exitButton;
+    //[SerializeField] Sprite[] m_buttonSprites;
 
-    private void Awake()
+    protected override void Awake()
     {
-        m_navInputs = InputSystem.actions.FindAction("Navigate");
-        m_selectInput = InputSystem.actions.FindAction("Select");
+        base.Awake();
 
         m_buttonScript = GetComponent<buttonnavscript>();
         if (!m_buttonScript)
