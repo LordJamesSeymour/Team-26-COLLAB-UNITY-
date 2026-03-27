@@ -5,18 +5,16 @@ using System;
 public class datamanager
 {
     private GameData m_gameData;
-    private int m_numOfLevels;
     private LevelData m_data;
     private static string m_filePath = Path.Combine(Application.persistentDataPath, "level_data.json");
 
     public datamanager(int numOfLevels, int level = 0)
     {
-        m_numOfLevels = numOfLevels;
-        m_gameData = new GameData(m_numOfLevels);
-        //for(int i = 0; i < numOfLevels; i++)
-        //{
-        //    AddLevel();
-        //}
+        m_gameData = new GameData();
+        for (int i = 0; i < numOfLevels; i++)
+        {
+            AddLevel();
+        }
         m_data = new LevelData();
         m_data.levelNum = level;
     }
@@ -37,7 +35,8 @@ public class datamanager
     {
         if(m_gameData == null)
         {
-            m_gameData = new GameData(m_numOfLevels);
+            m_gameData = new GameData();
+            AddLevel();
         }
 
         if(index >= 0 && index < m_gameData.levels.Length)
@@ -50,14 +49,28 @@ public class datamanager
         }
     }
 
-    public void SetCompleted(bool completed)
+    public void SetCompleted(int index, bool completed)
     {
-        if (m_data == null)
+        if(m_gameData == null)
         {
-            m_data = new LevelData();
+            m_gameData = new GameData();
+            AddLevel();
         }
 
-        m_data.completed = completed;
+        if (index >= 0 && index < m_gameData.levels.Length)
+        {
+            m_gameData.levels[index].completed = completed;
+        }
+        else
+        {
+            Debug.Log("index is not in array of levels");
+        }
+        //if (m_data == null)
+        //{
+        //    m_data = new LevelData();
+        //}
+
+        //m_data.completed = completed;
     }
 
     public LevelData GetData() {  return m_data; }
@@ -70,6 +83,17 @@ public class datamanager
         {
             string dataToWrite = JsonUtility.ToJson(m_data);
             w.Write(dataToWrite);
+            w.Close();
+        }
+    }
+
+    public void SaveGameData()
+    {
+        using(StreamWriter w = new StreamWriter(m_filePath))
+        {
+            string dataToWrite = JsonUtility.ToJson(m_gameData);
+            w.Write(dataToWrite);
+            w.Close();
         }
     }
 
@@ -79,6 +103,7 @@ public class datamanager
         {
             string dataRead = r.ReadToEnd();
             m_data = JsonUtility.FromJson<LevelData>(dataRead);
+            r.Close();
         }
     }
 
@@ -88,6 +113,8 @@ public class datamanager
         {
             string dataRead = r.ReadToEnd();
             m_gameData = JsonUtility.FromJson<GameData>(dataRead);
+            r.Close();
+            //Debug.Log(m_gameData.levels.Length);
         }
     }
 }
@@ -108,10 +135,5 @@ public class GameData
     public GameData()
     {
         levels = new LevelData[] { };
-    }
-
-    public GameData(int numOfLevels)
-    {
-        levels = new LevelData[numOfLevels];
     }
 }

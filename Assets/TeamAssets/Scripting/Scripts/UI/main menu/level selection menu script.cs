@@ -7,21 +7,14 @@ using UnityEngine.UI;
 public class levelselectionmenuscript : menuscreenscript
 {
     [SerializeField] Image m_playerIcon;
-    //[SerializeField] Button m_exitButton;
     [SerializeField] Button[] m_levelButtons;
-    //[SerializeField] Sprite[] m_buttonSprites;
-    //[SerializeField] Vector2[] m_points;
 
     private RectTransform m_iconTransform;
     private int m_index = 0;
+    private static bool m_run = false;
     private buttonnavscript m_buttonScript;
 
     datamanager m_manager;
-    //private bool m_onBackButton;
-    //public bool m_enabled = false;
-    //private Button m_currentButton;
-    //private InputAction m_navInputs;
-    //private InputAction m_selectInput;
 
     protected override void Awake()
     {
@@ -29,8 +22,20 @@ public class levelselectionmenuscript : menuscreenscript
 
         m_manager = new datamanager(3);
 
-        m_manager.SetLevelNum(m_index, m_index + 1);
-        m_manager.SaveData();
+        if(m_run == false)
+        {
+            m_run = true;
+        }
+        else
+        {
+            m_manager.LoadGameData();
+        }
+
+        if (m_manager.GetGameData().levels[m_index].levelNum == 0)
+        {
+            m_manager.SetLevelNum(m_index, m_index + 1);
+            m_manager.SaveGameData();
+        }
 
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
@@ -67,7 +72,7 @@ public class levelselectionmenuscript : menuscreenscript
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_manager.SetLevelNum(m_index, m_index + 1);
-        m_manager.SaveData();
+        m_manager.SaveGameData();
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
         m_iconTransform.position += new Vector3(0, 60f, 0);
         m_enabled = false;
@@ -97,7 +102,7 @@ public class levelselectionmenuscript : menuscreenscript
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_manager.SetLevelNum(m_index, m_index + 1);
-        m_manager.SaveData();
+        m_manager.SaveGameData();
         m_onExitButton = false;
         m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
         m_iconTransform.position += new Vector3(0, 60f, 0);
@@ -141,7 +146,7 @@ public class levelselectionmenuscript : menuscreenscript
                 m_currentButton = m_levelButtons[m_index];
                 m_currentButton.image.sprite = m_buttonSprites[1];
                 m_manager.SetLevelNum(m_index, m_index + 1);
-                m_manager.SaveData();
+                m_manager.SaveGameData();
                 m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
                 m_iconTransform.position += new Vector3(0, 60f, 0);
             }
@@ -162,10 +167,9 @@ public class levelselectionmenuscript : menuscreenscript
         if (m_enabled)
         {
             m_manager.LoadGameData();
-            Debug.Log("index: " + m_index);
-            Debug.Log(m_manager.GetGameData().levels.Length);
             //Debug.Log("JSON file level num: " + m_manager.GetGameData().levels[m_index].levelNum);
-            //Debug.Log("completed: " + m_manager.GetData().completed);
+            Debug.Log("index: " + m_index);
+            Debug.Log("completed: " + m_manager.GetGameData().levels[m_index].completed);
         }
     }
 }

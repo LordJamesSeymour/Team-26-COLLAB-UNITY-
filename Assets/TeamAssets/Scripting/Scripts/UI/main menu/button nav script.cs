@@ -132,7 +132,7 @@ public class buttonnavscript : MonoBehaviour
         if (m_navInputs.WasPressedThisDynamicUpdate() && m_mainMenuPanelEnabled)
         {
             Vector2 direction = m_navInputs.ReadValue<Vector2>();
-            Debug.Log(direction);
+            //Debug.Log(direction);
 
             if(direction == Vector2.up && m_index > 0)
             {
@@ -142,7 +142,7 @@ public class buttonnavscript : MonoBehaviour
             {
                 m_index++;
             }
-            Debug.Log("Index: " + m_index);
+            //Debug.Log("Index: " + m_index);
         }
 
         if (m_navInputs.WasReleasedThisDynamicUpdate() && m_mainMenuPanelEnabled)

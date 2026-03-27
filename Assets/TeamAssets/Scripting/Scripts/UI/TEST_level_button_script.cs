@@ -6,17 +6,22 @@ public class TEST_level_button_script : MonoBehaviour
 {
     private datamanager m_manager;
 
+    public int m_levelNum;  //this is the level's number - 1 e.g. if this is level 1 then this var is 0
+
     [SerializeField] private TextMeshProUGUI m_levelText;
 
     private void Awake()
     {
         m_manager = new datamanager(3);
+        m_manager.LoadGameData();
     }
 
     public void CompleteLevel()
     {
-        m_manager.SetCompleted(true);
-        m_manager.SaveData();
+        m_manager.SetCompleted(0, true);
+        m_manager.SaveGameData();
+        m_manager.LoadGameData();
+        Debug.Log(m_manager.GetGameData().levels[0].completed);
         SceneManager.LoadScene(2);
     }
 
@@ -29,7 +34,7 @@ public class TEST_level_button_script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_manager.LoadGameData();
+        //m_manager.LoadGameData();
         m_levelText.text = "Level: " + m_manager.GetGameData().levels[0].levelNum;
     }
 }
