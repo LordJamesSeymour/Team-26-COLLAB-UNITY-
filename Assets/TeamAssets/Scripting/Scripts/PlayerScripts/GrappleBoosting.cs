@@ -83,11 +83,6 @@ namespace Group26.Player.Movement
 			grappleGun.ForceStopGrapple();
 		}
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            Debug.Log("Collided with grapple point");
-        }
-
         private Vector3 delayedForceToApply;
 		private void DelayedGrappleForce()
 		{

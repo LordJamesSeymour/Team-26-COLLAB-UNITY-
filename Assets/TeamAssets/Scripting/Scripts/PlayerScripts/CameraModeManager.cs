@@ -118,6 +118,11 @@ namespace Group26.Player.Camera
             playerInput.OnDashPressed -= BurstFOVIncrease;
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            EndGrappleBoostFOV();
+        }
+
         private void Update()
         {
             if(currentCameraMode == CameraMode.FirstPerson)
