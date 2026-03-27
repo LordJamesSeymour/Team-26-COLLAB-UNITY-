@@ -1,4 +1,5 @@
 using UnityEngine;
+using Group26.Player.Camera;
 
 namespace Group26.Player.Movement
 {
@@ -9,6 +10,7 @@ namespace Group26.Player.Movement
 		[SerializeField] Transform playerCam;
 		private Rigidbody rigidBody;
 		private PlayerController playerController;
+		private CameraModeManager cameraModeManager;
 		private GrappleGun grappleGun;
 
 		[Header("Dashing")]
@@ -30,7 +32,7 @@ namespace Group26.Player.Movement
 		private float horizontalinput;
 		private float verticalinput;
 
-		private void OnEnable()
+		private void Awake()
 		{
 			if (rigidBody == null)
 				rigidBody = GetComponent<Rigidbody>();
@@ -38,12 +40,10 @@ namespace Group26.Player.Movement
 				playerController = GetComponent<PlayerController>();
 			if (grappleGun == null)
 				grappleGun = GetComponent<GrappleGun>();
-		}
+			if(cameraModeManager == null)
+				cameraModeManager = GetComponent<CameraModeManager>();
 
-		private void Start()
-		{
 			rigidBody = GetComponent<Rigidbody>();
-			playerController = GetComponent<PlayerController>();
 		}
 
 		private void FixedUpdate()
@@ -78,10 +78,17 @@ namespace Group26.Player.Movement
 			Invoke(nameof(DelayedGrappleForce), 0.125f);
 			Invoke(nameof(ResetGrappleDash), grappleDuration);
 
+			cameraModeManager?.GrappleBoostFOV();
+
 			grappleGun.ForceStopGrapple();
 		}
 
-		private Vector3 delayedForceToApply;
+        private void OnCollisionEnter(Collision collision)
+        {
+            Debug.Log("Collided with grapple point");
+        }
+
+        private Vector3 delayedForceToApply;
 		private void DelayedGrappleForce()
 		{
 			if (resetVel)
@@ -93,6 +100,7 @@ namespace Group26.Player.Movement
 
 		private void ResetGrappleDash()
 		{
+			cameraModeManager?.EndGrappleBoostFOV();
 			playerController.EndDashState();
 
 			if (disableGravity)

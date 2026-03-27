@@ -60,14 +60,23 @@ namespace Group26.Player.Camera
         [SerializeField] private float sprintFOV = 75f;
         [SerializeField, Range(0f, 0.5f)] private float fovTransitionDuration = 0.25f;
         
-        [Header("Dash/Burst FOV Settings")]
+        [Header("DashFOV Settings")]
         [SerializeField] private float dashFOV = 85f;
         [SerializeField, Range(0f, 0.25f)] private float burstTransitionDuration;
-        
+
+        [Header("GrappleBoost FOV Settings")]
+        [SerializeField] private float grappleBoostFOV = 85f;
+        [SerializeField, Range(0f, 5)] private float grappleBoostTransitionUpDuration;
+        [SerializeField, Range(0f, 3f)] private float grappleBoostTransitionDownDuration;
         private bool isSprintingLastFrame = false;
         private bool isBursting;
-        private Coroutine fovTransitionCoroutine;
-        private Coroutine burstFOVCoroutine;
+        private bool isGrappleBoostActive;
+        private float currentBaseFOV;
+        private float currentDashFOV;
+        private float currentGrappleBoostFOV;
+        private Coroutine baseFOVCoroutine;
+        private Coroutine dashFOVCoroutine;
+        private Coroutine grappleBoostFOVCoroutine;
 
         private void Awake()
         {
@@ -92,17 +101,20 @@ namespace Group26.Player.Camera
             UpdateCameraMode(currentCameraMode);
             
             // Initialize FOV values
+            currentBaseFOV = defaultFOV;
+            currentDashFOV = defaultFOV;
+            currentGrappleBoostFOV = defaultFOV;
             SetCameraFOV(defaultFOV);
         }
 
         private void OnEnable()
         {
-            playerInput.OnCameraSwitchPressed += () => SwitchCameraMode();
+            playerInput.OnCameraSwitchPressed += SwitchCameraMode;
             playerInput.OnDashPressed += BurstFOVIncrease;
         }
         private void OnDisable()
         {
-            playerInput.OnCameraSwitchPressed -= () => SwitchCameraMode();
+            playerInput.OnCameraSwitchPressed -= SwitchCameraMode;
             playerInput.OnDashPressed -= BurstFOVIncrease;
         }
 
@@ -232,6 +244,95 @@ namespace Group26.Player.Camera
             m_playerTransform.rotation = Quaternion.Euler(0f, newYaw, 0f);
         }
 
+        public void GrappleBoostFOV()
+        {
+            if (grappleBoostFOVCoroutine != null)
+            {
+                StopCoroutine(grappleBoostFOVCoroutine);
+            }
+
+            isGrappleBoostActive = true;
+            currentGrappleBoostFOV = GetResolvedFOV();
+            grappleBoostFOVCoroutine = StartCoroutine(DoGrappleBoostUpFOV());
+        }
+
+        public void EndGrappleBoostFOV()
+        {
+            if (!isGrappleBoostActive && grappleBoostFOVCoroutine == null)
+            {
+                return;
+            }
+
+            if (grappleBoostFOVCoroutine != null)
+            {
+                StopCoroutine(grappleBoostFOVCoroutine);
+            }
+
+            currentGrappleBoostFOV = GetResolvedFOV();
+            grappleBoostFOVCoroutine = StartCoroutine(DoGrappleBoostDownFOV());
+        }
+
+        private IEnumerator DoGrappleBoostUpFOV()
+        {
+            float initialFOV = currentGrappleBoostFOV;
+            float elapsedTime = 0f;
+
+            if (grappleBoostTransitionUpDuration <= 0f)
+            {
+                currentGrappleBoostFOV = grappleBoostFOV;
+                ApplyResolvedFOV();
+                grappleBoostFOVCoroutine = null;
+                yield break;
+            }
+
+            while (elapsedTime < grappleBoostTransitionUpDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = Mathf.Clamp01(elapsedTime / grappleBoostTransitionUpDuration);
+                float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+
+                currentGrappleBoostFOV = Mathf.Lerp(initialFOV, grappleBoostFOV, smoothProgress);
+                ApplyResolvedFOV();
+                yield return null;
+            }
+
+            currentGrappleBoostFOV = grappleBoostFOV;
+            ApplyResolvedFOV();
+            grappleBoostFOVCoroutine = null;
+        }
+
+        private IEnumerator DoGrappleBoostDownFOV()
+        {
+            float initialFOV = currentGrappleBoostFOV;
+            float targetFOV = GetResolvedFOVWithoutGrapple();
+            float elapsedTime = 0f;
+
+            if (grappleBoostTransitionDownDuration <= 0f)
+            {
+                currentGrappleBoostFOV = targetFOV;
+                isGrappleBoostActive = false;
+                ApplyResolvedFOV();
+                grappleBoostFOVCoroutine = null;
+                yield break;
+            }
+
+            while (elapsedTime < grappleBoostTransitionDownDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = Mathf.Clamp01(elapsedTime / grappleBoostTransitionDownDuration);
+                float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+
+                currentGrappleBoostFOV = Mathf.Lerp(initialFOV, targetFOV, smoothProgress);
+                ApplyResolvedFOV();
+                yield return null;
+            }
+
+            currentGrappleBoostFOV = targetFOV;
+            isGrappleBoostActive = false;
+            ApplyResolvedFOV();
+            grappleBoostFOVCoroutine = null;
+        }
+
         private void BurstFOVIncrease()
         {
             if(!playerController.m_bDashing) return;
@@ -239,58 +340,71 @@ namespace Group26.Player.Camera
             isBursting = true;
 
             // Stop any existing burst FOV effect
-            if (burstFOVCoroutine != null)
+            if (dashFOVCoroutine != null)
             {
-                StopCoroutine(burstFOVCoroutine);
+                StopCoroutine(dashFOVCoroutine);
             }
             
             // Start new burst FOV effect
-            burstFOVCoroutine = StartCoroutine(DoBurstFOV());
+            currentDashFOV = GetResolvedFOV();
+            dashFOVCoroutine = StartCoroutine(DoBurstFOV());
         }
         
         private IEnumerator DoBurstFOV()
         {
             // Store the current FOV to return to
-            float originalFOV = GetCurrentCameraFOV();
+            float originalFOV = currentDashFOV;
             float elapsedTime = 0f;
+
+            if (burstTransitionDuration <= 0f)
+            {
+                currentDashFOV = GetResolvedFOVWithoutDash();
+                isBursting = false;
+                dashFOVCoroutine = null;
+                ApplyResolvedFOV();
+                yield break;
+            }
             
             // Phase 1: Smooth increase to dash FOV over burstTransitionDuration
             while (elapsedTime < burstTransitionDuration)
             {
                 elapsedTime += Time.deltaTime;
-                float progress = elapsedTime / burstTransitionDuration;
+                float progress = Mathf.Clamp01(elapsedTime / burstTransitionDuration);
                 
                 // Use smooth curve for natural feeling
                 float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
-                float currentFOV = Mathf.Lerp(originalFOV, dashFOV, smoothProgress);
+                currentDashFOV = Mathf.Lerp(originalFOV, dashFOV, smoothProgress);
                 
-                SetCameraFOV(currentFOV);
+                ApplyResolvedFOV();
                 yield return null;
             }
             
             // Ensure we're exactly at dash FOV
-            SetCameraFOV(dashFOV);
+            currentDashFOV = dashFOV;
+            ApplyResolvedFOV();
             
             // Phase 3: Smooth return to original FOV
             elapsedTime = 0f;
+            float returnTargetFOV = GetResolvedFOVWithoutDash();
             while (elapsedTime < burstTransitionDuration)
             {
                 elapsedTime += Time.deltaTime;
-                float progress = elapsedTime / burstTransitionDuration;
+                float progress = Mathf.Clamp01(elapsedTime / burstTransitionDuration);
                 
                 // Use smooth curve for natural feeling
                 float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
-                float currentFOV = Mathf.Lerp(dashFOV, originalFOV, smoothProgress);
+                currentDashFOV = Mathf.Lerp(dashFOV, returnTargetFOV, smoothProgress);
                 
-                SetCameraFOV(currentFOV);
+                ApplyResolvedFOV();
                 yield return null;
             }
             
             // Ensure we end exactly at original FOV
-            SetCameraFOV(originalFOV);
+            currentDashFOV = returnTargetFOV;
+            ApplyResolvedFOV();
             
             // Clear the coroutine reference
-            burstFOVCoroutine = null;
+            dashFOVCoroutine = null;
             isBursting = false;
         }
 
@@ -312,37 +426,92 @@ namespace Group26.Player.Camera
         private void StartFOVTransition(float targetFOV)
         {
             // Stop any existing FOV transition
-            if (fovTransitionCoroutine != null)
+            if (baseFOVCoroutine != null)
             {
-                StopCoroutine(fovTransitionCoroutine);
+                StopCoroutine(baseFOVCoroutine);
             }
             
             // Start new FOV transition
-            fovTransitionCoroutine = StartCoroutine(TransitionFOV(targetFOV));
+            baseFOVCoroutine = StartCoroutine(TransitionFOV(targetFOV));
         }
         
         private IEnumerator TransitionFOV(float targetFOV)
         {
-            float startFOV = GetCurrentCameraFOV();
+            float startFOV = currentBaseFOV;
             float elapsedTime = 0f;
+
+            if (fovTransitionDuration <= 0f)
+            {
+                currentBaseFOV = targetFOV;
+                ApplyResolvedFOV();
+                baseFOVCoroutine = null;
+                yield break;
+            }
             
             while (elapsedTime < fovTransitionDuration)
             {
                 elapsedTime += Time.deltaTime;
-                float progress = elapsedTime / fovTransitionDuration;
+                float progress = Mathf.Clamp01(elapsedTime / fovTransitionDuration);
                 
                 // Use smooth curve for more natural feeling
                 float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
-                float currentFOV = Mathf.Lerp(startFOV, targetFOV, smoothProgress);
+                currentBaseFOV = Mathf.Lerp(startFOV, targetFOV, smoothProgress);
                 
-                SetCameraFOV(currentFOV);
+                ApplyResolvedFOV();
                 
                 yield return null;
             }
             
             // Ensure we end exactly at target FOV
-            SetCameraFOV(targetFOV);
-            fovTransitionCoroutine = null;
+            currentBaseFOV = targetFOV;
+            ApplyResolvedFOV();
+            baseFOVCoroutine = null;
+        }
+
+        private float GetResolvedFOV()
+        {
+            float resolvedFOV = currentBaseFOV;
+
+            if (isBursting)
+            {
+                resolvedFOV = Mathf.Max(resolvedFOV, currentDashFOV);
+            }
+
+            if (isGrappleBoostActive)
+            {
+                resolvedFOV = Mathf.Max(resolvedFOV, currentGrappleBoostFOV);
+            }
+
+            return resolvedFOV;
+        }
+
+        private float GetResolvedFOVWithoutDash()
+        {
+            float resolvedFOV = currentBaseFOV;
+
+            if (isGrappleBoostActive)
+            {
+                resolvedFOV = Mathf.Max(resolvedFOV, currentGrappleBoostFOV);
+            }
+
+            return resolvedFOV;
+        }
+
+        private float GetResolvedFOVWithoutGrapple()
+        {
+            float resolvedFOV = currentBaseFOV;
+
+            if (isBursting)
+            {
+                resolvedFOV = Mathf.Max(resolvedFOV, currentDashFOV);
+            }
+
+            return resolvedFOV;
+        }
+
+        private void ApplyResolvedFOV()
+        {
+            SetCameraFOV(GetResolvedFOV());
         }
         
         private void SetCameraFOV(float fov)
@@ -360,6 +529,20 @@ namespace Group26.Player.Camera
                 lens.FieldOfView = fov;
                 thirdPersonVirtualCamera.Lens = lens;
             }
+
+            if (leftWallRunningVirtualCamera != null && leftWallRunningVirtualCamera.Lens.FieldOfView != fov)
+            {
+                var lens = leftWallRunningVirtualCamera.Lens;
+                lens.FieldOfView = fov;
+                leftWallRunningVirtualCamera.Lens = lens;
+            }
+
+            if (rightWallRunningVirtualCamera != null && rightWallRunningVirtualCamera.Lens.FieldOfView != fov)
+            {
+                var lens = rightWallRunningVirtualCamera.Lens;
+                lens.FieldOfView = fov;
+                rightWallRunningVirtualCamera.Lens = lens;
+            }
         }
         
         private float GetCurrentCameraFOV()
@@ -368,7 +551,21 @@ namespace Group26.Player.Camera
             {
                 return firstPersonVirtualCamera.Lens.FieldOfView;
             }
-            else if (currentCameraMode == CameraMode.ThirdPerson && thirdPersonVirtualCamera != null)
+
+            if (playerController != null && playerController.m_bIsWallRunning)
+            {
+                if (wallRunning != null && wallRunning.wallLeft && leftWallRunningVirtualCamera != null)
+                {
+                    return leftWallRunningVirtualCamera.Lens.FieldOfView;
+                }
+
+                if (wallRunning != null && wallRunning.wallRight && rightWallRunningVirtualCamera != null)
+                {
+                    return rightWallRunningVirtualCamera.Lens.FieldOfView;
+                }
+            }
+
+            if (currentCameraMode == CameraMode.ThirdPerson && thirdPersonVirtualCamera != null)
             {
                 return thirdPersonVirtualCamera.Lens.FieldOfView;
             }

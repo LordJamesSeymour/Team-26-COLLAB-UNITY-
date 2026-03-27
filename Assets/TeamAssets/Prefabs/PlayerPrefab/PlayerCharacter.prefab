@@ -918,12 +918,12 @@ MonoBehaviour:
   leftWallRunningVirtualCamera: {fileID: 5847422709827377981}
   rightWallRunningVirtualCamera: {fileID: 1528728448840712767}
   firstPersonLookSensitivity: {x: 14, y: 14}
-  thirdPersonLookSensitivity: {x: 10, y: 10}
+  thirdPersonLookSensitivity: {x: 12, y: 12}
   currentCameraMode: 1
   m_firstPersonPitchLimits: {x: -85, y: 85}
   firstPersonYawRoot: {fileID: 927507460318148860}
   firstPersonPitchPivot: {fileID: 36624122892362830}
-  m_thirdPersonPitchLimits: {x: -50, y: 40}
+  m_thirdPersonPitchLimits: {x: -55, y: 40}
   m_bodyTurnSmoothTime: 0
   m_turnWhenCameraYawOffsetExceeds: 0
   defaultFOV: 60

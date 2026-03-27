@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using Group26.Player.Inputs;
-using Group26.Player.Utility;
 using Unity.Mathematics;
 using UnityEngine.Splines;
 
@@ -11,7 +10,6 @@ namespace Group26.Player.Movement
     {
         [Header("References")]
         private InputManager inputManager;
-        private GrapplePointScript grappleScript;
 
         [Header("Movement")]
         [SerializeField] float walkSpeed;
