@@ -2151,7 +2151,6 @@ GameObject:
   - component: {fileID: 944783807}
   - component: {fileID: 944783806}
   - component: {fileID: 944783805}
-  - component: {fileID: 944783808}
   m_Layer: 5
   m_Name: Controller button
   m_TagString: Untagged
@@ -2222,7 +2221,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 944783806}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1106575634}
+        m_TargetAssemblyTypeName: controlsmenuscript, Assembly-CSharp
+        m_MethodName: OnPointerPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &944783806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2261,35 +2272,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944783803}
   m_CullTransparentMesh: 1
---- !u!114 &944783808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944783803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1106575634}
-          m_TargetAssemblyTypeName: controlsmenuscript, Assembly-CSharp
-          m_MethodName: OnPointerPressed
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &946838842
 GameObject:
   m_ObjectHideFlags: 0
@@ -3210,7 +3192,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1410108313}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1106575635}
+        m_TargetAssemblyTypeName: levelselectionmenuscript, Assembly-CSharp
+        m_MethodName: LoadLevel
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1410108313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3426,7 +3420,6 @@ GameObject:
   - component: {fileID: 1588566152}
   - component: {fileID: 1588566151}
   - component: {fileID: 1588566150}
-  - component: {fileID: 1588566153}
   m_Layer: 5
   m_Name: Keyboard button
   m_TagString: Untagged
@@ -3497,7 +3490,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1588566151}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1106575634}
+        m_TargetAssemblyTypeName: controlsmenuscript, Assembly-CSharp
+        m_MethodName: OnPointerPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1588566151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3536,35 +3541,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588566148}
   m_CullTransparentMesh: 1
---- !u!114 &1588566153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588566148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1106575634}
-          m_TargetAssemblyTypeName: controlsmenuscript, Assembly-CSharp
-          m_MethodName: OnPointerPressed
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &1618548485
 GameObject:
   m_ObjectHideFlags: 0

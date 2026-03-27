@@ -11,6 +11,7 @@ public class controlsmenuscript : menuscreenscript
     private Button m_tempButton;
     //private Button m_currentButton;
     private buttonnavscript m_buttonScript;
+    private Coroutine m_toggleOff;
 
     //[HideInInspector] public bool m_enabled = false;
 
@@ -47,13 +48,16 @@ public class controlsmenuscript : menuscreenscript
         m_onExitButton = false;
         m_enabled = false;
 
-        yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true);
+        yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true && m_buttonScript.m_controlsPanel.activeSelf == false);
         m_buttonScript.m_mainMenuPanelEnabled = true;
+        m_toggleOff = null;
+        StopCoroutine(ToggleControlsMenuOff());
     }
 
     public void RunToggleMenuOff()
     {
-        StartCoroutine(ToggleControlsMenuOff());
+        if(m_toggleOff == null)
+            m_toggleOff = StartCoroutine(ToggleControlsMenuOff());
     }
 
     //public void OnPointerEnter(int i)
@@ -83,32 +87,23 @@ public class controlsmenuscript : menuscreenscript
             case 0:
                 //if the keyboard button is pressed
                 m_keyboardButton.image.sprite = m_buttonSprites[1];
-                m_exitButton.image.sprite = m_buttonSprites[0];
                 m_controllerButton.image.sprite = m_buttonSprites[0];
-                m_onExitButton = false;
                 m_currentButton = m_keyboardButton;
                 m_controlsImage.sprite = m_keyboardControlsPicture;
                 break;
             case 1:
                 //if the controller button is pressed
                 m_controllerButton.image.sprite = m_buttonSprites[1];
-                m_exitButton.image.sprite = m_buttonSprites[0];
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
-                m_onExitButton = false;
                 m_currentButton = m_controllerButton;
                 m_controlsImage.sprite = m_controllerControlsPicture;
                 break;
-            //case 2:
-            //    //if the exit button is pressed
-            //    m_exitButton.image.sprite = m_buttonSprites[1];
-            //    m_controllerButton.image.sprite = m_buttonSprites[0];
-            //    m_keyboardButton.image.sprite = m_buttonSprites[0];
-            //    m_onExitButton = true;
-            //    //m_currentButton = m_exitButton;
-            //    break;
             default:
                 break;
         }
+
+        m_exitButton.image.sprite = m_buttonSprites[0];
+        m_onExitButton = false;
     }
 
     // Update is called once per frame

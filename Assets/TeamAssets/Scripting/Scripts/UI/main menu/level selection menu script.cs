@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class levelselectionmenuscript : menuscreenscript
@@ -14,6 +15,8 @@ public class levelselectionmenuscript : menuscreenscript
     private RectTransform m_iconTransform;
     private int m_index = 0;
     private buttonnavscript m_buttonScript;
+
+    datamanager m_manager;
     //private bool m_onBackButton;
     //public bool m_enabled = false;
     //private Button m_currentButton;
@@ -23,6 +26,11 @@ public class levelselectionmenuscript : menuscreenscript
     protected override void Awake()
     {
         base.Awake();
+
+        m_manager = new datamanager(3);
+
+        m_manager.SetLevelNum(m_index, m_index + 1);
+        m_manager.SaveData();
 
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
@@ -58,6 +66,8 @@ public class levelselectionmenuscript : menuscreenscript
         m_index = 0;
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
+        m_manager.SetLevelNum(m_index, m_index + 1);
+        m_manager.SaveData();
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
         m_iconTransform.position += new Vector3(0, 60f, 0);
         m_enabled = false;
@@ -71,6 +81,11 @@ public class levelselectionmenuscript : menuscreenscript
         StartCoroutine(ToggleLevelsScreenOff());
     }
 
+    public void LoadLevel(int i)
+    {
+        SceneManager.LoadScene(i);
+    }
+
     public void OnPointerPressed(int i)
     {
         if (m_currentButton == m_exitButton)
@@ -78,8 +93,12 @@ public class levelselectionmenuscript : menuscreenscript
         else
             m_currentButton.image.sprite = m_buttonSprites[0];
 
-        m_currentButton = m_levelButtons[i];
+        m_index = i;
+        m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
+        m_manager.SetLevelNum(m_index, m_index + 1);
+        m_manager.SaveData();
+        m_onExitButton = false;
         m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
         m_iconTransform.position += new Vector3(0, 60f, 0);
     }
@@ -121,14 +140,32 @@ public class levelselectionmenuscript : menuscreenscript
                 m_currentButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_levelButtons[m_index];
                 m_currentButton.image.sprite = m_buttonSprites[1];
+                m_manager.SetLevelNum(m_index, m_index + 1);
+                m_manager.SaveData();
                 m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
                 m_iconTransform.position += new Vector3(0, 60f, 0);
             }
         }
 
-        if(m_selectInput.WasReleasedThisDynamicUpdate() && m_enabled && m_onExitButton)
+        if(m_selectInput.WasReleasedThisDynamicUpdate() && m_enabled)
         {
-            m_exitButton.onClick.Invoke();
+            if (m_onExitButton)
+            {
+                m_exitButton.onClick.Invoke();
+            }
+            else
+            {
+                m_currentButton.onClick.Invoke();
+            }
+        }
+
+        if (m_enabled)
+        {
+            m_manager.LoadGameData();
+            Debug.Log("index: " + m_index);
+            Debug.Log(m_manager.GetGameData().levels.Length);
+            //Debug.Log("JSON file level num: " + m_manager.GetGameData().levels[m_index].levelNum);
+            //Debug.Log("completed: " + m_manager.GetData().completed);
         }
     }
 }

@@ -23,6 +23,9 @@ public class buttonnavscript : MonoBehaviour
     [SerializeField] Button[] m_buttons;
     [SerializeField] Sprite[] m_buttonSprites;
 
+    private Coroutine m_toggleControlsOn;
+    private Coroutine m_toggleLevelsOn;
+
     private void Awake()
     {
         m_navInputs = InputSystem.actions.FindAction("Navigate");
@@ -94,8 +97,10 @@ public class buttonnavscript : MonoBehaviour
         menu.SetActive(true);
         m_mainMenuPanel.SetActive(false);
         m_mainMenuPanelEnabled = false;
-        yield return new WaitUntil(() => menu.activeSelf == true);
+        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
         m_controlsScreenScript.m_enabled = true;
+        m_toggleControlsOn = null;
+        StopCoroutine(ToggleControlsMenuOn(menu));
     }
 
     private IEnumerator ToggleLevelMenuOn(GameObject menu)
@@ -103,18 +108,22 @@ public class buttonnavscript : MonoBehaviour
         menu.SetActive(true);
         m_mainMenuPanel.SetActive(false);
         m_mainMenuPanelEnabled = false;
-        yield return new WaitUntil(() => menu.activeSelf == true);
+        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
         m_levelScreenScript.m_enabled = true;
+        m_toggleLevelsOn = null;
+        StopCoroutine(ToggleLevelMenuOn(menu));
     }
 
     public void RunControlsMenuToggle(GameObject menu)
     {
-        StartCoroutine(ToggleControlsMenuOn(menu));
+        if(m_toggleControlsOn == null)
+            m_toggleControlsOn = StartCoroutine(ToggleControlsMenuOn(menu));
     }
 
     public void RunLevelMenuToggle(GameObject menu)
     {
-        StartCoroutine(ToggleLevelMenuOn(menu));
+        if(m_toggleLevelsOn == null)
+            m_toggleLevelsOn = StartCoroutine(ToggleLevelMenuOn(menu));
     }
 
     // Update is called once per frame

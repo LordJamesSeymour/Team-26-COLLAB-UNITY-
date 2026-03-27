@@ -9,8 +9,11 @@ EditorBuildSettings:
     path: Assets/Defaults/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/TeamAssets/Scenes/Test Maps/Atira/checkpoints.unity
-    guid: 411451ef7f63dc9408a627569c4b471a
+    path: Assets/TeamAssets/Scenes/Test Maps/Atira/test level for ui.unity
+    guid: b9909a46b512ab74682ced75579e700d
+  - enabled: 1
+    path: Assets/TeamAssets/Scenes/Test Maps/Atira/menu testing.unity
+    guid: 1bc3370852c64d34a88ef388cc8af585
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
