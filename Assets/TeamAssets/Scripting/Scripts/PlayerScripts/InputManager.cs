@@ -41,6 +41,9 @@ namespace Group26.Player.Inputs
         [Tooltip("Button - CameraSwitch")]
         [SerializeField] private InputActionReference cameraSwitchAction;
 
+        [Tooltip("Button - ModeSwitch")]
+        [SerializeField] private InputActionReference modeSwitchAction;
+
         [Tooltip("Button - Pausing game and triggering UI event")]
         [SerializeField] private InputActionReference pauseAction;
 
@@ -61,6 +64,7 @@ namespace Group26.Player.Inputs
         public event Action OnSwingStarted;
         public event Action OnSwingStopped;
         public event Action OnCameraSwitchPressed;
+        public event Action OnModeSwitchPressed;
         public event Action OnPausePressed;
 
         void Awake()
@@ -123,9 +127,10 @@ namespace Group26.Player.Inputs
             //SubscribePerformed(grappleAction, HandleInteract);
             SubscribePerformed(dashAction, HandleDash);
             SubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
+            SubscribePerformed(modeSwitchAction, HandleModeSwitch);
             SubscribePerformed(pauseAction, HandlePause);
 
-                SubscribeToggled(grappleAction, HandleGrappleChanged);
+            SubscribeToggled(grappleAction, HandleGrappleChanged);
             SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
@@ -139,9 +144,10 @@ namespace Group26.Player.Inputs
             //UnsubscribePerformed(grappleAction, HandleInteract);
             UnsubscribePerformed(dashAction, HandleDash);
             UnsubscribePerformed(cameraSwitchAction, HandleCameraSwitch);
+            UnsubscribePerformed(modeSwitchAction, HandleModeSwitch);
             UnsubscribePerformed(pauseAction, HandlePause);
 
-                UnsubscribeToggled(grappleAction, HandleGrappleChanged);
+            UnsubscribeToggled(grappleAction, HandleGrappleChanged);
             UnsubscribeToggled(sprintAction, HandleSprintChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
             UnsubscribeToggled(swingAction, HandleSwingChanged);
@@ -174,6 +180,11 @@ namespace Group26.Player.Inputs
         private void HandleCameraSwitch(InputAction.CallbackContext context)
         {
             OnCameraSwitchPressed?.Invoke();
+        }
+
+        private void HandleModeSwitch(InputAction.CallbackContext context)
+        {
+            OnModeSwitchPressed?.Invoke();
         }
 
         private void HandlePause(InputAction.CallbackContext context)
