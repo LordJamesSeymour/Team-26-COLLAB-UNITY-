@@ -27,7 +27,7 @@ namespace Group26.Player.Movement
         /// </summary>
         [SerializeField] private bool m_bpreventSwingingThroughWalls = true;
 
-        [Header("OMDGear")]
+        [Header("ODMGear")]
         [SerializeField] private Transform Orientation;
         private Rigidbody rigidBody;
         [SerializeField] private float horizontalThrustForce;
@@ -68,8 +68,8 @@ namespace Group26.Player.Movement
             inputManager.OnSwingStarted += StartSwing;
             inputManager.OnSwingStopped += StopSwing;
 
-            inputManager.OnJumpPressed += GetClimbingRope;
-            inputManager.OnJumpRelease += StopClimbingRope;
+            // inputManager.OnJumpPressed += GetClimbingRope;
+            // inputManager.OnJumpRelease += StopClimbingRope;
         }
 
         private void OnDisable()
@@ -77,8 +77,8 @@ namespace Group26.Player.Movement
             inputManager.OnSwingStarted -= StartSwing;
             inputManager.OnSwingStopped -= StopSwing;
 
-            inputManager.OnJumpPressed -= GetClimbingRope;
-            inputManager.OnJumpRelease -= StopClimbingRope;
+            // inputManager.OnJumpPressed -= GetClimbingRope;
+            // inputManager.OnJumpRelease -= StopClimbingRope;
         }
 
         private void FixedUpdate()
@@ -115,7 +115,6 @@ namespace Group26.Player.Movement
 
             RaycastHit raycastHit;
             Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_grappableLayer);
-
 
             Vector3 realHitPoint;
 
@@ -161,13 +160,13 @@ namespace Group26.Player.Movement
                 rigidBody.AddForce(Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
 
             // Backwards (extend cable)
-            if (m_vMoveInput.y < 0f)
-            {
-                float extendDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendedCableSpeed;
+            // if (m_vMoveInput.y < 0f)
+            // {
+            //     float extendDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendedCableSpeed;
 
-                joint.maxDistance = extendDistanceFromPoint * 0.8f;
-                joint.minDistance = extendDistanceFromPoint * 0.25f;
-            }
+            //     joint.maxDistance = extendDistanceFromPoint * 0.8f;
+            //     joint.minDistance = extendDistanceFromPoint * 0.25f;
+            // }
         }
 
         private void StartSwing()
@@ -275,15 +274,15 @@ namespace Group26.Player.Movement
             m_vMoveInput = inputs;
         }
 
-        private void GetClimbingRope()
-        {
-            m_bClimbingRope = true;
-        }
+        // private void GetClimbingRope()
+        // {
+        //     m_bClimbingRope = true;
+        // }
 
-        private void StopClimbingRope()
-        {
-            m_bClimbingRope = false;
-        }
+        // private void StopClimbingRope()
+        // {
+        //     m_bClimbingRope = false;
+        // }
 
         public Vector3 GetSwingPoint()
         {

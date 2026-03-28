@@ -931,6 +931,9 @@ MonoBehaviour:
   fovTransitionDuration: 0.25
   dashFOV: 85
   burstTransitionDuration: 0.075
+  grappleBoostFOV: 85
+  grappleBoostTransitionUpDuration: 0.25
+  grappleBoostTransitionDownDuration: 0.75
 --- !u!114 &6661257255942849801
 MonoBehaviour:
   m_ObjectHideFlags: 0

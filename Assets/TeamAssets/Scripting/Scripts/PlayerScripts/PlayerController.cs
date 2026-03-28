@@ -58,16 +58,6 @@ namespace Group26.Player.Movement
         [SerializeField] float railJumpUpForce = 6f;
         [SerializeField] float railExitForwardBoost = 2f;
 
-        // [Header("Grapple Point Settings")]
-        // [Space(10)]
-        // [SerializeField] private float m_pointBoostForce = 12f;
-        // [SerializeField] private bool m_bGrappleBoosting = true;
-        // [SerializeField] private bool m_bLimitPointBoostBySpeed = false;
-        // [SerializeField] private float m_maxSpeedForBoostApplication = 20.0f;
-        // [SerializeField] private bool m_bResetVelocityBeforePointBoost = true;
-        // [SerializeField] private bool m_bLogPointBoostForce = false;
-        // [SerializeField] private ForceMode m_pointBoostForceMode = ForceMode.VelocityChange;
-
         [Header("Straight Grapple")]
         [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
 

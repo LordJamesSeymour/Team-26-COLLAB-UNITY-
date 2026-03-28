@@ -347,26 +347,6 @@ PrefabInstance:
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 1226302156}
-    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
-      propertyPath: grappleBoostFOVDuration
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
-      propertyPath: thirdPersonLookSensitivity.x
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
-      propertyPath: thirdPersonLookSensitivity.y
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
-      propertyPath: grappleBoostTransitionUpDuration
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1790286465206029165, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
-      propertyPath: grappleBoostTransitionDownDuration
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: m_maincam
       value: 
@@ -3584,7 +3564,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226302151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13052703, y: 0.00000012867064, z: -0.000000016939923, w: 0.9914448}
+  m_LocalRotation: {x: 0.13052596, y: 0, z: 0, w: 0.99144495}
   m_LocalPosition: {x: 0.00000047683716, y: 5.4, z: -5.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

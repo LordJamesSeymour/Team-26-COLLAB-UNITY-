@@ -58,7 +58,7 @@ namespace Group26.Player.Camera
         [Header("FOV Settings")]
         [SerializeField] private float defaultFOV = 60f;
         [SerializeField] private float sprintFOV = 75f;
-        [SerializeField, Range(0f, 0.5f)] private float fovTransitionDuration = 0.25f;
+        [SerializeField, Range(0f, 0.5f)] private float FOVTransitionDuration = 0.25f;
         
         [Header("DashFOV Settings")]
         [SerializeField] private float dashFOV = 85f;
@@ -445,7 +445,7 @@ namespace Group26.Player.Camera
             float startFOV = currentBaseFOV;
             float elapsedTime = 0f;
 
-            if (fovTransitionDuration <= 0f)
+            if (FOVTransitionDuration <= 0f)
             {
                 currentBaseFOV = targetFOV;
                 ApplyResolvedFOV();
@@ -453,10 +453,10 @@ namespace Group26.Player.Camera
                 yield break;
             }
             
-            while (elapsedTime < fovTransitionDuration)
+            while (elapsedTime < FOVTransitionDuration)
             {
                 elapsedTime += Time.deltaTime;
-                float progress = Mathf.Clamp01(elapsedTime / fovTransitionDuration);
+                float progress = Mathf.Clamp01(elapsedTime / FOVTransitionDuration);
                 
                 // Use smooth curve for more natural feeling
                 float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
