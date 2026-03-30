@@ -673,7 +673,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2905358935246292446
 Transform:
   m_ObjectHideFlags: 0
@@ -1086,17 +1086,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_playerTransform: {fileID: 3517224576019472303}
   m_cameraPivot: {fileID: 5280909850477341516}
-  firstPersonVirtualCamera: {fileID: 8713979986476067194}
   thirdPersonVirtualCamera: {fileID: 1125044273134847471}
   leftWallRunningVirtualCamera: {fileID: 8991054039727158531}
   rightWallRunningVirtualCamera: {fileID: 2025512803842318799}
   firstPersonLookSensitivity: {x: 14, y: 14}
   thirdPersonLookSensitivity: {x: 13, y: 13}
-  currentCameraMode: 1
+  currentCameraMode: 0
   m_firstPersonPitchLimits: {x: -85, y: 85}
   firstPersonYawRoot: {fileID: 3517224576019472303}
   firstPersonPitchPivot: {fileID: 5006660197129630370}
-  m_thirdPersonPitchLimits: {x: -55, y: 40}
+  m_thirdPersonPitchLimits: {x: -54.5, y: 40}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 0.2
   defaultFOV: 60

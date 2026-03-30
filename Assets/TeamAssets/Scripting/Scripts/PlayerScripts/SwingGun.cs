@@ -108,7 +108,8 @@ namespace Group26.Player.Movement
         {
             if (joint != null) return;
 
-            Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            //Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            Cam = thirdPersonCam;
 
             RaycastHit sphereCastHit;
             Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_grappableLayer);
@@ -241,13 +242,10 @@ namespace Group26.Player.Movement
             joint.damper = 7f;
             joint.massScale = 4.5f;
 
-
-
             //RaycastHit hit;
             //if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
             //{
                 
-        
             //}
             //else
             //{

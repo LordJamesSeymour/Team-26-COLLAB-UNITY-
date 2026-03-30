@@ -54,7 +54,9 @@ namespace Group26.Player.Movement
             if (predictionPoint != null)
                 predictionPoint.gameObject.SetActive(false);
 
-            Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            //Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+
+            Cam = thirdPersonCam;
 
             m_ignoredGrapplePredictionLayer = ~m_ignoredGrapplePredictionLayer;
         }
@@ -108,7 +110,8 @@ namespace Group26.Player.Movement
                 return;
             }
 
-            Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            //Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            Cam = thirdPersonCam;
 
             Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out RaycastHit sphereCastHit, maxGrappleDistance, m_grappableLayer);
             Physics.Raycast(Cam.position, Cam.forward, out RaycastHit raycastHit, maxGrappleDistance, m_grappableLayer);
@@ -141,7 +144,8 @@ namespace Group26.Player.Movement
 
         void StartGrapple()
         {
-            Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            //Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
+            Cam = thirdPersonCam;
 
             if (grappleCooldownTimer > 0f) return;
             if (m_bGrappling) return;

@@ -3,14 +3,14 @@ using UnityEngine;
 using System.Collections;
 using Group26.Player.Movement;
 using Group26.Player.Inputs;
-using DG.Tweening;
+//using DG.Tweening;
 using Group26.Player.Utility;
 
 namespace Group26.Player.Camera
 {
     public enum CameraMode
     {
-        FirstPerson, 
+        //FirstPerson, 
         ThirdPerson
     }
 
@@ -25,7 +25,7 @@ namespace Group26.Player.Camera
         [SerializeField] private Transform m_cameraPivot;
 
         [Header("Camera References & Settings")]
-        [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
+        // [SerializeField] public CinemachineCamera firstPersonVirtualCamera;
         [SerializeField] public CinemachineCamera thirdPersonVirtualCamera;
         [SerializeField] public CinemachineCamera leftWallRunningVirtualCamera;
         [SerializeField] public CinemachineCamera rightWallRunningVirtualCamera;
@@ -82,6 +82,8 @@ namespace Group26.Player.Camera
 
         private void Awake()
         {
+            currentCameraMode = CameraMode.ThirdPerson;
+            
             if (playerInput == null) playerInput = GetComponent<InputManager>();
             if (playerInput == null) Debug.LogError("No input manager found");
 
@@ -94,8 +96,8 @@ namespace Group26.Player.Camera
             if (playerModeSwitcher == null) playerModeSwitcher = GetComponent<PlayerModeSwitcher>();
             if (playerModeSwitcher == null) Debug.LogWarning("No player mode switcher found");
 
-            if (firstPersonVirtualCamera == null) Debug.LogWarning("First person virtual camera not assigned");
-            if (thirdPersonVirtualCamera == null) Debug.LogError("Third person virtual camera not assigned");
+            // if (firstPersonVirtualCamera == null) Debug.LogWarning("First person virtual camera not assigned");
+            // if (thirdPersonVirtualCamera == null) Debug.LogError("Third person virtual camera not assigned");
             if (leftWallRunningVirtualCamera == null) Debug.LogError("Left wall running virtual camera not assigned");
             if (rightWallRunningVirtualCamera == null) Debug.LogError("Right wall running virtual camera not assigned");
 
@@ -103,7 +105,7 @@ namespace Group26.Player.Camera
             Cursor.lockState = CursorLockMode.Locked;
 
             //currentCameraMode = CameraMode.FirstPerson;
-            UpdateCameraMode(currentCameraMode);
+            //UpdateCameraMode(currentCameraMode);
             
             // Initialize FOV values
             currentBaseFOV = defaultFOV;
@@ -114,12 +116,12 @@ namespace Group26.Player.Camera
 
         private void OnEnable()
         {
-            playerInput.OnCameraSwitchPressed += SwitchCameraMode;
+            //playerInput.OnCameraSwitchPressed += SwitchCameraMode;
             playerInput.OnDashPressed += BurstFOVIncrease;
         }
         private void OnDisable()
         {
-            playerInput.OnCameraSwitchPressed -= SwitchCameraMode;
+            //playerInput.OnCameraSwitchPressed -= SwitchCameraMode;
             playerInput.OnDashPressed -= BurstFOVIncrease;
         }
 
@@ -130,27 +132,28 @@ namespace Group26.Player.Camera
 
         private void Update()
         {
-            if(currentCameraMode == CameraMode.FirstPerson)
-            {
-                ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
+            
+            // if(currentCameraMode == CameraMode.FirstPerson)
+            // {
+            //     ApplyFirstPersonLook(playerInput?.LookInput ?? Vector2.zero);
 
-                cameraHolder = firstPersonVirtualCamera.transform; 
+            //     cameraHolder = firstPersonVirtualCamera.transform; 
 
-                if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
-                {
-                    DoTilt(-5f);
-                }
-                else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
-                {
-                    DoTilt(5f);
-                }
-                else
-                {
-                    DoTilt(0f);
-                }
-            }
+            //     if(playerController.m_bIsWallRunning && wallRunning.wallLeft)
+            //     {
+            //         DoTilt(-5f);
+            //     }
+            //     else if(playerController.m_bIsWallRunning && wallRunning.wallRight)
+            //     {
+            //         DoTilt(5f);
+            //     }
+            //     else
+            //     {
+            //         DoTilt(0f);
+            //     }
+            // }
 
-            else if(currentCameraMode == CameraMode.ThirdPerson)
+            if(currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);
 
@@ -191,44 +194,44 @@ namespace Group26.Player.Camera
             HandleSprintFOV();
         }
 
-        private void SwitchCameraMode()
-        {
-            currentCameraMode = currentCameraMode == CameraMode.FirstPerson ? CameraMode.ThirdPerson : CameraMode.FirstPerson;
-            UpdateCameraMode(currentCameraMode);
-        }
+        // private void SwitchCameraMode()
+        // {
+        //     currentCameraMode = currentCameraMode == CameraMode.FirstPerson ? CameraMode.ThirdPerson : CameraMode.FirstPerson;
+        //     UpdateCameraMode(currentCameraMode);
+        // }
 
-        private void UpdateCameraMode(CameraMode targetCam)
-        {
-            if(targetCam == CameraMode.FirstPerson)
-            {
-                firstPersonYaw = m_cameraPivot.eulerAngles.y;
-                firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
+        // private void UpdateCameraMode(CameraMode targetCam)
+        // {
+        //     if(targetCam == CameraMode.FirstPerson)
+        //     {
+        //         firstPersonYaw = m_cameraPivot.eulerAngles.y;
+        //         firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
 
-                firstPersonVirtualCamera.Priority = activeCameraPriority;
-                thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
-            }
-            else
-            {
-                // Sync TP yaw to current FP yaw (or player yaw) when entering TP
-                m_yaw = firstPersonYawRoot.eulerAngles.y;
-                m_pitch = Mathf.Clamp(m_pitch, m_thirdPersonPitchLimits.x, m_thirdPersonPitchLimits.y);
+        //         //firstPersonVirtualCamera.Priority = activeCameraPriority;
+        //         thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
+        //     }
+        //     else
+        //     {
+        //         // Sync TP yaw to current FP yaw (or player yaw) when entering TP
+        //         m_yaw = firstPersonYawRoot.eulerAngles.y;
+        //         m_pitch = Mathf.Clamp(m_pitch, m_thirdPersonPitchLimits.x, m_thirdPersonPitchLimits.y);
 
-                firstPersonVirtualCamera.Priority = inactiveCameraPriority;
-                thirdPersonVirtualCamera.Priority = activeCameraPriority;
-            }
-        }
+        //         //firstPersonVirtualCamera.Priority = inactiveCameraPriority;
+        //         thirdPersonVirtualCamera.Priority = activeCameraPriority;
+        //     }
+        // }
 
-        private void ApplyFirstPersonLook(Vector2 lookInput)
-        {
-            float yawDelta = lookInput.x * firstPersonLookSensitivity.x * Time.deltaTime;;
-            float pitchDelta = lookInput.y * firstPersonLookSensitivity.y * Time.deltaTime;;
+        // private void ApplyFirstPersonLook(Vector2 lookInput)
+        // {
+        //     float yawDelta = lookInput.x * firstPersonLookSensitivity.x * Time.deltaTime;;
+        //     float pitchDelta = lookInput.y * firstPersonLookSensitivity.y * Time.deltaTime;;
 
-            firstPersonYaw += yawDelta;
-            firstPersonPitch = Mathf.Clamp(firstPersonPitch - pitchDelta, m_firstPersonPitchLimits.x, m_firstPersonPitchLimits.y);
+        //     firstPersonYaw += yawDelta;
+        //     firstPersonPitch = Mathf.Clamp(firstPersonPitch - pitchDelta, m_firstPersonPitchLimits.x, m_firstPersonPitchLimits.y);
 
-            firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
-            firstPersonPitchPivot.localRotation = Quaternion.Euler(firstPersonPitch, 0f, 0f);
-        }
+        //     firstPersonYawRoot.rotation = Quaternion.Euler(0f, firstPersonYaw, 0f);
+        //     firstPersonPitchPivot.localRotation = Quaternion.Euler(firstPersonPitch, 0f, 0f);
+        // }
 
         private void ApplyThirdPersonLook(Vector2 lookInput)
         {
@@ -528,12 +531,12 @@ namespace Group26.Player.Camera
         
         private void SetCameraFOV(float fov)
         {
-            if (firstPersonVirtualCamera != null && firstPersonVirtualCamera.Lens.FieldOfView != fov)
-            {
-                var lens = firstPersonVirtualCamera.Lens;
-                lens.FieldOfView = fov;
-                firstPersonVirtualCamera.Lens = lens;
-            }
+            // if (firstPersonVirtualCamera != null && firstPersonVirtualCamera.Lens.FieldOfView != fov)
+            // {
+            //     var lens = firstPersonVirtualCamera.Lens;
+            //     lens.FieldOfView = fov;
+            //     firstPersonVirtualCamera.Lens = lens;
+            // }
             
             if (thirdPersonVirtualCamera != null && thirdPersonVirtualCamera.Lens.FieldOfView != fov)
             {
@@ -559,10 +562,10 @@ namespace Group26.Player.Camera
         
         private float GetCurrentCameraFOV()
         {
-            if (currentCameraMode == CameraMode.FirstPerson && firstPersonVirtualCamera != null)
-            {
-                return firstPersonVirtualCamera.Lens.FieldOfView;
-            }
+            // if (currentCameraMode == CameraMode.FirstPerson && firstPersonVirtualCamera != null)
+            // {
+            //     return firstPersonVirtualCamera.Lens.FieldOfView;
+            // }
 
             if (playerController != null && playerController.m_bIsWallRunning)
             {
@@ -585,9 +588,9 @@ namespace Group26.Player.Camera
             return defaultFOV;
         }
 
-        private void DoTilt(float zTiltAmount)
-        {
-            cameraHolder.transform.DOLocalRotate(new Vector3(0,0, zTiltAmount), 0.25f);
-        }
+        // private void DoTilt(float zTiltAmount)
+        // {
+        //     cameraHolder.transform.DOLocalRotate(new Vector3(0,0, zTiltAmount), 0.25f);
+        // }
     }
 }
