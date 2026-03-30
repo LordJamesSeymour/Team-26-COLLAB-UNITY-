@@ -4,6 +4,7 @@ using System.Collections;
 using Group26.Player.Movement;
 using Group26.Player.Inputs;
 using DG.Tweening;
+using Group26.Player.Utility;
 
 namespace Group26.Player.Camera
 {
@@ -17,6 +18,7 @@ namespace Group26.Player.Camera
     {
         private InputManager playerInput;
         private PlayerController playerController;
+        private PlayerModeSwitcher playerModeSwitcher;
         private WallRunning wallRunning;
 
         [SerializeField] private Transform m_playerTransform;
@@ -88,6 +90,9 @@ namespace Group26.Player.Camera
 
             if (wallRunning == null) wallRunning = GetComponent<WallRunning>();
             if (wallRunning == null) Debug.LogError("No wall running script found");
+
+            if (playerModeSwitcher == null) playerModeSwitcher = GetComponent<PlayerModeSwitcher>();
+            if (playerModeSwitcher == null) Debug.LogWarning("No player mode switcher found");
 
             if (firstPersonVirtualCamera == null) Debug.LogWarning("First person virtual camera not assigned");
             if (thirdPersonVirtualCamera == null) Debug.LogError("Third person virtual camera not assigned");
@@ -342,6 +347,7 @@ namespace Group26.Player.Camera
         {
             if(!playerController.m_bDashing) return;
             if(isBursting) return;
+
             isBursting = true;
 
             // Stop any existing burst FOV effect
@@ -416,6 +422,7 @@ namespace Group26.Player.Camera
         private void HandleSprintFOV()
         {
             if (playerController == null) return;
+            if (playerModeSwitcher.currentMode == PlayerMode.BallMode) return;
             
             bool isCurrentlySprinting = playerInput.isSprinting /*&& playerController.IsGrounded*/ || playerController.m_bIsWallRunning || playerController.m_bActiveGrapple;
             

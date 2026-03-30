@@ -916,11 +916,11 @@ GameObject:
   - component: {fileID: 1105013478445036410}
   - component: {fileID: 7735391100756610730}
   - component: {fileID: 5078700645806241538}
-  - component: {fileID: 8009035530255821233}
   - component: {fileID: 1251950815864835180}
   - component: {fileID: 467773160378597545}
   - component: {fileID: 7814036394323847293}
   - component: {fileID: 5861811029371766232}
+  - component: {fileID: 8009035530255821233}
   - component: {fileID: 1656057742043503452}
   - component: {fileID: 1836330418112227131}
   - component: {fileID: 8654063267121373140}
@@ -1024,32 +1024,6 @@ MonoBehaviour:
   capsuleModeObject: {fileID: 2595600856299746714}
   ballModeObject: {fileID: 1326262650849436671}
   currentMode: 0
---- !u!114 &8009035530255821233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4204738269843575190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fa19d343de0d584295ee331d53b2d61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ballVisual: {fileID: 7774008664892864713}
-  m_cameraYawTransform: {fileID: 5280909850477341516}
-  m_moveForce: 30
-  m_maxSpeed: 18
-  m_airControlMultiplier: 0.4
-  m_groundDrag: 0.4
-  visualRadius: 0.5
-  minVisualSpeedToRoll: 0.05
-  m_jumpImpulse: 15
-  m_groundCheck: {fileID: 4240121511577429795}
-  m_groundCheckDistance: 1.1
-  m_groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!114 &1251950815864835180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1186,6 +1160,32 @@ MonoBehaviour:
   allowAllDirections: 1
   disableGravity: 1
   resetVel: 1
+--- !u!114 &8009035530255821233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4204738269843575190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa19d343de0d584295ee331d53b2d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballVisual: {fileID: 7774008664892864713}
+  m_cameraYawTransform: {fileID: 5280909850477341516}
+  m_moveForce: 30
+  m_maxSpeed: 28
+  m_airControlMultiplier: 0.4
+  m_groundDrag: 0.4
+  visualRadius: 0.5
+  minVisualSpeedToRoll: 0.05
+  m_jumpImpulse: 15
+  m_groundCheck: {fileID: 4240121511577429795}
+  m_groundCheckDistance: 1.1
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &1656057742043503452
 MonoBehaviour:
   m_ObjectHideFlags: 0
