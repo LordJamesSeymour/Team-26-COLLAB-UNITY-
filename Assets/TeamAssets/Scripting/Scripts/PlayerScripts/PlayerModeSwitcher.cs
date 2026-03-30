@@ -19,7 +19,7 @@ namespace Group26.Player.Utility
         [SerializeField] private GameObject capsuleModeObject;
         [SerializeField] private GameObject ballModeObject;
 
-        private PlayerMode currentMode = PlayerMode.CapsuleMode;
+        public PlayerMode currentMode = PlayerMode.CapsuleMode;
 
         private void Awake()
         {
@@ -81,7 +81,5 @@ namespace Group26.Player.Utility
                     break;
             }
         }
-
-
     }
 }

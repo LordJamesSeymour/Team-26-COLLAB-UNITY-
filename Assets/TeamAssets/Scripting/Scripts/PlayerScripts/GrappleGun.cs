@@ -1,6 +1,7 @@
 using UnityEngine;
 using Group26.Player.Camera;
 using Group26.Player.Inputs;
+using Group26.Player.Utility;
 
 namespace Group26.Player.Movement
 {
@@ -8,6 +9,7 @@ namespace Group26.Player.Movement
     {
         [Header("References")]
         private InputManager InputManager;
+        private PlayerModeSwitcher playerModeSwitcher;
         private CameraModeManager cameraModeManager;
         [SerializeField] private Transform firstPersonCam;
         [SerializeField] private Transform thirdPersonCam;
@@ -47,6 +49,7 @@ namespace Group26.Player.Movement
             if (InputManager == null) InputManager = GetComponent<InputManager>();
             if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
             if (cameraModeManager == null) cameraModeManager = GetComponent<CameraModeManager>();
+            if (playerModeSwitcher == null) playerModeSwitcher = GetComponent<PlayerModeSwitcher>();
 
             if (predictionPoint != null)
                 predictionPoint.gameObject.SetActive(false);
@@ -142,6 +145,7 @@ namespace Group26.Player.Movement
 
             if (grappleCooldownTimer > 0f) return;
             if (m_bGrappling) return;
+            if (playerModeSwitcher.currentMode != PlayerMode.CapsuleMode) return;
 
             if (predictionHit.point == Vector3.zero)
             {
