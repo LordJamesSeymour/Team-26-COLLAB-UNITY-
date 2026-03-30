@@ -7,13 +7,13 @@ namespace Group26.Player.Movement
     {
         [Header("References")]
         private InputManager inputManager;
-        private Rigidbody m_rigidBody;
-        [SerializeField] private Transform ballVisual;
+        [HideInInspector] public Rigidbody m_rigidBody;
+        [SerializeField] private Transform meshToRotate;
         [SerializeField] private Transform m_cameraYawTransform;
         
         [Header("Movement Settings")]
         [SerializeField] private float m_moveForce = 30f;
-        [SerializeField] private float m_maxSpeed = 14f;
+        [SerializeField] public float m_maxSpeed = 14f;
         [SerializeField] private float m_airControlMultiplier = 0.4f;
         [SerializeField] private float m_groundDrag = 1.5f;
 
@@ -61,11 +61,14 @@ namespace Group26.Player.Movement
         private void Update()
         {
             RotateVisualMesh();
+
+            // Debug the balls speed
+            Debug.Log($"Speed: {m_rigidBody.linearVelocity.magnitude}");
         }
 
         private void RotateVisualMesh()
         {
-            if(ballVisual == null) return;
+            if(meshToRotate == null) return;
 
             Vector3 velocity = m_rigidBody.linearVelocity;
             Vector3 flatVelocity = new Vector3(velocity.x, 0, velocity.z);
@@ -73,7 +76,7 @@ namespace Group26.Player.Movement
             float speed = flatVelocity.magnitude;
             if(speed < minVisualSpeedToRoll)
             {
-                ballVisual.localRotation = Quaternion.identity;
+                meshToRotate.localRotation = Quaternion.identity;
                 return;
             }
 
@@ -83,7 +86,7 @@ namespace Group26.Player.Movement
             float distance = speed * Time.deltaTime;
             float angle = (distance / visualRadius) * Mathf.Rad2Deg;
 
-            ballVisual.Rotate(rollAxis, angle, Space.World);
+            meshToRotate.Rotate(rollAxis, angle, Space.World);
         }
 
         private void HandleMovement()

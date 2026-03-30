@@ -19,6 +19,7 @@ namespace Group26.Player.Camera
         private InputManager playerInput;
         private PlayerController playerController;
         private PlayerModeSwitcher playerModeSwitcher;
+        private BallRollController ballRollController;
         private WallRunning wallRunning;
 
         [SerializeField] private Transform m_playerTransform;
@@ -79,11 +80,12 @@ namespace Group26.Player.Camera
         private Coroutine baseFOVCoroutine;
         private Coroutine dashFOVCoroutine;
         private Coroutine grappleBoostFOVCoroutine;
+        private Coroutine ballMovementFOVCoroutine;
 
         private void Awake()
         {
             currentCameraMode = CameraMode.ThirdPerson;
-            
+
             if (playerInput == null) playerInput = GetComponent<InputManager>();
             if (playerInput == null) Debug.LogError("No input manager found");
 
@@ -100,6 +102,9 @@ namespace Group26.Player.Camera
             // if (thirdPersonVirtualCamera == null) Debug.LogError("Third person virtual camera not assigned");
             if (leftWallRunningVirtualCamera == null) Debug.LogError("Left wall running virtual camera not assigned");
             if (rightWallRunningVirtualCamera == null) Debug.LogError("Right wall running virtual camera not assigned");
+
+            if(ballRollController == null) ballRollController = GetComponent<BallRollController>();
+            if(ballRollController == null) Debug.LogWarning("No ball roll controller found");
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -189,9 +194,40 @@ namespace Group26.Player.Camera
 
                 UpdateBodyFacingDirection();
             }
+
+            if(playerModeSwitcher != null && playerModeSwitcher.currentMode == PlayerMode.BallMode)
+            {
+                if (ballMovementFOVCoroutine != null)
+                {
+                    StopCoroutine(ballMovementFOVCoroutine);
+                }
+
+                ballMovementFOVCoroutine = StartCoroutine(DoBallMovementFOV());
+            }
             
             // Check for sprint state changes and update FOV
             HandleSprintFOV();
+        }
+
+        private IEnumerator DoBallMovementFOV()
+        {
+            if(playerModeSwitcher == null || ballRollController == null)
+            {
+                yield break;
+            }
+
+            while(playerModeSwitcher != null && playerModeSwitcher.currentMode == PlayerMode.BallMode)
+            {
+                float speed = ballRollController.m_rigidBody.linearVelocity.magnitude;
+                
+                float targetFOV = Mathf.Lerp(defaultFOV, sprintFOV, speed / ballRollController.m_maxSpeed);
+                SetCameraFOV(targetFOV);
+
+                yield return null;
+            }
+
+            // Reset FOV when exiting ball mode
+            SetCameraFOV(defaultFOV);
         }
 
         // private void SwitchCameraMode()
