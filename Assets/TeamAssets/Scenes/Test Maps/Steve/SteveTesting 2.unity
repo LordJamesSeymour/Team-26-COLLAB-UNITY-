@@ -6188,10 +6188,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 467773160378597545, guid: e491a1bbefbff1c40bbba23691f355b0, type: 3}
-      propertyPath: m_thirdPersonPitchLimits.x
-      value: -54.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1656057742043503452, guid: e491a1bbefbff1c40bbba23691f355b0, type: 3}
       propertyPath: playerCam
       value: 

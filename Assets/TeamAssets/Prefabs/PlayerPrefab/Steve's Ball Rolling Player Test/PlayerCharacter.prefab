@@ -1171,7 +1171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa19d343de0d584295ee331d53b2d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballVisual: {fileID: 7774008664892864713}
+  m_rigidBody: {fileID: 0}
+  meshToRotate: {fileID: 7774008664892864713}
   m_cameraYawTransform: {fileID: 5280909850477341516}
   m_moveForce: 30
   m_maxSpeed: 28
