@@ -2504,6 +2504,7 @@ MonoBehaviour:
   m_buttonSprites:
   - {fileID: 21300000, guid: d92bac4d14b543d49ac141d7e2f332c6, type: 3}
   - {fileID: 21300000, guid: 056cd12ff06723e408bb7bb257e3199b, type: 3}
+  - {fileID: 21300000, guid: 5ed2248d1f5b6fc4ba818257498a8d52, type: 3}
   - {fileID: 21300000, guid: 1e3520a7bcce68c44bbc1ad8311d9e49, type: 3}
   - {fileID: 21300000, guid: c705df33f772ba34cbb980d11e0d5946, type: 3}
   m_exitButton: {fileID: 604913902}

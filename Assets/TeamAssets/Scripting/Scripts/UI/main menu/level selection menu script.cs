@@ -55,6 +55,14 @@ public class levelselectionmenuscript : menuscreenscript
             m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
             m_iconTransform.position += new Vector3(0, 60f, 0);
         }
+
+        for(int i = 0; i < m_levelButtons.Length; i++)
+        {
+            if (m_manager.GetGameData().levels[i].completed)
+            {
+                m_levelButtons[i].image.sprite = m_buttonSprites[2];
+            }
+        }
     }
 
     private IEnumerator ToggleLevelsScreenOff()
@@ -63,14 +71,25 @@ public class levelselectionmenuscript : menuscreenscript
         m_buttonScript.m_mainMenuPanel.SetActive(true);
 
         if (m_currentButton != m_exitButton)
-            m_currentButton.image.sprite = m_buttonSprites[0];
+        {
+            if (m_manager.GetGameData().levels[m_index].completed == false)
+            {
+                m_currentButton.image.sprite = m_buttonSprites[0];
+            }
+            //m_currentButton.image.sprite = m_buttonSprites[0];
+        }
         else
-            m_currentButton.image.sprite = m_buttonSprites[2];
+            m_currentButton.image.sprite = m_buttonSprites[3];
 
         m_onExitButton = false;
         m_index = 0;
         m_currentButton = m_levelButtons[m_index];
-        m_currentButton.image.sprite = m_buttonSprites[1];
+
+        if (m_manager.GetGameData().levels[m_index].completed == false)
+        {
+            m_currentButton.image.sprite = m_buttonSprites[1];
+        }
+        //m_currentButton.image.sprite = m_buttonSprites[1];
         m_manager.SetLevelNum(m_index, m_index + 1);
         m_manager.SaveGameData();
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
@@ -94,13 +113,24 @@ public class levelselectionmenuscript : menuscreenscript
     public void OnPointerPressed(int i)
     {
         if (m_currentButton == m_exitButton)
-            m_currentButton.image.sprite = m_buttonSprites[2];
+            m_currentButton.image.sprite = m_buttonSprites[3];
         else
-            m_currentButton.image.sprite = m_buttonSprites[0];
+        {
+            if (m_manager.GetGameData().levels[m_index].completed == false)
+            {
+                m_currentButton.image.sprite = m_buttonSprites[0];
+            }
+            //m_currentButton.image.sprite = m_buttonSprites[0];
+        }
 
         m_index = i;
         m_currentButton = m_levelButtons[m_index];
-        m_currentButton.image.sprite = m_buttonSprites[1];
+
+        if (m_manager.GetGameData().levels[m_index].completed == false)
+        {
+            m_currentButton.image.sprite = m_buttonSprites[1];
+        }
+        //m_currentButton.image.sprite = m_buttonSprites[1];
         m_manager.SetLevelNum(m_index, m_index + 1);
         m_manager.SaveGameData();
         m_onExitButton = false;
@@ -115,25 +145,44 @@ public class levelselectionmenuscript : menuscreenscript
         {
             if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_onExitButton == false && m_index < m_levelButtons.Length - 1)
             {
+                if (m_manager.GetGameData().levels[m_index].completed == false)
+                {
+                    m_currentButton.image.sprite = m_buttonSprites[0];
+                }
+
                 m_index++;
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_onExitButton == false && m_index > 0)
             {
+                if (m_manager.GetGameData().levels[m_index].completed == false)
+                {
+                    m_currentButton.image.sprite = m_buttonSprites[0];
+                }
+
                 m_index--;
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_onExitButton)
             {
-                m_currentButton.image.sprite = m_buttonSprites[2];
+                m_currentButton.image.sprite = m_buttonSprites[3];
                 m_index = 0;
                 m_currentButton = m_levelButtons[m_index];
-                m_currentButton.image.sprite = m_buttonSprites[1];
+
+                if (m_manager.GetGameData().levels[m_index].completed == false)
+                {
+                    m_currentButton.image.sprite = m_buttonSprites[1];
+                }
+                //m_currentButton.image.sprite = m_buttonSprites[1];
                 m_onExitButton = false;
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.up && m_onExitButton == false)
             {
-                m_currentButton.image.sprite = m_buttonSprites[0];
+                if (m_manager.GetGameData().levels[m_index].completed == false)
+                {
+                    m_currentButton.image.sprite = m_buttonSprites[0];
+                }
+                //m_currentButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_exitButton;
-                m_currentButton.image.sprite = m_buttonSprites[3];
+                m_currentButton.image.sprite = m_buttonSprites[4];
                 m_onExitButton = true;
             }
         }
@@ -142,9 +191,13 @@ public class levelselectionmenuscript : menuscreenscript
         {
             if (m_currentButton != null && m_onExitButton == false)
             {
-                m_currentButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_levelButtons[m_index];
-                m_currentButton.image.sprite = m_buttonSprites[1];
+
+                if (m_manager.GetGameData().levels[m_index].completed == false)
+                {
+                    m_currentButton.image.sprite = m_buttonSprites[1];
+                }
+
                 m_manager.SetLevelNum(m_index, m_index + 1);
                 m_manager.SaveGameData();
                 m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
