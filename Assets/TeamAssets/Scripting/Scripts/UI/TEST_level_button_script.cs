@@ -18,10 +18,10 @@ public class TEST_level_button_script : MonoBehaviour
 
     public void CompleteLevel()
     {
-        m_manager.SetCompleted(0, true);
+        m_manager.SetCompleted(m_levelNum, true);
         m_manager.SaveGameData();
         m_manager.LoadGameData();
-        Debug.Log(m_manager.GetGameData().levels[0].completed);
+        //Debug.Log(m_manager.GetGameData().levels[0].completed);
         SceneManager.LoadScene(2);
     }
 
@@ -35,6 +35,6 @@ public class TEST_level_button_script : MonoBehaviour
     void Update()
     {
         //m_manager.LoadGameData();
-        m_levelText.text = "Level: " + m_manager.GetGameData().levels[0].levelNum;
+        m_levelText.text = "Level: " + m_manager.GetGameData().levels[m_levelNum].levelNum;
     }
 }

@@ -14,18 +14,21 @@ public class buttonnavscript : MonoBehaviour
     private ColorBlock m_buttonColorBlock;
     private controlsmenuscript m_controlsScreenScript;
     private levelselectionmenuscript m_levelScreenScript;
+    private settingsmenuscript m_settingsScreenScript;
     [HideInInspector] public bool m_mainMenuPanelEnabled = true;
     //private Vector2 direction;
 
     [SerializeField] public GameObject m_mainMenuPanel;
     [SerializeField] public GameObject m_controlsPanel;
     [SerializeField] public GameObject m_levelsPanel;
+    [SerializeField] public GameObject m_settingsPanel;
     [SerializeField] Button[] m_buttons;
     [SerializeField] Sprite[] m_buttonSprites;
 
     private Coroutine m_toggleControlsOn;
     private Coroutine m_toggleLevelsOn;
-
+    private Coroutine m_toggleSettingsOn;
+    
     private void Awake()
     {
         m_navInputs = InputSystem.actions.FindAction("Navigate");
@@ -33,11 +36,15 @@ public class buttonnavscript : MonoBehaviour
 
         m_controlsScreenScript = GetComponent<controlsmenuscript>();
         if (!m_controlsScreenScript)
-            Debug.Log("no controls screen script attached");
+            Debug.LogError("no controls screen script attached");
 
         m_levelScreenScript = GetComponent<levelselectionmenuscript>();
         if ((!m_levelScreenScript))
-            Debug.Log("no level select screen script attached");
+            Debug.LogError("no level select screen script attached");
+
+        m_settingsScreenScript = GetComponent<settingsmenuscript>();
+        if (!m_settingsScreenScript)
+            Debug.LogError("no settings screen script attached");
         //m_normalColour = m_buttons[0].colors.normalColor;
         //m_highlightedColour = m_buttons[0].colors.highlightedColor;
         //Debug.Log(m_highlightedColour);
@@ -114,6 +121,17 @@ public class buttonnavscript : MonoBehaviour
         StopCoroutine(ToggleLevelMenuOn(menu));
     }
 
+    private IEnumerator ToggleSettingsMenuOn(GameObject menu)
+    {
+        menu.SetActive(true);
+        m_mainMenuPanel.SetActive(false);
+        m_mainMenuPanelEnabled = false;
+        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
+        m_settingsScreenScript.m_enabled = true;
+        m_toggleSettingsOn = null;
+        StopCoroutine(ToggleSettingsMenuOn(menu));
+    }
+
     public void RunControlsMenuToggle(GameObject menu)
     {
         if(m_toggleControlsOn == null)
@@ -124,6 +142,12 @@ public class buttonnavscript : MonoBehaviour
     {
         if(m_toggleLevelsOn == null)
             m_toggleLevelsOn = StartCoroutine(ToggleLevelMenuOn(menu));
+    }
+
+    public void RunSettingsMenuToggle(GameObject menu)
+    {
+        if(m_toggleSettingsOn == null)
+            m_toggleSettingsOn = StartCoroutine(ToggleSettingsMenuOn(menu));
     }
 
     // Update is called once per frame

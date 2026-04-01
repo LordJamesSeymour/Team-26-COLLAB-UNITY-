@@ -12,7 +12,7 @@ public class levelselectionmenuscript : menuscreenscript
     private RectTransform m_iconTransform;
     private int m_index = 0;
     private static bool m_run = false;
-    private buttonnavscript m_buttonScript;
+    //private buttonnavscript m_buttonScript;
 
     datamanager m_manager;
 
@@ -40,10 +40,6 @@ public class levelselectionmenuscript : menuscreenscript
         m_currentButton = m_levelButtons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_onExitButton = false;
-
-        m_buttonScript = GetComponent<buttonnavscript>();
-        if (!m_buttonScript)
-            Debug.LogError("no buttonnavscript attached");
 
         m_iconTransform = m_playerIcon.GetComponent<RectTransform>();
         if (!m_iconTransform)
@@ -120,7 +116,6 @@ public class levelselectionmenuscript : menuscreenscript
             {
                 m_currentButton.image.sprite = m_buttonSprites[0];
             }
-            //m_currentButton.image.sprite = m_buttonSprites[0];
         }
 
         m_index = i;
@@ -130,7 +125,7 @@ public class levelselectionmenuscript : menuscreenscript
         {
             m_currentButton.image.sprite = m_buttonSprites[1];
         }
-        //m_currentButton.image.sprite = m_buttonSprites[1];
+
         m_manager.SetLevelNum(m_index, m_index + 1);
         m_manager.SaveGameData();
         m_onExitButton = false;

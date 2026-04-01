@@ -10,7 +10,7 @@ public class controlsmenuscript : menuscreenscript
     //private bool m_onExitButton = false;
     private Button m_tempButton;
     //private Button m_currentButton;
-    private buttonnavscript m_buttonScript;
+    //private buttonnavscript m_buttonScript;
     private Coroutine m_toggleOff;
 
     //[HideInInspector] public bool m_enabled = false;
@@ -27,9 +27,9 @@ public class controlsmenuscript : menuscreenscript
     {
         base.Awake();
 
-        m_buttonScript = GetComponent<buttonnavscript>();
-        if (!m_buttonScript)
-            Debug.LogError("no button script attached");
+        //m_buttonScript = GetComponent<buttonnavscript>();
+        //if (!m_buttonScript)
+        //    Debug.LogError("no button script attached");
 
         m_keyboardButton.image.sprite = m_buttonSprites[1];
         m_currentButton = m_keyboardButton;
