@@ -76,6 +76,7 @@ namespace Group26.Player.Utility
                 case PlayerMode.BallMode:
                     capsuleModeObject.SetActive(false);
                     ballModeObject.SetActive(true);
+                    playerController.m_bIsGrounded = false;
                     playerController.enabled = false;
                     ballRollController.enabled = true;
                     break;

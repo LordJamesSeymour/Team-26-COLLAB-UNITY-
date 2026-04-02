@@ -118,7 +118,6 @@ namespace Group26.Player.Movement
         RailSpline currentRail;
         float currentRailT;
         float currentRailSpeed;
-
         public bool IsGrounded => m_bIsGrounded;
         public Vector3 SlopeNormal => slopeHit.normal;
 
