@@ -218,11 +218,21 @@ namespace Group26.Player.Camera
 
             while(playerModeSwitcher != null && playerModeSwitcher.currentMode == PlayerMode.BallMode)
             {
-                float speed = ballRollController.m_rigidBody.linearVelocity.magnitude;
-                
-                float targetFOV = Mathf.Lerp(defaultFOV, sprintFOV, speed / ballRollController.m_maxSpeed);
-                SetCameraFOV(targetFOV);
+                Vector3 flatVelocity = new Vector3(ballRollController.m_rigidBody.linearVelocity.x, 0f, ballRollController.m_rigidBody.linearVelocity.z);
 
+                float speed = flatVelocity.magnitude;
+                float targetFOV = Mathf.Lerp(defaultFOV, sprintFOV, speed / ballRollController.m_maxSpeed); // Increase FOV based on speed, maxing out at sprintFOV
+
+                float smoothedFOV = Mathf.Lerp(GetCurrentCameraFOV(), targetFOV, Time.deltaTime * 5f); // Smoothly interpolate to the target FOV for a more natural effect
+                SetCameraFOV(smoothedFOV);
+
+                yield return null;
+            }
+
+            while (Mathf.Abs(GetCurrentCameraFOV() - defaultFOV) > 0.1f) // Smoothly transition back to default FOV when exiting ball mode, > 0.1f threshold to prevent unnecessary updates
+            {
+                float smoothedFOV = Mathf.Lerp(GetCurrentCameraFOV(), defaultFOV, Time.deltaTime * 5f);
+                SetCameraFOV(smoothedFOV);
                 yield return null;
             }
 
