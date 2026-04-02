@@ -20,7 +20,7 @@ public class TEST_level_button_script : MonoBehaviour
     {
         m_manager.SetCompleted(m_levelNum, true);
         m_manager.SaveGameData();
-        m_manager.LoadGameData();
+        //m_manager.LoadGameData();
         //Debug.Log(m_manager.GetGameData().levels[0].completed);
         SceneManager.LoadScene(2);
     }
@@ -36,5 +36,6 @@ public class TEST_level_button_script : MonoBehaviour
     {
         //m_manager.LoadGameData();
         m_levelText.text = "Level: " + m_manager.GetGameData().levels[m_levelNum].levelNum;
+        Debug.Log(Checkpoint.m_checkpointsEnabled);
     }
 }

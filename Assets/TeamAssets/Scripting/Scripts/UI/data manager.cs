@@ -5,7 +5,7 @@ using System;
 public class datamanager
 {
     private GameData m_gameData;
-    private LevelData m_data;
+    //private LevelData m_data;
     private static string m_filePath = Path.Combine(Application.persistentDataPath, "level_data.json");
 
     public datamanager(int numOfLevels, int level = 0)
@@ -15,8 +15,8 @@ public class datamanager
         {
             AddLevel();
         }
-        m_data = new LevelData();
-        m_data.levelNum = level;
+        //m_data = new LevelData();
+        //m_data.levelNum = level;
     }
 
     public void AddLevel()
@@ -49,6 +49,17 @@ public class datamanager
         }
     }
 
+    public void SetCheckpointsEnabled(bool enabled)
+    {
+        if(m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        m_gameData.settings.checkpointsEnabled = enabled;
+    }
+
     public void SetCompleted(int index, bool completed)
     {
         if(m_gameData == null)
@@ -73,19 +84,19 @@ public class datamanager
         //m_data.completed = completed;
     }
 
-    public LevelData GetData() {  return m_data; }
+    //public LevelData GetData() {  return m_data; }
 
     public GameData GetGameData() { return m_gameData; }
 
-    public void SaveData()
-    {
-        using(StreamWriter w =  new StreamWriter(m_filePath))
-        {
-            string dataToWrite = JsonUtility.ToJson(m_data);
-            w.Write(dataToWrite);
-            w.Close();
-        }
-    }
+    //public void SaveData()
+    //{
+    //    using(StreamWriter w =  new StreamWriter(m_filePath))
+    //    {
+    //        string dataToWrite = JsonUtility.ToJson(m_data);
+    //        w.Write(dataToWrite);
+    //        w.Close();
+    //    }
+    //}
 
     public void SaveGameData()
     {
@@ -97,15 +108,15 @@ public class datamanager
         }
     }
 
-    public void LoadData()
-    {
-        using(StreamReader r = new StreamReader(m_filePath))
-        {
-            string dataRead = r.ReadToEnd();
-            m_data = JsonUtility.FromJson<LevelData>(dataRead);
-            r.Close();
-        }
-    }
+    //public void LoadData()
+    //{
+    //    using(StreamReader r = new StreamReader(m_filePath))
+    //    {
+    //        string dataRead = r.ReadToEnd();
+    //        m_data = JsonUtility.FromJson<LevelData>(dataRead);
+    //        r.Close();
+    //    }
+    //}
 
     public void LoadGameData()
     {
@@ -131,9 +142,23 @@ public class LevelData
 public class GameData
 {
     public LevelData[] levels;
+    public SettingsData settings;
 
     public GameData()
     {
         levels = new LevelData[] { };
+        settings = new SettingsData();
+    }
+}
+
+[System.Serializable]
+public class SettingsData
+{
+    public bool checkpointsEnabled;
+    public float volume;
+
+    public SettingsData()
+    {
+        checkpointsEnabled = true;
     }
 }

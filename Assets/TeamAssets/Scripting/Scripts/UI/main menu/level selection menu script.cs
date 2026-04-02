@@ -216,8 +216,8 @@ public class levelselectionmenuscript : menuscreenscript
         {
             m_manager.LoadGameData();
             //Debug.Log("JSON file level num: " + m_manager.GetGameData().levels[m_index].levelNum);
-            Debug.Log("index: " + m_index);
-            Debug.Log("completed: " + m_manager.GetGameData().levels[m_index].completed);
+            //Debug.Log("index: " + m_index);
+            //Debug.Log("completed: " + m_manager.GetGameData().levels[m_index].completed);
         }
     }
 }

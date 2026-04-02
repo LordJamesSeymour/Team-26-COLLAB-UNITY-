@@ -7,11 +7,26 @@ public class settingsmenuscript : menuscreenscript
     [SerializeField] Toggle m_checkpointToggle;
 
     private Coroutine m_toggle;
+    private datamanager m_manager;
+    private static bool m_run;
 
     protected override void Awake()
     {
         base.Awake();
-        m_checkpointToggle.isOn = Checkpoint.m_checkpointsEnabled;
+
+        m_manager = new datamanager(3);
+
+        if (m_run == false)
+        {
+            m_run = true;
+        }
+        else
+        {
+            m_manager.LoadGameData();
+        }
+
+        Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
+        m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
     }
 
     private IEnumerator ToggleSettingsMenuOff()
@@ -34,12 +49,16 @@ public class settingsmenuscript : menuscreenscript
 
     public void ToggleCheckpointsEnabled()
     {
-        Checkpoint.m_checkpointsEnabled = !Checkpoint.m_checkpointsEnabled;
+        /*Checkpoint.m_checkpointsEnabled = !Checkpoint.m_checkpointsEnabled*/;
+        m_manager.LoadGameData();
+        m_manager.SetCheckpointsEnabled(m_checkpointToggle.isOn);
+        m_manager.SaveGameData();
+        Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
