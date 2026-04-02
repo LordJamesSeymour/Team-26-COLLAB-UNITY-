@@ -73,8 +73,8 @@ namespace Group26.Player.Movement
 
         private void CheckForWall()
         {
-            wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallCheckDistance, wallLayer);
-            wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallCheckDistance, wallLayer);
+            wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallCheckDistance, wallLayer) && playerController.m_bIsGrounded == false;
+            wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallCheckDistance, wallLayer) && playerController.m_bIsGrounded == false;
         }
 
         private bool AboveGround()

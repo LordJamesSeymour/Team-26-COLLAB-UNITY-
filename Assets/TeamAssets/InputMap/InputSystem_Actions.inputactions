@@ -556,6 +556,17 @@
                 {
                     "name": "",
                     "id": "75d0bc76-569d-45be-a93d-4ec4663791d6",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchModes",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "37ba7649-f358-4524-a12d-47c7bca58b8b",
                     "path": "<Keyboard>/v",
                     "interactions": "",
                     "processors": "",

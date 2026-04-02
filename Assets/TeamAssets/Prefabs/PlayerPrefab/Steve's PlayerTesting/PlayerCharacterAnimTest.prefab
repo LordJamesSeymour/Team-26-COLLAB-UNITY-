@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 704446527504001868}
   - component: {fileID: 7170927848091525486}
   - component: {fileID: 5447763734138745396}
+  - component: {fileID: 6060779505620636773}
   - component: {fileID: 8095985268618166273}
   - component: {fileID: 254738429247674583}
   m_Layer: 8
@@ -567,6 +568,20 @@ MonoBehaviour:
   m_minMomentum: 0
   m_speedIncreaseFactor: 0.2
   m_slowDownFactor: 0.005
+--- !u!114 &6060779505620636773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929995151044452099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ad9208d78e73249a22ab3ffbdf4c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_timerScript: {fileID: 0}
+  m_respawnPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &8095985268618166273
 LineRenderer:
   serializedVersion: 2
@@ -2119,6 +2134,10 @@ PrefabInstance:
     - target: {fileID: -8582429343963603726, guid: c8ce5bc46101e3f4cbc9313ce971b9d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: c8ce5bc46101e3f4cbc9313ce971b9d7, type: 3}
+      propertyPath: m_Name
+      value: BodyMesh
       objectReference: {fileID: 0}
     - target: {fileID: -8378867114542347215, guid: c8ce5bc46101e3f4cbc9313ce971b9d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
