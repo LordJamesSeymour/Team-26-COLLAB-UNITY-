@@ -93,6 +93,7 @@ public class levelselectionmenuscript : menuscreenscript
         m_enabled = false;
 
         yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true);
+        yield return new WaitForSeconds(0.1f);
         m_buttonScript.m_mainMenuPanelEnabled = true;
     }
 

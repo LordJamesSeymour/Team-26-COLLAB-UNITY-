@@ -60,6 +60,17 @@ public class datamanager
         m_gameData.settings.checkpointsEnabled = enabled;
     }
 
+    public void SetVolume(float volume)
+    {
+        if(m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        m_gameData.settings.volume = volume;
+    }
+
     public void SetCompleted(int index, bool completed)
     {
         if(m_gameData == null)
@@ -136,6 +147,20 @@ public class LevelData
     public int bestScore;
     public bool completed;
     public int levelNum;
+
+    public LevelData()
+    {
+        levelNum = 0;
+        completed = false;
+        bestScore = 0;
+    }
+
+    public LevelData(int levelNum)
+    {
+        this.levelNum = levelNum;
+        bestScore = 0;
+        completed = false;
+    }
 }
 
 [System.Serializable]
@@ -160,5 +185,6 @@ public class SettingsData
     public SettingsData()
     {
         checkpointsEnabled = true;
+        volume = 0;
     }
 }

@@ -49,6 +49,7 @@ public class controlsmenuscript : menuscreenscript
         m_enabled = false;
 
         yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true && m_buttonScript.m_controlsPanel.activeSelf == false);
+        yield return new WaitForSeconds(0.1f);
         m_buttonScript.m_mainMenuPanelEnabled = true;
         m_toggleOff = null;
         StopCoroutine(ToggleControlsMenuOff());
@@ -147,7 +148,7 @@ public class controlsmenuscript : menuscreenscript
 
         if(m_enabled && m_selectInput.WasReleasedThisDynamicUpdate() && m_onExitButton)
         {
-            Debug.Log("exiting");
+            //Debug.Log("exiting");
 
             RunToggleMenuOff();
         }

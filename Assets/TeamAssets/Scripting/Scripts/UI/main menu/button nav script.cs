@@ -148,6 +148,9 @@ public class buttonnavscript : MonoBehaviour
     {
         if(m_toggleSettingsOn == null)
             m_toggleSettingsOn = StartCoroutine(ToggleSettingsMenuOn(menu));
+
+        m_toggleSettingsOn = null;
+        StopCoroutine(ToggleSettingsMenuOn(menu));
     }
 
     // Update is called once per frame
