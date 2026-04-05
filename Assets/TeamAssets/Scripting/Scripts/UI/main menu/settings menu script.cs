@@ -33,6 +33,7 @@ public class settingsmenuscript : menuscreenscript
         //Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
         m_volumeSlider.value = m_manager.GetGameData().settings.volume;
+        m_onExitButton = false;
     }
 
     private IEnumerator ToggleSettingsMenuOff()
@@ -68,7 +69,7 @@ public class settingsmenuscript : menuscreenscript
         m_manager.SetCheckpointsEnabled(m_checkpointToggle.isOn);
         m_manager.SaveGameData();
         yield return new WaitForSeconds(0.1f);
-        Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
+        //Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
     }
 
     public IEnumerator ChangeCheckboxValue()
@@ -93,11 +94,31 @@ public class settingsmenuscript : menuscreenscript
         Debug.Log(m_manager.GetGameData().settings.volume);
     }
 
+    public void OnSliderPressed()
+    {
+        m_onExitButton = false;
+        m_onCheckBox = false;
+        m_exitButton.image.sprite = m_buttonSprites[0];
+        //Debug.Log("volume slider pressed");
+        m_onSlider = true;
+    }
+
+    public void OnBoxPressed()
+    {
+        m_onExitButton = false;
+        m_onSlider = false;
+        m_exitButton.image.sprite = m_buttonSprites[0];
+        //Debug.Log("checkbox pressed");
+        m_onCheckBox = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if(m_enabled && m_navInputs.WasPressedThisDynamicUpdate())
         {
+            //Debug.Log(m_navInputs.ReadValue<Vector2>());
+
             //inputs for volume slider
             if (m_onSlider)
             {
@@ -109,41 +130,76 @@ public class settingsmenuscript : menuscreenscript
                 {
                     m_volumeSlider.value -= 1.0f;
                 }
-                else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
+            }
+            //inputs for checkbox
+            //else if (m_onCheckBox)
+            //{
+            //    //if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
+            //    //{
+                    
+            //    //}
+            //    //else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
+            //    //{
+                    
+            //    //    //m_exitButton.image.sprite = m_buttonSprites[1];
+            //    //}
+            //}
+            //exit button inputs
+            //else if (m_onExitButton)
+            //{
+            //    if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
+            //    {
+                    
+            //    }
+            //}
+            else
+            {
+                m_onSlider = true;
+                m_onCheckBox = false;
+                m_onExitButton = false;
+                m_volumeSlider.Select();
+            }
+        }
+
+        if(m_enabled && m_navInputs.WasReleasedThisDynamicUpdate())
+        {
+            //Debug.Log(m_navInputs.ReadValue<Vector2>());
+            if (m_navInputs.ReadValue<Vector2>() == Vector2.down)
+            {
+                if (m_onSlider)
                 {
                     m_onSlider = false;
                     m_onCheckBox = true;
                 }
-            }
-            //inputs for checkbox
-            else if (m_onCheckBox)
-            {
-                if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
-                {
-                    m_onCheckBox = false;
-                    m_onSlider = true;
-                }
-                else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
+                else if (m_onCheckBox)
                 {
                     m_onCheckBox = false;
                     m_onExitButton = true;
                     m_exitButton.image.sprite = m_buttonSprites[1];
                 }
+
+                Debug.Log("slider: " + m_onSlider);
+                Debug.Log("checkbox: " + m_onCheckBox);
+                Debug.Log("exit button: " + m_onExitButton);
             }
-            //exit button inputs
-            else if (m_onExitButton)
+            else if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
             {
-                if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
+                if (m_onCheckBox)
+                {
+                    m_onCheckBox = false;
+                    m_onSlider = true;
+                }
+                else if (m_onExitButton)
                 {
                     m_onExitButton = false;
+                    m_exitButton.image.sprite = m_buttonSprites[0];
                     m_onCheckBox = true;
                     m_checkpointToggle.Select();
                 }
-            }
-            else
-            {
-                m_onSlider = true;
-                m_volumeSlider.Select();
+
+                Debug.Log("slider: " + m_onSlider);
+                Debug.Log("checkbox: " + m_onCheckBox);
+                Debug.Log("exit button: " + m_onExitButton);
             }
         }
 
