@@ -14,6 +14,9 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onSlider;
     private bool m_onCheckBox;
     private static bool m_run;
+    private int m_index = -1;
+
+    GameObject m_eventSystem;
 
     protected override void Awake()
     {
@@ -34,6 +37,7 @@ public class settingsmenuscript : menuscreenscript
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
         m_volumeSlider.value = m_manager.GetGameData().settings.volume;
         m_onExitButton = false;
+        m_eventSystem = GameObject.Find("EventSystem");
     }
 
     private IEnumerator ToggleSettingsMenuOff()
@@ -45,6 +49,8 @@ public class settingsmenuscript : menuscreenscript
         m_onCheckBox = false;
         m_exitButton.image.sprite = m_buttonSprites[0];
         m_enabled = false;
+        m_index = -1;
+        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
         //yield return new WaitForSeconds(2.0f);
         yield return new WaitUntil(() => m_buttonScript.m_settingsPanel.activeSelf == false && m_buttonScript.m_mainMenuPanel.activeSelf == true);
         yield return new WaitForSeconds(0.1f);
@@ -119,6 +125,15 @@ public class settingsmenuscript : menuscreenscript
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
+            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 2)
+            {
+                m_index++;
+            }
+            else if (m_navInputs.ReadValue<Vector2>() == Vector2.up && m_index > 0)
+            {
+                m_index--;
+            }
+
             //inputs for volume slider
             if (m_onSlider)
             {
@@ -152,61 +167,87 @@ public class settingsmenuscript : menuscreenscript
                     
             //    }
             //}
-            else
-            {
-                m_onSlider = true;
-                m_onCheckBox = false;
-                m_onExitButton = false;
-                m_volumeSlider.Select();
-            }
+            //else
+            //{
+            //    m_onSlider = true;
+            //    //m_index = 0;
+            //    m_onCheckBox = false;
+            //    m_onExitButton = false;
+            //    m_volumeSlider.Select();
+            //}
+
+            Debug.Log("index: " + m_index);
         }
 
         if(m_enabled && m_navInputs.WasReleasedThisDynamicUpdate())
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
-            if (m_navInputs.ReadValue<Vector2>() == Vector2.down)
-            {
-                if (m_onSlider)
-                {
-                    m_onSlider = false;
-                    m_onCheckBox = true;
-                }
-                else if (m_onCheckBox)
-                {
-                    m_onCheckBox = false;
-                    m_onExitButton = true;
-                    m_exitButton.image.sprite = m_buttonSprites[1];
-                }
 
-                Debug.Log("slider: " + m_onSlider);
-                Debug.Log("checkbox: " + m_onCheckBox);
-                Debug.Log("exit button: " + m_onExitButton);
-            }
-            else if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
+            switch (m_index)
             {
-                if (m_onCheckBox)
-                {
-                    m_onCheckBox = false;
+                case 0:
                     m_onSlider = true;
-                }
-                else if (m_onExitButton)
-                {
                     m_onExitButton = false;
-                    m_exitButton.image.sprite = m_buttonSprites[0];
+                    m_onCheckBox = false;
+                    m_volumeSlider.Select();
+                    break;
+                case 1:
+                    m_onSlider = false;
+                    m_onExitButton = false;
                     m_onCheckBox = true;
                     m_checkpointToggle.Select();
-                }
-
-                Debug.Log("slider: " + m_onSlider);
-                Debug.Log("checkbox: " + m_onCheckBox);
-                Debug.Log("exit button: " + m_onExitButton);
+                    break;
+                case 2:
+                    m_onSlider = false;
+                    m_onExitButton = true;
+                    m_onCheckBox = false;
+                    break;
             }
+            //if (m_navInputs.ReadValue<Vector2>() == Vector2.down)
+            //{
+            //    if (m_onSlider)
+            //    {
+            //        m_onSlider = false;
+            //        m_onCheckBox = true;
+            //    }
+            //    else if (m_onCheckBox)
+            //    {
+            //        m_onCheckBox = false;
+            //        m_onExitButton = true;
+            //        m_exitButton.image.sprite = m_buttonSprites[1];
+            //    }
+
+            //    Debug.Log("slider: " + m_onSlider);
+            //    Debug.Log("checkbox: " + m_onCheckBox);
+            //    Debug.Log("exit button: " + m_onExitButton);
+            //}
+            //else if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
+            //{
+            //    if (m_onCheckBox)
+            //    {
+            //        m_onCheckBox = false;
+            //        m_onSlider = true;
+            //    }
+            //    else if (m_onExitButton)
+            //    {
+            //        m_onExitButton = false;
+            //        m_exitButton.image.sprite = m_buttonSprites[0];
+            //        m_onCheckBox = true;
+            //        m_checkpointToggle.Select();
+            //    }
+
+            //    Debug.Log("slider: " + m_onSlider);
+            //    Debug.Log("checkbox: " + m_onCheckBox);
+            //    Debug.Log("exit button: " + m_onExitButton);
+            //}
         }
 
         if(m_enabled && m_selectInput.WasReleasedThisDynamicUpdate())
         {
             if (m_onExitButton)
+            {
                 RunToggleSettingsOff();
+            }
             else if (m_onCheckBox)
             {
                 if (m_changeValue == null)
@@ -216,5 +257,7 @@ public class settingsmenuscript : menuscreenscript
                 StartCoroutine(ChangeCheckboxValue());
             }
         }
+
+        //Debug.Log(m_onExitButton);
     }
 }
