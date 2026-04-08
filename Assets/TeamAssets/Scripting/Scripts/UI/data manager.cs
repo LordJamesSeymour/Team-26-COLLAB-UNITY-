@@ -45,7 +45,7 @@ public class datamanager
         }
         else
         {
-            Debug.Log("index is not in array of levels");
+            Debug.LogError("index is not in array of levels");
         }
     }
 
@@ -85,14 +85,26 @@ public class datamanager
         }
         else
         {
-            Debug.Log("index is not in array of levels");
+            Debug.LogError("index is not in array of levels");
         }
-        //if (m_data == null)
-        //{
-        //    m_data = new LevelData();
-        //}
+    }
 
-        //m_data.completed = completed;
+    public void SetLocked(int index, bool locked)
+    {
+        if(m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        if(index >= 0 && index < m_gameData.levels.Length)
+        {
+            m_gameData.levels[index].locked = locked;
+        }
+        else
+        {
+            Debug.LogError("index not in array of levels");
+        }
     }
 
     //public LevelData GetData() {  return m_data; }
@@ -147,12 +159,14 @@ public class LevelData
     public int bestScore;
     public bool completed;
     public int levelNum;
+    public bool locked;
 
     public LevelData()
     {
         levelNum = 0;
         completed = false;
         bestScore = 0;
+        locked = false;
     }
 
     public LevelData(int levelNum)
@@ -160,6 +174,7 @@ public class LevelData
         this.levelNum = levelNum;
         bestScore = 0;
         completed = false;
+        locked = false;
     }
 }
 
