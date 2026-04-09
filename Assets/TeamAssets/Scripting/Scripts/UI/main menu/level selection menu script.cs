@@ -15,6 +15,7 @@ public class levelselectionmenuscript : menuscreenscript
     private RectTransform m_iconTransform;
     private int m_index = 0;
     private static bool m_run = false;
+    private ScrollRect m_scrollRect;
     //private buttonnavscript m_buttonScript;
 
     datamanager m_manager;
@@ -61,6 +62,10 @@ public class levelselectionmenuscript : menuscreenscript
             m_iconTransform.position += new Vector3(0, 60f, 0);
         }
 
+        m_scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+        if (!m_scrollRect)
+            Debug.LogError("no scroll rect");
+
         for(int i = 0; i < m_levelButtons.Length; i++)
         {
             if (m_manager.GetGameData().levels[i].completed)
@@ -104,6 +109,8 @@ public class levelselectionmenuscript : menuscreenscript
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
         m_iconTransform.position += new Vector3(0, 60f, 0);
         m_enabled = false;
+
+        m_scrollRect.horizontalNormalizedPosition = 0f;
 
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
 
@@ -193,14 +200,14 @@ public class levelselectionmenuscript : menuscreenscript
 
                 if (CheckIfOnScreen(m_currentButton) == false)
                 {
-                    ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+                    //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
                     if(m_currentButton.transform.position.x < m_buttonScript.m_levelsPanel.transform.position.x)
                     {
-                        scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
+                        m_scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
                     }
                     else
                     {
-                        scrollRect.horizontalNormalizedPosition += m_scrollAmount;
+                        m_scrollRect.horizontalNormalizedPosition += m_scrollAmount;
                     }
                 }
             }
@@ -216,14 +223,14 @@ public class levelselectionmenuscript : menuscreenscript
 
                 if (CheckIfOnScreen(m_currentButton) == false)
                 {
-                    ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+                    //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
                     if (m_currentButton.transform.position.x > m_buttonScript.m_levelsPanel.transform.position.x)
                     {    
-                        scrollRect.horizontalNormalizedPosition += m_scrollAmount;
+                        m_scrollRect.horizontalNormalizedPosition += m_scrollAmount;
                     }
                     else
                     {
-                        scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
+                        m_scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
                     }
                     //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
                 }
