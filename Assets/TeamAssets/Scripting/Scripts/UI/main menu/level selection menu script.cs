@@ -8,6 +8,9 @@ public class levelselectionmenuscript : menuscreenscript
 {
     [SerializeField] Image m_playerIcon;
     [SerializeField] Button[] m_levelButtons;
+    [SerializeField] GameObject m_contentPanel;
+    [SerializeField] GameObject m_scrollObject;
+    [SerializeField] float m_scrollAmount;
 
     private RectTransform m_iconTransform;
     private int m_index = 0;
@@ -21,7 +24,7 @@ public class levelselectionmenuscript : menuscreenscript
     {
         base.Awake();
 
-        m_manager = new datamanager(3);
+        m_manager = new datamanager(6);
 
         if(m_run == false)
         {
@@ -146,6 +149,33 @@ public class levelselectionmenuscript : menuscreenscript
         m_iconTransform.position += new Vector3(0, 60f, 0);
     }
 
+    bool CheckIfOnScreen(Button button)
+    {
+        //Vector3 buttonScreenPos = Camera.main.WorldToScreenPoint(button.transform.position);
+        //CanvasRenderer levelPanelRenderer = m_buttonScript.m_levelsPanel.GetComponent<CanvasRenderer>();
+        RectTransform levelsPanelRectTransform = m_buttonScript.m_levelsPanel.GetComponent<RectTransform>();
+        if (levelsPanelRectTransform != null)
+        {
+            //Debug.Log("rect transform attached");
+            //Debug.Log("width: " + levelsPanelRectTransform.rect.width);
+            //Debug.Log("height: " + levelsPanelRectTransform.rect.height);
+            float distX = Vector3.Distance(new Vector3(levelsPanelRectTransform.rect.width / 2, 0f, 0f), new Vector3(button.transform.position.x, 0f, 0f));
+            float distY = Vector3.Distance(new Vector3(0f, levelsPanelRectTransform.rect.height / 2, 0f), new Vector3(0f, button.transform.position.y, 0f));
+            //Debug.Log("x distance: " + distX);
+            //Debug.Log("y distance: " + distY);
+
+            if (distX > levelsPanelRectTransform.rect.width / 2 || distY > levelsPanelRectTransform.rect.height / 2)
+            {
+                //Debug.Log("invisible");
+                return false;
+            }
+        }
+        else
+            Debug.Log("no rect transform");
+
+        return true;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -159,6 +189,20 @@ public class levelselectionmenuscript : menuscreenscript
                 }
 
                 m_index++;
+                m_currentButton = m_levelButtons[m_index];
+
+                if (CheckIfOnScreen(m_currentButton) == false)
+                {
+                    ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+                    if(m_currentButton.transform.position.x < m_buttonScript.m_levelsPanel.transform.position.x)
+                    {
+                        scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
+                    }
+                    else
+                    {
+                        scrollRect.horizontalNormalizedPosition += m_scrollAmount;
+                    }
+                }
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_onExitButton == false && m_index > 0)
             {
@@ -168,6 +212,21 @@ public class levelselectionmenuscript : menuscreenscript
                 }
 
                 m_index--;
+                m_currentButton = m_levelButtons[m_index];
+
+                if (CheckIfOnScreen(m_currentButton) == false)
+                {
+                    ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+                    if (m_currentButton.transform.position.x > m_buttonScript.m_levelsPanel.transform.position.x)
+                    {    
+                        scrollRect.horizontalNormalizedPosition += m_scrollAmount;
+                    }
+                    else
+                    {
+                        scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
+                    }
+                    //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
+                }
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_onExitButton)
             {

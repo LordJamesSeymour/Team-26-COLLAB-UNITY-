@@ -3870,6 +3870,12 @@ MonoBehaviour:
   - {fileID: 1410108312}
   - {fileID: 1618548487}
   - {fileID: 1190083911}
+  - {fileID: 161932565}
+  - {fileID: 414551054}
+  - {fileID: 1474690881}
+  m_contentPanel: {fileID: 0}
+  m_scrollObject: {fileID: 1857427087}
+  m_scrollAmount: 1
 --- !u!114 &1106575636
 MonoBehaviour:
   m_ObjectHideFlags: 0

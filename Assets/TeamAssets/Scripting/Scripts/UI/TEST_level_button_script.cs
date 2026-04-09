@@ -12,7 +12,7 @@ public class TEST_level_button_script : MonoBehaviour
 
     private void Awake()
     {
-        m_manager = new datamanager(3);
+        m_manager = new datamanager(6);
         m_manager.LoadGameData();
     }
 

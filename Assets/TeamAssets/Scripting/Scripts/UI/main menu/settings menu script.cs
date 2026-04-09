@@ -22,7 +22,7 @@ public class settingsmenuscript : menuscreenscript
     {
         base.Awake();
 
-        m_manager = new datamanager(3);
+        m_manager = new datamanager(6);
 
         if (m_run == false)
         {
