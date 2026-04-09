@@ -6,6 +6,7 @@ public class settingsmenuscript : menuscreenscript
 {
     [SerializeField] Toggle m_checkpointToggle;
     [SerializeField] Slider m_volumeSlider;
+    [SerializeField] AudioSource m_backgroundMusic;
 
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
@@ -95,6 +96,7 @@ public class settingsmenuscript : menuscreenscript
 
     public void UpdateVolume()
     {
+        m_backgroundMusic.volume = m_volumeSlider.value / 100;
         m_manager.SetVolume(m_volumeSlider.value);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.volume);

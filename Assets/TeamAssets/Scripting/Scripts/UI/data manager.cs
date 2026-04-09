@@ -200,6 +200,6 @@ public class SettingsData
     public SettingsData()
     {
         checkpointsEnabled = true;
-        volume = 0;
+        volume = 100;
     }
 }

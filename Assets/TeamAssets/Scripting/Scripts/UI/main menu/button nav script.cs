@@ -9,9 +9,6 @@ public class buttonnavscript : MonoBehaviour
     private InputAction m_selectInput;
     private int m_index = 0;
     private Button m_currentButton;
-    private Color m_normalColour;
-    private Color m_highlightedColour;
-    private ColorBlock m_buttonColorBlock;
     private controlsmenuscript m_controlsScreenScript;
     private levelselectionmenuscript m_levelScreenScript;
     private settingsmenuscript m_settingsScreenScript;
@@ -45,13 +42,6 @@ public class buttonnavscript : MonoBehaviour
         m_settingsScreenScript = GetComponent<settingsmenuscript>();
         if (!m_settingsScreenScript)
             Debug.LogError("no settings screen script attached");
-        //m_normalColour = m_buttons[0].colors.normalColor;
-        //m_highlightedColour = m_buttons[0].colors.highlightedColor;
-        //Debug.Log(m_highlightedColour);
-        //m_buttonColorBlock.normalColor = m_highlightedColour;
-        //Debug.Log(m_buttonColorBlock.normalColor);
-        //m_currentButton = m_buttons[m_index];
-        //m_currentButton.colors = m_buttonColorBlock;
 
         m_currentButton = m_buttons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
@@ -60,8 +50,6 @@ public class buttonnavscript : MonoBehaviour
     //function for when the mouse hovers over a button
     public void OnPointerEnter(int i)
     {
-        //m_buttonColorBlock.normalColor = m_normalColour;
-        //m_currentButton.colors = m_buttonColorBlock;
         m_currentButton.image.sprite = m_buttonSprites[0];
 
         if (i > 0 && i < m_buttons.Length)
@@ -80,27 +68,10 @@ public class buttonnavscript : MonoBehaviour
     public void OnPointerExit()
     {
         m_currentButton.image.sprite = m_buttonSprites[1];
-        //m_buttonColorBlock.normalColor = m_highlightedColour;
-        //m_currentButton.colors = m_buttonColorBlock;
     }
 
     private IEnumerator ToggleControlsMenuOn(GameObject menu)
     {
-        //if (m_mainMenuPanelEnabled)
-        //{
-        //    m_mainMenuPanel.SetActive(false);
-        //    m_controlsPanel.SetActive(true);
-        //    m_controlsScreenScript.m_enabled = true;
-        //}
-        //else
-        //{
-        //    m_mainMenuPanel.SetActive(true);
-        //    m_controlsPanel.SetActive(false);
-        //    m_controlsScreenScript.m_enabled = false;
-        //}
-
-        //m_mainMenuPanelEnabled = !m_mainMenuPanelEnabled;
-
         menu.SetActive(true);
         m_mainMenuPanel.SetActive(false);
         m_mainMenuPanelEnabled = false;
@@ -153,6 +124,11 @@ public class buttonnavscript : MonoBehaviour
         StopCoroutine(ToggleSettingsMenuOn(menu));
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -179,12 +155,6 @@ public class buttonnavscript : MonoBehaviour
                 m_currentButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_buttons[m_index];
                 m_currentButton.image.sprite = m_buttonSprites[1];
-
-                //m_buttonColorBlock.normalColor = m_normalColour;
-                //m_currentButton.colors = m_buttonColorBlock;
-                //m_buttonColorBlock.normalColor = m_highlightedColour;
-                //m_currentButton = m_buttons[m_index];
-                //m_currentButton.colors = m_buttonColorBlock;
             }      
         }
 
