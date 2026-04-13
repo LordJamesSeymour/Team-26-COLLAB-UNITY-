@@ -123,10 +123,16 @@ public class settingsmenuscript : menuscreenscript
         m_exitButton.image.sprite = m_buttonSprites[0];
         //Debug.Log("volume slider pressed");
 
-        if(slider == m_backgroundMusicSlider)
+        if (slider == m_backgroundMusicSlider)
+        {
             m_onBackgroundSlider = true;
-        else if(slider == m_soundEffectsSlider)
+            m_index = 0;
+        }
+        else if (slider == m_soundEffectsSlider)
+        {
             m_onSoundEffectsSlider = true;
+            m_index = 1;
+        }
     }
 
     public void OnBoxPressed()
@@ -171,11 +177,11 @@ public class settingsmenuscript : menuscreenscript
             {
                 if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_soundEffectsSlider.value < m_soundEffectsSlider.maxValue)
                 {
-                    m_backgroundMusicSlider.value += 1.0f;
+                    m_soundEffectsSlider.value += 1.0f;
                 }
                 else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_soundEffectsSlider.value > m_soundEffectsSlider.minValue)
                 {
-                    m_backgroundMusicSlider.value -= 1.0f;
+                    m_soundEffectsSlider.value -= 1.0f;
                 }
             }
                 //inputs for checkbox
