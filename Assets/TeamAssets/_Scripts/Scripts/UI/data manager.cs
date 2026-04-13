@@ -60,7 +60,7 @@ public class datamanager
         m_gameData.settings.checkpointsEnabled = enabled;
     }
 
-    public void SetVolume(float volume)
+    public void SetBackgroundVolume(float volume)
     {
         if(m_gameData == null)
         {
@@ -68,7 +68,18 @@ public class datamanager
             AddLevel();
         }
 
-        m_gameData.settings.volume = volume;
+        m_gameData.settings.backgroundMusicVolume = volume;
+    }
+
+    public void SetSoundEffectsVolume(float volume)
+    {
+        if(m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        m_gameData.settings.soundEffectsVolume = volume;
     }
 
     public void SetCompleted(int index, bool completed)
@@ -195,11 +206,13 @@ public class GameData
 public class SettingsData
 {
     public bool checkpointsEnabled;
-    public float volume;
+    public float backgroundMusicVolume;
+    public float soundEffectsVolume;
 
     public SettingsData()
     {
         checkpointsEnabled = true;
-        volume = 100;
+        backgroundMusicVolume = 100;
+        soundEffectsVolume = 100;
     }
 }

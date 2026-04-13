@@ -8,7 +8,7 @@ public class levelselectionmenuscript : menuscreenscript
 {
     [SerializeField] Image m_playerIcon;
     [SerializeField] Button[] m_levelButtons;
-    [SerializeField] GameObject m_contentPanel;
+    //[SerializeField] GameObject m_contentPanel;
     [SerializeField] GameObject m_scrollObject;
     [SerializeField] float m_scrollAmount;
 
