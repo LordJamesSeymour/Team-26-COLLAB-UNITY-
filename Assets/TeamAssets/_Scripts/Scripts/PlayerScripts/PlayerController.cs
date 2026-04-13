@@ -287,12 +287,12 @@ namespace Group26.Player.Movement
 
             if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0f)
             {
-                //StopAllCoroutines();
+                StopAllCoroutines();
                 StartCoroutine(SmoothlyLerpMoveSpeed());
             }
             else
             {
-                //StopAllCoroutines();
+                StopAllCoroutines();
                 moveSpeed = desiredMoveSpeed;
             }
 
@@ -304,12 +304,12 @@ namespace Group26.Player.Movement
             {
                 if (keepMomentum)
                 {
-                    //StopAllCoroutines();
+                    StopAllCoroutines();
                     StartCoroutine(SmoothlyLerpMoveSpeed());
                 }
                 else
                 {
-                    //StopAllCoroutines();
+                    StopAllCoroutines();
                     moveSpeed = desiredMoveSpeed;
                 }
             }
@@ -630,7 +630,7 @@ namespace Group26.Player.Movement
 
             inputManager?.ClearRailBlockedInputs();
 
-            //StopAllCoroutines();
+            StopAllCoroutines();
 
             m_bActiveGrapple = false;
             m_bStraightGrappleMovement = false;
