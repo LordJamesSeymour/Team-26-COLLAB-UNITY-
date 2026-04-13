@@ -18,7 +18,7 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onCheckBox;
     private static bool m_run;
     private int m_index = -1;
-    private Vector2 m_direction;
+    //private Vector2 m_direction;
 
     GameObject m_eventSystem;
 
@@ -67,7 +67,7 @@ public class settingsmenuscript : menuscreenscript
 
     public void RunToggleSettingsOff()
     {
-        if(m_toggleMenu == null)
+        if (m_toggleMenu == null)
             m_toggleMenu = StartCoroutine(ToggleSettingsMenuOff());
 
         m_toggleMenu = null;
@@ -76,7 +76,8 @@ public class settingsmenuscript : menuscreenscript
 
     public IEnumerator ToggleCheckpointsEnabled()
     {
-        /*Checkpoint.m_checkpointsEnabled = !Checkpoint.m_checkpointsEnabled*/;
+        /*Checkpoint.m_checkpointsEnabled = !Checkpoint.m_checkpointsEnabled*/
+        ;
         m_manager.LoadGameData();
         m_manager.SetCheckpointsEnabled(m_checkpointToggle.isOn);
         m_manager.SaveGameData();
@@ -115,7 +116,7 @@ public class settingsmenuscript : menuscreenscript
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
     }
 
-    public void OnSliderPressed(Slider slider)
+    public void OnBackgroundSliderPressed(Slider slider)
     {
         m_onExitButton = false;
         m_onCheckBox = false;
@@ -134,6 +135,15 @@ public class settingsmenuscript : menuscreenscript
             m_onSoundEffectsSlider = true;
             m_index = 1;
         }
+
+        Debug.Log("index: " + m_index);
+        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+    }
+
+    public void OnSliderDeselected()
+    {
+        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+
     }
 
     public void OnBoxPressed()
@@ -155,13 +165,13 @@ public class settingsmenuscript : menuscreenscript
 
             if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 3)
             {
-                m_direction = Vector2.down;
-                //m_index++;
+                //m_direction = Vector2.down;
+                m_index++;
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.up && m_index > 0)
             {
-                m_direction = Vector2.up;
-                //m_index--;
+                //m_direction = Vector2.up;
+                m_index--;
             }
 
             //inputs for volume slider
@@ -223,10 +233,10 @@ public class settingsmenuscript : menuscreenscript
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
-            if (m_direction == Vector2.down)
-                m_index++;
-            else if(m_direction == Vector2.up)
-                m_index--;
+            //if (m_direction == Vector2.down && m_index < 3)
+            //    m_index++;
+            //else if(m_direction == Vector2.up && m_index > 0)
+            //    m_index--;
 
                 switch (m_index)
                 {
@@ -235,27 +245,31 @@ public class settingsmenuscript : menuscreenscript
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = false;
                         m_onCheckBox = false;
-                        m_backgroundMusicSlider.Select();
+                        m_exitButton.image.sprite = m_buttonSprites[0];
+                    //m_backgroundMusicSlider.Select();
                         break;
                     case 1:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = true;
                         m_onCheckBox = false;
                         m_onExitButton = false;
-                        m_soundEffectsSlider.Select();
-                        break;
+                        m_exitButton.image.sprite = m_buttonSprites[0];
+                    //m_soundEffectsSlider.Select();
+                    break;
                     case 2:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = false;
                         m_onCheckBox = true;
-                        m_checkpointToggle.Select();
-                        break;
+                        m_exitButton.image.sprite = m_buttonSprites[0];
+                    //m_checkpointToggle.Select();
+                    break;
                     case 3:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = true;
                         m_onCheckBox = false;
+                        m_exitButton.image.sprite = m_buttonSprites[1];
                         break;
                 }
 
