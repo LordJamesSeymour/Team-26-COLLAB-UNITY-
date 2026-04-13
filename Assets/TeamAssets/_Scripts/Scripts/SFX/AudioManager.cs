@@ -60,6 +60,11 @@ public class AudioManager : MonoBehaviour
             source.clip = clip;
             source.Play();
 
+            if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
+            {
+                target.gameObject.AddComponent<DetachEmitter>();
+            }
+
             instance.StartCoroutine(instance.ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
         }
     }

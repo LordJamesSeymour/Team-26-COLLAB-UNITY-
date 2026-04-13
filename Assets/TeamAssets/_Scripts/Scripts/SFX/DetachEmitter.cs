@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class DetachEmitter : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnDestroy()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        foreach (Transform child in transform)
+        {
+            if (child.GetComponent<AudioSource>())
+            {
+                child.SetParent(null);
+                // can also have the sound cut or continue or fade on end instantly from here
+            }
+        }
     }
 }
