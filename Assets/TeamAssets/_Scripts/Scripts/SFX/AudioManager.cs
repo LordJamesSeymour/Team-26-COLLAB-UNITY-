@@ -6,7 +6,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioClip[] soundList;
-    private static AudioManager instance;
+    public  static AudioManager instance { get; private set;}
     private AudioSource audioSource;
 
     private AudioSource[] audioEmitters = new AudioSource[10];
@@ -14,9 +14,9 @@ public class AudioManager : MonoBehaviour
     public enum SoundType
     {
         WALKING,
+        JUMP,
         RUNNING,
         ROLLING,
-        JUMP,
         GRAPPLE,
         WIND,
         CRASH,
@@ -27,7 +27,13 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
+        DontDestroyOnLoad(gameObject);
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
@@ -43,21 +49,25 @@ public class AudioManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public static void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
+    public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
     {
-        instance.audioSource.PlayOneShot(instance.soundList[(int)sound], volume);
+        audioSource.PlayOneShot(soundList[(int)sound], volume);
     }
 
-    public static void PlaySound(SoundType sound, Transform target, float voume, float volumeRange, float pitch, float pitchRange)
+    public void PlaySound(SoundType sound, Transform target, float volume, float volumeRange, float pitch, float pitchRange)
     {
-        AudioSource source = instance.GetAvailableSource();
-        AudioClip clip = instance.soundList[(int)sound];
+        AudioSource source = GetAvailableSource();
+        AudioClip clip = soundList[(int)sound];
         if (source != null)
         {
             source.gameObject.SetActive(true);
             source.transform.parent = target;
             source.transform.localPosition = Vector3.zero;
             source.clip = clip;
+
+            source.volume = Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+            source.pitch = Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+
             source.Play();
 
             if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
@@ -65,7 +75,7 @@ public class AudioManager : MonoBehaviour
                 target.gameObject.AddComponent<DetachEmitter>();
             }
 
-            instance.StartCoroutine(instance.ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+            StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
         }
     }
 

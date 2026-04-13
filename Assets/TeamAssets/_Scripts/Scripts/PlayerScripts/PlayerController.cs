@@ -1,8 +1,9 @@
-using UnityEngine;
-using System.Collections;
 using Group26.Player.Inputs;
+using System.Collections;
 using Unity.Mathematics;
+using UnityEngine;
 using UnityEngine.Splines;
+using static AudioManager;
 
 namespace Group26.Player.Movement
 {
@@ -454,6 +455,9 @@ namespace Group26.Player.Movement
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
+            AudioManager.instance.PlaySound(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
         }
 
         private void ResetJump()
