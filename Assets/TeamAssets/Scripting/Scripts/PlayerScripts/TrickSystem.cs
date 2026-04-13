@@ -1,6 +1,9 @@
 using Group26.Player.Inputs;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Group26.Player.Movement
 {
@@ -11,7 +14,13 @@ namespace Group26.Player.Movement
         private string[] StateValidationCheck;
 
         private int Buffer;
-        
+
+        [Header("UI")]
+        [SerializeField] public GameObject UI_Refrence;
+        private Canvas UI_Canvas;
+        private TMP_Text[] UI_Texts;
+        private int UI_Text_Order = 1;
+        private int UI_TextComboInt = 1;
 
         [Header("Combo")]
         [SerializeField] public int TotalScore;
@@ -38,6 +47,18 @@ namespace Group26.Player.Movement
 
         private void Awake()
         {
+            if (UI_Canvas == null)
+            {
+                UI_Canvas = UI_Refrence.GetComponent<Canvas>();
+                //Debug.Log("MISSING TRICK SYSTEM UI");
+            }
+            UI_Texts = UI_Canvas.gameObject.GetComponentsInChildren<TMP_Text>();
+            
+            for (int i = 1; i < UI_Texts.Length; i++)
+            {
+                UI_Texts[i].text = " ";
+            }
+
             if (InputManager == null)
             {
 
@@ -66,10 +87,6 @@ namespace Group26.Player.Movement
         public void DoATrick() //Currently bunch of debugs
         {
 
-            //print("Current State: " + playerController.state);
-            //print(CurrentActionScore + "    Current");
-            //print(ActionScoreLimit + "   Limit");
-            //print(StateValidationCheck[1].ToString());
             print(TotalScore);
 
         }
@@ -77,18 +94,6 @@ namespace Group26.Player.Movement
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-
-            //int EnumLength = Enum.GetValues(typeof(ActionState)).Length;
-            //StateValidationCheck = new string[EnumLength];
-
-            //for (int i = 0; i < EnumLength; i++)
-            //{
-            //    ActionState ActionState = (ActionState)i;
-            //    string StateName = ActionState.ToString();
-
-            //    StateValidationCheck[i] = StateName;
-
-            //}
 
         }
 
@@ -107,6 +112,7 @@ namespace Group26.Player.Movement
 
                     PointsCalculation(5, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.dashing.ToString());
+                    UITextOrder("Dash");
                 }
 
                 if (playerController.state == PlayerController.MovementState.wallRunning)
@@ -117,6 +123,7 @@ namespace Group26.Player.Movement
                         WallRunningPointsEnabled = false;
                         DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
                         PointsCalculation(7, DefaultPointMultiplier);
+                        UITextOrder("Wall Run");
                     }
                     
                 }
@@ -129,6 +136,7 @@ namespace Group26.Player.Movement
                         SwingingPointsEnabled = false;
                         PointsCalculation(7, DefaultPointMultiplier);
                         DecayCalculation(PlayerController.MovementState.swinging.ToString());
+                        UITextOrder("Grapple");
                     }
                 }
 
@@ -137,6 +145,7 @@ namespace Group26.Player.Movement
                     Debug.Log("Sliding");
                     PointsCalculation(5, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.sliding.ToString());
+                    UITextOrder("Slide");
                 }
 
                 
@@ -179,6 +188,34 @@ namespace Group26.Player.Movement
             LastState = State;
         }
 
+        public void UITextOrder(string Name)
+        {
+
+            if (UI_Text_Order >= 5)
+            {
+                UI_Text_Order = 1;
+            }
+            else
+            {
+                UI_Texts[UI_Text_Order].text = "+ " + Name;
+                UI_Text_Order += 1;
+            }
+
+            for (int i = 1; i < UI_Texts.Length; i++)
+            {
+                if (("+ " + Name) == UI_Texts[i].text)
+                {
+                    //UI_Texts[i].text += " x"+ 2;
+                }
+                else
+                {
+                    
+                }
+            }
+
+            
+            
+        }
 
         // Update is called once per frame
         void Update()
