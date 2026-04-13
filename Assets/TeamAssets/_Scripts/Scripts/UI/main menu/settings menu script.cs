@@ -245,30 +245,42 @@ public class settingsmenuscript : menuscreenscript
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = false;
                         m_onCheckBox = false;
+                        m_backgroundMusicSlider.image.sprite = m_buttonSprites[3];
+                        m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+                        m_checkpointToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[0];
-                    //m_backgroundMusicSlider.Select();
+                        //m_backgroundMusicSlider.Select();
                         break;
                     case 1:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = true;
                         m_onCheckBox = false;
                         m_onExitButton = false;
+                        m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+                        m_soundEffectsSlider.image.sprite = m_buttonSprites[3];
+                        m_checkpointToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[0];
-                    //m_soundEffectsSlider.Select();
-                    break;
+                        //m_soundEffectsSlider.Select();
+                        break;
                     case 2:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = false;
                         m_onCheckBox = true;
+                        m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+                        m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+                        m_checkpointToggle.image.sprite = m_buttonSprites[1];
                         m_exitButton.image.sprite = m_buttonSprites[0];
-                    //m_checkpointToggle.Select();
-                    break;
+                        //m_checkpointToggle.Select();
+                        break;
                     case 3:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = false;
                         m_onExitButton = true;
                         m_onCheckBox = false;
+                        m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+                        m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+                        m_checkpointToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[1];
                         break;
                 }
@@ -326,7 +338,7 @@ public class settingsmenuscript : menuscreenscript
                     m_changeValue = StartCoroutine(ChangeCheckboxValue());
 
                 m_changeValue = null;
-                StartCoroutine(ChangeCheckboxValue());
+                StopCoroutine(ChangeCheckboxValue());
             }
         }
 
