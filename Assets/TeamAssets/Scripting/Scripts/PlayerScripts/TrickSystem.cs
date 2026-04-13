@@ -20,7 +20,8 @@ namespace Group26.Player.Movement
         private Canvas UI_Canvas;
         private TMP_Text[] UI_Texts;
         private int UI_Text_Order = 1;
-        private int UI_TextComboInt = 1;
+        //fix later vvv
+        //private int UI_TextComboInt = 1;
 
         [Header("Combo")]
         [SerializeField] public int TotalScore;
@@ -37,13 +38,7 @@ namespace Group26.Player.Movement
         [Header("States")]
         [SerializeField] private string LastState = "default";
 
-        //public enum ActionState
-        //{
-        //    sliding,
-        //    swinging,
-        //    wallRunning,
-        //    dashing
-        //}
+ 
 
         private void Awake()
         {
@@ -166,6 +161,9 @@ namespace Group26.Player.Movement
 
         public void DecayCalculation(string State)
         {
+            Slider DecayMeterSlider = UI_Canvas.GetComponentInChildren<Slider>();
+            
+            
 
             if (State == null)
             {
@@ -177,12 +175,19 @@ namespace Group26.Player.Movement
             {
                 DefaultPointMultiplier -= ComboDecay;
                 DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 1);
+
+                UI_Texts[6].text = "Mult: x" + DefaultPointMultiplier; 
+                DecayMeterSlider.value = DefaultPointMultiplier;
+
             }
 
             if (State != LastState)
             {
                 DefaultPointMultiplier += ComboDecay;
                 DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 3);
+
+                UI_Texts[6].text = "Mult: x" + DefaultPointMultiplier;
+                DecayMeterSlider.value = DefaultPointMultiplier;
             }
 
             LastState = State;
@@ -190,6 +195,7 @@ namespace Group26.Player.Movement
 
         public void UITextOrder(string Name)
         {
+            UI_Texts[5].text = "Score: " + TotalScore.ToString();
 
             if (UI_Text_Order >= 5)
             {
