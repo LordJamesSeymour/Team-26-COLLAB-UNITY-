@@ -18,6 +18,7 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onCheckBox;
     private static bool m_run;
     private int m_index = -1;
+    private Vector2 m_direction;
 
     GameObject m_eventSystem;
 
@@ -154,11 +155,13 @@ public class settingsmenuscript : menuscreenscript
 
             if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 3)
             {
-                m_index++;
+                m_direction = Vector2.down;
+                //m_index++;
             }
             else if (m_navInputs.ReadValue<Vector2>() == Vector2.up && m_index > 0)
             {
-                m_index--;
+                m_direction = Vector2.up;
+                //m_index--;
             }
 
             //inputs for volume slider
@@ -214,43 +217,50 @@ public class settingsmenuscript : menuscreenscript
                 //    m_volumeSlider.Select();
                 //}
 
-                Debug.Log("index: " + m_index);
         }
 
         if(m_enabled && m_navInputs.WasReleasedThisDynamicUpdate())
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
-            switch (m_index)
-            {
-                case 0:
-                    m_onBackgroundSlider = true;
-                    m_onSoundEffectsSlider = false;
-                    m_onExitButton = false;
-                    m_onCheckBox = false;
-                    m_backgroundMusicSlider.Select();
-                    break;
-                case 1:
-                    m_onBackgroundSlider = false;
-                    m_onSoundEffectsSlider = true;
-                    m_onCheckBox = false;
-                    m_onExitButton = false;
-                    m_soundEffectsSlider.Select();
-                    break;
-                case 2:
-                    m_onBackgroundSlider = false;
-                    m_onSoundEffectsSlider = false;
-                    m_onExitButton = false;
-                    m_onCheckBox = true;
-                    m_checkpointToggle.Select();
-                    break;
-                case 3:
-                    m_onBackgroundSlider = false;
-                    m_onSoundEffectsSlider = false;
-                    m_onExitButton = true;
-                    m_onCheckBox = false;
-                    break;
-            }
+            if (m_direction == Vector2.down)
+                m_index++;
+            else if(m_direction == Vector2.up)
+                m_index--;
+
+                switch (m_index)
+                {
+                    case 0:
+                        m_onBackgroundSlider = true;
+                        m_onSoundEffectsSlider = false;
+                        m_onExitButton = false;
+                        m_onCheckBox = false;
+                        m_backgroundMusicSlider.Select();
+                        break;
+                    case 1:
+                        m_onBackgroundSlider = false;
+                        m_onSoundEffectsSlider = true;
+                        m_onCheckBox = false;
+                        m_onExitButton = false;
+                        m_soundEffectsSlider.Select();
+                        break;
+                    case 2:
+                        m_onBackgroundSlider = false;
+                        m_onSoundEffectsSlider = false;
+                        m_onExitButton = false;
+                        m_onCheckBox = true;
+                        m_checkpointToggle.Select();
+                        break;
+                    case 3:
+                        m_onBackgroundSlider = false;
+                        m_onSoundEffectsSlider = false;
+                        m_onExitButton = true;
+                        m_onCheckBox = false;
+                        break;
+                }
+
+            Debug.Log("index: " + m_index);
+
             //if (m_navInputs.ReadValue<Vector2>() == Vector2.down)
             //{
             //    if (m_onSlider)
@@ -290,7 +300,7 @@ public class settingsmenuscript : menuscreenscript
             //}
         }
 
-        if(m_enabled && m_selectInput.WasReleasedThisDynamicUpdate())
+        if (m_enabled && m_selectInput.WasReleasedThisDynamicUpdate())
         {
             if (m_onExitButton)
             {
