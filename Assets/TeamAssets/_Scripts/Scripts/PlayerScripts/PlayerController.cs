@@ -457,7 +457,8 @@ namespace Group26.Player.Movement
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
             //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
-            AudioManager.instance.PlaySound(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
+            //AudioManager.instance.PlaySoundFromObject(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
+            AudioManager.instance.PlaySoundAtPoint(SoundType.JUMP, transform.position, .3f, .1f, 1, .05f, 0);
         }
 
         private void ResetJump()

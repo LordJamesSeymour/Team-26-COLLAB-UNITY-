@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -54,7 +55,7 @@ public class AudioManager : MonoBehaviour
         audioSource.PlayOneShot(soundList[(int)sound], volume);
     }
 
-    public void PlaySound(SoundType sound, Transform target, float volume, float volumeRange, float pitch, float pitchRange)
+    public void PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = soundList[(int)sound];
@@ -68,12 +69,35 @@ public class AudioManager : MonoBehaviour
             source.volume = Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
             source.pitch = Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
 
+            source.spatialBlend = spatialBlend;
+
             source.Play();
 
             if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
             {
                 target.gameObject.AddComponent<DetachEmitter>();
             }
+
+            StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+        }
+    }
+
+    public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    {
+        AudioSource source = GetAvailableSource();
+        AudioClip clip = soundList[(int)sound];
+        if (source != null)
+        {
+            source.gameObject.SetActive(true);
+            source.transform.position = target;
+            source.clip = clip;
+
+            source.volume = Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+            source.pitch = Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+
+            source.spatialBlend = spatialBlend;
+
+            source.Play();
 
             StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
         }
