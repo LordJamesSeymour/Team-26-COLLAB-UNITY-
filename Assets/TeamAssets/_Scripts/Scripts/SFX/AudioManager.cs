@@ -73,7 +73,7 @@ public class AudioManager : MonoBehaviour
         return null; // all sources busy, probably play as global sound as back up or add a new source to the pool if not too many
     }
 
-    private IEnumerator ReturnToPool(AudioSource source, float delay)
+    private IEnumerator ReturnToPool(AudioSource source, float delay) // need to also return to pool if the objects parent is destroyed as to not also destroy the emitter. (maybe also have a 
     {
         yield return new WaitForSeconds(delay);
         source.Stop();
