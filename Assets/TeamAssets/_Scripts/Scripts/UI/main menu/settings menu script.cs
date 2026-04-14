@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class settingsmenuscript : menuscreenscript
 {
     [SerializeField] Toggle m_checkpointToggle;
+    [SerializeField] Toggle m_fullscreenToggle;
     [SerializeField] Slider m_backgroundMusicSlider;
     [SerializeField] Slider m_soundEffectsSlider;
     //[SerializeField] AudioSource m_backgroundMusic;
@@ -15,7 +16,8 @@ public class settingsmenuscript : menuscreenscript
     private datamanager m_manager;
     private bool m_onBackgroundSlider;
     private bool m_onSoundEffectsSlider;
-    private bool m_onCheckBox;
+    private bool m_onCheckpointBox;
+    private bool m_onFullscreenBox;
     private static bool m_run;
     private int m_index = -1;
     //private Vector2 m_direction;
@@ -52,7 +54,8 @@ public class settingsmenuscript : menuscreenscript
         m_onExitButton = false;
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
-        m_onCheckBox = false;
+        m_onCheckpointBox = false;
+        m_onFullscreenBox = false;
         m_exitButton.image.sprite = m_buttonSprites[0];
         m_enabled = false;
         m_index = -1;
@@ -119,9 +122,10 @@ public class settingsmenuscript : menuscreenscript
     public void OnBackgroundSliderPressed(Slider slider)
     {
         m_onExitButton = false;
-        m_onCheckBox = false;
+        m_onCheckpointBox = false;
         m_onSoundEffectsSlider = false;
         m_onBackgroundSlider = false;
+        m_onFullscreenBox = false;
         m_exitButton.image.sprite = m_buttonSprites[0];
         //Debug.Log("volume slider pressed");
 
@@ -140,20 +144,25 @@ public class settingsmenuscript : menuscreenscript
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
-    public void OnSliderDeselected()
-    {
-        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
-
-    }
-
-    public void OnBoxPressed()
+    public void OnBoxPressed(Toggle box)
     {
         m_onExitButton = false;
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
+        m_onCheckpointBox = false;
+        m_onFullscreenBox = false;
         m_exitButton.image.sprite = m_buttonSprites[0];
         //Debug.Log("checkbox pressed");
-        m_onCheckBox = true;
+        if(box == m_checkpointToggle)
+        {
+            m_onCheckpointBox = true;
+            m_index = 2;
+        }
+        else if(box == m_fullscreenToggle)
+        {
+            m_onFullscreenBox = true;
+            m_index = 3;
+        }
     }
 
     // Update is called once per frame
@@ -163,7 +172,7 @@ public class settingsmenuscript : menuscreenscript
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
-            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 3)
+            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 4)
             {
                 //m_direction = Vector2.down;
                 m_index++;
@@ -197,133 +206,78 @@ public class settingsmenuscript : menuscreenscript
                     m_soundEffectsSlider.value -= 1.0f;
                 }
             }
-                //inputs for checkbox
-                //else if (m_onCheckBox)
-                //{
-                //    //if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
-                //    //{
-
-                //    //}
-                //    //else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
-                //    //{
-
-                //    //    //m_exitButton.image.sprite = m_buttonSprites[1];
-                //    //}
-                //}
-                //exit button inputs
-                //else if (m_onExitButton)
-                //{
-                //    if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
-                //    {
-
-                //    }
-                //}
-                //else
-                //{
-                //    m_onSlider = true;
-                //    //m_index = 0;
-                //    m_onCheckBox = false;
-                //    m_onExitButton = false;
-                //    m_volumeSlider.Select();
-                //}
-
         }
 
         if(m_enabled && m_navInputs.WasReleasedThisDynamicUpdate())
         {
-            //Debug.Log(m_navInputs.ReadValue<Vector2>());
-
-            //if (m_direction == Vector2.down && m_index < 3)
-            //    m_index++;
-            //else if(m_direction == Vector2.up && m_index > 0)
-            //    m_index--;
-
                 switch (m_index)
                 {
                     case 0:
                         m_onBackgroundSlider = true;
                         m_onSoundEffectsSlider = false;
-                        m_onExitButton = false;
-                        m_onCheckBox = false;
+                        //m_onExitButton = false;
+                        //m_onCheckpointBox = false;
+                        //m_onFullscreenBox = false;
                         m_backgroundMusicSlider.image.sprite = m_buttonSprites[3];
                         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                        m_fullscreenToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[0];
                         //m_backgroundMusicSlider.Select();
                         break;
                     case 1:
                         m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = true;
-                        m_onCheckBox = false;
-                        m_onExitButton = false;
+                        m_onCheckpointBox = false;
+                        //m_onFullscreenBox = false;
+                        //m_onExitButton = false;
                         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                         m_soundEffectsSlider.image.sprite = m_buttonSprites[3];
                         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                        m_fullscreenToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[0];
                         //m_soundEffectsSlider.Select();
                         break;
                     case 2:
-                        m_onBackgroundSlider = false;
+                        //m_onBackgroundSlider = false;
                         m_onSoundEffectsSlider = false;
-                        m_onExitButton = false;
-                        m_onCheckBox = true;
+                        //m_onExitButton = false;
+                        m_onCheckpointBox = true;
+                        m_onFullscreenBox = false;
                         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                         m_checkpointToggle.image.sprite = m_buttonSprites[1];
+                        m_fullscreenToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[0];
                         //m_checkpointToggle.Select();
                         break;
                     case 3:
-                        m_onBackgroundSlider = false;
-                        m_onSoundEffectsSlider = false;
-                        m_onExitButton = true;
-                        m_onCheckBox = false;
+                        //m_onBackgroundSlider = false;
+                        //m_onSoundEffectsSlider = false;
+                        m_onExitButton = false;
+                        m_onCheckpointBox = false;
+                        m_onFullscreenBox = true;
                         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                        m_fullscreenToggle.image.sprite= m_buttonSprites[1];
+                        m_exitButton.image.sprite = m_buttonSprites[0];
+                        break;
+                    case 4:
+                        //m_onBackgroundSlider = false;
+                        //m_onSoundEffectsSlider = false;
+                        m_onExitButton = true;
+                        //m_onCheckpointBox = false;
+                        m_onFullscreenBox = false;
+                        //m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+                        //m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+                        //m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                        m_fullscreenToggle.image.sprite = m_buttonSprites[0];
                         m_exitButton.image.sprite = m_buttonSprites[1];
                         break;
                 }
 
             Debug.Log("index: " + m_index);
-
-            //if (m_navInputs.ReadValue<Vector2>() == Vector2.down)
-            //{
-            //    if (m_onSlider)
-            //    {
-            //        m_onSlider = false;
-            //        m_onCheckBox = true;
-            //    }
-            //    else if (m_onCheckBox)
-            //    {
-            //        m_onCheckBox = false;
-            //        m_onExitButton = true;
-            //        m_exitButton.image.sprite = m_buttonSprites[1];
-            //    }
-
-            //    Debug.Log("slider: " + m_onSlider);
-            //    Debug.Log("checkbox: " + m_onCheckBox);
-            //    Debug.Log("exit button: " + m_onExitButton);
-            //}
-            //else if(m_navInputs.ReadValue<Vector2>() == Vector2.up)
-            //{
-            //    if (m_onCheckBox)
-            //    {
-            //        m_onCheckBox = false;
-            //        m_onSlider = true;
-            //    }
-            //    else if (m_onExitButton)
-            //    {
-            //        m_onExitButton = false;
-            //        m_exitButton.image.sprite = m_buttonSprites[0];
-            //        m_onCheckBox = true;
-            //        m_checkpointToggle.Select();
-            //    }
-
-            //    Debug.Log("slider: " + m_onSlider);
-            //    Debug.Log("checkbox: " + m_onCheckBox);
-            //    Debug.Log("exit button: " + m_onExitButton);
-            //}
         }
 
         if (m_enabled && m_selectInput.WasReleasedThisDynamicUpdate())
@@ -332,7 +286,7 @@ public class settingsmenuscript : menuscreenscript
             {
                 RunToggleSettingsOff();
             }
-            else if (m_onCheckBox)
+            else if (m_onCheckpointBox)
             {
                 if (m_changeValue == null)
                     m_changeValue = StartCoroutine(ChangeCheckboxValue());
@@ -341,7 +295,6 @@ public class settingsmenuscript : menuscreenscript
                 StopCoroutine(ChangeCheckboxValue());
             }
         }
-
         //Debug.Log(m_onExitButton);
     }
 }
