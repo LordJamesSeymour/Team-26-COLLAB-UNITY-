@@ -12,7 +12,8 @@ public class settingsmenuscript : menuscreenscript
 
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
-    private Coroutine m_changeValue;
+    private Coroutine m_changeCheckpointValue;
+    private Coroutine m_changeFullscreenValue;
     private datamanager m_manager;
     private bool m_onBackgroundSlider;
     private bool m_onSoundEffectsSlider;
@@ -88,9 +89,9 @@ public class settingsmenuscript : menuscreenscript
         //Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
     }
 
-    public IEnumerator ChangeCheckboxValue()
+    public IEnumerator ChangeCheckboxValue(Toggle box)
     {
-        m_checkpointToggle.isOn = !m_checkpointToggle.isOn;
+        box.isOn = !box.isOn;
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -119,7 +120,7 @@ public class settingsmenuscript : menuscreenscript
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
     }
 
-    public void OnBackgroundSliderPressed(Slider slider)
+    public void OnSliderPressed(Slider slider)
     {
         m_onExitButton = false;
         m_onCheckpointBox = false;
@@ -156,13 +157,18 @@ public class settingsmenuscript : menuscreenscript
         if(box == m_checkpointToggle)
         {
             m_onCheckpointBox = true;
+            m_checkpointToggle.image.sprite = m_buttonSprites[1];
             m_index = 2;
         }
         else if(box == m_fullscreenToggle)
         {
             m_onFullscreenBox = true;
+            m_fullscreenToggle.image.sprite = m_buttonSprites[1];
             m_index = 3;
         }
+
+        Debug.Log("index: " + m_index);
+        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
     // Update is called once per frame
@@ -188,10 +194,12 @@ public class settingsmenuscript : menuscreenscript
             {
                 if(m_navInputs.ReadValue<Vector2>() == Vector2.right && m_backgroundMusicSlider.value < m_backgroundMusicSlider.maxValue)
                 {
+                    m_backgroundMusicSlider.Select();
                     m_backgroundMusicSlider.value += 1.0f;
                 }
                 else if(m_navInputs.ReadValue<Vector2>() == Vector2.left && m_backgroundMusicSlider.value > m_backgroundMusicSlider.minValue)
                 {
+                    m_backgroundMusicSlider.Select();
                     m_backgroundMusicSlider.value -= 1.0f;
                 }
             }
@@ -199,10 +207,12 @@ public class settingsmenuscript : menuscreenscript
             {
                 if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_soundEffectsSlider.value < m_soundEffectsSlider.maxValue)
                 {
+                    m_soundEffectsSlider.Select();
                     m_soundEffectsSlider.value += 1.0f;
                 }
                 else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_soundEffectsSlider.value > m_soundEffectsSlider.minValue)
                 {
+                    m_soundEffectsSlider.Select();
                     m_soundEffectsSlider.value -= 1.0f;
                 }
             }
@@ -210,7 +220,8 @@ public class settingsmenuscript : menuscreenscript
 
         if(m_enabled && m_navInputs.WasReleasedThisDynamicUpdate())
         {
-                switch (m_index)
+            m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+            switch (m_index)
                 {
                     case 0:
                         m_onBackgroundSlider = true;
@@ -288,11 +299,19 @@ public class settingsmenuscript : menuscreenscript
             }
             else if (m_onCheckpointBox)
             {
-                if (m_changeValue == null)
-                    m_changeValue = StartCoroutine(ChangeCheckboxValue());
+                if (m_changeCheckpointValue == null)
+                    m_changeCheckpointValue = StartCoroutine(ChangeCheckboxValue(m_checkpointToggle));
 
-                m_changeValue = null;
-                StopCoroutine(ChangeCheckboxValue());
+                m_changeCheckpointValue = null;
+                StopCoroutine(ChangeCheckboxValue(m_checkpointToggle));
+            }
+            else if (m_onFullscreenBox)
+            {
+                if (m_changeFullscreenValue == null)
+                    m_changeFullscreenValue = StartCoroutine(ChangeCheckboxValue(m_fullscreenToggle));
+
+                m_changeFullscreenValue = null;
+                StopCoroutine(ChangeCheckboxValue(m_fullscreenToggle));
             }
         }
         //Debug.Log(m_onExitButton);
