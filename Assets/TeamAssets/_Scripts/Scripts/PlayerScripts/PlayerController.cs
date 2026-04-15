@@ -3,6 +3,7 @@ using System.Collections;
 using Group26.Player.Inputs;
 using Unity.Mathematics;
 using UnityEngine.Splines;
+using System;
 
 namespace Group26.Player.Movement
 {
@@ -60,6 +61,9 @@ namespace Group26.Player.Movement
 
         [Header("Straight Grapple")]
         [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
+
+        // Trick System Event
+        public event Action TrickSystemEvent;
 
         public MovementState state;
         public enum MovementState
@@ -312,6 +316,8 @@ namespace Group26.Player.Movement
 
             lastDesiredMoveSpeed = desiredMoveSpeed;
             lastState = state;
+
+            TrickSystemEvent?.Invoke();
         }
 
         private IEnumerator SmoothlyLerpMoveSpeed()
@@ -691,7 +697,7 @@ namespace Group26.Player.Movement
             {
                 currentRailSpeed -= currentRail.PassiveDeceleration * deltaTime;
             }
-
+            
             currentRailSpeed = Mathf.Clamp(currentRailSpeed, currentRail.MinSpeed, currentRail.MaxSpeed);
 
             Spline spline = currentRail.SplineContainer.Spline;
