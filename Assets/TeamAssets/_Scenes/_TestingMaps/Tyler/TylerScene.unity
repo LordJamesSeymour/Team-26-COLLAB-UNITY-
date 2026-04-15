@@ -302,7 +302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalScale.z
-      value: 322.03314
+      value: 1339.0736
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.x
@@ -310,7 +310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.6489186
+      value: 13.49
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.z
@@ -342,6 +342,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
@@ -2351,6 +2355,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4926022574866802862, guid: 040096cc27ca7844baa972ee8d78ab33, type: 3}
+      propertyPath: m_maincam
+      value: 
+      objectReference: {fileID: 1226302156}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3520,6 +3528,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd2522e794ecb54428e6c195fab6769d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_bLimitForce: 1
+  m_maxUpwardsForce: 25
+  m_bLogUpwardsSpeed: 0
 --- !u!1 &1470997540
 GameObject:
   m_ObjectHideFlags: 0
@@ -4313,7 +4324,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.025, y: 0.025, z: 0.025}
+  m_Size: {x: 0.02, y: 0.02, z: 0.02}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1599816335
 MonoBehaviour:
@@ -4327,9 +4338,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0793c0cd536d08a4ba17bd7aff4d946e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forcedelay: 0.25
-  m_forceamount: 10
-  m_logforce: 1
+  m_forceDelay: 0.1
+  m_forcAamount: 10
+  m_bLogForce: 0
 --- !u!1001 &1640087255
 PrefabInstance:
   m_ObjectHideFlags: 0

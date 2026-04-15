@@ -4,50 +4,60 @@ using UnityEngine;
 public class FanScript : MonoBehaviour
 {
     [Header("Fan parameters")]
-    [SerializeField] private float m_forcedelay = 0.25f;
-    [SerializeField] private float m_forceamount = 10f;
+    [SerializeField] private float m_forceDelay = 0.1f;
+    /// <summary>
+    /// The ammount of upwards force added, this does not need to be a Vector3 as the y is the only axis considered here
+    /// </summary>
+    [SerializeField] private float m_forcAamount = 10f;
+    private Vector3 m_forceToAdd = Vector3.zero;
 
     [Header("Debug")]
-    [SerializeField] private bool m_logforce = false;
+    /// <summary>
+    /// Debug variable that toggles printing the force added when the fan adds force
+    /// </summary>
+    [SerializeField] private bool m_bLogForce = false;
 
-    private FanForceHandler m_fanforcehandler;
+    private FanForceHandler m_fanForceHandler;
 
-    private void Awake()
+    private void Start()
     {
-        
+        //calculates the force to add. This is done on start as m_forceammount will not change as runtime
+        m_forceToAdd = Vector3.up * m_forcAamount;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        m_fanforcehandler = other.gameObject.transform.root.GetComponent<FanForceHandler>();
-        if(m_fanforcehandler != null)
+        //gets the FanForceHandler script from the root of the collided gameobject, and begins adding force if it exists
+        m_fanForceHandler = other.gameObject.transform.root.GetComponent<FanForceHandler>();
+        if (m_fanForceHandler != null)
         {
-            StartCoroutine(ApplyForce());
+           StartCoroutine(ApplyForce());
         }
         
     }
 
     private void OnTriggerExit(Collider other)
-    {
+    { 
+        //Stops the fan from adding force
+        //This may need to be improved to check for multiple targets, but I believe the player will be the only object affected by the fan
         StopAllCoroutines();
     }
 
     private IEnumerator ApplyForce()
     {
+        //loops infinitely until stopped through StopAllCoroutines
         while (true)
         {
-            Vector3 force = Vector3.up * m_forceamount;
-
-            if (m_logforce)
+            if (m_bLogForce)
             {
-                Debug.Log("Applying force of " + force);
+                Debug.Log("Applying force of " + m_forceToAdd);
             }
 
-            if (m_fanforcehandler != null)
+            if (m_fanForceHandler != null)
             {
-                m_fanforcehandler.HandleFanForce(force);
+                m_fanForceHandler.HandleFanForce(m_forceToAdd);
             }
-            yield return new WaitForSeconds(m_forcedelay);
+            yield return new WaitForSeconds(m_forceDelay);
         }
     }
 }
