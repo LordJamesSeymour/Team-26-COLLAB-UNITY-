@@ -526,7 +526,7 @@ namespace Group26.Player.Movement
             maxYSpeed = 0f;
         }
 
-        private void ReleaseGrappleMovement()
+        public void ReleaseGrappleMovement()
         {
             enableMovementOnNextTouch = false;
             ResetRestrictions();

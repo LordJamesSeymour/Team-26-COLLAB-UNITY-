@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FanScript : MonoBehaviour
@@ -6,9 +7,9 @@ public class FanScript : MonoBehaviour
     [Header("Fan parameters")]
     [SerializeField] private float m_forceDelay = 0.1f;
     /// <summary>
-    /// The ammount of upwards force added, this does not need to be a Vector3 as the y is the only axis considered here
+    /// The ammount of upwards force added, this does not need to be a Vector3 as only one axis is considered here
     /// </summary>
-    [SerializeField] private float m_forcAamount = 10f;
+    [SerializeField] private float m_forceAmmount = 10f;
     private Vector3 m_forceToAdd = Vector3.zero;
 
     [Header("Debug")]
@@ -21,10 +22,9 @@ public class FanScript : MonoBehaviour
 
     private void Start()
     {
-        //calculates the force to add. This is done on start as m_forceammount will not change as runtime
-        m_forceToAdd = Vector3.up * m_forcAamount;
+        //calculates the force to add. This is done on start as m_forceammount will not change as runtime. This may change however if we want rotating fans
+        m_forceToAdd = transform.up * m_forceAmmount;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         //gets the FanForceHandler script from the root of the collided gameobject, and begins adding force if it exists

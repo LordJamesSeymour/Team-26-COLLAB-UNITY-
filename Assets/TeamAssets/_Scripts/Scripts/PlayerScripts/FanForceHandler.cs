@@ -37,7 +37,7 @@ public class FanForceHandler : MonoBehaviour
         {
             if (m_bLogUpwardsSpeed)
             {
-                Debug.Log(this.name + " is moving at upwards speed of: " + m_rb.linearVelocity.y + ". The max velocity is: " + m_maxUpwardsForce);
+                Debug.Log(this.name + " is moving at a speed of: " + m_rb.linearVelocity.magnitude + ". The max speed is: " + m_maxUpwardsForce);
             }
 
             //if the force is not being limited, the force is added and the function returns / exits early
@@ -48,7 +48,7 @@ public class FanForceHandler : MonoBehaviour
             }
 
             //if the force is being limited, the force is only added if the linear velocity is less than the max force
-            if(m_rb.linearVelocity.y < m_maxUpwardsForce)
+            if(m_rb.linearVelocity.magnitude < m_maxUpwardsForce)
             {
                 m_rb.AddForce(forcetoapply, ForceMode.Impulse);
             }
