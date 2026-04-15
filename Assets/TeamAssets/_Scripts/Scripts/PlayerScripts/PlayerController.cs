@@ -1,8 +1,10 @@
-using UnityEngine;
-using System.Collections;
 using Group26.Player.Inputs;
+using System.Collections;
 using Unity.Mathematics;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Splines;
+using static AudioManager;
 
 namespace Group26.Player.Movement
 {
@@ -60,6 +62,8 @@ namespace Group26.Player.Movement
 
         [Header("Straight Grapple")]
         [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
+
+        private Coroutine m_stepSound;
 
         public MovementState state;
         public enum MovementState
@@ -383,14 +387,36 @@ namespace Group26.Player.Movement
 
                 return;
             }
-
+            Debug.Log(state);
             if (m_bIsGrounded)
+            {
                 rb.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
+                //Debug.Log(m_stepSound);
+                if (moveDir != Vector3.zero && m_stepSound == null)
+                    m_stepSound = StartCoroutine(playStep());
+                if (moveDir != Vector3.zero && lastState == MovementState.sprinting && state == MovementState.walking)
+                {
+                    m_stepSound = null;
+                    m_stepSound = StartCoroutine(playStep());
+                }
+            }
             else
                 rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
             if (!m_bIsWallRunning)
                 rb.useGravity = !OnSlope();
+            else if(m_stepSound == null)
+                m_stepSound = StartCoroutine(playStep());
+        }
+
+        IEnumerator playStep()
+        {
+            AudioManager.instance.PlaySoundFromObject(SoundType.WALKING, transform, .5f, .05f, 1, .15f, 1);
+            if (state == MovementState.walking)
+                yield return new WaitForSeconds(.35f);
+            else if (state == MovementState.sprinting || state == MovementState.wallRunning)
+                yield return new WaitForSeconds(.2f);
+            m_stepSound = null;
         }
 
         private void SpeedControl(bool onSlope)
@@ -454,6 +480,10 @@ namespace Group26.Player.Movement
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
+            //AudioManager.instance.PlaySoundFromObject(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
+            AudioManager.instance.PlaySoundAtPoint(SoundType.JUMP, transform.position, .3f, .1f, 1, .05f, 0);
         }
 
         private void ResetJump()
