@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,8 @@ public class settingsmenuscript : menuscreenscript
     [SerializeField] Toggle m_fullscreenToggle;
     [SerializeField] Slider m_backgroundMusicSlider;
     [SerializeField] Slider m_soundEffectsSlider;
+    [SerializeField] TMP_InputField m_widthInput;
+    [SerializeField] TMP_InputField m_heightInput;
     [SerializeField] GameObject m_scrollArea;
     //[SerializeField] AudioSource m_backgroundMusic;
 
@@ -21,6 +24,8 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onSoundEffectsSlider;
     private bool m_onCheckpointBox;
     private bool m_onFullscreenBox;
+    private bool m_onResizeInputs;
+    private bool m_onHeight;
     private static bool m_run;
     private int m_index = -1;
     //private Vector2 m_direction;
@@ -63,6 +68,8 @@ public class settingsmenuscript : menuscreenscript
         m_onSoundEffectsSlider = false;
         m_onCheckpointBox = false;
         m_onFullscreenBox = false;
+        m_onResizeInputs = false;
+        m_onHeight = false;
         m_exitButton.image.sprite = m_buttonSprites[0];
         m_enabled = false;
         m_index = -1;
@@ -140,10 +147,14 @@ public class settingsmenuscript : menuscreenscript
         m_onSoundEffectsSlider = false;
         m_onBackgroundSlider = false;
         m_onFullscreenBox = false;
+        m_onResizeInputs = false;
+        m_onHeight = false;
         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
         m_checkpointToggle.image.sprite = m_buttonSprites[0];
         m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+        m_widthInput.image.sprite = m_buttonSprites[0];
+        m_heightInput.image.sprite = m_buttonSprites[0];
         m_exitButton.image.sprite = m_buttonSprites[0];
 
         if (slider == m_backgroundMusicSlider)
@@ -172,10 +183,14 @@ public class settingsmenuscript : menuscreenscript
         m_onSoundEffectsSlider = false;
         m_onCheckpointBox = false;
         m_onFullscreenBox = false;
+        m_onResizeInputs = false;
+        m_onHeight = false;
         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
         m_checkpointToggle.image.sprite = m_buttonSprites[0];
         m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+        m_widthInput.image.sprite = m_buttonSprites[0];
+        m_heightInput.image.sprite = m_buttonSprites[0];
         m_exitButton.image.sprite = m_buttonSprites[0];
 
         if(box == m_checkpointToggle)
@@ -197,6 +212,39 @@ public class settingsmenuscript : menuscreenscript
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
+    public void OnInputPressed(TMP_InputField input)
+    {
+        m_onExitButton = false;
+        m_onBackgroundSlider = false;
+        m_onSoundEffectsSlider = false;
+        m_onCheckpointBox = false;
+        m_onFullscreenBox = false;
+        m_onResizeInputs = false;
+        m_onHeight = false;
+        m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+        m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+        m_checkpointToggle.image.sprite = m_buttonSprites[0];
+        m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+        m_exitButton.image.sprite = m_buttonSprites[0];
+
+        if(input == m_widthInput)
+        {
+            m_widthInput.image.sprite = m_buttonSprites[1];
+            m_heightInput.image.sprite = m_buttonSprites[0];
+        }
+        else if(input == m_heightInput)
+        {
+            m_widthInput.image.sprite = m_buttonSprites[0];
+            m_heightInput.image.sprite = m_buttonSprites[1];
+            m_onHeight = true;
+        }
+
+        m_index = 4;
+
+        Debug.Log("index: " + m_index);
+        m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -204,7 +252,7 @@ public class settingsmenuscript : menuscreenscript
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
-            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 4)
+            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 5)
             {
                 //m_direction = Vector2.down;
                 m_index++;
@@ -240,6 +288,21 @@ public class settingsmenuscript : menuscreenscript
                 {
                     m_soundEffectsSlider.Select();
                     m_soundEffectsSlider.value -= 1.0f;
+                }
+            }
+            else if (m_onResizeInputs)
+            {
+                if (m_navInputs.ReadValue<Vector2>() == Vector2.right)
+                {
+                    m_heightInput.image.sprite = m_buttonSprites[1];
+                    m_widthInput.image.sprite = m_buttonSprites[0];
+                    m_onHeight = true;
+                }
+                else if (m_navInputs.ReadValue<Vector2>() == Vector2.left)
+                {
+                    m_heightInput.image.sprite = m_buttonSprites[0];
+                    m_widthInput.image.sprite = m_buttonSprites[1];
+                    m_onHeight = false;
                 }
             }
         }
@@ -292,27 +355,47 @@ public class settingsmenuscript : menuscreenscript
                 case 3:
                     //m_onBackgroundSlider = false;
                     //m_onSoundEffectsSlider = false;
-                    m_onExitButton = false;
+                    //m_onExitButton = false;
                     m_onCheckpointBox = false;
                     m_onFullscreenBox = true;
+                    m_onResizeInputs = false;
+                    m_onHeight = false;
+                    //m
                     //m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                     //m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                     m_checkpointToggle.image.sprite = m_buttonSprites[0];
                     m_fullscreenToggle.image.sprite= m_buttonSprites[1];
+                    m_widthInput.image.sprite = m_buttonSprites[0];
+                    m_heightInput.image.sprite = m_buttonSprites[0];
                     m_exitButton.image.sprite = m_buttonSprites[0];
                     m_scrollRect.verticalNormalizedPosition = 0.0f;
                     //Debug.Log(m_scrollRect.verticalNormalizedPosition);
                     break;
                 case 4:
+                    m_onFullscreenBox = false;
+                    m_onResizeInputs = true;
+                    m_onExitButton = false;
+                    m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+                    m_exitButton.image.sprite = m_buttonSprites[0];
+                    if(m_onHeight)
+                        m_heightInput.image.sprite = m_buttonSprites[1];
+                    else
+                        m_widthInput.image.sprite = m_buttonSprites[1];
+                    break;
+                case 5:
                     //m_onBackgroundSlider = false;
                     //m_onSoundEffectsSlider = false;
                     m_onExitButton = true;
+                    m_onResizeInputs = false;
+                    m_onHeight = false;
                     //m_onCheckpointBox = false;
-                    m_onFullscreenBox = false;
+                    //m_onFullscreenBox = false;
                     //m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                     //m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                     //m_checkpointToggle.image.sprite = m_buttonSprites[0];
-                    m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+                    //m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+                    m_widthInput.image.sprite = m_buttonSprites[0];
+                    m_heightInput.image.sprite = m_buttonSprites[0];
                     m_exitButton.image.sprite = m_buttonSprites[1];
                     break;
             }
