@@ -56,11 +56,11 @@ public class levelselectionmenuscript : menuscreenscript
         {
             Debug.LogError("no rect transform attached");
         }
-        else
-        {
-            m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
-            m_iconTransform.position += new Vector3(0, 60f, 0);
-        }
+        //else
+        //{
+        //    m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
+        //    m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
+        //}
 
         m_scrollRect = m_scrollObject.GetComponent<ScrollRect>();
         if (!m_scrollRect)
@@ -107,7 +107,7 @@ public class levelselectionmenuscript : menuscreenscript
         m_manager.SetLevelNum(m_index, m_index + 1);
         m_manager.SaveGameData();
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
-        m_iconTransform.position += new Vector3(0, 60f, 0);
+        m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
         m_enabled = false;
 
         m_scrollRect.horizontalNormalizedPosition = 0f;
@@ -153,25 +153,30 @@ public class levelselectionmenuscript : menuscreenscript
         m_manager.SaveGameData();
         m_onExitButton = false;
         m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
-        m_iconTransform.position += new Vector3(0, 60f, 0);
+        m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
     }
 
     bool CheckIfOnScreen(Button button)
     {
         //Vector3 buttonScreenPos = Camera.main.WorldToScreenPoint(button.transform.position);
-        //CanvasRenderer levelPanelRenderer = m_buttonScript.m_levelsPanel.GetComponent<CanvasRenderer>();
+        //Vector3 panelScreenPos = Camera.main.WorldToScreenPoint(m_buttonScript.m_levelsPanel.transform.position);
+        ////CanvasRenderer levelPanelRenderer = m_buttonScript.m_levelsPanel.GetComponent<CanvasRenderer>();
         RectTransform levelsPanelRectTransform = m_buttonScript.m_levelsPanel.GetComponent<RectTransform>();
+        float halfWidth = ((levelsPanelRectTransform.rect.width / m_buttonScript.m_levelsPanel.GetComponentInParent<Canvas>().pixelRect.width) / 2) * Screen.width;
+        float halfHeight = ((levelsPanelRectTransform.rect.height / m_buttonScript.m_levelsPanel.GetComponentInParent<Canvas>().pixelRect.height) / 2) * Screen.height;
         if (levelsPanelRectTransform != null)
         {
             //Debug.Log("rect transform attached");
             //Debug.Log("width: " + levelsPanelRectTransform.rect.width);
             //Debug.Log("height: " + levelsPanelRectTransform.rect.height);
-            float distX = Vector3.Distance(new Vector3(levelsPanelRectTransform.rect.width / 2, 0f, 0f), new Vector3(button.transform.position.x, 0f, 0f));
-            float distY = Vector3.Distance(new Vector3(0f, levelsPanelRectTransform.rect.height / 2, 0f), new Vector3(0f, button.transform.position.y, 0f));
+            float distX = Vector3.Distance(new Vector3(m_buttonScript.m_levelsPanel.transform.position.x, 0f, 0f), new Vector3(button.transform.position.x, 0f, 0f));
+            float distY = Vector3.Distance(new Vector3(0f, m_buttonScript.m_levelsPanel.transform.position.y, 0f), new Vector3(0f, button.transform.position.y, 0f));
             //Debug.Log("x distance: " + distX);
+            //Debug.Log("half width: " + halfWidth);
             //Debug.Log("y distance: " + distY);
+            //Debug.Log("half height: " + halfHeight);
 
-            if (distX > levelsPanelRectTransform.rect.width / 2 || distY > levelsPanelRectTransform.rect.height / 2)
+            if (distX > halfWidth || distY > halfHeight)
             {
                 //Debug.Log("invisible");
                 return false;
@@ -275,7 +280,7 @@ public class levelselectionmenuscript : menuscreenscript
                 m_manager.SetLevelNum(m_index, m_index + 1);
                 m_manager.SaveGameData();
                 m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
-                m_iconTransform.position += new Vector3(0, 60f, 0);
+                m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
             }
         }
 
@@ -291,12 +296,12 @@ public class levelselectionmenuscript : menuscreenscript
             }
         }
 
-        if (m_enabled)
-        {
-            m_manager.LoadGameData();
-            //Debug.Log("JSON file level num: " + m_manager.GetGameData().levels[m_index].levelNum);
-            //Debug.Log("index: " + m_index);
-            //Debug.Log("completed: " + m_manager.GetGameData().levels[m_index].completed);
-        }
+        //if (m_enabled)
+        //{
+        //    m_manager.LoadGameData();
+        //    //Debug.Log("JSON file level num: " + m_manager.GetGameData().levels[m_index].levelNum);
+        //    //Debug.Log("index: " + m_index);
+        //    //Debug.Log("completed: " + m_manager.GetGameData().levels[m_index].completed);
+        //}
     }
 }
