@@ -2,6 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class settingsmenuscript : menuscreenscript
 {
@@ -244,6 +245,28 @@ public class settingsmenuscript : menuscreenscript
         Debug.Log("index: " + m_index);
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
+
+    private bool CheckIfNum(string text)
+    {
+        for(int i = 0; i < text.Length; i++)
+        {
+            if (Char.IsNumber(text[i]) == false)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void OnInputEntered(TMP_InputField input)
+    {
+        if (CheckIfNum(input.text) == false)
+        {
+            input.text = "";
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
