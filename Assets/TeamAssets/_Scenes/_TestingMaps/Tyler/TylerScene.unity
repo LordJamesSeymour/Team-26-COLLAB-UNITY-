@@ -3589,7 +3589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bLimitForce: 1
-  m_maxUpwardsForce: 25
+  m_maxUpwardsForce: 50
   m_bLogUpwardsSpeed: 1
 --- !u!1 &1470997540
 GameObject:
