@@ -17,10 +17,13 @@ namespace Group26.Player.Movement
 
         [Header("UI")]
         [SerializeField] public GameObject UI_Refrence;
+        [SerializeField] public float DecaySliderSmoothness = 100;
+        [SerializeField] public float ConstnatDecaySliderSmoothness = 100;
         private Canvas UI_Canvas;
         private TMP_Text[] UI_Texts;
         private int UI_Text_Order = 1;
         private Slider DecayMeterSlider;
+        private float CurrentVelocitySlider = 0;
         //fix later vvv
         //private int UI_TextComboInt = 1;
 
@@ -28,6 +31,15 @@ namespace Group26.Player.Movement
         [SerializeField] public int TotalScore;
         [SerializeField] public float DefaultPointMultiplier = 1;
         [SerializeField] public float ComboDecay = 0.5f;
+        [SerializeField] public float ConstantPointsDecay = 0.001f;
+
+        public bool ComboDecayBool= false;
+
+        [Header("Points for trick")]
+        [SerializeField] private int PointsForDash = 5;
+        [SerializeField] private int PointsForWallRun = 10;
+        [SerializeField] private int PointsForGrapple = 5;
+        [SerializeField] private int PointsForSlide = 10;
 
         [Header("Timers")]
         [SerializeField] public float MaxTimer = 0;
@@ -41,17 +53,16 @@ namespace Group26.Player.Movement
 
         [Header("Debug")]
         [SerializeField] private int m_maxWhileIters = 1000;
+        //[SerializeField] private int DebugScore = 0;
 
         private void Awake()
         {
             if (UI_Canvas == null)
             {
                 UI_Canvas = UI_Refrence.GetComponent<Canvas>();
-                //Debug.Log("MISSING TRICK SYSTEM UI");
             }
             UI_Texts = UI_Canvas.gameObject.GetComponentsInChildren<TMP_Text>();
             DecayMeterSlider = UI_Canvas.GetComponentInChildren<Slider>();
-
 
             for (int i = 1; i < UI_Texts.Length; i++)
             {
@@ -60,7 +71,6 @@ namespace Group26.Player.Movement
 
             if (InputManager == null)
             {
-
                 InputManager = GetComponent<InputManager>();
             }
 
@@ -75,21 +85,17 @@ namespace Group26.Player.Movement
 
         private void OnEnable()
         {
-            //print("2");
-            InputManager.OnTrickPressed += DoATrick;
+            //InputManager.OnTrickPressed += DoATrick;
         }
 
         private void OnDisable()
         {
-            //print("-2");
-            InputManager.OnTrickPressed -= DoATrick;
+            //InputManager.OnTrickPressed -= DoATrick;
         }
 
-        public void DoATrick() //Currently bunch of debugs
+        public void DoATrick() 
         {
-
             print(TotalScore);
-
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -100,63 +106,23 @@ namespace Group26.Player.Movement
 
         private void FixedUpdate()
         {
-            /*
-            Buffer += 1;
 
-            //makes sure that you don't get 12x amount of point a second (if there is a better way to make this please tell me)
-            if (Buffer == 12)
+            if (ComboDecayBool == false)
             {
+                float ConstantDecay = DecayMeterSlider.value - ConstantPointsDecay;
+                //float ScoreMultDecay = Mathf.SmoothDamp(DecayMeterSlider.value, ConstantDecay, ref CurrentVelocitySlider, ConstnatDecaySliderSmoothness * Time.deltaTime);
 
-                if (playerController.state == PlayerController.MovementState.dashing)
-                {
-                    Debug.Log("Dash");
-
-                    PointsCalculation(5, DefaultPointMultiplier);
-                    DecayCalculation(PlayerController.MovementState.dashing.ToString());
-                    UITextOrder("Dash");
-                }
-
-                if (playerController.state == PlayerController.MovementState.wallRunning)
-                {
-                    Debug.Log("Wall Running");
-                    if (WallRunningPointsEnabled)
-                    {
-                        WallRunningPointsEnabled = false;
-                        DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
-                        PointsCalculation(7, DefaultPointMultiplier);
-                        UITextOrder("Wall Run");
-                    }
-                    
-                }
-
-                if (playerController.state == PlayerController.MovementState.swinging)
-                {
-                    Debug.Log("Swinging");
-                    if (SwingingPointsEnabled)
-                    {
-                        SwingingPointsEnabled = false;
-                        PointsCalculation(7, DefaultPointMultiplier);
-                        DecayCalculation(PlayerController.MovementState.swinging.ToString());
-                        UITextOrder("Grapple");
-                    }
-                }
-
-                if (playerController.state == PlayerController.MovementState.sliding)
-                {
-                    Debug.Log("Sliding");
-                    PointsCalculation(5, DefaultPointMultiplier);
-                    DecayCalculation(PlayerController.MovementState.sliding.ToString());
-                    UITextOrder("Slide");
-                }
-
+                DecayMeterSlider.value = ConstantDecay;
+            }
+            else
+            {
                 
-            }
-            else if (Buffer > 12)
-            {
-                Buffer = 0;
+
+                float SmoothScore = Mathf.SmoothDamp(DecayMeterSlider.value, DefaultPointMultiplier, ref CurrentVelocitySlider, DecaySliderSmoothness * Time.deltaTime);
+                DecayMeterSlider.value = SmoothScore;
+                ComboDecayBool = false;
             }
 
-            */
         }
 
         public void PointsCalculation(int Points, float Decay)
@@ -180,8 +146,7 @@ namespace Group26.Player.Movement
                 DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 3);
 
                 UI_Texts[6].text = "Mult: x" + DefaultPointMultiplier;
-                DecayVisualValueTransition(DecayMeterSlider.value, DefaultPointMultiplier, false);
-
+    
             }
 
             if (State != LastState)
@@ -190,43 +155,13 @@ namespace Group26.Player.Movement
                 DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 3);
 
                 UI_Texts[6].text = "Mult: x" + DefaultPointMultiplier;
-                DecayVisualValueTransition(DecayMeterSlider.value, DefaultPointMultiplier, true);
+
             }
 
             LastState = State;
         }
 
-        private void DecayVisualValueTransition(float CurrentValue, float DesiredValue, bool AddValue)
-         {
-            Debug.Log("Current Value: " + CurrentValue);
-            Debug.Log("Desired Value: " + DesiredValue);
-            Debug.Log("Bool: " + AddValue);
-
-            //CRASHES UNITY DO NOT APROACH
-            //fix this later the code belowe seems to be cousing the crash
-
-            /*
-            while (CurrentValue <= DesiredValue)
-            {
-                
-                if (AddValue)
-                {
-                    Debug.Log("Addition");
-                    CurrentValue += 0.1f;
-                }
-                else
-                {
-                    Debug.Log("Subtraction");
-                    CurrentValue -= 0.1f;
-                }
-
-                DecayMeterSlider.value = CurrentValue;
-
-
-            }
-          */
-        }
-
+        
         public void UITextOrder(string Name)
         {
             UI_Texts[5].text = "Score: " + TotalScore.ToString();
@@ -252,33 +187,26 @@ namespace Group26.Player.Movement
 
                 }
             }
-
-
-
         }
 
         // Update is called once per frame
         void Update()
         {
+
+            
+
             if (CurrentTimer < MaxTimer)
             {
-                //print("false");
                 CurrentTimer += Time.deltaTime;
-
-
             }
 
             if (CurrentTimer >= MaxTimer)
             {
-                //print("true");
                 WallRunningPointsEnabled = true;
                 SwingingPointsEnabled = true;
                 CurrentTimer = 0;
 
             }
-
-
-
 
         }
 
@@ -294,7 +222,7 @@ namespace Group26.Player.Movement
                 {
                    // Debug.Log("Dash");
 
-                    PointsCalculation(5, DefaultPointMultiplier);
+                    PointsCalculation(PointsForDash, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.dashing.ToString());
                     UITextOrder("Dash");
                 }
@@ -306,7 +234,7 @@ namespace Group26.Player.Movement
                     {
                         WallRunningPointsEnabled = false;
                         DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
-                        PointsCalculation(7, DefaultPointMultiplier);
+                        PointsCalculation(PointsForWallRun, DefaultPointMultiplier);
                         UITextOrder("Wall Run");
                     }
 
@@ -318,7 +246,7 @@ namespace Group26.Player.Movement
                     if (SwingingPointsEnabled)
                     {
                         SwingingPointsEnabled = false;
-                        PointsCalculation(7, DefaultPointMultiplier);
+                        PointsCalculation(PointsForGrapple, DefaultPointMultiplier);
                         DecayCalculation(PlayerController.MovementState.swinging.ToString());
                         UITextOrder("Grapple");
                     }
@@ -327,12 +255,12 @@ namespace Group26.Player.Movement
                 if (playerController.state == PlayerController.MovementState.sliding)
                 {
                     //Debug.Log("Sliding");
-                    PointsCalculation(5, DefaultPointMultiplier);
+                    PointsCalculation(PointsForSlide, DefaultPointMultiplier);
                     DecayCalculation(PlayerController.MovementState.sliding.ToString());
                     UITextOrder("Slide");
                 }
 
-
+                ComboDecayBool = true;
             }
             else if (Buffer > 12)
             {
