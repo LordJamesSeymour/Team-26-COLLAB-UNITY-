@@ -14,7 +14,8 @@ Shader "UI/SpeedLinesFullscreen"
         _Jitter("Jitter", Range(0,5)) = 0.06
         _Tint("Tint", Color) = (1,1,1,1)
 
-        _FlowSpeed("Flow Speed", Range(0,10)) = 6.0
+        _FlowPhase("Flow Phase", Float) = 0
+
         _MinTrailLength("Min Trail Length", Range(0.02,1.0)) = 0.18
         _MaxTrailLength("Max Trail Length", Range(0.02,1.0)) = 0.58
         _TrailFeather("Trail Feather", Range(0.001,0.2)) = 0.02
@@ -64,7 +65,8 @@ Shader "UI/SpeedLinesFullscreen"
             float _Jitter;
             float4 _Tint;
 
-            float _FlowSpeed;
+            float _FlowPhase;
+
             float _MinTrailLength;
             float _MaxTrailLength;
             float _TrailFeather;
@@ -110,15 +112,16 @@ Shader "UI/SpeedLinesFullscreen"
                 return abs(frac(a - b + 0.5) - 0.5);
             }
 
-            float EvaluateStreak(float angle01, float distNorm, float slotIndex, float slotCount, float t)
+            float EvaluateStreak(float angle01, float distNorm, float slotIndex, float slotCount)
             {
                 float densityFactor = lerp(0.2, 1.0, _SpeedAmount);
                 float activeThreshold = lerp(0.997, 0.22, densityFactor);
 
                 float slotSeed = slotIndex + 17.0;
-                float localRate = _FlowSpeed * (0.8 + hash11(slotSeed + 5.3) * 1.9);
+                float localRate = 0.8 + hash11(slotSeed + 5.3) * 1.9;
 
-                float cycleValue = t * localRate + hash11(slotSeed) * 9.37;
+                // Uses a phase that only ever moves forward.
+                float cycleValue = _FlowPhase * localRate + hash11(slotSeed) * 9.37;
                 float cycleIndex = floor(cycleValue);
                 float cyclePos = frac(cycleValue);
 
@@ -156,12 +159,9 @@ Shader "UI/SpeedLinesFullscreen"
 
                 float trailPos = saturate((distNorm - tail) / max(head - tail, 0.0001));
 
-                // Key fix: compensate by radius so these stay line-like, not giant wedges.
                 float baseWidth = _Thickness * lerp(0.75, 1.35, rndE);
                 float radiusComp = pow(max(distNorm, 0.18), _RadiusCompensation);
                 float width = baseWidth / radiusComp;
-
-                // Slight edge boost, but not enough to become triangles again.
                 width *= lerp(1.0, 1.0 + _EdgeThicknessBoost, trailPos);
 
                 float softness = _LineSoftness + (_Jitter * 0.0015);
@@ -206,7 +206,6 @@ Shader "UI/SpeedLinesFullscreen"
                 float slotCount = max(10.0, _LineDensity);
                 float baseSlot = floor(angle01 * slotCount);
 
-                float t = _Time.y;
                 float intensity = 0.0;
 
                 [unroll]
@@ -214,7 +213,7 @@ Shader "UI/SpeedLinesFullscreen"
                 {
                     float slot = baseSlot + n;
                     float wrappedSlot = slot - floor(slot / slotCount) * slotCount;
-                    intensity += EvaluateStreak(angle01, distNorm, wrappedSlot, slotCount, t);
+                    intensity += EvaluateStreak(angle01, distNorm, wrappedSlot, slotCount);
                 }
 
                 intensity = saturate(intensity);

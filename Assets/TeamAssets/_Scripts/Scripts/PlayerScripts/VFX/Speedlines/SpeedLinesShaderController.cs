@@ -12,6 +12,9 @@ public class SpeedLinesShaderController : MonoBehaviour
 	[SerializeField] private float minSpeedToShow = 1.5f;
 	[SerializeField] private float maxSpeedForFullEffect = 8f;
 
+	[Header("Stop Behavior")]
+	[SerializeField] private float stopSpeedThreshold = 0.05f;
+
 	[Header("Response")]
 	[SerializeField] private float appearSharpness = 1.0f;
 	[SerializeField] private float speedRiseSmoothing = 20f;
@@ -38,12 +41,13 @@ public class SpeedLinesShaderController : MonoBehaviour
 	private Material runtimeMaterial;
 	private float smoothedSpeed;
 	private float currentAmount;
+	private float flowPhase;
 
 	private static readonly int SpeedAmountID = Shader.PropertyToID("_SpeedAmount");
 	private static readonly int LineDensityID = Shader.PropertyToID("_LineDensity");
 	private static readonly int BrightnessID = Shader.PropertyToID("_Brightness");
 	private static readonly int ThicknessID = Shader.PropertyToID("_Thickness");
-	private static readonly int FlowSpeedID = Shader.PropertyToID("_FlowSpeed");
+	private static readonly int FlowPhaseID = Shader.PropertyToID("_FlowPhase");
 
 	private void Awake()
 	{
@@ -72,11 +76,28 @@ public class SpeedLinesShaderController : MonoBehaviour
 	{
 		float rawSpeed = GetCurrentSpeed();
 
+		if (debugLogSpeed)
+			Debug.Log($"SpeedLines raw: {rawSpeed:F3} | smoothed: {smoothedSpeed:F3}");
+
+		// If the player is fully stopped, kill the effect immediately.
+		if (rawSpeed <= stopSpeedThreshold)
+		{
+			smoothedSpeed = 0f;
+			currentAmount = 0f;
+
+			runtimeMaterial.SetFloat(SpeedAmountID, 0f);
+			runtimeMaterial.SetFloat(LineDensityID, 0f);
+			runtimeMaterial.SetFloat(BrightnessID, 0f);
+			runtimeMaterial.SetFloat(ThicknessID, 0f);
+
+			Color stoppedColor = targetImage.color;
+			stoppedColor.a = 0f;
+			targetImage.color = stoppedColor;
+			return;
+		}
+
 		float speedSmooth = rawSpeed > smoothedSpeed ? speedRiseSmoothing : speedFallSmoothing;
 		smoothedSpeed = Mathf.Lerp(smoothedSpeed, rawSpeed, Time.deltaTime * speedSmooth);
-
-		if (debugLogSpeed)
-			Debug.Log($"SpeedLines raw: {rawSpeed:F2} | smoothed: {smoothedSpeed:F2}");
 
 		float rawAmount = Mathf.InverseLerp(minSpeedToShow, maxSpeedForFullEffect, smoothedSpeed);
 		float targetAmount = Mathf.Pow(rawAmount, appearSharpness);
@@ -89,11 +110,14 @@ public class SpeedLinesShaderController : MonoBehaviour
 		float thickness = Mathf.Lerp(minThickness, maxThickness, currentAmount);
 		float flowSpeed = Mathf.Lerp(minFlowSpeed, maxFlowSpeed, currentAmount);
 
+		// Monotonic phase: only moves forward, never backward when speed changes.
+		flowPhase += flowSpeed * Time.deltaTime;
+
 		runtimeMaterial.SetFloat(SpeedAmountID, currentAmount);
 		runtimeMaterial.SetFloat(LineDensityID, density);
 		runtimeMaterial.SetFloat(BrightnessID, brightness);
 		runtimeMaterial.SetFloat(ThicknessID, thickness);
-		runtimeMaterial.SetFloat(FlowSpeedID, flowSpeed);
+		runtimeMaterial.SetFloat(FlowPhaseID, flowPhase);
 
 		Color c = targetImage.color;
 		c.a = currentAmount > 0.01f ? 1f : 0f;
