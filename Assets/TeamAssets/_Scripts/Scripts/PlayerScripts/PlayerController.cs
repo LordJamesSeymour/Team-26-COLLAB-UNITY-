@@ -413,26 +413,30 @@ namespace Group26.Player.Movement
 			if (m_bSliding) return;
 			if (m_bOnRail) return;
 
-			if (onSlope && !exitingSlope)
+			// Only clamp horizontal speed while grounded.
+			// In air, preserve momentum from slide, dash, slopes, etc.
+			if (m_bIsGrounded)
 			{
-				if (rb.linearVelocity.magnitude > moveSpeed)
-					rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
-			}
-			else
-			{
-				Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-				if (flatVel.magnitude > moveSpeed)
+				if (onSlope && !exitingSlope)
 				{
-					Vector3 limitedVel = flatVel.normalized * moveSpeed;
-					rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+					if (rb.linearVelocity.magnitude > moveSpeed)
+						rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+				}
+				else
+				{
+					Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+					if (flatVel.magnitude > moveSpeed)
+					{
+						Vector3 limitedVel = flatVel.normalized * moveSpeed;
+						rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+					}
 				}
 			}
 
 			if (maxYSpeed != 0 && rb.linearVelocity.y > maxYSpeed)
 				rb.linearVelocity = new Vector3(rb.linearVelocity.x, maxYSpeed, rb.linearVelocity.z);
 		}
-
 		public void Jump()
 		{
 			if (m_bOnRail)
