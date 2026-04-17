@@ -27,6 +27,8 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onFullscreenBox;
     private bool m_onResizeInputs;
     private bool m_onHeight;
+    private string m_widthInputText;
+    private string m_heightInputText;
     private static bool m_run;
     private int m_index = -1;
     //private Vector2 m_direction;
@@ -261,12 +263,25 @@ public class settingsmenuscript : menuscreenscript
 
     public void OnInputEntered(TMP_InputField input)
     {
-        if (CheckIfNum(input.text) == false)
+        if(input == m_widthInput)
         {
-            input.text = "";
+            if (CheckIfNum(input.text) == false)
+            {
+                input.text = m_widthInputText;
+            }
+
+            m_widthInputText = input.text;
+        }
+        else if(input == m_heightInput)
+        {
+            if (CheckIfNum(input.text) == false)
+            {
+                input.text = m_heightInputText;
+            }
+
+            m_heightInputText = input.text;
         }
     }
-
 
     // Update is called once per frame
     void Update()
@@ -387,7 +402,7 @@ public class settingsmenuscript : menuscreenscript
                     //m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
                     //m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                     m_checkpointToggle.image.sprite = m_buttonSprites[0];
-                    m_fullscreenToggle.image.sprite= m_buttonSprites[1];
+                    m_fullscreenToggle.image.sprite = m_buttonSprites[1];
                     m_widthInput.image.sprite = m_buttonSprites[0];
                     m_heightInput.image.sprite = m_buttonSprites[0];
                     m_exitButton.image.sprite = m_buttonSprites[0];
@@ -400,10 +415,16 @@ public class settingsmenuscript : menuscreenscript
                     m_onExitButton = false;
                     m_fullscreenToggle.image.sprite = m_buttonSprites[0];
                     m_exitButton.image.sprite = m_buttonSprites[0];
-                    if(m_onHeight)
+                    if (m_onHeight)
+                    {
                         m_heightInput.image.sprite = m_buttonSprites[1];
+                        m_heightInput.Select();
+                    }
                     else
+                    {
                         m_widthInput.image.sprite = m_buttonSprites[1];
+                        m_widthInput.Select();
+                    }
                     break;
                 case 5:
                     //m_onBackgroundSlider = false;
