@@ -154,6 +154,13 @@ public class settingsmenuscript : menuscreenscript
         //Debug.Log(Screen.fullScreen);
     }
 
+    public void ChangeScreenSize()
+    {
+        int width = Convert.ToInt32(m_widthInputText);
+        int height = Convert.ToInt32(m_heightInputText);
+        Screen.SetResolution(width, height, false);
+    }
+
     public void OnSliderPressed(Slider slider)
     {
         m_onExitButton = false;
