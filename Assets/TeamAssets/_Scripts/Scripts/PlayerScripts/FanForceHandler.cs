@@ -35,6 +35,7 @@ public class FanForceHandler : MonoBehaviour
     {
         if (m_rb != null)
         {
+
             if (m_bLogUpwardsSpeed)
             {
                 Debug.Log(this.name + " is moving at a speed of: " + m_rb.linearVelocity.magnitude + ". The max speed is: " + m_maxUpwardsForce);
@@ -48,7 +49,7 @@ public class FanForceHandler : MonoBehaviour
             }
 
             //if the force is being limited, the force is only added if the linear velocity is less than the max force
-            if(m_rb.linearVelocity.magnitude < m_maxUpwardsForce)
+            if (m_rb.linearVelocity.magnitude < m_maxUpwardsForce)
             {
                 m_rb.AddForce(forcetoapply, ForceMode.Impulse);
             }
@@ -58,5 +59,6 @@ public class FanForceHandler : MonoBehaviour
         {
             Debug.LogError(this.name + " does not have an attached rigidbody, so the fan will not affect it");
         }
-    }   
+    }
+
 }
