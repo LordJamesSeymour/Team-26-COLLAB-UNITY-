@@ -4,7 +4,6 @@ using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
-using static Unity.VisualScripting.Member;
 
 [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
 public class AudioManager : MonoBehaviour
@@ -17,16 +16,15 @@ public class AudioManager : MonoBehaviour
 
     public enum SoundType
     {
-        WALK,
-        RUNN,
+        STEP,
         JUMP,
         ROLL,
         GRAPPLE,
         WIND,
         CRASH,
         DASH,
-        LAND
-
+        LAND,
+        UI_BUTTON
     }
 
     private void Awake()
@@ -37,7 +35,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)

@@ -23,7 +23,7 @@ public class PlayerAudio : MonoBehaviour
 
     IEnumerator playStep(PlayerController.MovementState state) // would prefer to play this by calling the sound functions on the animation 
     {
-        AudioManager.instance.PlaySoundFromObject(SoundType.WALK, transform, .5f, .05f, 1, .15f, 1);
+        AudioManager.instance.PlaySoundFromObject(SoundType.STEP, transform, .5f, .05f, 1, .15f, 1);
         if (state == PlayerController.MovementState.walking)
             yield return new WaitForSeconds(.35f);
         else if (state == PlayerController.MovementState.sprinting || state == PlayerController.MovementState.wallRunning)
