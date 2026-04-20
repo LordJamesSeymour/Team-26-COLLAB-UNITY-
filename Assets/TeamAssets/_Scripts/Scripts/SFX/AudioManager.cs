@@ -1,12 +1,13 @@
+using System;
 using System.Collections;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private AudioClip[] soundList;
+    [SerializeField] private SoundList[] soundList;
     public  static AudioManager instance { get; private set;}
     private AudioSource audioSource;
 
@@ -52,13 +53,13 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
     {
-        audioSource.PlayOneShot(soundList[(int)sound], volume);
+        audioSource.PlayOneShot(SelectRandomSound(sound), volume);
     }
 
     public void PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
-        AudioClip clip = soundList[(int)sound];
+        AudioClip clip = SelectRandomSound(sound);
         if (source != null)
         {
             source.gameObject.SetActive(true);
@@ -85,7 +86,7 @@ public class AudioManager : MonoBehaviour
     public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
-        AudioClip clip = soundList[(int)sound];
+        AudioClip clip = SelectRandomSound(sound);
         if (source != null)
         {
             source.gameObject.SetActive(true);
@@ -101,6 +102,12 @@ public class AudioManager : MonoBehaviour
 
             StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
         }
+    }
+
+    private AudioClip SelectRandomSound(SoundType sound)
+    {
+        AudioClip[] clips = soundList[(int)sound].Sounds;
+        return clips[Random.Range(0, clips.Length)];
     }
 
     private AudioSource GetAvailableSource()
@@ -119,4 +126,24 @@ public class AudioManager : MonoBehaviour
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
     }
+
+#if UNITY_EDITOR
+    private void OnEnable()
+    {
+        string[] names = Enum.GetNames(typeof(SoundType));
+        Array.Resize(ref soundList, names.Length);
+        for (int i = 0; i < soundList.Length; i++)
+        {
+            soundList[i].name = names[i];
+        }
+    }
+#endif
+}
+
+[SerializeField]
+public struct SoundList
+{
+    public AudioClip[] Sounds { get => sounds; }
+    [HideInInspector] public string name;
+    [SerializeField] private AudioClip[] sounds;
 }
