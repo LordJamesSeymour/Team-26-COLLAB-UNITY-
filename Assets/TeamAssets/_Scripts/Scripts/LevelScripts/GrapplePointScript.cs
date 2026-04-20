@@ -44,14 +44,15 @@ namespace Group26.Player.Utility
 			if (collisionObject.CompareTag("Player"))
 			{
 				PlayerController playerController = collisionObject.GetComponent<PlayerController>();
+                GrappleBoosting grappleBoost = collisionObject.GetComponent<GrappleBoosting>();
 
-				if (playerController == null)
+                if (playerController == null)
 				{
 					Debug.LogError(collisionObject.name + " does not have an attached PlayerController");
 				}
 				else
 				{
-					TriggerPlayerPointBoost(playerController);
+                    grappleBoost.InvokeBoost();
 				}
 
 				if (m_logPlayerEntry)
@@ -62,35 +63,6 @@ namespace Group26.Player.Utility
 			{
 				Debug.Log(collisionObject.name + " collided with " + name + ". " + collisionObject.name + " has the tag: " + collisionObject.tag);
 			}
-		}
-
-		private void TriggerPlayerPointBoost(PlayerController playerController)
-		{
-			Type playerType = playerController.GetType();
-			BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-			FieldInfo grappleField = playerType.GetField("grappleScript", flags);
-			if (grappleField != null)
-				grappleField.SetValue(playerController, this);
-
-			MethodInfo assignMethod = playerType.GetMethod("AssignGrapple", flags);
-
-			if (assignMethod != null)
-			{
-				assignMethod.Invoke(playerController, new object[] { this });
-				PointBoost?.Invoke();
-				return;
-			}
-
-			MethodInfo pointBoostMethod = playerType.GetMethod("PointBoost", flags);
-
-			if (pointBoostMethod != null)
-			{
-				pointBoostMethod.Invoke(playerController, null);
-				return;
-			}
-
-			Debug.LogWarning(playerController.name + " has no AssignGrapple or PointBoost method available.");
 		}
 	}
 }
