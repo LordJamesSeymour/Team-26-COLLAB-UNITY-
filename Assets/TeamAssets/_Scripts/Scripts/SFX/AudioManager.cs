@@ -3,6 +3,8 @@ using System.Collections;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
+using static Unity.VisualScripting.Member;
 
 [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
 public class AudioManager : MonoBehaviour
@@ -15,15 +17,15 @@ public class AudioManager : MonoBehaviour
 
     public enum SoundType
     {
-        WALKING,
+        WALK,
+        RUNN,
         JUMP,
-        RUNNING,
-        ROLLING,
+        ROLL,
         GRAPPLE,
         WIND,
         CRASH,
         DASH,
-
+        LAND
 
     }
 
@@ -44,6 +46,8 @@ public class AudioManager : MonoBehaviour
             audioEmitters[i].spatialBlend = 1.0f;
             audioEmitters[i].gameObject.SetActive(false);
             audioEmitters[i].transform.parent = transform;
+            audioEmitters[i].outputAudioMixerGroup = GetComponent<AudioSource>().outputAudioMixerGroup;
+            //audioEmitters[i].outputAudioMixerGroup = Resources.Load("GameAudio") as AudioMixer mixer.FindMatchingGroups(OutputMixer)[0];
         }
     }
     private void Start()
@@ -67,8 +71,8 @@ public class AudioManager : MonoBehaviour
             source.transform.localPosition = Vector3.zero;
             source.clip = clip;
 
-            source.volume = Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
-            source.pitch = Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+            source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+            source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
 
             source.spatialBlend = spatialBlend;
 
@@ -83,6 +87,41 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public AudioSource PlaySoundFromObjectOnLoop(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    {
+        AudioSource source = GetAvailableSource();
+        AudioClip clip = SelectRandomSound(sound);
+
+        if (source == null) { return null; } 
+        
+        source.loop = true;
+        source.gameObject.SetActive(true);
+        source.transform.parent = target;
+        source.transform.localPosition = Vector3.zero;
+        source.clip = clip;
+
+        source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+        source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+
+        source.spatialBlend = spatialBlend;
+
+        source.Play();
+
+        if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
+        {
+            target.gameObject.AddComponent<DetachEmitter>();
+        }
+
+        return source; // need to 
+    }
+
+    public void EndLoopingSound(AudioSource end)
+    {
+        StartCoroutine(ReturnToPool(end, 0));
+    }
+
+
+
     public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
@@ -93,8 +132,8 @@ public class AudioManager : MonoBehaviour
             source.transform.position = target;
             source.clip = clip;
 
-            source.volume = Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
-            source.pitch = Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+            source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+            source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
 
             source.spatialBlend = spatialBlend;
 
@@ -107,7 +146,7 @@ public class AudioManager : MonoBehaviour
     private AudioClip SelectRandomSound(SoundType sound)
     {
         AudioClip[] clips = soundList[(int)sound].Sounds;
-        return clips[Random.Range(0, clips.Length)];
+        return clips[UnityEngine.Random.Range(0, clips.Length)];
     }
 
     private AudioSource GetAvailableSource()
@@ -140,7 +179,7 @@ public class AudioManager : MonoBehaviour
 #endif
 }
 
-[SerializeField]
+[Serializable]
 public struct SoundList
 {
     public AudioClip[] Sounds { get => sounds; }
