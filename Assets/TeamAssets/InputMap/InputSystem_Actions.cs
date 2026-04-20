@@ -207,6 +207,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TrickTest"",
+                    ""type"": ""Button"",
+                    ""id"": ""f077db7a-a01a-41fd-b6b3-f37f7fa55b65"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -658,6 +667,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SwitchModes"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf9a3302-6ac5-492e-a344-85ebdb3e5681"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""TrickTest"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1606,6 +1626,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_PauseAction = m_Player.FindAction("PauseAction", throwIfNotFound: true);
         m_Player_CameraSwitch = m_Player.FindAction("CameraSwitch", throwIfNotFound: true);
         m_Player_SwitchModes = m_Player.FindAction("SwitchModes", throwIfNotFound: true);
+        m_Player_TrickTest = m_Player.FindAction("TrickTest", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1721,6 +1742,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PauseAction;
     private readonly InputAction m_Player_CameraSwitch;
     private readonly InputAction m_Player_SwitchModes;
+    private readonly InputAction m_Player_TrickTest;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1784,6 +1806,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SwitchModes".
         /// </summary>
         public InputAction @SwitchModes => m_Wrapper.m_Player_SwitchModes;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/TrickTest".
+        /// </summary>
+        public InputAction @TrickTest => m_Wrapper.m_Player_TrickTest;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1849,6 +1875,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SwitchModes.started += instance.OnSwitchModes;
             @SwitchModes.performed += instance.OnSwitchModes;
             @SwitchModes.canceled += instance.OnSwitchModes;
+            @TrickTest.started += instance.OnTrickTest;
+            @TrickTest.performed += instance.OnTrickTest;
+            @TrickTest.canceled += instance.OnTrickTest;
         }
 
         /// <summary>
@@ -1899,6 +1928,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SwitchModes.started -= instance.OnSwitchModes;
             @SwitchModes.performed -= instance.OnSwitchModes;
             @SwitchModes.canceled -= instance.OnSwitchModes;
+            @TrickTest.started -= instance.OnTrickTest;
+            @TrickTest.performed -= instance.OnTrickTest;
+            @TrickTest.canceled -= instance.OnTrickTest;
         }
 
         /// <summary>
@@ -2441,6 +2473,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwitchModes(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TrickTest" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTrickTest(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
