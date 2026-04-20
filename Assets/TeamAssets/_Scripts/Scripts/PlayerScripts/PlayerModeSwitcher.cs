@@ -47,7 +47,6 @@ namespace Group26.Player.Utility
             if (m_grappleGunScript == null) {
 
                 Debug.LogError("Grapple gun script is not attached");
-            
             }
 
         }
@@ -83,6 +82,7 @@ namespace Group26.Player.Utility
                     playerController.enabled = true;
                     ballRollController.enabled = false;
                     break;
+
                 case PlayerMode.BallMode:
                     capsuleModeObject.SetActive(false);
                     ballModeObject.SetActive(true);

@@ -9,6 +9,7 @@ namespace Group26.Player.Movement
 		[Header("References")]
 		private InputManager InputManager;
 		private PlayerController PlayerController;
+		private PlayerModeSwitcher PlayerModeSwitcher;
 
 		[SerializeField] private Transform grappleCamera;
 		[SerializeField] private Transform gunTip;
@@ -52,6 +53,7 @@ namespace Group26.Player.Movement
 		{
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
 			if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
+			if (PlayerModeSwitcher == null) PlayerModeSwitcher = GetComponent<PlayerModeSwitcher>();
 
 			if (predictionPoint != null)
 				predictionPoint.gameObject.SetActive(false);
@@ -252,6 +254,9 @@ namespace Group26.Player.Movement
 		{
 			Transform activeCam = GetActiveGrappleCamera();
 			if (activeCam == null)
+				return;
+
+			if(PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.CapsuleMode)
 				return;
 
 			if (grappleCooldownTimer > 0f) return;
