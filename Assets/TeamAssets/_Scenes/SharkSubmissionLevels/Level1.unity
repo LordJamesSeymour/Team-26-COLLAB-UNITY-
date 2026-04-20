@@ -12616,11 +12616,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3989034211153108269, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: thirdPersonLookSensitivity.x
-      value: 60
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3989034211153108269, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: thirdPersonLookSensitivity.y
-      value: 60
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4008706434822983320, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: playerCam
@@ -12628,7 +12628,7 @@ PrefabInstance:
       objectReference: {fileID: 1226302156}
     - target: {fileID: 4008706434822983320, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: grappleForce
-      value: 30
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4008706434822983320, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: allowAllDirections
@@ -12692,6 +12692,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6729170346735244407, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7965900151791035856, guid: 5732308bdea79034ca012a435101190f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7965900151791035856, guid: 5732308bdea79034ca012a435101190f, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9110456602272767730, guid: 5732308bdea79034ca012a435101190f, type: 3}

@@ -112,8 +112,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3966796320458582639}
   m_Father: {fileID: 6729170346735244407}
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 6060779505620636773}
   - component: {fileID: 8095985268618166273}
   - component: {fileID: 254738429247674583}
+  - component: {fileID: 4712059057357584047}
   m_Layer: 8
   m_Name: PlayerCharacterAnimTest
   m_TagString: Player
@@ -258,10 +259,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d003a0184591a5543b6048dd4e9885ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 6.5
-  sprintSpeed: 12.5
+  walkSpeed: 8
+  sprintSpeed: 15
   slideSpeed: 30
-  wallRunSpeed: 12.5
+  wallRunSpeed: 15
   dashSpeed: 30
   swingSpeed: 0
   dashSpeedChangeFactor: 50
@@ -275,7 +276,7 @@ MonoBehaviour:
   airMultiplier: 0.4
   jumpBufferTime: 0.15
   crouchSpeed: 3.5
-  m_fGroundDistance: 0.15
+  m_fGroundDistance: 0.3
   m_tGroundCheck: {fileID: 148792636112671255}
   m_lGround:
     serializedVersion: 2
@@ -314,10 +315,10 @@ MonoBehaviour:
   firstPersonLookSensitivity: {x: 14, y: 14}
   thirdPersonLookSensitivity: {x: 20, y: 20}
   currentCameraMode: 0
-  m_firstPersonPitchLimits: {x: -85, y: 85}
+  m_firstPersonPitchLimits: {x: -100, y: 100}
   firstPersonYawRoot: {fileID: 5006442972207196483}
   firstPersonPitchPivot: {fileID: 4855428958357067522}
-  m_thirdPersonPitchLimits: {x: -54.5, y: 40}
+  m_thirdPersonPitchLimits: {x: -55, y: 55}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 0.2
   m_enableWallRunYawReconciliation: 1
@@ -440,7 +441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 5006442972207196483}
   playerCam: {fileID: 0}
-  grappleForce: 85
+  grappleForce: 20
   grappleUpwardForce: 10
   maxGrappleYSpeed: 75
   grappleDuration: 0.75
@@ -877,6 +878,29 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!136 &4712059057357584047
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929995151044452099}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: -0.01}
 --- !u!1 &1590477162126821102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1205,7 +1229,7 @@ Transform:
   m_GameObject: {fileID: 3295136437208462276}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.934, z: 0}
+  m_LocalPosition: {x: 0, y: -0.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1726,7 +1750,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6298685519354944994}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12940928, y: -0.12940957, z: 0.017037062, w: 0.98296297}
+  m_LocalRotation: {x: -0.12953857, y: -0.12907264, z: 0.016976219, w: 0.9829913}
   m_LocalPosition: {x: 2.8999996, y: -2.1000843, z: -0.110215664}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
