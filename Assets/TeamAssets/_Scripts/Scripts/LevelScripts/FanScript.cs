@@ -12,7 +12,7 @@ public class FanScript : MonoBehaviour
     [SerializeField] private float m_forceAmmount = 10f;
     [SerializeField] private LayerMask m_fanLayer;
     private Vector3 m_forceToAdd = Vector3.zero;
-
+    private bool m_bIsObjectInFan = false;
 
     [Header("Debug")]
     /// <summary>
@@ -20,6 +20,7 @@ public class FanScript : MonoBehaviour
     /// </summary>
     [SerializeField] private bool m_bLogForce = false;
     [SerializeField] private bool m_bLogStillInFan = false;
+    [SerializeField] private bool m_bDrawInFanCheck = false;
 
     private FanForceHandler m_fanForceHandler;
     private Collider m_collidedObject;
@@ -35,6 +36,7 @@ public class FanScript : MonoBehaviour
         m_fanForceHandler = other.gameObject.transform.root.GetComponent<FanForceHandler>();
         if (m_fanForceHandler != null)
         {
+           m_bIsObjectInFan = true;
            m_collidedObject = other;
            StartCoroutine(ApplyForce());
         }
@@ -53,11 +55,11 @@ public class FanScript : MonoBehaviour
         //loops infinitely until stopped through StopAllCoroutines
         while (true)
         {
-            bool infan = IsInFan();
+            m_bIsObjectInFan = IsInFan();
             if(m_bLogStillInFan)
-                Debug.Log("Object in fan: " + infan.ToString());
+                Debug.Log("Object in fan: " + m_bIsObjectInFan.ToString());
 
-            if (!infan)
+            if (!m_bIsObjectInFan)
             {
                 StopAllCoroutines();
             }
@@ -76,7 +78,21 @@ public class FanScript : MonoBehaviour
     }
     private bool IsInFan()
     {
-        RaycastHit hit;
-        return Physics.SphereCast(m_collidedObject.transform.position, 20, m_collidedObject.transform.forward,out hit,m_fanLayer);
+        if(m_collidedObject!= null)
+        {
+            RaycastHit hit;
+            return Physics.CheckSphere(m_collidedObject.transform.position, 2.5f, m_fanLayer);
+        }
+        else
+        {
+            return false;
+        }
     }
+
+    private void OnDrawGizmos()
+    {
+        if(m_bDrawInFanCheck && m_collidedObject != null)
+            Gizmos.DrawWireSphere(m_collidedObject.transform.position,2.5f);
+    }
+
 }
