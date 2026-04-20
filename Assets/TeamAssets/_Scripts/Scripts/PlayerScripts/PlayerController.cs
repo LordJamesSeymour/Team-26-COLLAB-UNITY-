@@ -8,6 +8,7 @@ using static AudioManager;
 
 namespace Group26.Player.Movement
 {
+    [RequireComponent(typeof(PlayerAudio))]
     public class PlayerController : MonoBehaviour
     {
         [Header("References")]
@@ -391,14 +392,11 @@ namespace Group26.Player.Movement
             if (m_bIsGrounded)
             {
                 rb.AddForce(moveDir * moveSpeed * 10f, ForceMode.Force);
-                //Debug.Log(m_stepSound);
+
                 if (moveDir != Vector3.zero && m_stepSound == null)
-                    m_stepSound = StartCoroutine(playStep());
+                    GetComponent<PlayerAudio>().walkSound(state);
                 if (moveDir != Vector3.zero && lastState == MovementState.sprinting && state == MovementState.walking)
-                {
-                    m_stepSound = null;
-                    m_stepSound = StartCoroutine(playStep());
-                }
+                    GetComponent<PlayerAudio>().walkSound(state);
             }
             else
                 rb.AddForce(moveDir * moveSpeed * 10f * airMultiplier, ForceMode.Force);
@@ -406,17 +404,7 @@ namespace Group26.Player.Movement
             if (!m_bIsWallRunning)
                 rb.useGravity = !OnSlope();
             else if(m_stepSound == null)
-                m_stepSound = StartCoroutine(playStep());
-        }
-
-        IEnumerator playStep()
-        {
-            AudioManager.instance.PlaySoundFromObject(SoundType.WALKING, transform, .5f, .05f, 1, .15f, 1);
-            if (state == MovementState.walking)
-                yield return new WaitForSeconds(.35f);
-            else if (state == MovementState.sprinting || state == MovementState.wallRunning)
-                yield return new WaitForSeconds(.2f);
-            m_stepSound = null;
+                GetComponent<PlayerAudio>().walkSound(state);
         }
 
         private void SpeedControl(bool onSlope)
@@ -481,9 +469,7 @@ namespace Group26.Player.Movement
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-            //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
-            //AudioManager.instance.PlaySoundFromObject(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
-            AudioManager.instance.PlaySoundAtPoint(SoundType.JUMP, transform.position, .3f, .1f, 1, .05f, 0);
+            GetComponent<PlayerAudio>().jumpSound();
         }
 
         private void ResetJump()

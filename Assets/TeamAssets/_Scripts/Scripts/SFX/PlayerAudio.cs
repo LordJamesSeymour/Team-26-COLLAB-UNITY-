@@ -1,27 +1,33 @@
 using Group26.Player.Movement;
+using System.Collections;
 using UnityEngine;
 using static AudioManager;
 
 public class PlayerAudio : MonoBehaviour
 {
-    PlayerController controller;
-    PlayerController.MovementState prevState;
+    private Coroutine m_stepSound;
 
-    private void Awake()
+    public void jumpSound()
     {
-        controller = GetComponent<PlayerController>();
+        //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
+        //AudioManager.instance.PlaySoundFromObject(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
+        AudioManager.instance.PlaySoundAtPoint(SoundType.JUMP, transform.position, .3f, .1f, 1, .05f, 0);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void walkSound(PlayerController.MovementState state)
     {
-        if (controller.state == PlayerController.MovementState.air && prevState == PlayerController.MovementState.walking)
-        {
-            //AudioManager.instance.PlayOneShotSound(SoundType.JUMP, .3f);
-            //AudioManager.instance.PlaySoundFromObject(SoundType.JUMP, transform, .3f, .1f, 1, .05f);
-            AudioManager.instance.PlaySoundAtPoint(SoundType.JUMP, transform.position, .3f, .1f, 1, .05f, 0);
-        }
+        if (m_stepSound != null) { return; }
 
-        prevState = controller.state;
+        m_stepSound = StartCoroutine(playStep(state));
+    }
+
+    IEnumerator playStep(PlayerController.MovementState state) // would prefer to play this by calling the sound functions on the animation 
+    {
+        AudioManager.instance.PlaySoundFromObject(SoundType.WALKING, transform, .5f, .05f, 1, .15f, 1);
+        if (state == PlayerController.MovementState.walking)
+            yield return new WaitForSeconds(.35f);
+        else if (state == PlayerController.MovementState.sprinting || state == PlayerController.MovementState.wallRunning)
+            yield return new WaitForSeconds(.2f);
+        m_stepSound = null;
     }
 }
