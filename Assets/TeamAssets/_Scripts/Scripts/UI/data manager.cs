@@ -118,6 +118,17 @@ public class datamanager
         }
     }
 
+    public void SetSensitivity(float sensitivity)
+    {
+        if (m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        m_gameData.settings.sensitivity = sensitivity;
+    }
+
     //public LevelData GetData() {  return m_data; }
 
     public GameData GetGameData() { return m_gameData; }
@@ -208,11 +219,13 @@ public class SettingsData
     public bool checkpointsEnabled;
     public float backgroundMusicVolume;
     public float soundEffectsVolume;
+    public float sensitivity;
 
     public SettingsData()
     {
         checkpointsEnabled = true;
         backgroundMusicVolume = 100;
         soundEffectsVolume = 100;
+        sensitivity = 12;
     }
 }

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Unity.VisualScripting;
 
 public class settingsmenuscript : menuscreenscript
 {
@@ -10,6 +11,7 @@ public class settingsmenuscript : menuscreenscript
     [SerializeField] Toggle m_fullscreenToggle;
     [SerializeField] Slider m_backgroundMusicSlider;
     [SerializeField] Slider m_soundEffectsSlider;
+    [SerializeField] Slider m_sensitivitySlider;
     [SerializeField] TMP_InputField m_widthInput;
     [SerializeField] TMP_InputField m_heightInput;
     [SerializeField] GameObject m_scrollArea;
@@ -18,12 +20,14 @@ public class settingsmenuscript : menuscreenscript
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
     private Coroutine m_changeCheckboxValue;
+    private Coroutine m_updateSensitivityVal;
     private ScrollRect m_scrollRect;
     //private Coroutine m_changeFullscreenValue;
     private datamanager m_manager;
     private bool m_onBackgroundSlider;
     private bool m_onSoundEffectsSlider;
     private bool m_onCheckpointBox;
+    private bool m_onSensitivitySlider;
     private bool m_onFullscreenBox;
     private bool m_onResizeInputs;
     private bool m_onHeight;
@@ -68,6 +72,7 @@ public class settingsmenuscript : menuscreenscript
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
         m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
         m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+        m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
         m_fullscreenToggle.isOn = true;
         m_widthInput.interactable = false;
         m_heightInput.interactable = false;
@@ -98,9 +103,39 @@ public class settingsmenuscript : menuscreenscript
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
         m_onCheckpointBox = false;
+        m_onSensitivitySlider = false;
         m_onFullscreenBox = false;
         m_onResizeInputs = false;
         m_onHeight = false;
+
+        if(m_index != 6)
+        {
+            switch (m_index)
+            {
+                default:
+                    break;
+                case 0:
+                    m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
+                    break;
+                case 1:
+                    m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
+                    break;
+                case 2:
+                    m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                    break;
+                case 3:
+                    m_sensitivitySlider.image.sprite = m_buttonSprites[2];
+                    break;
+                case 4:
+                    m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+                    break;
+                case 5:
+                    m_widthInput.image.sprite = m_buttonSprites[0];
+                    m_heightInput.image.sprite = m_buttonSprites[0];
+                    break;
+            }
+        }
+
         m_exitButton.image.sprite = m_buttonSprites[0];
         m_enabled = false;
         m_index = -1;
@@ -165,6 +200,14 @@ public class settingsmenuscript : menuscreenscript
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
     }
 
+    public void UpdateSensitivitySlider()
+    {
+        m_sensitivitySlider.value = (float)Math.Round(m_sensitivitySlider.value, 2);
+        m_manager.SetSensitivity(m_sensitivitySlider.value);
+        m_manager.SaveGameData();
+        Debug.Log(m_manager.GetGameData().settings.sensitivity);
+    }
+
     public void MakeFullscreen()
     {
         if (m_fullscreenToggle.isOn)
@@ -224,10 +267,12 @@ public class settingsmenuscript : menuscreenscript
         m_onBackgroundSlider = false;
         m_onFullscreenBox = false;
         m_onResizeInputs = false;
+        m_onSensitivitySlider = false;
         m_onHeight = false;
         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+        m_sensitivitySlider.image.sprite = m_buttonSprites[2];
         m_fullscreenToggle.image.sprite = m_buttonSprites[0];
         m_widthInput.image.sprite = m_buttonSprites[0];
         m_heightInput.image.sprite = m_buttonSprites[0];
@@ -245,10 +290,16 @@ public class settingsmenuscript : menuscreenscript
             m_soundEffectsSlider.image.sprite = m_buttonSprites[3];
             m_index = 1;
         }
+        else if(slider == m_sensitivitySlider)
+        {
+            m_onSensitivitySlider = true;
+            m_sensitivitySlider.image.sprite = m_buttonSprites[3];
+            m_index = 3;
+        }
 
-        m_scrollRect.verticalNormalizedPosition = 1.0f;
+            m_scrollRect.verticalNormalizedPosition = 1.0f;
 
-        Debug.Log("index: " + m_index);
+        //Debug.Log("index: " + m_index);
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
@@ -258,12 +309,14 @@ public class settingsmenuscript : menuscreenscript
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
         m_onCheckpointBox = false;
+        m_onSensitivitySlider = false;
         m_onFullscreenBox = false;
         m_onResizeInputs = false;
         m_onHeight = false;
         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+        m_sensitivitySlider.image.sprite = m_buttonSprites[2];
         m_fullscreenToggle.image.sprite = m_buttonSprites[0];
         m_widthInput.image.sprite = m_buttonSprites[0];
         m_heightInput.image.sprite = m_buttonSprites[0];
@@ -281,10 +334,10 @@ public class settingsmenuscript : menuscreenscript
             m_onFullscreenBox = true;
             m_fullscreenToggle.image.sprite = m_buttonSprites[1];
             m_scrollRect.verticalNormalizedPosition = 0.0f;
-            m_index = 3;
+            m_index = 4;
         }
 
-        Debug.Log("index: " + m_index);
+        //Debug.Log("index: " + m_index);
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
@@ -294,12 +347,14 @@ public class settingsmenuscript : menuscreenscript
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
         m_onCheckpointBox = false;
+        m_onSensitivitySlider = false;
         m_onFullscreenBox = false;
         m_onResizeInputs = false;
         m_onHeight = false;
         m_backgroundMusicSlider.image.sprite = m_buttonSprites[2];
         m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
         m_checkpointToggle.image.sprite = m_buttonSprites[0];
+        m_sensitivitySlider.image.sprite = m_buttonSprites[2];
         m_fullscreenToggle.image.sprite = m_buttonSprites[0];
         m_exitButton.image.sprite = m_buttonSprites[0];
 
@@ -315,9 +370,9 @@ public class settingsmenuscript : menuscreenscript
             m_onHeight = true;
         }
 
-        m_index = 4;
+        m_index = 5;
 
-        Debug.Log("index: " + m_index);
+        //Debug.Log("index: " + m_index);
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
     }
 
@@ -364,6 +419,22 @@ public class settingsmenuscript : menuscreenscript
         }
     }
 
+    private IEnumerator UpdateSensitivityVal()
+    {
+        if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
+        {
+            m_sensitivitySlider.Select();
+            m_sensitivitySlider.value += 0.01f;
+        }
+        else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
+        {
+            m_sensitivitySlider.Select();
+            m_sensitivitySlider.value -= 0.01f;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -371,7 +442,7 @@ public class settingsmenuscript : menuscreenscript
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
 
-            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 5)
+            if (m_navInputs.ReadValue<Vector2>() == Vector2.down && m_index < 6)
             {
                 //m_direction = Vector2.down;
                 m_index++;
@@ -409,11 +480,30 @@ public class settingsmenuscript : menuscreenscript
                     m_soundEffectsSlider.value -= 1.0f;
                 }
             }
+            else if (m_onSensitivitySlider)
+            {
+                //if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
+                //{
+                //    m_sensitivitySlider.Select();
+                //    m_sensitivitySlider.value += 0.01f;
+                //}
+                //else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
+                //{
+                //    m_sensitivitySlider.Select();
+                //    m_sensitivitySlider.value -= 0.01f;
+                //}
+
+                if(m_updateSensitivityVal == null)
+                    m_updateSensitivityVal = StartCoroutine(UpdateSensitivityVal());
+
+                m_updateSensitivityVal = null;
+                StopCoroutine(UpdateSensitivityVal());
+            }
             else if (m_onResizeInputs)
             {
                 if (m_navInputs.ReadValue<Vector2>() == Vector2.right)
                 {
-                    if(m_fullscreenToggle.isOn == false)
+                    if (m_fullscreenToggle.isOn == false)
                     {
                         m_heightInput.image.sprite = m_buttonSprites[1];
                     }
@@ -422,7 +512,7 @@ public class settingsmenuscript : menuscreenscript
                 }
                 else if (m_navInputs.ReadValue<Vector2>() == Vector2.left)
                 {
-                    if(m_fullscreenToggle.isOn == false)
+                    if (m_fullscreenToggle.isOn == false)
                     {
                         m_widthInput.image.sprite = m_buttonSprites[1];
                     }
@@ -455,25 +545,34 @@ public class settingsmenuscript : menuscreenscript
                 case 2:
                     m_onSoundEffectsSlider = false;
                     m_onCheckpointBox = true;
-                    m_onFullscreenBox = false;
+                    m_onSensitivitySlider = false;
                     m_soundEffectsSlider.image.sprite = m_buttonSprites[2];
                     m_checkpointToggle.image.sprite = m_buttonSprites[1];
-                    m_fullscreenToggle.image.sprite = m_buttonSprites[0];
-                    m_scrollRect.verticalNormalizedPosition = 1.0f;
+                    m_sensitivitySlider.image.sprite = m_buttonSprites[2];
+                    //m_scrollRect.verticalNormalizedPosition = 1.0f;
                     break;
                 case 3:
                     m_onCheckpointBox = false;
+                    m_onSensitivitySlider = true;
+                    m_onFullscreenBox = false;
+                    m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                    m_sensitivitySlider.image.sprite = m_buttonSprites[3];
+                    m_fullscreenToggle.image.sprite = m_buttonSprites[0];
+                    m_scrollRect.verticalNormalizedPosition = 1.0f;
+                    break;
+                case 4:
+                    m_onSensitivitySlider = false;
                     m_onFullscreenBox = true;
                     m_onResizeInputs = false;
                     m_onHeight = false;
-                    m_checkpointToggle.image.sprite = m_buttonSprites[0];
+                    m_sensitivitySlider.image.sprite = m_buttonSprites[2];
                     m_fullscreenToggle.image.sprite = m_buttonSprites[1];
                     m_widthInput.image.sprite = m_buttonSprites[0];
                     m_heightInput.image.sprite = m_buttonSprites[0];
-                    m_exitButton.image.sprite = m_buttonSprites[0];
+                    //m_exitButton.image.sprite = m_buttonSprites[0];
                     m_scrollRect.verticalNormalizedPosition = 0.0f;
                     break;
-                case 4:
+                case 5:
                     m_onFullscreenBox = false;
                     m_onResizeInputs = true;
                     m_onExitButton = false;
@@ -492,7 +591,7 @@ public class settingsmenuscript : menuscreenscript
                         m_widthInput.Select();
                     }
                     break;
-                case 5:
+                case 6:
                     m_onExitButton = true;
                     m_onResizeInputs = false;
                     m_onHeight = false;
@@ -502,7 +601,7 @@ public class settingsmenuscript : menuscreenscript
                     break;
             }
 
-            Debug.Log("index: " + m_index);
+            //Debug.Log("index: " + m_index);
         }
 
         if (m_enabled && m_selectInput.WasReleasedThisDynamicUpdate())
