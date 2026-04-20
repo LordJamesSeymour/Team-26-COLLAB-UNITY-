@@ -123,7 +123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalScale.y
-      value: 670.76624
+      value: 1410.5543
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalScale.z
@@ -131,15 +131,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0023115538
+      value: 0.002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.74
+      value: 14.38
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.0006556154
+      value: -0.001
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}
       propertyPath: m_LocalRotation.w
@@ -244,8 +244,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_forceDelay: 0.1
   m_forceAmmount: 10
-  m_axisForForce: 1
+  m_fanLayer:
+    serializedVersion: 2
+    m_Bits: 512
   m_bLogForce: 0
+  m_bLogStillInFan: 0
 --- !u!4 &832800594912570644 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0614395eed5c3e94499257454b63fa19, type: 3}

@@ -65,7 +65,7 @@ namespace Group26.Player.Movement
             // Debug the balls speed
             //Debug.Log($"Speed: {m_rigidBody.linearVelocity.magnitude}");
 
-            Debug.Log($"IsGrounded: {IsGrounded()}") ;
+            //Debug.Log($"IsGrounded: {IsGrounded()}") ;
         }
 
         private void RotateVisualMesh()

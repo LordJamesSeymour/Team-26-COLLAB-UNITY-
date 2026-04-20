@@ -331,7 +331,7 @@ namespace Group26.Player.Movement
 			lastDesiredMoveSpeed = desiredMoveSpeed;
 			lastState = state;
 
-			TrickSystemEvent.Invoke();
+			TrickSystemEvent?.Invoke();
         }
 
 		private IEnumerator SmoothlyLerpMoveSpeed()
