@@ -20,7 +20,7 @@ public class settingsmenuscript : menuscreenscript
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
     private Coroutine m_changeCheckboxValue;
-    private Coroutine m_updateSensitivityVal;
+    //private Coroutine m_updateSensitivityVal;
     private ScrollRect m_scrollRect;
     //private Coroutine m_changeFullscreenValue;
     private datamanager m_manager;
@@ -202,7 +202,7 @@ public class settingsmenuscript : menuscreenscript
 
     public void UpdateSensitivitySlider()
     {
-        m_sensitivitySlider.value = (float)Math.Round(m_sensitivitySlider.value, 2);
+        //m_sensitivitySlider.value = (float)Math.Round(m_sensitivitySlider.value, 2);
         m_manager.SetSensitivity(m_sensitivitySlider.value);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.sensitivity);
@@ -419,21 +419,21 @@ public class settingsmenuscript : menuscreenscript
         }
     }
 
-    private IEnumerator UpdateSensitivityVal()
-    {
-        if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
-        {
-            m_sensitivitySlider.Select();
-            m_sensitivitySlider.value += 0.01f;
-        }
-        else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
-        {
-            m_sensitivitySlider.Select();
-            m_sensitivitySlider.value -= 0.01f;
-        }
+    //private IEnumerator UpdateSensitivityVal()
+    //{
+    //    if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
+    //    {
+    //        m_sensitivitySlider.Select();
+    //        m_sensitivitySlider.value += 0.01f;
+    //    }
+    //    else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
+    //    {
+    //        m_sensitivitySlider.Select();
+    //        m_sensitivitySlider.value -= 0.01f;
+    //    }
 
-        yield return new WaitForSeconds(0.5f);
-    }
+    //    yield return new WaitForSeconds(0.5f);
+    //}
 
     // Update is called once per frame
     void Update()
@@ -482,22 +482,22 @@ public class settingsmenuscript : menuscreenscript
             }
             else if (m_onSensitivitySlider)
             {
-                //if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
-                //{
-                //    m_sensitivitySlider.Select();
-                //    m_sensitivitySlider.value += 0.01f;
-                //}
-                //else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
-                //{
-                //    m_sensitivitySlider.Select();
-                //    m_sensitivitySlider.value -= 0.01f;
-                //}
+                if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
+                {
+                    m_sensitivitySlider.Select();
+                    m_sensitivitySlider.value += 1.0f;
+                }
+                else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
+                {
+                    m_sensitivitySlider.Select();
+                    m_sensitivitySlider.value -= 1.0f;
+                }
 
-                if(m_updateSensitivityVal == null)
-                    m_updateSensitivityVal = StartCoroutine(UpdateSensitivityVal());
+                //if (m_updateSensitivityVal == null)
+                //    m_updateSensitivityVal = StartCoroutine(UpdateSensitivityVal());
 
-                m_updateSensitivityVal = null;
-                StopCoroutine(UpdateSensitivityVal());
+                //m_updateSensitivityVal = null;
+                //StopCoroutine(UpdateSensitivityVal());
             }
             else if (m_onResizeInputs)
             {
