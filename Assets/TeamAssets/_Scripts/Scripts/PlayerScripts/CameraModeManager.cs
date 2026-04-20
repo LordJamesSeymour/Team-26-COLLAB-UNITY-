@@ -34,7 +34,7 @@ namespace Group26.Player.Camera
         private Transform cameraHolder;
 
         [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
-        [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
+        [SerializeField] public Vector2 thirdPersonLookSensitivity = Vector2.one;
 
         public CameraMode currentCameraMode = CameraMode.ThirdPerson;
         private const int activeCameraPriority = 10;
@@ -81,9 +81,15 @@ namespace Group26.Player.Camera
         private Coroutine dashFOVCoroutine;
         private Coroutine grappleBoostFOVCoroutine;
         private Coroutine ballMovementFOVCoroutine;
+        private datamanager m_manager;
 
         private void Awake()
         {
+            m_manager = new datamanager(6);
+            m_manager.LoadGameData();
+
+            thirdPersonLookSensitivity.x = m_manager.GetGameData().settings.sensitivity;
+            thirdPersonLookSensitivity.y = m_manager.GetGameData().settings.sensitivity;
             currentCameraMode = CameraMode.ThirdPerson;
 
             if (playerInput == null) playerInput = GetComponent<InputManager>();

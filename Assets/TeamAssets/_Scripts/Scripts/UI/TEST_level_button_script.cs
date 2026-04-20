@@ -1,3 +1,4 @@
+using Group26.Player.Camera;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class TEST_level_button_script : MonoBehaviour
     public int m_levelNum;  //this is the level's number - 1 e.g. if this is level 1 then this var is 0
 
     [SerializeField] private TextMeshProUGUI m_levelText;
+    [SerializeField] private CameraModeManager m_cameraScript;
 
     private void Awake()
     {
@@ -36,6 +38,6 @@ public class TEST_level_button_script : MonoBehaviour
     {
         //m_manager.LoadGameData();
         m_levelText.text = "Level: " + m_manager.GetGameData().levels[m_levelNum].levelNum;
-        Debug.Log(Checkpoint.m_checkpointsEnabled);
+        //Debug.Log(m_cameraScript.thirdPersonLookSensitivity);
     }
 }
