@@ -21,11 +21,8 @@ namespace Group26.Player.Utility
 
         public PlayerMode currentMode = PlayerMode.CapsuleMode;
 
-<<<<<<< HEAD
-=======
         private GrappleGun m_grappleGunScript;
 
->>>>>>> GrappleBoost
         private void Awake()
         {
             if(playerController == null)
@@ -45,8 +42,6 @@ namespace Group26.Player.Utility
             {
                 Debug.LogError("PlayerModeSwitcher: One or more mode objects are not assigned.");
             }
-<<<<<<< HEAD
-=======
 
             m_grappleGunScript = GetComponent<GrappleGun>();
             if (m_grappleGunScript == null) {
@@ -54,7 +49,7 @@ namespace Group26.Player.Utility
                 Debug.LogError("Grapple gun script is not attached");
             
             }
->>>>>>> GrappleBoost
+
         }
 
         private void OnEnable()
@@ -94,13 +89,11 @@ namespace Group26.Player.Utility
                     playerController.m_bIsGrounded = false;
                     playerController.enabled = false;
                     ballRollController.enabled = true;
-<<<<<<< HEAD
-=======
+
                     if (m_grappleGunScript != null)
                         m_grappleGunScript.ForceStopGrapple();
                     if (playerController != null)
                         playerController.ReleaseGrappleMovement();
->>>>>>> GrappleBoost
                     break;
             }
         }

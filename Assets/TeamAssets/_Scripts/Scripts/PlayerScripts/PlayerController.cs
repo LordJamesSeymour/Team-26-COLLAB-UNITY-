@@ -560,7 +560,7 @@ namespace Group26.Player.Movement
 			m_bSliding = value;
 		}
 
-		private void ReleaseGrappleMovement()
+		public void ReleaseGrappleMovement()
 		{
 			enableMovementOnNextTouch = false;
 			ResetRestrictions();
