@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/TeamAssets/_Prefabs/PlayerPrefab/PredictionPoint.prefab.meta
 guid: 07f492d2c3a7fb346a1bc687bc2c5a0b
+========
+guid: 040096cc27ca7844baa972ee8d78ab33
+>>>>>>>> GrappleBoost:Assets/TeamAssets/_Prefabs/PlayerPrefab/PlayerCharacterAnimTest.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

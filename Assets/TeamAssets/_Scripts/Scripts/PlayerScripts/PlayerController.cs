@@ -3,6 +3,7 @@ using System.Collections;
 using Group26.Player.Inputs;
 using Unity.Mathematics;
 using UnityEngine.Splines;
+using System;
 
 namespace Group26.Player.Movement
 {
@@ -61,7 +62,10 @@ namespace Group26.Player.Movement
 		[Header("Straight Grapple")]
 		[SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
 
-		public MovementState state;
+		//Trick Event
+		public event Action TrickSystemEvent;
+
+        public MovementState state;
 		public enum MovementState
 		{
 			freeze,
@@ -326,7 +330,9 @@ namespace Group26.Player.Movement
 
 			lastDesiredMoveSpeed = desiredMoveSpeed;
 			lastState = state;
-		}
+
+			TrickSystemEvent.Invoke();
+        }
 
 		private IEnumerator SmoothlyLerpMoveSpeed()
 		{
@@ -554,7 +560,7 @@ namespace Group26.Player.Movement
 			m_bSliding = value;
 		}
 
-		private void ReleaseGrappleMovement()
+		public void ReleaseGrappleMovement()
 		{
 			enableMovementOnNextTouch = false;
 			ResetRestrictions();

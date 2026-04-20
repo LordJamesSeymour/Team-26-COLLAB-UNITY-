@@ -121,6 +121,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TrickTest",
+                    "type": "Button",
+                    "id": "f077db7a-a01a-41fd-b6b3-f37f7fa55b65",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -572,6 +581,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SwitchModes",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf9a3302-6ac5-492e-a344-85ebdb3e5681",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "TrickTest",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
