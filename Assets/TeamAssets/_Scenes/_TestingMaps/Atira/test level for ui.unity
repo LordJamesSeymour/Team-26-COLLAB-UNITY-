@@ -308,7 +308,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1339680957}
         m_TargetAssemblyTypeName: TEST_level_button_script, Assembly-CSharp
         m_MethodName: CompleteLevel
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
