@@ -31,6 +31,8 @@ public class settingsmenuscript : menuscreenscript
     private string m_heightInputText;
     private static bool m_run;
     private int m_index = -1;
+    private int m_maxWidth;
+    private int m_maxHeight;
     //private Vector2 m_direction;
 
     GameObject m_eventSystem;
@@ -39,11 +41,19 @@ public class settingsmenuscript : menuscreenscript
     {
         base.Awake();
 
+        //Screen.fullScreen = true;
+
+        //Screen.SetResolution(1920, 888, true);
+        Resolution maxResolution = FindHighestRes();
+        m_maxWidth = maxResolution.width;
+        m_maxHeight = maxResolution.height;
+
         m_manager = new datamanager(6);
 
         if (m_run == false)
         {
             m_run = true;
+            Screen.SetResolution(maxResolution.width, maxResolution.height, true);
         }
         else
         {
@@ -58,8 +68,26 @@ public class settingsmenuscript : menuscreenscript
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
         m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
         m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+        m_fullscreenToggle.isOn = true;
+        m_widthInput.interactable = false;
+        m_heightInput.interactable = false;
         m_onExitButton = false;
         m_eventSystem = GameObject.Find("EventSystem");
+    }
+
+    private Resolution FindHighestRes()
+    {
+        Resolution[] resolutions = Screen.resolutions;
+        Resolution maxRes = resolutions[0];
+        for(int i = 1; i < resolutions.Length; i++)
+        {
+            if (resolutions[i].width > maxRes.width && resolutions[i].height > maxRes.height)
+            {
+                maxRes = resolutions[i];
+            }
+        }
+
+        return maxRes;
     }
 
     private IEnumerator ToggleSettingsMenuOff()
@@ -139,26 +167,53 @@ public class settingsmenuscript : menuscreenscript
 
     public void MakeFullscreen()
     {
-        Screen.fullScreen = m_fullscreenToggle.isOn;
         if (m_fullscreenToggle.isOn)
         {
             m_widthInput.interactable = false;
             m_heightInput.interactable = false;
+            Screen.SetResolution(FindHighestRes().width, FindHighestRes().height, true);
         }
         else
         {
             m_widthInput.interactable = true;
             m_heightInput.interactable = true;
         }
+        Screen.fullScreen = m_fullscreenToggle.isOn;
         //Debug.Log(m_fullscreenToggle.isOn);
         //Debug.Log(Screen.fullScreen);
     }
 
-    public void ChangeScreenSize()
+    public void ChangeScreenSize(TMP_InputField input)
     {
-        int width = Convert.ToInt32(m_widthInputText);
-        int height = Convert.ToInt32(m_heightInputText);
-        Screen.SetResolution(width, height, false);
+        if(input == m_widthInput)
+        {
+            int width = Convert.ToInt32(m_widthInputText);
+            if (width <= 750)
+            {
+                Screen.SetResolution(750, Screen.height, false);
+                m_widthInputText = "750";
+            }
+            else
+            {          
+                Screen.SetResolution(width, Screen.height, false);
+            }
+            m_widthInput.text = m_widthInputText;
+
+        }
+        else if(input == m_heightInput)
+        {
+            int height = Convert.ToInt32(m_heightInputText);
+            if (height <= 750)
+            {
+                Screen.SetResolution(Screen.width, 750, false);
+                m_heightInputText = "750";
+            }
+            else
+            {
+                Screen.SetResolution(Screen.width, height, false);
+            }
+            m_heightInput.text = m_heightInputText;
+        }
     }
 
     public void OnSliderPressed(Slider slider)
@@ -287,9 +342,9 @@ public class settingsmenuscript : menuscreenscript
             {
                 input.text = m_widthInputText;
             }
-            else if(Convert.ToInt32(input.text) > Screen.width)
+            else if(Convert.ToInt32(input.text) > m_maxWidth)
             {
-                input.text = Screen.width.ToString();
+                input.text = m_maxWidth.ToString();
             }
 
             m_widthInputText = input.text;
@@ -300,9 +355,9 @@ public class settingsmenuscript : menuscreenscript
             {
                 input.text = m_heightInputText;
             }
-            else if(Convert.ToInt32(input.text) > Screen.height)
+            else if(Convert.ToInt32(input.text) > m_maxHeight)
             {
-                input.text = Screen.height.ToString();
+                input.text = m_maxHeight.ToString();
             }
 
             m_heightInputText = input.text;
