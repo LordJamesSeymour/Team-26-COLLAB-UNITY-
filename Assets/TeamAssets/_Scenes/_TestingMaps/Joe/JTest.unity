@@ -4992,14 +4992,44 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942731325}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b03ef6fe0188f34f8b9badf79fe2628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   soundList:
-  - {fileID: 8300000, guid: f7a88ce9f2901e143bd905353b3353a9, type: 3}
-  - {fileID: 8300000, guid: d57b86124f041f74faa7ce98fd1a3358, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 3fa0eeb795977fc49b924350295e90e4, type: 3}
+    - {fileID: 8300000, guid: 462746bd62aa6784ba2ad5a8c5978a3b, type: 3}
+    - {fileID: 8300000, guid: 7dc094d7a6ff05c41aa2217d4a87d5fb, type: 3}
+    - {fileID: 8300000, guid: eafbbf74622797443acfd5dfa2ed404b, type: 3}
+    - {fileID: 8300000, guid: 5beeeb044fe425943bf31b88a1a7ead0, type: 3}
+    - {fileID: 8300000, guid: 6eacb3c5c81f66e41920c825017afba9, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 0}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 83deb1438c30de9498b924fc716dd540, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
+  - name: 
+    sounds:
+    - {fileID: 8300000, guid: 631039d6acfd92e49abf120949b5442c, type: 3}
 --- !u!82 &1942731327
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5631,6 +5661,7 @@ SceneRoots:
   - {fileID: 1801046043}
   - {fileID: 1052469889}
   - {fileID: 646763724}
+  - {fileID: 1942731328}
   - {fileID: 1746524139}
   - {fileID: 9022848011782119765}
   - {fileID: 1672259715}
@@ -5642,4 +5673,3 @@ SceneRoots:
   - {fileID: 1737334536}
   - {fileID: 1148689354}
   - {fileID: 1951529346}
-  - {fileID: 1942731328}

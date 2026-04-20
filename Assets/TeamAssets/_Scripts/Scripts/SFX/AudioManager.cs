@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
     public enum SoundType
     {
         WALK,
-        RUNN,
+        RUN,
         JUMP,
         ROLL,
         GRAPPLE,
@@ -55,7 +55,7 @@ public class AudioManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
+    public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as much as possible to avoid over using pool
     {
         audioSource.PlayOneShot(SelectRandomSound(sound), volume);
     }

@@ -21,6 +21,16 @@ public class PlayerAudio : MonoBehaviour
         m_stepSound = StartCoroutine(playStep(state));
     }
 
+    public void StartRollingSound()
+    {
+        
+    }
+
+    public void EndRollingSound()
+    {
+        AudioManager.instance.EndLoopingSound(SoundType.ROLL);
+    }
+
     IEnumerator playStep(PlayerController.MovementState state) // would prefer to play this by calling the sound functions on the animation 
     {
         AudioManager.instance.PlaySoundFromObject(SoundType.WALK, transform, .5f, .05f, 1, .15f, 1);
