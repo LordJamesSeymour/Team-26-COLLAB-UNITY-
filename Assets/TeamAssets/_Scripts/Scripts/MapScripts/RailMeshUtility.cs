@@ -2,337 +2,258 @@ using UnityEngine;
 
 namespace Group26.Player.Movement
 {
-    public static class RailMeshUtility
-    {
-        public static void BuildTubeMesh(
-            Mesh mesh,
-            Vector3[] centers,
-            Vector3[] forwards,
-            Vector3[] ups,
-            float radius,
-            int sides)
-        {
-            if (mesh == null || centers == null || forwards == null || ups == null)
-                return;
+	public static class RailMeshUtility
+	{
+		public static void BuildTubeMesh(
+			Mesh mesh,
+			Vector3[] centers,
+			Vector3[] forwards,
+			Vector3[] ups,
+			float radius,
+			int sides,
+			float tileEveryUnits = 50f)
+		{
+			if (mesh == null || centers == null || forwards == null || ups == null)
+				return;
 
-            if (centers.Length < 2 || forwards.Length != centers.Length || ups.Length != centers.Length)
-                return;
+			if (centers.Length < 2 || forwards.Length != centers.Length || ups.Length != centers.Length)
+				return;
 
-            sides = Mathf.Max(3, sides);
-            radius = Mathf.Max(0.001f, radius);
+			sides = Mathf.Max(3, sides);
+			radius = Mathf.Max(0.001f, radius);
+			tileEveryUnits = Mathf.Max(0.001f, tileEveryUnits);
 
-            int ringCount = centers.Length;
-            int vertexCount = ringCount * sides;
-            int triangleCount = (ringCount - 1) * sides * 2;
+			int ringCount = centers.Length;
+			int vertexCount = ringCount * sides;
+			int triangleCount = (ringCount - 1) * sides * 2;
 
-            Vector3[] vertices = new Vector3[vertexCount];
-            Vector3[] normals = new Vector3[vertexCount];
-            Vector2[] uvs = new Vector2[vertexCount];
-            int[] triangles = new int[triangleCount * 3];
+			Vector3[] vertices = new Vector3[vertexCount];
+			Vector3[] normals = new Vector3[vertexCount];
+			Vector2[] uvs = new Vector2[vertexCount];
+			int[] triangles = new int[triangleCount * 3];
 
-            float accumulatedLength = 0f;
-            float[] vCoords = new float[ringCount];
-            vCoords[0] = 0f;
+			float accumulatedLength = 0f;
+			float[] vCoords = new float[ringCount];
+			vCoords[0] = 0f;
 
-            for (int i = 1; i < ringCount; i++)
-            {
-                accumulatedLength += Vector3.Distance(centers[i - 1], centers[i]);
-                vCoords[i] = accumulatedLength;
-            }
+			for (int i = 1; i < ringCount; i++)
+			{
+				accumulatedLength += Vector3.Distance(centers[i - 1], centers[i]);
+				vCoords[i] = accumulatedLength;
+			}
 
-            if (accumulatedLength <= 0.0001f)
-                accumulatedLength = 1f;
+			float circumference = 2f * Mathf.PI * radius;
 
-            for (int ring = 0; ring < ringCount; ring++)
-            {
-                Vector3 forward = forwards[ring].normalized;
-                if (forward.sqrMagnitude < 0.0001f)
-                    forward = Vector3.forward;
+			for (int ring = 0; ring < ringCount; ring++)
+			{
+				Vector3 forward = forwards[ring].normalized;
+				if (forward.sqrMagnitude < 0.0001f)
+					forward = Vector3.forward;
 
-                Vector3 up = ups[ring].normalized;
-                if (up.sqrMagnitude < 0.0001f)
-                    up = Vector3.up;
+				Vector3 up = ups[ring].normalized;
+				if (up.sqrMagnitude < 0.0001f)
+					up = Vector3.up;
 
-                Vector3 right = Vector3.Cross(up, forward).normalized;
-                if (right.sqrMagnitude < 0.0001f)
-                    right = Vector3.right;
+				Vector3 right = Vector3.Cross(up, forward).normalized;
+				if (right.sqrMagnitude < 0.0001f)
+					right = Vector3.right;
 
-                up = Vector3.Cross(forward, right).normalized;
+				up = Vector3.Cross(forward, right).normalized;
 
-                for (int side = 0; side < sides; side++)
-                {
-                    float angle = (side / (float)sides) * Mathf.PI * 2f;
-                    float cos = Mathf.Cos(angle);
-                    float sin = Mathf.Sin(angle);
+				for (int side = 0; side < sides; side++)
+				{
+					float angle = (side / (float)sides) * Mathf.PI * 2f;
+					float cos = Mathf.Cos(angle);
+					float sin = Mathf.Sin(angle);
 
-                    Vector3 normal = (right * cos) + (up * sin);
-                    int index = ring * sides + side;
+					Vector3 normal = (right * cos) + (up * sin);
+					int index = ring * sides + side;
 
-                    vertices[index] = centers[ring] + normal * radius;
-                    normals[index] = normal.normalized;
-                    uvs[index] = new Vector2(side / (float)sides, vCoords[ring] / accumulatedLength);
-                }
-            }
+					vertices[index] = centers[ring] + normal * radius;
+					normals[index] = normal.normalized;
 
-            int triIndex = 0;
+					float aroundDistance = (side / (float)sides) * circumference;
+					float alongDistance = vCoords[ring];
 
-            for (int ring = 0; ring < ringCount - 1; ring++)
-            {
-                int currentRing = ring * sides;
-                int nextRing = (ring + 1) * sides;
+					uvs[index] = new Vector2(
+						aroundDistance / tileEveryUnits,
+						alongDistance / tileEveryUnits);
+				}
+			}
 
-                for (int side = 0; side < sides; side++)
-                {
-                    int nextSide = (side + 1) % sides;
+			int triIndex = 0;
 
-                    int a = currentRing + side;
-                    int b = currentRing + nextSide;
-                    int c = nextRing + side;
-                    int d = nextRing + nextSide;
+			for (int ring = 0; ring < ringCount - 1; ring++)
+			{
+				int currentRing = ring * sides;
+				int nextRing = (ring + 1) * sides;
 
-                    triangles[triIndex++] = a;
-                    triangles[triIndex++] = c;
-                    triangles[triIndex++] = b;
+				for (int side = 0; side < sides; side++)
+				{
+					int nextSide = (side + 1) % sides;
 
-                    triangles[triIndex++] = b;
-                    triangles[triIndex++] = c;
-                    triangles[triIndex++] = d;
-                }
-            }
+					int a = currentRing + side;
+					int b = currentRing + nextSide;
+					int c = nextRing + side;
+					int d = nextRing + nextSide;
 
-            mesh.Clear();
-            mesh.vertices = vertices;
-            mesh.normals = normals;
-            mesh.uv = uvs;
-            mesh.triangles = triangles;
-            mesh.RecalculateBounds();
-        }
+					triangles[triIndex++] = a;
+					triangles[triIndex++] = c;
+					triangles[triIndex++] = b;
 
-        public static void BuildRibbonMesh(
-            Mesh mesh,
-            Vector3[] edgeA,
-            Vector3[] edgeB,
-            bool doubleSided)
-        {
-            if (mesh == null || edgeA == null || edgeB == null)
-                return;
+					triangles[triIndex++] = b;
+					triangles[triIndex++] = c;
+					triangles[triIndex++] = d;
+				}
+			}
 
-            if (edgeA.Length < 2 || edgeB.Length != edgeA.Length)
-                return;
+			mesh.Clear();
+			mesh.vertices = vertices;
+			mesh.normals = normals;
+			mesh.uv = uvs;
+			mesh.triangles = triangles;
+			mesh.RecalculateBounds();
+		}
 
-            int count = edgeA.Length;
-            int vertexCount = count * 2;
-            int quadCount = count - 1;
-            int triangleCount = quadCount * 2;
-            if (doubleSided)
-                triangleCount *= 2;
+		public static void BuildRibbonMesh(
+			Mesh mesh,
+			Vector3[] edgeA,
+			Vector3[] edgeB,
+			bool doubleSided,
+			bool rotateUVs90 = false,
+			bool flipU = false,
+			bool flipV = false,
+			float tileEveryUnitsAlong = 50f,
+			float tileEveryUnitsAcross = 50f,
+			bool reverseAcrossUVDirection = false)
+		{
+			if (mesh == null || edgeA == null || edgeB == null)
+				return;
 
-            Vector3[] vertices = new Vector3[vertexCount];
-            Vector2[] uvs = new Vector2[vertexCount];
-            int[] triangles = new int[triangleCount * 3];
+			if (edgeA.Length < 2 || edgeB.Length != edgeA.Length)
+				return;
 
-            float accumulatedLength = 0f;
-            float[] vCoords = new float[count];
-            vCoords[0] = 0f;
+			tileEveryUnitsAlong = Mathf.Max(0.001f, tileEveryUnitsAlong);
+			tileEveryUnitsAcross = Mathf.Max(0.001f, tileEveryUnitsAcross);
 
-            for (int i = 1; i < count; i++)
-            {
-                Vector3 prevCenter = (edgeA[i - 1] + edgeB[i - 1]) * 0.5f;
-                Vector3 currentCenter = (edgeA[i] + edgeB[i]) * 0.5f;
-                accumulatedLength += Vector3.Distance(prevCenter, currentCenter);
-                vCoords[i] = accumulatedLength;
-            }
+			int count = edgeA.Length;
+			int vertexCount = count * 2;
+			int quadCount = count - 1;
+			int triangleCount = quadCount * 2;
+			if (doubleSided)
+				triangleCount *= 2;
 
-            if (accumulatedLength <= 0.0001f)
-                accumulatedLength = 1f;
+			Vector3[] vertices = new Vector3[vertexCount];
+			Vector2[] uvs = new Vector2[vertexCount];
+			int[] triangles = new int[triangleCount * 3];
 
-            for (int i = 0; i < count; i++)
-            {
-                int a = i * 2;
-                int b = a + 1;
+			float accumulatedLength = 0f;
+			float[] alongCoords = new float[count];
+			alongCoords[0] = 0f;
 
-                vertices[a] = edgeA[i];
-                vertices[b] = edgeB[i];
+			for (int i = 1; i < count; i++)
+			{
+				Vector3 prevCenter = (edgeA[i - 1] + edgeB[i - 1]) * 0.5f;
+				Vector3 currentCenter = (edgeA[i] + edgeB[i]) * 0.5f;
+				accumulatedLength += Vector3.Distance(prevCenter, currentCenter);
+				alongCoords[i] = accumulatedLength;
+			}
 
-                float v = vCoords[i] / accumulatedLength;
-                uvs[a] = new Vector2(0f, v);
-                uvs[b] = new Vector2(1f, v);
-            }
+			for (int i = 0; i < count; i++)
+			{
+				int a = i * 2;
+				int b = a + 1;
 
-            int tri = 0;
-            for (int i = 0; i < count - 1; i++)
-            {
-                int a0 = i * 2;
-                int b0 = a0 + 1;
-                int a1 = a0 + 2;
-                int b1 = a1 + 1;
+				vertices[a] = edgeA[i];
+				vertices[b] = edgeB[i];
 
-                triangles[tri++] = a0;
-                triangles[tri++] = a1;
-                triangles[tri++] = b0;
+				float along = alongCoords[i] / tileEveryUnitsAlong;
+				float across = Vector3.Distance(edgeA[i], edgeB[i]) / tileEveryUnitsAcross;
 
-                triangles[tri++] = b0;
-                triangles[tri++] = a1;
-                triangles[tri++] = b1;
+				float aU, aV, bU, bV;
 
-                if (doubleSided)
-                {
-                    triangles[tri++] = b0;
-                    triangles[tri++] = a1;
-                    triangles[tri++] = a0;
+				if (rotateUVs90)
+				{
+					aU = along;
+					bU = along;
 
-                    triangles[tri++] = b1;
-                    triangles[tri++] = a1;
-                    triangles[tri++] = b0;
-                }
-            }
+					float v0 = 0f;
+					float v1 = across;
 
-            mesh.Clear();
-            mesh.vertices = vertices;
-            mesh.uv = uvs;
-            mesh.triangles = triangles;
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-        }
+					bool invertAcross = reverseAcrossUVDirection ^ flipV;
+					if (invertAcross)
+					{
+						float temp = v0;
+						v0 = v1;
+						v1 = temp;
+					}
 
-        public static void BuildRibbonMeshForVisualizerWall(
-            Mesh mesh,
-            Vector3[] edgeTop,
-            Vector3[] edgeBottom,
-            bool doubleSided,
-            bool flipFacing,
-            float waveformRepeatEveryWorldUnits,
-            float detailRepeatEveryWorldUnits,
-            float averageHeightForUv,
-            float verticalUvScale)
-        {
-            if (mesh == null || edgeTop == null || edgeBottom == null)
-                return;
+					aV = v0;
+					bV = v1;
+				}
+				else
+				{
+					float u0 = 0f;
+					float u1 = across;
 
-            if (edgeTop.Length < 2 || edgeBottom.Length != edgeTop.Length)
-                return;
+					if (flipU)
+					{
+						float temp = u0;
+						u0 = u1;
+						u1 = temp;
+					}
 
-            waveformRepeatEveryWorldUnits = Mathf.Max(0.01f, waveformRepeatEveryWorldUnits);
-            detailRepeatEveryWorldUnits = Mathf.Max(0.01f, detailRepeatEveryWorldUnits);
-            verticalUvScale = Mathf.Max(0.01f, verticalUvScale);
+					aU = u0;
+					bU = u1;
 
-            int count = edgeTop.Length;
-            int vertexCount = count * 2;
-            int quadCount = count - 1;
-            int triangleCount = quadCount * 2;
-            if (doubleSided)
-                triangleCount *= 2;
+					aV = along;
+					bV = along;
 
-            Vector3[] vertices = new Vector3[vertexCount];
-            Vector2[] uv0 = new Vector2[vertexCount];
-            Vector2[] uv1 = new Vector2[vertexCount];
-            int[] triangles = new int[triangleCount * 3];
+					if (flipV)
+					{
+						aV = -aV;
+						bV = -bV;
+					}
+				}
 
-            float accumulatedLength = 0f;
-            float[] lengths = new float[count];
-            lengths[0] = 0f;
+				uvs[a] = new Vector2(aU, aV);
+				uvs[b] = new Vector2(bU, bV);
+			}
 
-            for (int i = 1; i < count; i++)
-            {
-                Vector3 prevCenter = (edgeTop[i - 1] + edgeBottom[i - 1]) * 0.5f;
-                Vector3 currentCenter = (edgeTop[i] + edgeBottom[i]) * 0.5f;
-                accumulatedLength += Vector3.Distance(prevCenter, currentCenter);
-                lengths[i] = accumulatedLength;
-            }
+			int tri = 0;
+			for (int i = 0; i < count - 1; i++)
+			{
+				int a0 = i * 2;
+				int b0 = a0 + 1;
+				int a1 = a0 + 2;
+				int b1 = a1 + 1;
 
-            for (int i = 0; i < count; i++)
-            {
-                int topIndex = i * 2;
-                int bottomIndex = topIndex + 1;
+				triangles[tri++] = a0;
+				triangles[tri++] = a1;
+				triangles[tri++] = b0;
 
-                vertices[topIndex] = edgeTop[i];
-                vertices[bottomIndex] = edgeBottom[i];
+				triangles[tri++] = b0;
+				triangles[tri++] = a1;
+				triangles[tri++] = b1;
 
-                float columnHeight = Vector3.Distance(edgeTop[i], edgeBottom[i]);
+				if (doubleSided)
+				{
+					triangles[tri++] = b0;
+					triangles[tri++] = a1;
+					triangles[tri++] = a0;
 
-                // UV0 is the waveform branch.
-                // Always normalize each column from 0 at the bottom to 1 at the top,
-                // so the bars correctly fit the local wall height.
-                float waveformTopV = 1f;
+					triangles[tri++] = b1;
+					triangles[tri++] = a1;
+					triangles[tri++] = b0;
+				}
+			}
 
-                // UV1 can still be used for optional detail tiling if needed later.
-                float detailTopV;
-                if (averageHeightForUv > 0.0001f)
-                    detailTopV = (columnHeight / averageHeightForUv) * verticalUvScale;
-                else
-                    detailTopV = 1f * verticalUvScale;
-
-                float uWave = lengths[i] / waveformRepeatEveryWorldUnits;
-                float uDetail = lengths[i] / detailRepeatEveryWorldUnits;
-
-                uv0[topIndex] = new Vector2(uWave, waveformTopV);
-                uv0[bottomIndex] = new Vector2(uWave, 0f);
-
-                uv1[topIndex] = new Vector2(uDetail, detailTopV);
-                uv1[bottomIndex] = new Vector2(uDetail, 0f);
-            }
-
-            int tri = 0;
-            for (int i = 0; i < count - 1; i++)
-            {
-                int top0 = i * 2;
-                int bottom0 = top0 + 1;
-                int top1 = top0 + 2;
-                int bottom1 = top1 + 1;
-
-                if (!flipFacing)
-                {
-                    triangles[tri++] = top0;
-                    triangles[tri++] = top1;
-                    triangles[tri++] = bottom0;
-
-                    triangles[tri++] = bottom0;
-                    triangles[tri++] = top1;
-                    triangles[tri++] = bottom1;
-                }
-                else
-                {
-                    triangles[tri++] = bottom0;
-                    triangles[tri++] = top1;
-                    triangles[tri++] = top0;
-
-                    triangles[tri++] = bottom1;
-                    triangles[tri++] = top1;
-                    triangles[tri++] = bottom0;
-                }
-
-                if (doubleSided)
-                {
-                    if (!flipFacing)
-                    {
-                        triangles[tri++] = bottom0;
-                        triangles[tri++] = top1;
-                        triangles[tri++] = top0;
-
-                        triangles[tri++] = bottom1;
-                        triangles[tri++] = top1;
-                        triangles[tri++] = bottom0;
-                    }
-                    else
-                    {
-                        triangles[tri++] = top0;
-                        triangles[tri++] = top1;
-                        triangles[tri++] = bottom0;
-
-                        triangles[tri++] = bottom0;
-                        triangles[tri++] = top1;
-                        triangles[tri++] = bottom1;
-                    }
-                }
-            }
-
-            mesh.Clear();
-            mesh.vertices = vertices;
-            mesh.uv = uv0;
-            mesh.uv2 = uv1;
-            mesh.triangles = triangles;
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-        }
-    }
+			mesh.Clear();
+			mesh.vertices = vertices;
+			mesh.uv = uvs;
+			mesh.triangles = triangles;
+			mesh.RecalculateNormals();
+			mesh.RecalculateBounds();
+		}
+	}
 }

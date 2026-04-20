@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1405327926874176149}
   - component: {fileID: 5687706553036440140}
   - component: {fileID: 4513336764233601868}
+  - component: {fileID: 5024194661125853297}
   m_Layer: 7
   m_Name: GrapplePoint
   m_TagString: Untagged
@@ -121,5 +122,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed717528e55e8e4ca49c9c864799778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_highlightTarget: {fileID: 5024194661125853297}
   m_logEntry: 0
   m_logPlayerEntry: 0
+--- !u!114 &5024194661125853297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590907248066824454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fa70a390b333e24fb8af09627926661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_outlineMaterial: {fileID: 2100000, guid: 1e9027b2037d8b7498cd533097a5e92e, type: 2}
+  m_includeInactiveChildren: 0
+  m_buildOnAwake: 1
+  m_startHighlighted: 0
+  m_useSmoothedNormalsForOutline: 1
+  m_outlineColorPropertyName: _OutlineColour

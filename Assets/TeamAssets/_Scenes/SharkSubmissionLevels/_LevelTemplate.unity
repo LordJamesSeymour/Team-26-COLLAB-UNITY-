@@ -731,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a09aadcceabdfc43a1740503bc2fb09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartPos: {fileID: 0}
+  StartPos: {fileID: 240472566}
 --- !u!65 &917302801
 BoxCollider:
   m_ObjectHideFlags: 0
