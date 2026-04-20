@@ -75,6 +75,7 @@ public class levelselectionmenuscript : menuscreenscript
             else if (m_manager.GetGameData().levels[i].locked)
             {
                 m_levelButtons[i].image.sprite = m_buttonSprites[3];
+                m_levelButtons[i].interactable = false;
             }
         }
     }
