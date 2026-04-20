@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 
-[RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
+[RequireComponent(typeof(AudioSource)), ExecuteAlways]
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private SoundList[] soundList;
@@ -27,15 +27,18 @@ public class AudioManager : MonoBehaviour
         UI_BUTTON
     }
 
+
     private void Awake()
     {
+        if (!Application.isPlaying) { return; }
+
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
         instance = this;
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
@@ -62,27 +65,28 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
-        if (source != null)
+
+        if (source == null) { return; }
+
+        source.gameObject.SetActive(true);
+        source.transform.parent = target;
+        source.transform.localPosition = Vector3.zero;
+        source.clip = clip;
+
+        source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+        source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+
+        source.spatialBlend = spatialBlend;
+
+        source.Play();
+
+        if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
         {
-            source.gameObject.SetActive(true);
-            source.transform.parent = target;
-            source.transform.localPosition = Vector3.zero;
-            source.clip = clip;
-
-            source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
-            source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
-
-            source.spatialBlend = spatialBlend;
-
-            source.Play();
-
-            if (!target.TryGetComponent<DetachEmitter>(out var detachScript)) // if an object playing sound has the parent destroyed this added script will detatch it
-            {
-                target.gameObject.AddComponent<DetachEmitter>();
-            }
-
-            StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+            target.gameObject.AddComponent<DetachEmitter>();
         }
+
+        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+
     }
 
     public AudioSource PlaySoundFromObjectOnLoop(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
@@ -124,21 +128,22 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
-        if (source != null)
-        {
-            source.gameObject.SetActive(true);
-            source.transform.position = target;
-            source.clip = clip;
 
-            source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
-            source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
+        if (source == null) { return; }
 
-            source.spatialBlend = spatialBlend;
+        source.gameObject.SetActive(true);
+        source.transform.position = target;
+        source.clip = clip;
 
-            source.Play();
+        source.volume = UnityEngine.Random.Range(volume * 10 - volumeRange * 10, volume * 10 + volumeRange * 10) / 10;
+        source.pitch = UnityEngine.Random.Range(pitch * 10 - pitchRange * 10, pitch * 10 + pitchRange * 10) / 10;
 
-            StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
-        }
+        source.spatialBlend = spatialBlend;
+
+        source.Play();
+
+        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+
     }
 
     private AudioClip SelectRandomSound(SoundType sound)
