@@ -106,11 +106,14 @@ namespace Group26.Player.Movement
 
         private void FixedUpdate()
         {
+            float SmoothScore = Mathf.SmoothDamp(DecayMeterSlider.value, DefaultPointMultiplier, ref CurrentVelocitySlider, DecaySliderSmoothness * Time.deltaTime);
+            DecayMeterSlider.value = SmoothScore;
 
+            /*
             if (ComboDecayBool == false)
             {
                 float ConstantDecay = DecayMeterSlider.value - ConstantPointsDecay;
-                //float ScoreMultDecay = Mathf.SmoothDamp(DecayMeterSlider.value, ConstantDecay, ref CurrentVelocitySlider, ConstnatDecaySliderSmoothness * Time.deltaTime);
+                float ScoreMultDecay = Mathf.SmoothDamp(DecayMeterSlider.value, ConstantDecay, ref CurrentVelocitySlider, ConstnatDecaySliderSmoothness * Time.deltaTime);
 
                 DecayMeterSlider.value = ConstantDecay;
             }
@@ -122,13 +125,13 @@ namespace Group26.Player.Movement
                 DecayMeterSlider.value = SmoothScore;
                 ComboDecayBool = false;
             }
-
+            */
         }
 
         public void PointsCalculation(int Points, float Decay)
         {
             TotalScore += (int)(Points * Decay);
-            print(TotalScore);
+            //print(TotalScore);
         }
 
         public void DecayCalculation(string State)
@@ -175,7 +178,7 @@ namespace Group26.Player.Movement
                 UI_Texts[UI_Text_Order].text = "+ " + Name;
                 UI_Text_Order += 1;
             }
-
+            /*
             for (int i = 1; i < UI_Texts.Length; i++)
             {
                 if (("+ " + Name) == UI_Texts[i].text)
@@ -187,6 +190,7 @@ namespace Group26.Player.Movement
 
                 }
             }
+            */
         }
 
         // Update is called once per frame
