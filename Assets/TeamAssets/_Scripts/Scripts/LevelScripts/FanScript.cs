@@ -80,7 +80,6 @@ public class FanScript : MonoBehaviour
     {
         if(m_collidedObject!= null)
         {
-            RaycastHit hit;
             return Physics.CheckSphere(m_collidedObject.transform.position, 2.5f, m_fanLayer);
         }
         else
