@@ -49,6 +49,24 @@ public class datamanager
         }
     }
 
+    public void SetScore(int index, int score)
+    {
+        if (m_gameData == null)
+        {
+            m_gameData = new GameData();
+            AddLevel();
+        }
+
+        if (index >= 0 && index < m_gameData.levels.Length)
+        {
+            m_gameData.levels[index].bestScore = score;
+        }
+        else
+        {
+            Debug.LogError("index is not in array of levels");
+        }
+    } 
+
     public void SetCheckpointsEnabled(bool enabled)
     {
         if(m_gameData == null)

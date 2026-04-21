@@ -37,6 +37,8 @@ public class settingsmenuscript : menuscreenscript
     private int m_index = -1;
     private int m_maxWidth;
     private int m_maxHeight;
+    //private float m_sensitivityStep = 0.01f;
+    //private float m_sensitivity;
     //private Vector2 m_direction;
 
     GameObject m_eventSystem;
@@ -73,6 +75,7 @@ public class settingsmenuscript : menuscreenscript
         m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
         m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
         m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
+        //m_sensitivity = m_sensitivitySlider.value;
         m_fullscreenToggle.isOn = true;
         m_widthInput.interactable = false;
         m_heightInput.interactable = false;
@@ -203,6 +206,8 @@ public class settingsmenuscript : menuscreenscript
     public void UpdateSensitivitySlider()
     {
         //m_sensitivitySlider.value = (float)Math.Round(m_sensitivitySlider.value, 2);
+        ////m_sensitivitySlider.value = Mathf.Lerp(m_sensitivitySlider.value, m_sensitivity, 6 * Time.deltaTime);
+        //m_sensitivity = m_sensitivitySlider.value;
         m_manager.SetSensitivity(m_sensitivitySlider.value);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.sensitivity);
@@ -482,16 +487,23 @@ public class settingsmenuscript : menuscreenscript
             }
             else if (m_onSensitivitySlider)
             {
-                if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
+                if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue/* && m_sensitivity < m_sensitivitySlider.maxValue*/)
                 {
                     m_sensitivitySlider.Select();
+                    //m_sensitivity += m_sensitivityStep;
                     m_sensitivitySlider.value += 1.0f;
                 }
-                else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
+                else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue/* && m_sensitivity > m_sensitivitySlider.minValue*/)
                 {
                     m_sensitivitySlider.Select();
+                    //m_sensitivity -= m_sensitivityStep;
                     m_sensitivitySlider.value -= 1.0f;
                 }
+
+                //m_sensitivity = (float)Math.Round(m_sensitivity, 2);
+                //m_sensitivitySlider.value = Mathf.Lerp(m_sensitivitySlider.value, m_sensitivity,2 * Time.deltaTime);
+
+                //Debug.Log(m_sensitivity);
 
                 //if (m_updateSensitivityVal == null)
                 //    m_updateSensitivityVal = StartCoroutine(UpdateSensitivityVal());
