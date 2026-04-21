@@ -59,10 +59,8 @@ public class FanScript : MonoBehaviour
                     Debug.Log("Object in fan: " + m_bIsObjectInFan.ToString());
 
                 if (!m_bIsObjectInFan)
-                {
                     StopAllCoroutines();
-                }
-
+                
                 if (m_bLogForce)
                 {
                     Debug.Log("Applying force of " + m_forceToAdd);
