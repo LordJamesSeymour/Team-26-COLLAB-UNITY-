@@ -3184,7 +3184,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_bLimitForce: 1
   m_maxUpwardsForce: 50
+  m_fanLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  m_fanCheckRadius: 2.5
   m_bLogUpwardsSpeed: 0
+  m_bDrawInFanCheck: 0
 --- !u!1 &1194070181
 GameObject:
   m_ObjectHideFlags: 0
@@ -4196,12 +4201,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_forceDelay: 0.1
   m_forceAmmount: 10
-  m_fanLayer:
-    serializedVersion: 2
-    m_Bits: 512
   m_bLogForce: 0
   m_bLogStillInFan: 1
-  m_bDrawInFanCheck: 1
 --- !u!1 &1515405641
 GameObject:
   m_ObjectHideFlags: 0

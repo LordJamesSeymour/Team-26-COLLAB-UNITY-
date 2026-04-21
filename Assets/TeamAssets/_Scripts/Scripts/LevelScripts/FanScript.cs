@@ -10,7 +10,6 @@ public class FanScript : MonoBehaviour
     /// The ammount of upwards force added, this does not need to be a Vector3 as only one axis is considered here
     /// </summary>
     [SerializeField] private float m_forceAmmount = 10f;
-    [SerializeField] private LayerMask m_fanLayer;
     private Vector3 m_forceToAdd = Vector3.zero;
     private bool m_bIsObjectInFan = false;
 
@@ -20,10 +19,8 @@ public class FanScript : MonoBehaviour
     /// </summary>
     [SerializeField] private bool m_bLogForce = false;
     [SerializeField] private bool m_bLogStillInFan = false;
-    [SerializeField] private bool m_bDrawInFanCheck = false;
 
     private FanForceHandler m_fanForceHandler;
-    private Collider m_collidedObject;
 
     private void Start()
     {
@@ -37,7 +34,6 @@ public class FanScript : MonoBehaviour
         if (m_fanForceHandler != null)
         {
            m_bIsObjectInFan = true;
-           m_collidedObject = other;
            StartCoroutine(ApplyForce());
         }
         
@@ -55,43 +51,27 @@ public class FanScript : MonoBehaviour
         //loops infinitely until stopped through StopAllCoroutines
         while (true)
         {
-            m_bIsObjectInFan = IsInFan();
-            if(m_bLogStillInFan)
-                Debug.Log("Object in fan: " + m_bIsObjectInFan.ToString());
-
-            if (!m_bIsObjectInFan)
-            {
-                StopAllCoroutines();
-            }
-
-            if (m_bLogForce)
-            {
-                Debug.Log("Applying force of " + m_forceToAdd);
-            }
-
             if (m_fanForceHandler != null)
             {
+
+                m_bIsObjectInFan = m_fanForceHandler.IsInFan();
+                if (m_bLogStillInFan)
+                    Debug.Log("Object in fan: " + m_bIsObjectInFan.ToString());
+
+                if (!m_bIsObjectInFan)
+                {
+                    StopAllCoroutines();
+                }
+
+                if (m_bLogForce)
+                {
+                    Debug.Log("Applying force of " + m_forceToAdd);
+                }
+
                 m_fanForceHandler.HandleFanForce(m_forceToAdd);
             }
             yield return new WaitForSeconds(m_forceDelay);
         }
-    }
-    private bool IsInFan()
-    {
-        if(m_collidedObject!= null)
-        {
-            return Physics.CheckSphere(m_collidedObject.transform.position, 2.5f, m_fanLayer);
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        if(m_bDrawInFanCheck && m_collidedObject != null)
-            Gizmos.DrawWireSphere(m_collidedObject.transform.position,2.5f);
     }
 
 }

@@ -16,11 +16,16 @@ public class FanForceHandler : MonoBehaviour
     /// </summary>
     [SerializeField] private float m_maxUpwardsForce = 25.0f;
 
+    [Header("In fan check paramters")]
+    [SerializeField] private LayerMask m_fanLayer;
+    [SerializeField] private float m_fanCheckRadius = 2.5f;
+
     [Header("Debug")]
     ///<summary>
     ///Testing variable that prints the upwards speed of the object when handling fan force
     ///</summary>
     [SerializeField] private bool m_bLogUpwardsSpeed = false;
+    [SerializeField] private bool m_bDrawInFanCheck = false;
 
     private void Awake()
     {
@@ -61,4 +66,13 @@ public class FanForceHandler : MonoBehaviour
         }
     }
 
+    public bool IsInFan()
+    {
+        return Physics.CheckSphere(transform.position, m_fanCheckRadius, m_fanLayer);
+    }
+    private void OnDrawGizmos()
+    {
+        if (m_bDrawInFanCheck)
+            Gizmos.DrawWireSphere(transform.position, m_fanCheckRadius);
+    }
 }
