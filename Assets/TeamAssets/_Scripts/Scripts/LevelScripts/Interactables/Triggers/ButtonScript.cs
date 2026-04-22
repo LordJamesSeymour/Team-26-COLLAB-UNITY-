@@ -1,16 +1,14 @@
 using Unity.VisualScripting;
 using UnityEngine;
-
 public class ButtonScript : TriggerParent
 {
     [Header("Parameters")]
     [SerializeField] private bool m_bCheckForPlayer = true;
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if(m_bCheckForPlayer)
+        if (m_bCheckForPlayer)
         {
-            if(collision.transform.root.CompareTag("Player"))
+            if (other.transform.root.CompareTag("Player"))
             {
                 TriggerInteractables();
             }

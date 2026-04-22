@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class MovingPlatform : Interactable_Parent
@@ -28,6 +27,7 @@ public class MovingPlatform : Interactable_Parent
     [SerializeField] private bool m_bLogIterations = false;
  
     private bool m_bMovingToTarget = true;
+    private float m_lerpAmmount = 0.0f;
 
     private void Start()
     {
@@ -39,36 +39,48 @@ public class MovingPlatform : Interactable_Parent
         StartCoroutine(MovePlatform());
     }
 
+
     private IEnumerator MovePlatform()
     {
 
-        float lerpAmmount = 0;
         while (true)
         {
-            lerpAmmount = Mathf.Abs(lerpAmmount);
-            lerpAmmount = lerpAmmount + m_lerpAmmountPerIter;
-            
-            if(!m_bMovingToTarget)
-                lerpAmmount = lerpAmmount * -1.0f;
+            m_lerpAmmount = Mathf.Abs(m_lerpAmmount);
+            if (m_bMovingToTarget)
+                m_lerpAmmount += m_lerpAmmountPerIter;
+            else
+                m_lerpAmmount -= m_lerpAmmountPerIter;
 
             if (m_bLogIterations)
-                Debug.Log(this.name + " is currently moving. Lerp ammount: " + lerpAmmount);
+                Debug.Log(this.name + " is currently moving. Lerp ammount: " + m_lerpAmmount);
             
-            if (lerpAmmount > 1)
+            if (m_lerpAmmount > 1 && m_bMovingToTarget)
             {
-                if(m_bLogEndOfMove)
-                    Debug.Log(this.name + " has finished it's movement");
-
-                if(m_bToggleDirectionOfMovement)
-                    m_bMovingToTarget = !m_bMovingToTarget;
-
-                transform.position = m_targetPosition;
-                StopAllCoroutines();
+                EndMovement();
+                break;
+            }else if (m_lerpAmmount < 0 && !m_bMovingToTarget)
+            {
+                EndMovement();
                 break;
             }
-            transform.position = Vector3.Lerp(m_startPosition,m_targetPosition,lerpAmmount);
+            transform.position = Vector3.Lerp(m_startPosition, m_targetPosition, m_lerpAmmount);
             yield return new WaitForSeconds(m_moveIterDelay);
         }
+    }
+
+    private void EndMovement()
+    {
+        if (m_bLogEndOfMove)
+            Debug.Log(this.name + " has finished it's movement");
+
+        if(m_bMovingToTarget)
+            transform.position = m_targetPosition;
+        else
+            transform.position = m_startPosition;
+
+        if (m_bToggleDirectionOfMovement)
+            m_bMovingToTarget = !m_bMovingToTarget;
+        StopCoroutine(MovePlatform());
     }
 
 }
