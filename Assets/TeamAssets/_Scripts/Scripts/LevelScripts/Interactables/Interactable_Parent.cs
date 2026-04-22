@@ -9,12 +9,19 @@ public abstract class Interactable_Parent : MonoBehaviour
     /// </summary>
     public bool m_bIsActive = true;
 
+    [Header("Debug")]
+    public bool m_bLogInteractions = false;
+
     //Interact and interact implementation are seperate for me to enforce rules on interaction.
     //Mainly preventing interaction when the interactible is not active.
     public void Interact()
     {
-        if(m_bIsActive)
+        if (m_bIsActive) {
+            if (m_bLogInteractions)
+                Debug.Log(this.name + " has begun it's interaction");
             InteractImplementation();
+        }
+            
     }
 
     /// <summary>
