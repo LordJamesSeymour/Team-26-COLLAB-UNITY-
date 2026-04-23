@@ -82,8 +82,8 @@ public class levelselectionmenuscript : menuscreenscript
 
     private IEnumerator ToggleLevelsScreenOff()
     {
-        m_buttonScript.m_levelsPanel.SetActive(false);
-        m_buttonScript.m_mainMenuPanel.SetActive(true);
+        m_buttonScript.GetLevelsPanel().SetActive(false);
+        m_buttonScript.m_menuPanel.SetActive(true);
 
         if (m_currentButton != m_exitButton)
         {
@@ -115,9 +115,9 @@ public class levelselectionmenuscript : menuscreenscript
 
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
 
-        yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true);
+        yield return new WaitUntil(() => m_buttonScript.m_menuPanel.activeSelf == true);
         yield return new WaitForSeconds(0.1f);
-        m_buttonScript.m_mainMenuPanelEnabled = true;
+        m_buttonScript.m_enabled = true;
     }
 
     public void RunToggleLevelsOff()
@@ -162,16 +162,16 @@ public class levelselectionmenuscript : menuscreenscript
         //Vector3 buttonScreenPos = Camera.main.WorldToScreenPoint(button.transform.position);
         //Vector3 panelScreenPos = Camera.main.WorldToScreenPoint(m_buttonScript.m_levelsPanel.transform.position);
         ////CanvasRenderer levelPanelRenderer = m_buttonScript.m_levelsPanel.GetComponent<CanvasRenderer>();
-        RectTransform levelsPanelRectTransform = m_buttonScript.m_levelsPanel.GetComponent<RectTransform>();
-        float halfWidth = ((levelsPanelRectTransform.rect.width / m_buttonScript.m_levelsPanel.GetComponentInParent<Canvas>().pixelRect.width) / 2) * Screen.width;
-        float halfHeight = ((levelsPanelRectTransform.rect.height / m_buttonScript.m_levelsPanel.GetComponentInParent<Canvas>().pixelRect.height) / 2) * Screen.height;
+        RectTransform levelsPanelRectTransform = m_buttonScript.GetLevelsPanel().GetComponent<RectTransform>();
+        float halfWidth = ((levelsPanelRectTransform.rect.width / m_buttonScript.GetLevelsPanel().GetComponentInParent<Canvas>().pixelRect.width) / 2) * Screen.width;
+        float halfHeight = ((levelsPanelRectTransform.rect.height / m_buttonScript.GetLevelsPanel().GetComponentInParent<Canvas>().pixelRect.height) / 2) * Screen.height;
         if (levelsPanelRectTransform != null)
         {
             //Debug.Log("rect transform attached");
             //Debug.Log("width: " + levelsPanelRectTransform.rect.width);
             //Debug.Log("height: " + levelsPanelRectTransform.rect.height);
-            float distX = Vector3.Distance(new Vector3(m_buttonScript.m_levelsPanel.transform.position.x, 0f, 0f), new Vector3(button.transform.position.x, 0f, 0f));
-            float distY = Vector3.Distance(new Vector3(0f, m_buttonScript.m_levelsPanel.transform.position.y, 0f), new Vector3(0f, button.transform.position.y, 0f));
+            float distX = Vector3.Distance(new Vector3(m_buttonScript.GetLevelsPanel().transform.position.x, 0f, 0f), new Vector3(button.transform.position.x, 0f, 0f));
+            float distY = Vector3.Distance(new Vector3(0f, m_buttonScript.GetLevelsPanel().transform.position.y, 0f), new Vector3(0f, button.transform.position.y, 0f));
             //Debug.Log("x distance: " + distX);
             //Debug.Log("half width: " + halfWidth);
             //Debug.Log("y distance: " + distY);
@@ -207,7 +207,7 @@ public class levelselectionmenuscript : menuscreenscript
                 if (CheckIfOnScreen(m_currentButton) == false)
                 {
                     //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
-                    if(m_currentButton.transform.position.x < m_buttonScript.m_levelsPanel.transform.position.x)
+                    if(m_currentButton.transform.position.x < m_buttonScript.GetLevelsPanel().transform.position.x)
                     {
                         m_scrollRect.horizontalNormalizedPosition -= m_scrollAmount;
                     }
@@ -230,7 +230,7 @@ public class levelselectionmenuscript : menuscreenscript
                 if (CheckIfOnScreen(m_currentButton) == false)
                 {
                     //ScrollRect scrollRect = m_scrollObject.GetComponent<ScrollRect>();
-                    if (m_currentButton.transform.position.x > m_buttonScript.m_levelsPanel.transform.position.x)
+                    if (m_currentButton.transform.position.x > m_buttonScript.GetLevelsPanel().transform.position.x)
                     {    
                         m_scrollRect.horizontalNormalizedPosition += m_scrollAmount;
                     }

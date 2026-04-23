@@ -5,26 +5,31 @@ using UnityEngine.UI;
 
 public class buttonnavscript : MonoBehaviour
 {
-    private InputAction m_navInputs;
-    private InputAction m_selectInput;
-    private int m_index = 0;
-    private Button m_currentButton;
-    private controlsmenuscript m_controlsScreenScript;
+    protected InputAction m_navInputs;
+    protected InputAction m_selectInput;
+    protected int m_index = 0;
+    protected Button m_currentButton;
+    protected controlsmenuscript m_controlsScreenScript;
     private levelselectionmenuscript m_levelScreenScript;
-    private settingsmenuscript m_settingsScreenScript;
-    [HideInInspector] public bool m_mainMenuPanelEnabled = true;
+    protected settingsmenuscript m_settingsScreenScript;
+    public bool m_enabled = true;
     //private Vector2 direction;
 
-    [SerializeField] public GameObject m_mainMenuPanel;
+    [SerializeField] public GameObject m_menuPanel;
     [SerializeField] public GameObject m_controlsPanel;
-    [SerializeField] public GameObject m_levelsPanel;
+    [SerializeField] private GameObject m_levelsPanel;
     [SerializeField] public GameObject m_settingsPanel;
-    [SerializeField] Button[] m_buttons;
-    [SerializeField] Sprite[] m_buttonSprites;
+    [SerializeField] protected Button[] m_buttons;
+    [SerializeField] protected Sprite[] m_buttonSprites;
 
-    private Coroutine m_toggleControlsOn;
+    protected Coroutine m_toggleControlsOn;
     private Coroutine m_toggleLevelsOn;
-    private Coroutine m_toggleSettingsOn;
+    protected Coroutine m_toggleSettingsOn;
+
+    //public bool GetMainMenuEnabled() {  return m_mainMenuPanelEnabled; }
+    //public void SetMainMenuEnabled(bool enabled) { m_mainMenuPanelEnabled = enabled; }
+    //public GameObject GetMainMenuPanel() { return m_mainMenuPanel; }
+    public GameObject GetLevelsPanel() { return m_levelsPanel; }
     
     private void Awake()
     {
@@ -36,8 +41,8 @@ public class buttonnavscript : MonoBehaviour
             Debug.LogError("no controls screen script attached");
 
         m_levelScreenScript = GetComponent<levelselectionmenuscript>();
-        if ((!m_levelScreenScript))
-            Debug.LogError("no level select screen script attached");
+        //if ((!m_levelScreenScript))
+        //    Debug.LogError("no level select screen script attached");
 
         m_settingsScreenScript = GetComponent<settingsmenuscript>();
         if (!m_settingsScreenScript)
@@ -70,49 +75,49 @@ public class buttonnavscript : MonoBehaviour
         m_currentButton.image.sprite = m_buttonSprites[1];
     }
 
-    private IEnumerator ToggleControlsMenuOn(GameObject menu)
+    protected IEnumerator ToggleControlsMenuOn(GameObject menu)
     {
         menu.SetActive(true);
-        m_mainMenuPanel.SetActive(false);
-        m_mainMenuPanelEnabled = false;
-        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
+        m_menuPanel.SetActive(false);
+        m_enabled = false;
+        yield return new WaitUntil(() => menu.activeSelf == true && m_menuPanel.activeSelf == false);
         m_controlsScreenScript.m_enabled = true;
-        m_toggleControlsOn = null;
-        StopCoroutine(ToggleControlsMenuOn(menu));
     }
 
     private IEnumerator ToggleLevelMenuOn(GameObject menu)
     {
         menu.SetActive(true);
-        m_mainMenuPanel.SetActive(false);
-        m_mainMenuPanelEnabled = false;
-        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
+        m_menuPanel.SetActive(false);
+        m_enabled = false;
+        yield return new WaitUntil(() => menu.activeSelf == true && m_menuPanel.activeSelf == false);
         m_levelScreenScript.m_enabled = true;
-        m_toggleLevelsOn = null;
-        StopCoroutine(ToggleLevelMenuOn(menu));
     }
 
-    private IEnumerator ToggleSettingsMenuOn(GameObject menu)
+    protected IEnumerator ToggleSettingsMenuOn(GameObject menu)
     {
         menu.SetActive(true);
-        m_mainMenuPanel.SetActive(false);
-        m_mainMenuPanelEnabled = false;
-        yield return new WaitUntil(() => menu.activeSelf == true && m_mainMenuPanel.activeSelf == false);
+        m_menuPanel.SetActive(false);
+        m_enabled = false;
+        yield return new WaitUntil(() => menu.activeSelf == true && m_menuPanel.activeSelf == false);
         m_settingsScreenScript.m_enabled = true;
-        m_toggleSettingsOn = null;
-        StopCoroutine(ToggleSettingsMenuOn(menu));
     }
 
     public void RunControlsMenuToggle(GameObject menu)
     {
         if(m_toggleControlsOn == null)
             m_toggleControlsOn = StartCoroutine(ToggleControlsMenuOn(menu));
+
+        m_toggleControlsOn = null;
+        StopCoroutine(ToggleControlsMenuOn(menu));
     }
 
     public void RunLevelMenuToggle(GameObject menu)
     {
         if(m_toggleLevelsOn == null)
             m_toggleLevelsOn = StartCoroutine(ToggleLevelMenuOn(menu));
+
+        m_toggleLevelsOn = null;
+        StopCoroutine(ToggleLevelMenuOn(menu));
     }
 
     public void RunSettingsMenuToggle(GameObject menu)
@@ -132,7 +137,7 @@ public class buttonnavscript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_navInputs.WasPressedThisDynamicUpdate() && m_mainMenuPanelEnabled)
+        if (m_navInputs.WasPressedThisDynamicUpdate() && m_enabled)
         {
             Vector2 direction = m_navInputs.ReadValue<Vector2>();
             //Debug.Log(direction);
@@ -148,7 +153,7 @@ public class buttonnavscript : MonoBehaviour
             //Debug.Log("Index: " + m_index);
         }
 
-        if (m_navInputs.WasReleasedThisDynamicUpdate() && m_mainMenuPanelEnabled)
+        if (m_navInputs.WasReleasedThisDynamicUpdate() && m_enabled)
         {
             if(m_currentButton != null)
             {
@@ -158,7 +163,7 @@ public class buttonnavscript : MonoBehaviour
             }      
         }
 
-        if(m_selectInput.WasReleasedThisDynamicUpdate() && m_currentButton != null && m_mainMenuPanelEnabled)
+        if(m_selectInput.WasReleasedThisDynamicUpdate() && m_currentButton != null && m_enabled)
         {
             m_currentButton.onClick.Invoke();
         }

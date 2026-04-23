@@ -11,8 +11,8 @@ public class Death : MonoBehaviour
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
-    private Vector3 m_startPoint;
-    private GameObject[] m_checkpoints;
+    public Vector3 m_startPoint;
+    //private GameObject[] m_checkpoints;
     private int m_totalTime;
     //private bool m_buttonPressed = false;
 
@@ -36,7 +36,7 @@ public class Death : MonoBehaviour
         //m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         //m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
 
-        m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        //m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
     }
 
     private IEnumerator Respawn()
@@ -72,7 +72,6 @@ public class Death : MonoBehaviour
     {
         //restarts the player from the start of the level
         //player points will need to be reset in this case
-        //possibly just reload the level using SceneManager.LoadScene(numOfThisScene)
 
         yield return new WaitForSeconds(1f);
 
@@ -83,17 +82,17 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
 
-        Debug.Log(m_checkpoints.Length);
+        //Debug.Log(m_checkpoints.Length);
 
-        //NOTE: since the decision to remove the choice to respawn or restart, this may not be needed but is being kept here 
-        //      for now in case the way changing settings mid run requires it. If it doesn't this can be removed
-        if(m_checkpoints != null)
-        {
-            foreach(GameObject checkpoint in m_checkpoints)
-            {
-                checkpoint.GetComponent<Checkpoint>().m_used = false;
-            }
-        }
+        ////NOTE: since the decision to remove the choice to respawn or restart, this may not be needed but is being kept here 
+        ////      for now in case the way changing settings mid run requires it. If it doesn't this can be removed
+        //if(m_checkpoints != null && Checkpoint.m_checkpointsEnabled)
+        //{
+        //    foreach(GameObject checkpoint in m_checkpoints)
+        //    {
+        //        checkpoint.GetComponent<Checkpoint>().m_used = false;
+        //    }
+        //}
 
         //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
@@ -108,6 +107,15 @@ public class Death : MonoBehaviour
         //m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         m_timerScript.m_paused = false;
         //yield return new WaitForSeconds(0.5f);
+    }
+
+    public void RestartLevel()
+    {
+        if (m_restart == null)
+            m_restart = StartCoroutine(Restart());
+
+        m_restart = null;
+        StopCoroutine(Restart());
     }
 
     private void OnTriggerEnter(Collider other)

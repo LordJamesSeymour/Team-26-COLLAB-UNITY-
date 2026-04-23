@@ -5729,8 +5729,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e53f83c6d5dd148bf2e8ac992ae445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_mainMenuPanelEnabled: 1
-  m_mainMenuPanel: {fileID: 63950143}
+  m_enabled: 1
+  m_menuPanel: {fileID: 63950143}
   m_controlsPanel: {fileID: 278672904}
   m_levelsPanel: {fileID: 852883239}
   m_settingsPanel: {fileID: 1265400434}

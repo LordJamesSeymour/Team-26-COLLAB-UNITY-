@@ -101,7 +101,7 @@ public class settingsmenuscript : menuscreenscript
     private IEnumerator ToggleSettingsMenuOff()
     {
         m_buttonScript.m_settingsPanel.SetActive(false);
-        m_buttonScript.m_mainMenuPanel.SetActive(true);
+        m_buttonScript.m_menuPanel.SetActive(true);
         m_onExitButton = false;
         m_onBackgroundSlider = false;
         m_onSoundEffectsSlider = false;
@@ -145,9 +145,9 @@ public class settingsmenuscript : menuscreenscript
         m_scrollRect.verticalNormalizedPosition = 1.0f;
         m_eventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
         //yield return new WaitForSeconds(2.0f);
-        yield return new WaitUntil(() => m_buttonScript.m_settingsPanel.activeSelf == false && m_buttonScript.m_mainMenuPanel.activeSelf == true);
+        yield return new WaitUntil(() => m_buttonScript.m_settingsPanel.activeSelf == false && m_buttonScript.m_menuPanel.activeSelf == true);
         yield return new WaitForSeconds(0.1f);
-        m_buttonScript.m_mainMenuPanelEnabled = true;
+        m_buttonScript.m_enabled = true;
         //m_toggle = null;
         //StopCoroutine(ToggleSettingsMenuOff());
     }

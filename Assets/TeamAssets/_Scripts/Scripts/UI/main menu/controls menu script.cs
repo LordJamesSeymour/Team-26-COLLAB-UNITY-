@@ -39,7 +39,7 @@ public class controlsmenuscript : menuscreenscript
     public IEnumerator ToggleControlsMenuOff()
     {
         m_buttonScript.m_controlsPanel.SetActive(false);
-        m_buttonScript.m_mainMenuPanel.SetActive(true);
+        m_buttonScript.m_menuPanel.SetActive(true);
         m_exitButton.image.sprite = m_buttonSprites[0];
         m_controllerButton.image.sprite = m_buttonSprites[0];
         m_keyboardButton.image.sprite = m_buttonSprites[1];
@@ -48,9 +48,9 @@ public class controlsmenuscript : menuscreenscript
         m_onExitButton = false;
         m_enabled = false;
 
-        yield return new WaitUntil(() => m_buttonScript.m_mainMenuPanel.activeSelf == true && m_buttonScript.m_controlsPanel.activeSelf == false);
+        yield return new WaitUntil(() => m_buttonScript.m_menuPanel.activeSelf == true && m_buttonScript.m_controlsPanel.activeSelf == false);
         yield return new WaitForSeconds(0.1f);
-        m_buttonScript.m_mainMenuPanelEnabled = true;
+        m_buttonScript.m_enabled = true;
         m_toggleOff = null;
         StopCoroutine(ToggleControlsMenuOff());
     }
