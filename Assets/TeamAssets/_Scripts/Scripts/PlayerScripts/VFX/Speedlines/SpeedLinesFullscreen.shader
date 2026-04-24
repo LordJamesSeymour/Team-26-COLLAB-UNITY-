@@ -26,6 +26,13 @@ Shader "UI/SpeedLinesFullscreen"
         _RadiusCompensation("Radius Compensation", Range(0,2)) = 1.0
         _EdgeThicknessBoost("Edge Thickness Boost", Range(0,2)) = 0.18
         _EdgeBrightnessBias("Edge Brightness Bias", Range(0.1,4)) = 1.8
+
+        _SheetColumns("Sheet Columns", Float) = 6
+        _SheetRows("Sheet Rows", Float) = 1
+        _FrameCount("Frame Count", Float) = 6
+        _TextureAnimSpeed("Texture Anim Speed", Float) = 5
+        _FlipStreakU("Flip Streak U", Range(0,1)) = 0
+        _FlipStreakV("Flip Streak V", Range(0,1)) = 0
     }
 
     SubShader
@@ -78,6 +85,13 @@ Shader "UI/SpeedLinesFullscreen"
             float _EdgeThicknessBoost;
             float _EdgeBrightnessBias;
 
+            float _SheetColumns;
+            float _SheetRows;
+            float _FrameCount;
+            float _TextureAnimSpeed;
+            float _FlipStreakU;
+            float _FlipStreakV;
+
             struct appdata_t
             {
                 float4 vertex   : POSITION;
@@ -112,7 +126,34 @@ Shader "UI/SpeedLinesFullscreen"
                 return abs(frac(a - b + 0.5) - 0.5);
             }
 
-            float EvaluateStreak(float angle01, float distNorm, float slotIndex, float slotCount)
+            float signedCircularDelta(float a, float b)
+            {
+                return frac(a - b + 0.5) - 0.5;
+            }
+
+            float2 GetSheetUV(float2 streakUV, float frameIndex)
+            {
+                float cols = max(1.0, _SheetColumns);
+                float rows = max(1.0, _SheetRows);
+                float frameCount = max(1.0, _FrameCount);
+
+                frameIndex = fmod(frameIndex, frameCount);
+                float col = fmod(frameIndex, cols);
+                float row = floor(frameIndex / cols);
+
+                streakUV = saturate(streakUV);
+
+                if (_FlipStreakU > 0.5)
+                    streakUV.x = 1.0 - streakUV.x;
+
+                if (_FlipStreakV > 0.5)
+                    streakUV.y = 1.0 - streakUV.y;
+
+                float2 cellSize = 1.0 / float2(cols, rows);
+                return float2((col + streakUV.x) * cellSize.x, (row + streakUV.y) * cellSize.y);
+            }
+
+            float4 EvaluateStreak(float angle01, float distNorm, float slotIndex, float slotCount)
             {
                 float densityFactor = lerp(0.2, 1.0, _SpeedAmount);
                 float activeThreshold = lerp(0.997, 0.22, densityFactor);
@@ -120,7 +161,6 @@ Shader "UI/SpeedLinesFullscreen"
                 float slotSeed = slotIndex + 17.0;
                 float localRate = 0.8 + hash11(slotSeed + 5.3) * 1.9;
 
-                // Uses a phase that only ever moves forward.
                 float cycleValue = _FlowPhase * localRate + hash11(slotSeed) * 9.37;
                 float cycleIndex = floor(cycleValue);
                 float cyclePos = frac(cycleValue);
@@ -133,13 +173,14 @@ Shader "UI/SpeedLinesFullscreen"
 
                 float activeMask = step(activeThreshold, rndA);
                 if (activeMask < 0.5)
-                    return 0.0;
+                    return float4(0,0,0,0);
 
                 float slotCenter01 = (slotIndex + 0.5) / slotCount;
                 float slotWidth = 1.0 / slotCount;
 
                 float angleCenter01 = frac(slotCenter01 + (rndB - 0.5) * slotWidth * _AngularJitter);
-                float laneDist = circularDistance(angle01, angleCenter01);
+                float signedLane = signedCircularDelta(angle01, angleCenter01);
+                float laneDist = abs(signedLane);
 
                 float spawnRadius = saturate(_CenterFade + rndC * _SpawnJitter);
 
@@ -155,7 +196,7 @@ Shader "UI/SpeedLinesFullscreen"
                     (1.0 - smoothstep(head - feather, head, distNorm));
 
                 if (trailMask <= 0.0001)
-                    return 0.0;
+                    return float4(0,0,0,0);
 
                 float trailPos = saturate((distNorm - tail) / max(head - tail, 0.0001));
 
@@ -169,15 +210,30 @@ Shader "UI/SpeedLinesFullscreen"
 
                 float brightnessBias = pow(trailPos, _EdgeBrightnessBias);
                 float brightnessVar = lerp(0.55, 1.65, rndB);
-
                 float edgeMask = lerp(0.72, 1.0, pow(distNorm, _EdgeBoost));
 
-                float intensity = lineMask * trailMask;
-                intensity *= lerp(0.18, 1.0, brightnessBias);
-                intensity *= brightnessVar;
-                intensity *= edgeMask;
+                float analyticIntensity = lineMask * trailMask;
+                analyticIntensity *= lerp(0.18, 1.0, brightnessBias);
+                analyticIntensity *= brightnessVar;
+                analyticIntensity *= edgeMask;
+                analyticIntensity *= activeMask;
+                analyticIntensity *= _Brightness * _SpeedAmount;
 
-                return intensity * activeMask;
+                float localU = trailPos;
+                float localV = saturate(0.5 + (signedLane / max(width + softness, 0.00001)) * 0.5);
+
+                float frameFloat = frac(_FlowPhase * _TextureAnimSpeed * (0.7 + rndA * 0.6) + rndD * 11.13) * max(1.0, _FrameCount);
+                float frameIndex = floor(frameFloat);
+
+                float2 streakUV = float2(localU, localV);
+                float4 streakTex = tex2D(_MainTex, GetSheetUV(streakUV, frameIndex));
+
+                float texMask = max(streakTex.a, dot(streakTex.rgb, float3(0.3333, 0.3333, 0.3333)));
+
+                float alpha = saturate(analyticIntensity * texMask);
+                float3 color = streakTex.rgb * alpha;
+
+                return float4(color, alpha);
             }
 
             v2f vert(appdata_t v)
@@ -206,25 +262,21 @@ Shader "UI/SpeedLinesFullscreen"
                 float slotCount = max(10.0, _LineDensity);
                 float baseSlot = floor(angle01 * slotCount);
 
-                float intensity = 0.0;
+                float4 accum = float4(0,0,0,0);
 
                 [unroll]
                 for (int n = -5; n <= 5; n++)
                 {
                     float slot = baseSlot + n;
                     float wrappedSlot = slot - floor(slot / slotCount) * slotCount;
-                    intensity += EvaluateStreak(angle01, distNorm, wrappedSlot, slotCount);
+                    accum += EvaluateStreak(angle01, distNorm, wrappedSlot, slotCount);
                 }
 
-                intensity = saturate(intensity);
-                intensity *= _Brightness * _SpeedAmount;
+                accum = saturate(accum);
+                accum.rgb *= _Tint.rgb * i.color.rgb;
+                accum.a *= _Tint.a * i.color.a;
 
-                float4 spriteSample = tex2D(_MainTex, i.uv) * i.color;
-
-                float alpha = saturate(intensity) * spriteSample.a * _Tint.a;
-                float3 color = _Tint.rgb * alpha;
-
-                return float4(color, alpha);
+                return accum;
             }
             ENDCG
         }
