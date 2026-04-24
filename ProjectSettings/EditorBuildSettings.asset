@@ -10,11 +10,11 @@ EditorBuildSettings:
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/checkpoints.unity
-    guid: 411451ef7f63dc9408a627569c4b471a
-  - enabled: 0
+    guid: c746c24f74d5f4b4bb3cf722cddcfde7
+  - enabled: 1
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Steve/SteveTesting 2.unity
     guid: 188ac8020ca5ca74daf568092b685806
-  - enabled: 1
+  - enabled: 0
     path: Assets/TeamAssets/_Scenes/SharkSubmissionLevels/Level1.unity
     guid: ef797556f40798e4280e6f5ee2721cc3
   m_configObjects:

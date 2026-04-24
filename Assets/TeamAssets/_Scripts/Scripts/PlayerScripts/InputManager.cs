@@ -26,9 +26,6 @@ namespace Group26.Player.Inputs
         [Tooltip("Button - Crouch")]
         [SerializeField] private InputActionReference crouchAction;
 
-        [Tooltip("Button - Sprint")]
-        [SerializeField] private InputActionReference sprintAction;
-
         [Tooltip("Button - Dash")]
         [SerializeField] private InputActionReference dashAction;
 
@@ -55,7 +52,6 @@ namespace Group26.Player.Inputs
         [HideInInspector] public Vector2 LookInput { get; private set; }
 
         [HideInInspector] public bool canGrapple;
-        [HideInInspector] public bool isSprinting;
         [HideInInspector] public bool isCrouching;
         [HideInInspector] public bool isSwinging;
         [HideInInspector] public bool isGrappling;
@@ -98,7 +94,6 @@ namespace Group26.Player.Inputs
 
             if (IsRailLocked())
             {
-                isSprinting = false;
                 isCrouching = false;
 
                 if (isSwinging)
@@ -111,7 +106,6 @@ namespace Group26.Player.Inputs
 
         public void ClearRailBlockedInputs()
         {
-            isSprinting = false;
             isCrouching = false;
 
             if (isSwinging)
@@ -138,7 +132,6 @@ namespace Group26.Player.Inputs
             SubscribePerformed(pauseAction, HandlePause);
 
             SubscribeToggled(grappleAction, HandleGrappleChanged);
-            SubscribeToggled(sprintAction, HandleSprintChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
 
@@ -158,7 +151,6 @@ namespace Group26.Player.Inputs
             UnsubscribePerformed(pauseAction, HandlePause);
 
             UnsubscribeToggled(grappleAction, HandleGrappleChanged);
-            UnsubscribeToggled(sprintAction, HandleSprintChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
             UnsubscribeToggled(swingAction, HandleSwingChanged);
 
@@ -209,20 +201,6 @@ namespace Group26.Player.Inputs
         private void HandlePause(InputAction.CallbackContext context)
         {
             OnPausePressed?.Invoke();
-        }
-
-        private void HandleSprintChanged(InputAction.CallbackContext context)
-        {
-            if (IsRailLocked())
-            {
-                isSprinting = false;
-                return;
-            }
-
-            if (context.performed)
-                isSprinting = true;
-            else if (context.canceled)
-                isSprinting = false;
         }
 
         private void HandleCrouchChanged(InputAction.CallbackContext context)
