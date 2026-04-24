@@ -8941,7 +8941,7 @@ GameObject:
   - component: {fileID: 1617677811127508311}
   - component: {fileID: 5762159472355941234}
   m_Layer: 8
-  m_Name: SphereMeshColllider (1)
+  m_Name: SphereMeshColllider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26880,16 +26880,13 @@ MonoBehaviour:
   lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   crouchAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  sprintAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   dashAction: {fileID: 1461705075683647243, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   grappleAction: {fileID: -5307849159119217957, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   swingAction: {fileID: 5909169241875225471, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   cameraSwitchAction: {fileID: -2845367783233132378, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   modeSwitchAction: {fileID: -6672007081965348566, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   pauseAction: {fileID: -8206455143520359253, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  TrickAction: {fileID: 0}
   canGrapple: 0
-  isSprinting: 0
   isCrouching: 0
   isSwinging: 0
   isGrappling: 0
@@ -26908,7 +26905,7 @@ MonoBehaviour:
   capsuleModeObject: {fileID: 1221785485162664554}
   ballModeObject: {fileID: 5576588610100128967}
   capsuleModeTransform: {fileID: 2537187495942133298}
-  sphereColliderTransform: {fileID: 0}
+  sphereColliderTransform: {fileID: 8995532082168664919}
   currentMode: 0
 --- !u!114 &2919202368038961353
 MonoBehaviour:
@@ -26922,8 +26919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d003a0184591a5543b6048dd4e9885ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 15
-  sprintSpeed: 15
+  walkSpeed: 20
   slideSpeed: 30
   wallRunSpeed: 15
   dashSpeed: 30
@@ -26976,7 +26972,7 @@ MonoBehaviour:
   leftWallRunningVirtualCamera: {fileID: 2930777851727102288}
   rightWallRunningVirtualCamera: {fileID: 8193317024553210788}
   firstPersonLookSensitivity: {x: 14, y: 14}
-  thirdPersonLookSensitivity: {x: 20, y: 20}
+  thirdPersonLookSensitivity: {x: 150, y: 150}
   currentCameraMode: 0
   m_firstPersonPitchLimits: {x: -100, y: 100}
   firstPersonYawRoot: {fileID: 2537187495942133298}
@@ -27078,7 +27074,7 @@ MonoBehaviour:
   m_rigidBody: {fileID: 0}
   meshToRotate: {fileID: 8995532082168664919}
   m_cameraYawTransform: {fileID: 414403218648493129}
-  m_moveForce: 30
+  m_moveForce: 35
   m_maxSpeed: 28
   m_airControlMultiplier: 0.4
   m_groundDrag: 0.4

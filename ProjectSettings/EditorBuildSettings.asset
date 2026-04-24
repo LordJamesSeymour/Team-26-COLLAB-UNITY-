@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Steve/SteveTesting 2.unity
     guid: 188ac8020ca5ca74daf568092b685806
   - enabled: 0
-    path: Assets/TeamAssets/_Scenes/SharkSubmissionLevels/Level1.unity
+    path: Assets/TeamAssets/_Scenes/SharkSubmissionLevels/Redundant_PlaytestLevel.unity
     guid: ef797556f40798e4280e6f5ee2721cc3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

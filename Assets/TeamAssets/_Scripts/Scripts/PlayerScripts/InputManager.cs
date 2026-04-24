@@ -44,10 +44,6 @@ namespace Group26.Player.Inputs
         [Tooltip("Button - Pausing game and triggering UI event")]
         [SerializeField] private InputActionReference pauseAction;
 
-        //Trick Button
-        [Tooltip("Button - Do a Trick")]
-        [SerializeField] private InputActionReference TrickAction;
-
         [HideInInspector] public Vector2 MoveInput { get; private set; }
         [HideInInspector] public Vector2 LookInput { get; private set; }
 
@@ -134,9 +130,6 @@ namespace Group26.Player.Inputs
             SubscribeToggled(grappleAction, HandleGrappleChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
-
-            SubscribeToggled(TrickAction, HandleTrick);
-
         }
 
         private void UnsubFromPlayerControls()
@@ -153,8 +146,6 @@ namespace Group26.Player.Inputs
             UnsubscribeToggled(grappleAction, HandleGrappleChanged);
             UnsubscribeToggled(crouchAction, HandleCrouchChanged);
             UnsubscribeToggled(swingAction, HandleSwingChanged);
-
-            UnsubscribeToggled(TrickAction, HandleTrick);
         }
 
         private static Vector2 ReadVector2(InputActionReference reference)

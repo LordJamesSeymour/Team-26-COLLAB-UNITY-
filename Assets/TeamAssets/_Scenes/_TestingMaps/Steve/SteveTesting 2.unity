@@ -5614,11 +5614,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07f492d2c3a7fb346a1bc687bc2c5a0b, type: 3}
---- !u!4 &2077966873643313039 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8995532082168664919, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-  m_PrefabInstance: {fileID: 6917783118405629144}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6917783118405629144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5627,22 +5622,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2231800117287090974, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: thirdPersonLookSensitivity.x
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 2231800117287090974, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: thirdPersonLookSensitivity.y
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 2785358435400852346, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: m_Name
-      value: SphereMeshColllider
-      objectReference: {fileID: 0}
-    - target: {fileID: 2919202368038961353, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: walkSpeed
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 3063391191299763813, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_maincam
       value: 
@@ -5651,10 +5630,6 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
-    - target: {fileID: 3192914443119119902, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: sphereColliderTransform
-      value: 
-      objectReference: {fileID: 2077966873643313039}
     - target: {fileID: 6781596411516850040, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: playerCam
       value: 
@@ -5670,10 +5645,6 @@ PrefabInstance:
     - target: {fileID: 8500031205333282589, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_Name
       value: PlayerCharacterBallTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 8500031205333282589, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8826812923701722165, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_LocalPosition.x

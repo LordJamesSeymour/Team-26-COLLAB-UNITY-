@@ -3178,57 +3178,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0503ea1eae79e9547a1f6b3e8dd0b529, type: 3}
---- !u!1 &491176745
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 491176747}
-  - component: {fileID: 491176746}
-  m_Layer: 0
-  m_Name: timer controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &491176746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491176745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e2474e7439cea34994a5ff99e7fbdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_bautoStart: 1
-  m_timerDisplay: {fileID: 1291874776}
-  m_bcompressTime: 1
-  m_totalTimeSecs: 0
-  m_elapsedTimeSecs: 0
-  m_elapsedTimeMins: 0
-  m_paused: 0
---- !u!4 &491176747
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491176745}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &493886322 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6128545376881985726, guid: 013d5ea26e2391944ac8306b9deaa737, type: 3}
@@ -12514,6 +12463,78 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07f492d2c3a7fb346a1bc687bc2c5a0b, type: 3}
+--- !u!1001 &8765918694679317848
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1810338424638069187, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_Name
+      value: TimerController
+      objectReference: {fileID: 0}
+    - target: {fileID: 7458290162413400721, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_timerDisplay
+      value: 
+      objectReference: {fileID: 1291874776}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802234796072169512, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+--- !u!114 &8960224267397320444 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7458290162413400721, guid: b70e511db3c7aed468abdc1618ddd20f, type: 3}
+  m_PrefabInstance: {fileID: 8765918694679317848}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e2474e7439cea34994a5ff99e7fbdda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9022848011782119765
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12653,7 +12674,7 @@ PrefabInstance:
     - target: {fileID: 6060779505620636773, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: m_timerScript
       value: 
-      objectReference: {fileID: 491176746}
+      objectReference: {fileID: 8960224267397320444}
     - target: {fileID: 6729170346735244407, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -12766,5 +12787,5 @@ SceneRoots:
   - {fileID: 1672259715}
   - {fileID: 1224464901081401009}
   - {fileID: 240472566}
-  - {fileID: 491176747}
+  - {fileID: 8765918694679317848}
   - {fileID: 1954892903}
