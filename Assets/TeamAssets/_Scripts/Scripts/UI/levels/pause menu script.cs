@@ -117,8 +117,10 @@ public class pausemenuscript : buttonnavscript
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(m_enabled);
         if(m_enabled == false && m_pauseInput.WasReleasedThisDynamicUpdate())
         {
+            Debug.Log(m_toggleMenuOn == null);
             if(m_toggleMenuOn == null)
                 m_toggleMenuOn = StartCoroutine(Pause());
 

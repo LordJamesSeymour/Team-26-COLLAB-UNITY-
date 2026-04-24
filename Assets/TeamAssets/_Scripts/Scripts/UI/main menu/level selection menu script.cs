@@ -14,7 +14,7 @@ public class levelselectionmenuscript : menuscreenscript
 
     private RectTransform m_iconTransform;
     private int m_index = 0;
-    private static bool m_run = false;
+    //private static bool m_run = false;
     private ScrollRect m_scrollRect;
     //private buttonnavscript m_buttonScript;
 
@@ -27,14 +27,16 @@ public class levelselectionmenuscript : menuscreenscript
 
         m_manager = new datamanager(6);
 
-        if(m_run == false)
-        {
-            m_run = true;
-        }
-        else
-        {
-            m_manager.LoadGameData();
-        }
+        Debug.Log(m_run + "levels");
+
+        //if(m_run == false)
+        //{
+        //    m_run = true;
+        //}
+        //else
+        //{
+        //    m_manager.LoadGameData();
+        //}
 
         if (m_manager.GetGameData().levels[m_index].levelNum == 0)
         {
@@ -66,7 +68,25 @@ public class levelselectionmenuscript : menuscreenscript
         if (!m_scrollRect)
             Debug.LogError("no scroll rect");
 
-        for(int i = 0; i < m_levelButtons.Length; i++)
+        m_buttonScript.GetLevelsPanel().GetComponent<menuscreeneventsmanager>().IsVisible += LevelsVisible;
+    }
+
+    private void LevelsVisible()
+    {
+        Debug.Log(m_run);
+        if (m_run)
+            m_manager.LoadGameData();
+        else
+            m_run = true;
+
+        if (m_manager.GetGameData().levels[m_index].levelNum == 0)
+        {
+            m_manager.SetLevelNum(m_index, m_index + 1);
+            m_manager.SaveGameData();
+        }
+
+        Debug.Log("levels visible");
+        for (int i = 0; i < m_levelButtons.Length; i++)
         {
             if (m_manager.GetGameData().levels[i].completed)
             {

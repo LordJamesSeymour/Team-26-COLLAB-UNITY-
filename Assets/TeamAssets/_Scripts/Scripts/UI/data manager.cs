@@ -72,6 +72,7 @@ public class datamanager
         if(m_gameData == null)
         {
             m_gameData = new GameData();
+            Debug.Log("no game data");
             AddLevel();
         }
 

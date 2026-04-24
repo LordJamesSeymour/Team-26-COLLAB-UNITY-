@@ -89,6 +89,10 @@ public class buttonnavscript : MonoBehaviour
         menu.SetActive(true);
         m_menuPanel.SetActive(false);
         m_enabled = false;
+
+        if(menuscreenscript.m_run == false)
+            menuscreenscript.m_run = true;
+
         yield return new WaitUntil(() => menu.activeSelf == true && m_menuPanel.activeSelf == false);
         m_levelScreenScript.m_enabled = true;
     }
@@ -98,6 +102,10 @@ public class buttonnavscript : MonoBehaviour
         menu.SetActive(true);
         m_menuPanel.SetActive(false);
         m_enabled = false;
+
+        if(menuscreenscript.m_run == false)
+            menuscreenscript.m_run = true;
+
         yield return new WaitUntil(() => menu.activeSelf == true && m_menuPanel.activeSelf == false);
         m_settingsScreenScript.m_enabled = true;
     }

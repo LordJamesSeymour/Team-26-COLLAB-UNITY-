@@ -13,10 +13,11 @@ public class Checkpoint : MonoBehaviour
     private void Awake()
     {
         //m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
-        m_manager = new datamanager(3);
+        m_manager = new datamanager(6);
         m_manager.LoadGameData();
 
         m_checkpointsEnabled = m_manager.GetGameData().settings.checkpointsEnabled;
+        Debug.Log("checkpoints: " + m_manager.GetGameData().settings.checkpointsEnabled);
 
         m_used = false;
         if(!m_checkpointsEnabled) gameObject.SetActive(false);

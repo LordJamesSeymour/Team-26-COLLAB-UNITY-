@@ -1,4 +1,5 @@
 using Group26.Player.Camera;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,15 @@ public class TEST_level_button_script : MonoBehaviour
     private void Awake()
     {
         m_manager = new datamanager(6);
-        m_manager.LoadGameData();
+        try
+        {
+            m_manager.LoadGameData();
+            Debug.Log("loaded");
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e.Message + "not settings");
+        }
     }
 
     public void CompleteLevel(int scene)
@@ -30,13 +39,15 @@ public class TEST_level_button_script : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //m_manager.LoadGameData();
+        Debug.Log(m_manager.GetGameData().levels[m_levelNum].levelNum);
+
         m_levelText.text = "Level: " + m_manager.GetGameData().levels[m_levelNum].levelNum;
         //Debug.Log(m_cameraScript.thirdPersonLookSensitivity);
     }

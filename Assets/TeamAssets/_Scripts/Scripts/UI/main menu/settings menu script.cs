@@ -33,7 +33,8 @@ public class settingsmenuscript : menuscreenscript
     private bool m_onHeight;
     private string m_widthInputText;
     private string m_heightInputText;
-    private static bool m_run;
+    //private static bool m_run;
+    private static bool m_started;
     private int m_index = -1;
     private int m_maxWidth;
     private int m_maxHeight;
@@ -54,33 +55,50 @@ public class settingsmenuscript : menuscreenscript
         m_maxWidth = maxResolution.width;
         m_maxHeight = maxResolution.height;
 
-        m_manager = new datamanager(6);
-
-        if (m_run == false)
+        if(m_started == false)
         {
-            m_run = true;
+            m_started = true;
             Screen.SetResolution(maxResolution.width, maxResolution.height, true);
         }
-        else
-        {
-            m_manager.LoadGameData();
-        }
+
+        m_manager = new datamanager(6);
+
+        //if (m_run == false)
+        //{
+        //    m_run = true;
+        //}
+        //else
+        //{
+        //    m_manager.LoadGameData();
+        //}
 
         m_scrollRect = m_scrollArea.GetComponent<ScrollRect>();
         if (!m_scrollRect)
             Debug.LogError("no scroll rect on object");
 
         //Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
-        m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
-        m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
-        m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
-        m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
-        //m_sensitivity = m_sensitivitySlider.value;
+
         m_fullscreenToggle.isOn = true;
         m_widthInput.interactable = false;
         m_heightInput.interactable = false;
         m_onExitButton = false;
         m_eventSystem = GameObject.Find("EventSystem");
+        m_buttonScript.m_settingsPanel.GetComponent<menuscreeneventsmanager>().IsVisible += SettingsVisible;
+    }
+
+    private void SettingsVisible()
+    {
+        Debug.Log(m_run);
+        if (m_run)
+            m_manager.LoadGameData();
+        else
+            m_run = true;
+
+        Debug.Log("settings visible");
+        m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
+        m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
+        m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+        m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
     }
 
     private Resolution FindHighestRes()
@@ -165,7 +183,7 @@ public class settingsmenuscript : menuscreenscript
     public IEnumerator ToggleCheckpointsEnabled()
     {
         /*Checkpoint.m_checkpointsEnabled = !Checkpoint.m_checkpointsEnabled*/
-        m_manager.LoadGameData();
+        //m_manager.LoadGameData();
         m_manager.SetCheckpointsEnabled(m_checkpointToggle.isOn);
         m_manager.SaveGameData();
         yield return new WaitForSeconds(0.1f);
@@ -424,22 +442,6 @@ public class settingsmenuscript : menuscreenscript
         }
     }
 
-    //private IEnumerator UpdateSensitivityVal()
-    //{
-    //    if (m_navInputs.ReadValue<Vector2>() == Vector2.right && m_sensitivitySlider.value < m_sensitivitySlider.maxValue)
-    //    {
-    //        m_sensitivitySlider.Select();
-    //        m_sensitivitySlider.value += 0.01f;
-    //    }
-    //    else if (m_navInputs.ReadValue<Vector2>() == Vector2.left && m_sensitivitySlider.value > m_sensitivitySlider.minValue)
-    //    {
-    //        m_sensitivitySlider.Select();
-    //        m_sensitivitySlider.value -= 0.01f;
-    //    }
-
-    //    yield return new WaitForSeconds(0.5f);
-    //}
-
     // Update is called once per frame
     void Update()
     {
@@ -504,12 +506,6 @@ public class settingsmenuscript : menuscreenscript
                 //m_sensitivitySlider.value = Mathf.Lerp(m_sensitivitySlider.value, m_sensitivity,2 * Time.deltaTime);
 
                 //Debug.Log(m_sensitivity);
-
-                //if (m_updateSensitivityVal == null)
-                //    m_updateSensitivityVal = StartCoroutine(UpdateSensitivityVal());
-
-                //m_updateSensitivityVal = null;
-                //StopCoroutine(UpdateSensitivityVal());
             }
             else if (m_onResizeInputs)
             {

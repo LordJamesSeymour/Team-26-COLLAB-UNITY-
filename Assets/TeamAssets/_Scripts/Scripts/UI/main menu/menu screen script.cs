@@ -13,6 +13,7 @@ public class menuscreenscript : MonoBehaviour
     protected InputAction m_selectInput;
     protected Button m_currentButton;
     protected buttonnavscript m_buttonScript;
+    public static bool m_run;
 
     protected virtual void Awake()
     {
