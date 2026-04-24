@@ -226,7 +226,7 @@ namespace Group26.Player.Camera
 				ballMovementFOVCoroutine = StartCoroutine(DoBallMovementFOV());
 			}
 
-			HandleSprintFOV();
+			HandleRunFOV();
 		}
 
 		private IEnumerator DoBallMovementFOV()
@@ -675,21 +675,21 @@ namespace Group26.Player.Camera
 			isBursting = false;
 		}
 
-		private void HandleSprintFOV()
+		private void HandleRunFOV()
 		{
 			if (playerController == null) return;
 			if (playerModeSwitcher != null && playerModeSwitcher.currentMode == PlayerMode.BallMode) return;
 
-			bool isCurrentlySprinting =
-				(playerInput != null && playerInput.isSprinting) ||
+			bool isCurrentlyRunning =
+				(playerInput != null && playerInput.MoveInput.magnitude > 0.1f) ||
 				playerController.m_bIsWallRunning ||
 				playerController.m_bActiveGrapple;
 
-			if (isCurrentlySprinting != isSprintingLastFrame)
+			if (isCurrentlyRunning != isSprintingLastFrame)
 			{
-				float targetFOV = isCurrentlySprinting ? sprintFOV : defaultFOV;
+				float targetFOV = isCurrentlyRunning ? sprintFOV : defaultFOV;
 				StartFOVTransition(targetFOV);
-				isSprintingLastFrame = isCurrentlySprinting;
+				isSprintingLastFrame = isCurrentlyRunning;
 			}
 		}
 

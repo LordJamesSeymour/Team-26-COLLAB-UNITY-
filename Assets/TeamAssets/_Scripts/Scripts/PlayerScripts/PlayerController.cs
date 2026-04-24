@@ -14,7 +14,6 @@ namespace Group26.Player.Movement
 
         [Header("Movement")]
         [SerializeField] float walkSpeed;
-        [SerializeField] float sprintSpeed;
         [SerializeField] float slideSpeed;
         [SerializeField] float wallRunSpeed;
         [SerializeField] float dashSpeed;
@@ -67,7 +66,6 @@ namespace Group26.Player.Movement
         {
             freeze,
             walking,
-            sprinting,
             crouching,
             sliding,
             air,
@@ -186,7 +184,7 @@ namespace Group26.Player.Movement
 
             if (m_bIsGrounded && !m_bActiveGrapple)
             {
-                if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+                if (state == MovementState.walking || state == MovementState.crouching)
                     rb.linearDamping = groundDrag;
                 else
                     rb.linearDamping = 0f;
@@ -282,11 +280,6 @@ namespace Group26.Player.Movement
             {
                 state = MovementState.crouching;
                 desiredMoveSpeed = crouchSpeed;
-            }
-            else if (m_bIsGrounded && inputManager.isSprinting)
-            {
-                state = MovementState.sprinting;
-                desiredMoveSpeed = sprintSpeed;
             }
             else if (m_bIsGrounded)
             {

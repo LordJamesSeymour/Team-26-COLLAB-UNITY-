@@ -19,6 +19,12 @@ namespace Group26.Player.Utility
         [SerializeField] private GameObject capsuleModeObject;
         [SerializeField] private GameObject ballModeObject;
 
+        [SerializeField] private Transform capsuleModeTransform;
+        [SerializeField] private Transform sphereColliderTransform;
+        
+
+        private Rigidbody m_rigidbody;
+
         public PlayerMode currentMode = PlayerMode.CapsuleMode;
 
         private GrappleGun m_grappleGunScript;
@@ -47,9 +53,9 @@ namespace Group26.Player.Utility
             if (m_grappleGunScript == null) {
 
                 Debug.LogError("Grapple gun script is not attached");
-            
             }
 
+            m_rigidbody = GetComponent<Rigidbody>();
         }
 
         private void OnEnable()
@@ -82,10 +88,25 @@ namespace Group26.Player.Utility
                     capsuleModeObject.SetActive(true);
                     playerController.enabled = true;
                     ballRollController.enabled = false;
+
+                    m_rigidbody.angularVelocity = Vector3.zero;
+                    sphereColliderTransform.localRotation = Quaternion.identity;
+
                     break;
+
                 case PlayerMode.BallMode:
+
+                    Vector3 forwardDirection = capsuleModeTransform.forward;
+                    forwardDirection.y = 0f;
+
+                    if(forwardDirection.sqrMagnitude > 0.01f)
+                    {
+                        ballModeObject.transform.rotation = Quaternion.LookRotation(forwardDirection.normalized, Vector3.up);
+                    }
+
                     capsuleModeObject.SetActive(false);
                     ballModeObject.SetActive(true);
+
                     playerController.m_bIsGrounded = false;
                     playerController.enabled = false;
                     ballRollController.enabled = true;
