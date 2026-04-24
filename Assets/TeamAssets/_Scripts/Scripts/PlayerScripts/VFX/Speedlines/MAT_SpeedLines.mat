@@ -109,8 +109,13 @@ Material:
     - _EdgeBoost: 1.35
     - _EdgeBrightnessBias: 2.4
     - _EdgeThicknessBias: 2.2
+    - _EdgeThicknessBoost: 0.18
     - _EnvironmentReflections: 1
+    - _FlipStreakU: 0
+    - _FlipStreakV: 0
+    - _FlowPhase: 0
     - _FlowSpeed: 5
+    - _FrameCount: 6
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -118,13 +123,16 @@ Material:
     - _Jitter: 0.08
     - _LineDensity: 120
     - _LineSoftness: 0.003
-    - _MaxTrailLength: 0.48
+    - _MaxTrailLength: 0.703
     - _Metallic: 0
-    - _MinTrailLength: 0.16
+    - _MinTrailLength: 0.231
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _RadiusCompensation: 1
     - _ReceiveShadows: 1
+    - _SheetColumns: 6
+    - _SheetRows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpawnJitter: 0.12
@@ -135,6 +143,7 @@ Material:
     - _StartJitter: 0.16
     - _Stretch: 2.2
     - _Surface: 0
+    - _TextureAnimSpeed: 5
     - _Thickness: 0.015
     - _TrailFeather: 0.03
     - _TrailLength: 0.48
