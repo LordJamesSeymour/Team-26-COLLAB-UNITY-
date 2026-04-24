@@ -3001,6 +3001,10 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 1224464901081401010}
+    - target: {fileID: 4905380358480270881, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
+      propertyPath: TimerReference
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6781596411516850040, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: playerCam
       value: 
