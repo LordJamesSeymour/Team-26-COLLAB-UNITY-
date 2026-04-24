@@ -441,9 +441,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 5006442972207196483}
   playerCam: {fileID: 0}
-  grappleForce: 20
+  grappleForce: 10
   grappleUpwardForce: 10
-  maxGrappleYSpeed: 75
+  maxGrappleYSpeed: 30
   grappleDuration: 0.75
   grappleCooldown: 0.5
   useCameraForward: 0
@@ -997,7 +997,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590477162126821102}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1162,7 +1162,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 05b9860173232f046838e995af285392, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fb4d1eb8468ca2e4598b5de737d7d07e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
