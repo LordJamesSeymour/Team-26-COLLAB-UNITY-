@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7524075863321400103}
   - component: {fileID: 136138473210532568}
   - component: {fileID: 7545456779576867628}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CD_disk_body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 5435210915639927814}
   - component: {fileID: 7861007069537376232}
   - component: {fileID: 7073775657292610092}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CD_disk_tray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6725941479149280362}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
