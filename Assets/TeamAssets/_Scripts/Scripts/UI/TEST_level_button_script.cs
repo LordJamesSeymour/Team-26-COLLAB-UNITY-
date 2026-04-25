@@ -11,7 +11,7 @@ public class TEST_level_button_script : MonoBehaviour
     public int m_levelNum;  //this is the level's number - 1 e.g. if this is level 1 then this var is 0
 
     [SerializeField] private TextMeshProUGUI m_levelText;
-    [SerializeField] private CameraModeManager m_cameraScript;
+    //[SerializeField] private CameraModeManager m_cameraScript;
 
     private void Awake()
     {
