@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 2830219cf36715945a17f08d90aa86e7
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _USB_BaseMap: {fileID: 2800000, guid: 60458baac61243444a47e28516d060c7, type: 3}
+  - _USB_Normal: {fileID: 2800000, guid: 9f5847080ca3e2b439f886a06a1766ba, type: 3}
+  - _USB_MaskMap: {fileID: 2800000, guid: 5c121fbaa16f3ca4c9183f3dc07f3375, type: 3}
+  - _USB_Emissive: {fileID: 2800000, guid: ce5c71ff5d0015646a33c4cf5650d75e, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
