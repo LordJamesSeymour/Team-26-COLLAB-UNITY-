@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class pausemenuscript : buttonnavscript
@@ -112,6 +113,11 @@ public class pausemenuscript : buttonnavscript
         StopCoroutine(RestartLevel());
         Debug.Log(m_toggleMenuOff == null);
         //m_playerDeathScript.RestartLevel();
+    }
+
+    public void ReturnToMap(int menuSceneNum)
+    {
+        SceneManager.LoadScene(menuSceneNum);
     }
 
     // Update is called once per frame
