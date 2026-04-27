@@ -1,4 +1,6 @@
+using Group26.Player.Movement;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -9,6 +11,7 @@ public class pausemenuscript : buttonnavscript
     [SerializeField] private GameObject m_darkenedBackground;
     [SerializeField] GameObject m_player;
     [SerializeField] private Timer m_timer;
+    [SerializeField] private TrickSystem m_trickSystemScript;
 
     private Coroutine m_toggleMenuOff;
     private Coroutine m_toggleMenuOn;
@@ -67,6 +70,7 @@ public class pausemenuscript : buttonnavscript
     {
         m_playerTransform.position = m_playerDeathScript.m_startPoint;
         m_playerDeathScript.m_respawnPoint = m_playerDeathScript.m_startPoint;
+        m_trickSystemScript.TotalScore = 0;
         m_timer.ResetTimer();
 
         if (m_checkpoints != null && Checkpoint.m_checkpointsEnabled)
@@ -118,6 +122,18 @@ public class pausemenuscript : buttonnavscript
     public void ReturnToMap(int menuSceneNum)
     {
         SceneManager.LoadScene(menuSceneNum);
+    }
+
+    private void OnEnable()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    private void OnDisable()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame

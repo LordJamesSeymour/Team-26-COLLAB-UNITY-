@@ -56,11 +56,11 @@ public class levelselectionmenuscript : menuscreenscript
         {
             Debug.LogError("no rect transform attached");
         }
-        //else
-        //{
-        //    m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
-        //    m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
-        //}
+        else
+        {
+            m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
+            m_iconTransform.position += new Vector3(Screen.width * -0.005f, Screen.height * 0.16f, 0);
+        }
 
         m_scrollRect = m_scrollObject.GetComponent<ScrollRect>();
         if (!m_scrollRect)
@@ -85,7 +85,8 @@ public class levelselectionmenuscript : menuscreenscript
 
         Debug.Log("levels visible");
 
-        m_manager.SetLocked(2, true);
+        m_manager.SetLocked(4, true);
+        m_manager.SetLocked(5, true);
         m_manager.SaveGameData();
 
         for (int i = 0; i < m_levelButtons.Length; i++)
@@ -134,7 +135,7 @@ public class levelselectionmenuscript : menuscreenscript
         //m_manager.SetLevelNum(m_index, m_index + 1);
         //m_manager.SaveGameData();
         m_iconTransform.position = m_levelButtons[m_index].GetComponent<RectTransform>().position;
-        m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
+        m_iconTransform.position += new Vector3(Screen.width * -0.005f, Screen.height * 0.16f, 0);
         m_enabled = false;
 
         m_scrollRect.horizontalNormalizedPosition = 0f;
@@ -184,7 +185,7 @@ public class levelselectionmenuscript : menuscreenscript
         m_manager.SaveGameData();
         m_onExitButton = false;
         m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
-        m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
+        m_iconTransform.position += new Vector3(Screen.width * -0.005f, Screen.height * 0.16f, 0);
     }
 
     bool CheckIfOnScreen(Button button)
@@ -322,7 +323,7 @@ public class levelselectionmenuscript : menuscreenscript
                 m_manager.SetLevelNum(m_index, m_index + 1);
                 m_manager.SaveGameData();
                 m_iconTransform.position = m_currentButton.GetComponent<RectTransform>().position;
-                m_iconTransform.position += new Vector3(0, Screen.height * 0.1f, 0);
+                m_iconTransform.position += new Vector3(Screen.width * -0.005f, Screen.height * 0.16f, 0);
             }
         }
 

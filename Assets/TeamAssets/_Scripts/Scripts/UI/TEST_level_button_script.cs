@@ -1,4 +1,5 @@
 using Group26.Player.Camera;
+using Group26.Player.Movement;
 using System;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class TEST_level_button_script : MonoBehaviour
     public int m_levelNum;  //this is the level's number - 1 e.g. if this is level 1 then this var is 0
 
     [SerializeField] private TextMeshProUGUI m_levelText;
+    [SerializeField] private TextMeshProUGUI m_scoreText;
+    [SerializeField] private TrickSystem m_trickSystemScript;
     //[SerializeField] private CameraModeManager m_cameraScript;
 
     private void Awake()
@@ -49,6 +52,7 @@ public class TEST_level_button_script : MonoBehaviour
         Debug.Log(m_manager.GetGameData().levels[m_levelNum].levelNum);
 
         m_levelText.text = "Level: " + m_manager.GetGameData().levels[m_levelNum].levelNum;
+        m_scoreText.text = "Points: " + m_trickSystemScript.TotalScore;
         //Debug.Log(m_cameraScript.thirdPersonLookSensitivity);
     }
 }
