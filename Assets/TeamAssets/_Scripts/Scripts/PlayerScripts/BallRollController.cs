@@ -135,7 +135,7 @@ namespace Group26.Player.Movement
             }
         }
 
-        private bool IsGrounded()
+        public bool IsGrounded()
         {
             Vector3 origin = m_groundCheck != null ? m_groundCheck.position : transform.position;
             return Physics.Raycast(origin, Vector3.down, m_groundCheckDistance, m_groundLayer);
