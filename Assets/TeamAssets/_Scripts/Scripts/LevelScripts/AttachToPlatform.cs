@@ -55,9 +55,10 @@ public class AttachToPlatform : MonoBehaviour
             //Stopping the coroutine if the platform or object has no rigidbody
             if (m_platformRb == null || m_rb == null)
                 StopAllCoroutines();
-
+            
             Vector3 forceToAdd = m_platformRb.linearVelocity * m_speedMultiplier;
-            m_rb.AddForce(forceToAdd,ForceMode.Impulse);
+            m_rb.AddForce(forceToAdd, ForceMode.Impulse);
+            
 
             yield return new WaitForSeconds(m_matchforcetime);
         }
