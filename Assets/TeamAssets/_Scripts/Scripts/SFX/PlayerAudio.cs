@@ -26,7 +26,7 @@ public class PlayerAudio : MonoBehaviour
         AudioManager.instance.PlaySoundAtPoint(SoundType.STEP, transform.position, .1f, .05f, 1, .15f, 0);
         if (state == PlayerController.MovementState.walking)
             yield return new WaitForSeconds(.35f);
-        else if (state == PlayerController.MovementState.sprinting || state == PlayerController.MovementState.wallRunning)
+        else if (state == PlayerController.MovementState.wallRunning)
             yield return new WaitForSeconds(.2f);
         m_stepSound = null;
     }
