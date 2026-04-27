@@ -1523,7 +1523,8 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: d57b86124f041f74faa7ce98fd1a3358, type: 3}
   - name: ROLL
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: af668ffa2d47cc14496155ac0c2a9816, type: 3}
   - name: GRAPPLE
     sounds: []
   - name: WIND
@@ -2659,6 +2660,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5423168465803579035, guid: 7d24fe645a069a540b5e3f3094062eee, type: 3}
   m_PrefabInstance: {fileID: 1212901740}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &433475417 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2512525317140182195, guid: 6816cd14e3f922f4f81d2b909253947e, type: 3}
+  m_PrefabInstance: {fileID: 8891232482450560088}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &433475419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433475417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff4bb8c13ff96e24ba486fba5b9be31f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &436891382
 GameObject:
   m_ObjectHideFlags: 0
@@ -12785,7 +12803,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2512525317140182195, guid: 6816cd14e3f922f4f81d2b909253947e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 433475419}
   m_SourcePrefab: {fileID: 100100000, guid: 6816cd14e3f922f4f81d2b909253947e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
