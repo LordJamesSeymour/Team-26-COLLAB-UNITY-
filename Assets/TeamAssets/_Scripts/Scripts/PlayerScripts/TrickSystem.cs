@@ -83,25 +83,9 @@ namespace Group26.Player.Movement
 
         }
 
-        private void OnEnable()
-        {
-            //InputManager.OnTrickPressed += DoATrick;
-        }
-
-        private void OnDisable()
-        {
-            //InputManager.OnTrickPressed -= DoATrick;
-        }
-
         public void DoATrick() 
         {
             print(TotalScore);
-        }
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-
         }
 
         private void FixedUpdate()
