@@ -26,7 +26,7 @@ namespace Group26.Player.Movement
 
         [Header("Ground Check Settings")]
         [SerializeField] private Transform m_groundCheck;
-        [SerializeField, Range(1, 2)] private float m_groundCheckDistance = 1.1f;
+        [SerializeField, Range(0.1f, 10f)] private float m_groundCheckDistance = 1.1f;
         [SerializeField] private LayerMask m_groundLayer;
 
         private void Awake()
@@ -63,7 +63,9 @@ namespace Group26.Player.Movement
             RotateVisualMesh();
 
             // Debug the balls speed
-            Debug.Log($"Speed: {m_rigidBody.linearVelocity.magnitude}");
+            //Debug.Log($"Speed: {m_rigidBody.linearVelocity.magnitude}");
+
+            //Debug.Log($"IsGrounded: {IsGrounded()}") ;
         }
 
         private void RotateVisualMesh()

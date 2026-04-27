@@ -3,6 +3,7 @@ using System.Collections;
 using Group26.Player.Inputs;
 using Unity.Mathematics;
 using UnityEngine.Splines;
+using System;
 
 namespace Group26.Player.Movement
 {
@@ -13,7 +14,6 @@ namespace Group26.Player.Movement
 
         [Header("Movement")]
         [SerializeField] float walkSpeed;
-        [SerializeField] float sprintSpeed;
         [SerializeField] float slideSpeed;
         [SerializeField] float wallRunSpeed;
         [SerializeField] float dashSpeed;
@@ -66,7 +66,6 @@ namespace Group26.Player.Movement
         {
             freeze,
             walking,
-            sprinting,
             crouching,
             sliding,
             air,
@@ -87,8 +86,19 @@ namespace Group26.Player.Movement
         public bool m_bOnRail;
 
         public bool IsOnRail => m_bOnRail;
+        public bool IsGrounded => m_bIsGrounded;
+        public bool IsSliding => m_bSliding;
+
+        public bool IsMovementLockedForSlide =>
+            m_bOnRail ||
+            m_bActiveGrapple ||
+            m_bActiveSwing ||
+            m_bIsWallRunning ||
+            m_bDashing ||
+            m_bFreeze;
 
         [SerializeField] Transform orientation;
+        public Transform OrientationTransform => orientation;
 
         float horizontalInput;
         float verticalInput;
@@ -118,8 +128,13 @@ namespace Group26.Player.Movement
         RailSpline currentRail;
         float currentRailT;
         float currentRailSpeed;
-        public bool IsGrounded => m_bIsGrounded;
+
+        public event Action TrickSystemEvent;
+
         public Vector3 SlopeNormal => slopeHit.normal;
+        public Vector3 FlatVelocity => new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        public float CurrentHorizontalSpeed => FlatVelocity.magnitude;
+        public Rigidbody Body => rb;
 
         private void Awake()
         {
@@ -169,7 +184,7 @@ namespace Group26.Player.Movement
 
             if (m_bIsGrounded && !m_bActiveGrapple)
             {
-                if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+                if (state == MovementState.walking || state == MovementState.crouching)
                     rb.linearDamping = groundDrag;
                 else
                     rb.linearDamping = 0f;
@@ -266,11 +281,6 @@ namespace Group26.Player.Movement
                 state = MovementState.crouching;
                 desiredMoveSpeed = crouchSpeed;
             }
-            else if (m_bIsGrounded && inputManager.isSprinting)
-            {
-                state = MovementState.sprinting;
-                desiredMoveSpeed = sprintSpeed;
-            }
             else if (m_bIsGrounded)
             {
                 state = MovementState.walking;
@@ -312,6 +322,8 @@ namespace Group26.Player.Movement
 
             lastDesiredMoveSpeed = desiredMoveSpeed;
             lastState = state;
+
+            TrickSystemEvent?.Invoke();
         }
 
         private IEnumerator SmoothlyLerpMoveSpeed()
@@ -466,6 +478,9 @@ namespace Group26.Player.Movement
         {
             if (m_bOnRail) return;
 
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
+
             m_bActiveGrapple = true;
             m_bStraightGrappleMovement = false;
 
@@ -476,6 +491,9 @@ namespace Group26.Player.Movement
         public void GrappleToPositionStraight(Vector3 targetPosition, float grappleSpeed)
         {
             if (m_bOnRail) return;
+
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
 
             m_bActiveGrapple = true;
             m_bStraightGrappleMovement = true;
@@ -506,6 +524,9 @@ namespace Group26.Player.Movement
 
         public void BeginDashState(float dashMaxYSpeed, bool lockMovement = true)
         {
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
+
             m_bDashing = true;
             m_bDashMovementLocked = lockMovement;
             maxYSpeed = dashMaxYSpeed;
@@ -526,7 +547,12 @@ namespace Group26.Player.Movement
             maxYSpeed = 0f;
         }
 
-        private void ReleaseGrappleMovement()
+        public void SetSliding(bool value)
+        {
+            m_bSliding = value;
+        }
+
+        public void ReleaseGrappleMovement()
         {
             enableMovementOnNextTouch = false;
             ResetRestrictions();
@@ -594,6 +620,9 @@ namespace Group26.Player.Movement
                 return;
 
             Vector3 incomingVelocity = rb.linearVelocity;
+
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
 
             if (m_bSliding && slidingComp != null)
                 slidingComp.ForceEndSlide();

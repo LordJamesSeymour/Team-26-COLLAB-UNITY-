@@ -10,16 +10,13 @@ EditorBuildSettings:
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/checkpoints.unity
-    guid: 411451ef7f63dc9408a627569c4b471a
-  - enabled: 0
+    guid: c746c24f74d5f4b4bb3cf722cddcfde7
+  - enabled: 1
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Steve/SteveTesting 2.unity
     guid: 188ac8020ca5ca74daf568092b685806
-  - enabled: 1
-    path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/menu testing.unity
-    guid: 1bc3370852c64d34a88ef388cc8af585
-  - enabled: 1
-    path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/test level for ui.unity
-    guid: b9909a46b512ab74682ced75579e700d
+  - enabled: 0
+    path: Assets/TeamAssets/_Scenes/SharkSubmissionLevels/Redundant_PlaytestLevel.unity
+    guid: ef797556f40798e4280e6f5ee2721cc3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

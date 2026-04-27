@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/TeamAssets/Animations.meta
 guid: d7565532de2353b4b8cbdb732f249eb4
+========
+guid: 7258aba26297b084eb5c5e413102f6d1
+>>>>>>>> GrappleBoost:Assets/TeamAssets/Materials/TechAssets.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
