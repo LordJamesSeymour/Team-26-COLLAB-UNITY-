@@ -1,146 +1,223 @@
 using UnityEngine;
+using Group26.Player.Inputs;
 
 namespace Group26.Player.Movement
 {
+	[DisallowMultipleComponent]
 	public class Sliding : MonoBehaviour
 	{
-		[Header("References")]
-		[SerializeField] Transform orientation;
-		[SerializeField] Transform playerObj;
+		[Header("Slide Settings")]
+		[SerializeField] private float minSlideStartSpeed = 8f;
+		[SerializeField] private float minSlideEndSpeed = 4f;
+		[SerializeField] private float slideStartBoost = 2f;
+		[SerializeField] private float slideDrag = 10f;
+		[SerializeField] private float maxSlideTime = 1.1f;
+		[SerializeField] private float groundStickForce = 20f;
 
-		Rigidbody rb;
-		PlayerController playerController;
+		[Range(0f, 1f)]
+		[SerializeField] private float steerAmount = 0.12f;
 
-		[Header("Sliding")]
-		[SerializeField] float maxSlideTime = 1.0f;
+		[Range(0.25f, 1f)]
+		[SerializeField] private float slideHeightMultiplier = 0.5f;
 
-		[Tooltip("How much you can steer while sliding.")]
-		[SerializeField] float steerForce = 35f;
+		[SerializeField] private float ungroundedGraceTime = 0.15f;
 
-		[Tooltip("Friction applied to velocity along the ground/slope.")]
-		[SerializeField] float slideFriction = 6f;
+		private PlayerController playerController;
+		private InputManager inputManager;
+		private Rigidbody rb;
 
-		[Tooltip("Extra acceleration down slopes (lets ramps feel natural).")]
-		[SerializeField] float slopeGravity = 18f;
+		private bool isSliding;
+		private bool lastCrouchHeld;
 
-		[Tooltip("Small force into the slope so you don't bounce off it.")]
-		[SerializeField] float stickToSlopeForce = 25f;
+		private float slideTimer;
+		private float ungroundedTimer;
+		private float currentSlideSpeed;
 
-		[SerializeField] float slideYScale = 0.5f;
+		private Vector3 slideDirection;
 
-		[Tooltip("Ends slide when speed is very low.")]
-		[SerializeField] float minSpeedToKeepSliding = 1.5f;
+		private Transform slideBodyRoot;
+		private Vector3 originalBodyScale;
 
-		float slideTimer;
-		float startYScale;
+		public bool IsSliding => isSliding;
 
-		float horizontalInput;
-		float verticalInput;
-
-		void Start()
+		private void Awake()
 		{
-			rb = GetComponent<Rigidbody>();
 			playerController = GetComponent<PlayerController>();
+			inputManager = GetComponent<InputManager>();
+			rb = GetComponent<Rigidbody>();
 
-			if (playerObj == null) playerObj = transform;
-			startYScale = playerObj.localScale.y;
+			if (playerController != null)
+				slideBodyRoot = playerController.OrientationTransform;
+
+			if (slideBodyRoot == null)
+				slideBodyRoot = transform;
+
+			originalBodyScale = slideBodyRoot.localScale;
 		}
 
-		void FixedUpdate()
+		private void OnDisable()
 		{
-			if (!playerController.m_bSliding)
+			ForceEndSlide();
+		}
+
+		private void Update()
+		{
+			if (playerController == null || inputManager == null || rb == null)
 				return;
 
-			// If we leave the ground (jump/ledge), end slide
+			bool crouchHeld = inputManager.isCrouching;
+
+			if (!lastCrouchHeld && crouchHeld)
+				TryStartSlide();
+
+			if (isSliding && !crouchHeld)
+				ForceEndSlide();
+
+			lastCrouchHeld = crouchHeld;
+		}
+
+		private void FixedUpdate()
+		{
+			if (!isSliding || playerController == null || rb == null)
+				return;
+
+			UpdateSlide(Time.fixedDeltaTime);
+		}
+
+		private void TryStartSlide()
+		{
+			if (isSliding)
+				return;
+
 			if (!playerController.IsGrounded)
+				return;
+
+			if (playerController.IsMovementLockedForSlide)
+				return;
+
+			float startSpeed = playerController.CurrentHorizontalSpeed;
+			if (startSpeed < minSlideStartSpeed)
+				return;
+
+			Vector3 flatVelocity = playerController.FlatVelocity;
+
+			if (flatVelocity.sqrMagnitude > 0.01f)
+				slideDirection = flatVelocity.normalized;
+			else if (playerController.OrientationTransform != null)
+				slideDirection = Flatten(playerController.OrientationTransform.forward).normalized;
+			else
+				slideDirection = Flatten(transform.forward).normalized;
+
+			if (slideDirection.sqrMagnitude < 0.01f)
+				slideDirection = Vector3.forward;
+
+			currentSlideSpeed = Mathf.Max(startSpeed + slideStartBoost, minSlideStartSpeed);
+			slideTimer = maxSlideTime;
+			ungroundedTimer = 0f;
+			isSliding = true;
+
+			playerController.SetSliding(true);
+			ApplySlideHeight();
+
+			Vector3 startVelocity = slideDirection * currentSlideSpeed;
+			rb.linearVelocity = new Vector3(startVelocity.x, rb.linearVelocity.y, startVelocity.z);
+		}
+
+		private void UpdateSlide(float deltaTime)
+		{
+			slideTimer -= deltaTime;
+
+			if (playerController.IsMovementLockedForSlide)
 			{
-				EndSlide();
+				ForceEndSlide();
 				return;
 			}
 
-			slideTimer -= Time.fixedDeltaTime;
+			if (playerController.IsGrounded)
+				ungroundedTimer = 0f;
+			else
+				ungroundedTimer += deltaTime;
 
-			SlidingMovement();
-
-			// End conditions
-			Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-			if (slideTimer <= 0f || flatVel.magnitude < minSpeedToKeepSliding)
-				EndSlide();
-		}
-
-		public void GetInput(Vector2 input)
-		{
-			horizontalInput = input.x;
-			verticalInput = input.y;
-		}
-
-		public void Slide(bool pressed)
-		{
-			if (pressed)
+			if (ungroundedTimer > ungroundedGraceTime)
 			{
-				if (!playerController.m_bSliding)
-					StartSlide();
+				ForceEndSlide();
+				return;
+			}
+
+			Vector2 moveInput = inputManager.MoveInput;
+			Vector3 steerInput = Vector3.zero;
+
+			if (playerController.OrientationTransform != null)
+			{
+				steerInput = Flatten(
+					playerController.OrientationTransform.forward * moveInput.y +
+					playerController.OrientationTransform.right * moveInput.x);
 			}
 			else
 			{
-				if (playerController.m_bSliding)
-					EndSlide();
-			}
-		}
-
-		private void StartSlide()
-		{
-			playerController.m_bSliding = true;
-
-			// Scale once (no repeated slamming)
-			playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
-
-			slideTimer = maxSlideTime;
-		}
-
-		private void SlidingMovement()
-		{
-			bool onSlope = playerController.OnSlope();
-			Vector3 slopeNormal = onSlope ? playerController.SlopeNormal : Vector3.up;
-
-			// Velocity along the surface
-			Vector3 velOnPlane = Vector3.ProjectOnPlane(rb.linearVelocity, slopeNormal);
-
-			// Steering direction along the surface
-			Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-			Vector3 inputOnPlane = Vector3.ProjectOnPlane(inputDirection, slopeNormal);
-
-			if (inputOnPlane.sqrMagnitude > 0.01f)
-			{
-				rb.AddForce(inputOnPlane.normalized * steerForce, ForceMode.Force);
+				steerInput = Flatten(transform.forward * moveInput.y + transform.right * moveInput.x);
 			}
 
-			// Friction: slows momentum over time (so ramps kill speed naturally)
-			rb.AddForce(-velOnPlane * slideFriction, ForceMode.Acceleration);
+			if (steerInput.sqrMagnitude > 0.001f)
+				slideDirection = Vector3.Slerp(slideDirection, steerInput.normalized, steerAmount);
 
-			if (onSlope)
-			{
-				// Gravity component along slope: accelerates downhill,
-				// but if you have momentum up a ramp, you'll go up until you lose it.
-				Vector3 slopeDown = Vector3.ProjectOnPlane(Vector3.down, slopeNormal).normalized;
-				rb.AddForce(slopeDown * slopeGravity, ForceMode.Acceleration);
+			Vector3 slideMoveDirection = slideDirection;
 
-				// Stick to slope (replaces your old "slam down" impulse)
-				rb.AddForce(-slopeNormal * stickToSlopeForce, ForceMode.Acceleration);
-			}
+			if (playerController.OnSlope())
+				slideMoveDirection = playerController.GetSlopeMoveDirection(slideMoveDirection);
+
+			currentSlideSpeed = Mathf.MoveTowards(currentSlideSpeed, 0f, slideDrag * deltaTime);
+
+			Vector3 targetFlatVelocity = slideMoveDirection.normalized * currentSlideSpeed;
+			rb.linearVelocity = new Vector3(targetFlatVelocity.x, rb.linearVelocity.y, targetFlatVelocity.z);
+
+			if (playerController.OnSlope())
+				rb.AddForce(-playerController.SlopeNormal * groundStickForce, ForceMode.Force);
+			else
+				rb.AddForce(Vector3.down * groundStickForce, ForceMode.Force);
+
+			if (slideTimer <= 0f || currentSlideSpeed <= minSlideEndSpeed)
+				ForceEndSlide();
 		}
 
-		private void EndSlide()
-		{
-			playerController.m_bSliding = false;
-			playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
-		}
-
-		// Called by PlayerController when jumping
 		public void ForceEndSlide()
 		{
-			if (playerController.m_bSliding)
-				EndSlide();
+			if (!isSliding)
+				return;
+
+			isSliding = false;
+			slideTimer = 0f;
+			ungroundedTimer = 0f;
+			currentSlideSpeed = 0f;
+
+			if (playerController != null)
+				playerController.SetSliding(false);
+
+			RestoreHeight();
+		}
+
+		private void ApplySlideHeight()
+		{
+			if (slideBodyRoot == null)
+				return;
+
+			Vector3 newScale = originalBodyScale;
+			newScale.y = originalBodyScale.y * slideHeightMultiplier;
+			slideBodyRoot.localScale = newScale;
+		}
+
+		private void RestoreHeight()
+		{
+			if (slideBodyRoot == null)
+				return;
+
+			slideBodyRoot.localScale = originalBodyScale;
+		}
+
+		private static Vector3 Flatten(Vector3 value)
+		{
+			value.y = 0f;
+			return value;
 		}
 	}
 }

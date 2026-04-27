@@ -1,6 +1,5 @@
 using Group26.Player.Inputs;
 using Group26.Player.Movement;
-using Group26.Player.Utility;
 using UnityEngine;
 
 namespace Group26.Player.Animation
@@ -10,7 +9,6 @@ namespace Group26.Player.Animation
         [Header("Script References")]
         private InputManager inputManager;
         private PlayerController playerController;
-        private PlayerModeSwitcher playerModeSwitcher;
         private WallRunning wallRunning;
 
         [Header("Component References")]
@@ -20,7 +18,6 @@ namespace Group26.Player.Animation
         private static readonly int VelocityHash = Animator.StringToHash("Velocity");
         private static readonly int JumpHash = Animator.StringToHash("jumpTriggered");
         private static readonly int IsGroundedHash = Animator.StringToHash("isGrounded");
-        private static readonly int isSprinting = Animator.StringToHash("isSprinting");
         private static readonly int isGrappling = Animator.StringToHash("isGrappling");
         private static readonly int isSwinging = Animator.StringToHash("isSwinging");
         private static readonly int isDashing = Animator.StringToHash("isDashing");
@@ -32,7 +29,6 @@ namespace Group26.Player.Animation
             inputManager = GetComponentInParent<InputManager>();
             playerController = GetComponentInParent<PlayerController>();
             wallRunning = GetComponentInParent<WallRunning>();
-            playerModeSwitcher = GetComponentInParent<PlayerModeSwitcher>();
 
             if(animator == null)
             {
@@ -61,7 +57,6 @@ namespace Group26.Player.Animation
             if(playerController != null)
             {
                 animator.SetBool(IsGroundedHash, playerController.m_bIsGrounded);
-                animator.SetBool(isSprinting, inputManager.isSprinting);
                 animator.SetBool(isGrappling, playerController.m_bActiveGrapple);
                 animator.SetBool(isSwinging, playerController.m_bActiveSwing);
                 animator.SetBool(isDashing, playerController.m_bDashing);
