@@ -35,6 +35,8 @@ public class Death : MonoBehaviour
 
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
+        m_restartInput = InputSystem.actions.FindAction("Restart");
+        m_restartInput.Enable();
 
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
     }
@@ -65,6 +67,33 @@ public class Death : MonoBehaviour
         //Time.timeScale = 1.0f;
         //m_timerScript.ResumeTimer();
         //m_timerScript.m_timerDisplay.gameObject.SetActive(true);
+        m_timerScript.m_paused = false;
+    }
+
+    private IEnumerator InstaRestart()
+    {
+        Debug.Log("Restarting");
+
+        transform.position = m_startPoint;
+        m_respawnPoint = m_startPoint;
+        m_timerScript.ResetTimer();
+        m_timerScript.UpdateTimerText("00:00");
+
+        Debug.Log(m_checkpoints.Length);
+
+        if (m_checkpoints != null)
+        {
+            foreach (GameObject checkpoint in m_checkpoints)
+            {
+                checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        //m_respawnMenuPanel.SetActive(false);
+        m_rigidbody.isKinematic = false;
+
+        yield return new WaitForSeconds(0.01f);
+        m_restart = null;
         m_timerScript.m_paused = false;
     }
 
@@ -140,18 +169,19 @@ public class Death : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if(m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_respawn == null)
+        //if (m_respawnInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_respawn == null)
         //{
         //    StopCoroutine(Restart());
         //    m_restart = null;
         //    m_respawn = StartCoroutine(Respawn());
         //}
 
-        //if(m_restartInput.WasReleasedThisDynamicUpdate() && m_respawnMenuPanel.activeSelf && m_restart == null)
-        //{
-        //    StopCoroutine(Respawn());
-        //    m_respawn = null;
-        //    m_restart = StartCoroutine(Restart());
-        //}
+        if (m_restartInput.WasPressedThisDynamicUpdate() && m_restart == null)
+        {
+            StopCoroutine(Respawn());
+            StopCoroutine(Restart());
+            m_respawn = null;
+            m_restart = StartCoroutine(InstaRestart());
+        }
     }
 }
