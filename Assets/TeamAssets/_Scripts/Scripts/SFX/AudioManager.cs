@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
         CRASH,
         DASH,
         LAND,
+        WALL_RUN,
         UI_BUTTON
     }
 
