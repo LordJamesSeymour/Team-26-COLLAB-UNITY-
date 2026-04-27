@@ -26,6 +26,7 @@ public class FanForceHandler : MonoBehaviour
     ///</summary>
     [SerializeField] private bool m_bLogUpwardsSpeed = false;
     [SerializeField] private bool m_bDrawInFanCheck = false;
+    [SerializeField] private Color m_drawColor = Color.red;
 
     private void Awake()
     {
@@ -73,6 +74,7 @@ public class FanForceHandler : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (m_bDrawInFanCheck)
+            Gizmos.color = m_drawColor;
             Gizmos.DrawWireSphere(transform.position, m_fanCheckRadius);
     }
 }

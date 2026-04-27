@@ -22,12 +22,28 @@ public class MovingPlatform : Interactable_Parent
     /// </summary>
     [SerializeField] private bool m_bToggleDirectionOfMovement = true;
 
+    /// <summary>
+    /// Testing variables that will not be changed at runtime
+    /// </summary>
     [Header("Debug")]
     [SerializeField] private bool m_bLogEndOfMove = false;
     [SerializeField] private bool m_bLogIterations = false;
- 
+    /// <summary>
+    /// Testing variable that will toggle printing the platform speed every second
+    /// </summary>
+    [SerializeField] private bool m_bTrackPlatformSpeed = false;
+
     private bool m_bMovingToTarget = true;
     private float m_lerpAmmount = 0.0f;
+
+    private Rigidbody m_rb;
+
+    private void Awake()
+    {
+        m_rb = GetComponent<Rigidbody>();
+        if (m_rb == null)
+            Debug.Log(this.name + "does not have an attached rigidbody, so it cannot be moved");
+    }
 
     private void Start()
     {
@@ -63,7 +79,8 @@ public class MovingPlatform : Interactable_Parent
                 EndMovement();
                 break;
             }
-            transform.position = Vector3.Lerp(m_startPosition, m_targetPosition, m_lerpAmmount);
+            if (m_rb != null)
+                m_rb.MovePosition(Vector3.Lerp(m_startPosition, m_targetPosition, m_lerpAmmount));
             yield return new WaitForSeconds(m_moveIterDelay);
         }
     }
@@ -73,14 +90,23 @@ public class MovingPlatform : Interactable_Parent
         if (m_bLogEndOfMove)
             Debug.Log(this.name + " has finished it's movement");
 
-        if(m_bMovingToTarget)
-            transform.position = m_targetPosition;
-        else
-            transform.position = m_startPosition;
+        if (m_rb != null)
+        {
+            if (m_bMovingToTarget)
+                m_rb.MovePosition(m_targetPosition);
+            else
+                m_rb.MovePosition(m_startPosition);
+        }     
 
         if (m_bToggleDirectionOfMovement)
             m_bMovingToTarget = !m_bMovingToTarget;
         StopCoroutine(MovePlatform());
+    }
+
+    private void Update()
+    {
+        if (m_rb != null && m_bTrackPlatformSpeed)
+            Debug.Log(this.name + "is moving at speed: " + m_rb.linearVelocity.magnitude);
     }
 
 }

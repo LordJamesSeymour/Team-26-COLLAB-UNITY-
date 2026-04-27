@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DelayedButtonScript : TriggerParent
@@ -7,11 +8,14 @@ public class DelayedButtonScript : TriggerParent
     [SerializeField] private float m_delayTime = 2.5f;
     [SerializeField] private bool m_bCheckForPlayer = true;
 
-    [Header("Debug")]
-    [SerializeField] private bool m_bLogTrigger = false;
+    [Header("Button debug")]
+    [SerializeField] private bool m_bLogCollisionName = false;
 
     private void OnTriggerEnter(Collider other)
     {
+        if (m_bLogCollisionName)
+            Debug.Log("Collision is named: " + other.gameObject.name);
+
         if (m_bCheckForPlayer)
         {
             if(other.transform.root.CompareTag("Player"))
@@ -26,8 +30,6 @@ public class DelayedButtonScript : TriggerParent
     private IEnumerator TriggerAfterDelay()
     {
         yield return new WaitForSeconds(m_delayTime);
-        if(m_bLogTrigger)
-            Debug.Log("Delayed button " + this.name + " has triggered after a delay of " + m_delayTime + " seconds.");
         TriggerInteractables();
     }
 
