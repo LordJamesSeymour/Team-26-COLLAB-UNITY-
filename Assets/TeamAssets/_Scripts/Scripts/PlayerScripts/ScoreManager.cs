@@ -10,6 +10,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] public TMP_Text TimerReference;
     private InputManager InputManager;
 
+
     [Header("Trick Rank Reqirements")]
     [SerializeField] private int TrickRankF = 10;
     [SerializeField] private int TrickRankE = 20;
@@ -31,12 +32,28 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private int TimeRankS = 60;
     private int[] TimeRanksArray;
 
+    [Header("Collectables")]
+    [SerializeField] public int CollecablesCollected;
+    [SerializeField] public int CollectablePoints;
+    private GameObject[] AllCollectedArray;
+
+    [Header("Collectables Rank Reqirements")]
+    [SerializeField] private int CollectablesAmountF = 0;
+    [SerializeField] private int CollectablesAmountE = 1;
+    [SerializeField] private int CollectablesAmountD = 2;
+    [SerializeField] private int CollectablesAmountC = 3;
+    [SerializeField] private int CollectablesAmountB = 4;
+    [SerializeField] private int CollectablesAmountA = 5;
+    [SerializeField] private int CollectablesAmountS = 6;
+    private int[] CollectableRankArray;
+
     private string[] RankNamesArray;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        AllCollectedArray = GameObject.FindGameObjectsWithTag("Collectable");
+        Debug.Log(AllCollectedArray.Length);
     }
 
     private void Awake()
@@ -48,17 +65,18 @@ public class ScoreManager : MonoBehaviour
 
         TrickRanksArray = new int[7] {TrickRankS, TrickRankA, TrickRankB, TrickRankC, TrickRankD, TrickRankE, TrickRankF };
         TimeRanksArray = new int[7] { TimeRankS, TimeRankA, TimeRankB, TimeRankC, TimeRankD, TimeRankE, TimeRankF };
+        CollectableRankArray = new int[7] { CollectablesAmountS, CollectablesAmountA, CollectablesAmountB, CollectablesAmountC, CollectablesAmountD, CollectablesAmountE, CollectablesAmountF };
         RankNamesArray = new string[7] { "Rank S", "Rank A", "Rank B", "Rank C", "Rank D", "Rank E", "Rank F" };
     }
 
     private void OnEnable()
     {
-        InputManager.OnTrickPressed += FinalScoreResultCalculation;
+        InputManager.OnRankDisplayPressed += FinalScoreResultCalculation;
     }
 
     private void OnDisable()
     {
-        InputManager.OnTrickPressed -= FinalScoreResultCalculation;
+        InputManager.OnRankDisplayPressed -= FinalScoreResultCalculation;
     }
 
     private void FinalScoreResultCalculation()
@@ -81,6 +99,16 @@ public class ScoreManager : MonoBehaviour
             if (TimeScore <= TimeRanksArray[i])
             {
                 Debug.Log("Rank for Time:      " + RankNamesArray[i]);
+                break;
+            }
+
+        }
+
+        for (int i = 0; i < CollectableRankArray.Length; i++)
+        {
+            if (CollecablesCollected >= CollectableRankArray[i])
+            {
+                Debug.Log("Rank for Collectables:      " + RankNamesArray[i]);
                 break;
             }
 

@@ -191,7 +191,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""TrickTest"",
+                    ""name"": ""RankDisplay"",
                     ""type"": ""Button"",
                     ""id"": ""f077db7a-a01a-41fd-b6b3-f37f7fa55b65"",
                     ""expectedControlType"": """",
@@ -549,7 +549,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""TrickTest"",
+                    ""action"": ""RankDisplay"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1496,7 +1496,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_PauseAction = m_Player.FindAction("PauseAction", throwIfNotFound: true);
         m_Player_CameraSwitch = m_Player.FindAction("CameraSwitch", throwIfNotFound: true);
         m_Player_SwitchModes = m_Player.FindAction("SwitchModes", throwIfNotFound: true);
-        m_Player_TrickTest = m_Player.FindAction("TrickTest", throwIfNotFound: true);
+        m_Player_RankDisplay = m_Player.FindAction("RankDisplay", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1610,7 +1610,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PauseAction;
     private readonly InputAction m_Player_CameraSwitch;
     private readonly InputAction m_Player_SwitchModes;
-    private readonly InputAction m_Player_TrickTest;
+    private readonly InputAction m_Player_RankDisplay;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1667,9 +1667,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @SwitchModes => m_Wrapper.m_Player_SwitchModes;
         /// <summary>
-        /// Provides access to the underlying input action "Player/TrickTest".
+        /// Provides access to the underlying input action "Player/RankDisplay".
         /// </summary>
-        public InputAction @TrickTest => m_Wrapper.m_Player_TrickTest;
+        public InputAction @RankDisplay => m_Wrapper.m_Player_RankDisplay;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1729,9 +1729,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SwitchModes.started += instance.OnSwitchModes;
             @SwitchModes.performed += instance.OnSwitchModes;
             @SwitchModes.canceled += instance.OnSwitchModes;
-            @TrickTest.started += instance.OnTrickTest;
-            @TrickTest.performed += instance.OnTrickTest;
-            @TrickTest.canceled += instance.OnTrickTest;
+            @RankDisplay.started += instance.OnRankDisplay;
+            @RankDisplay.performed += instance.OnRankDisplay;
+            @RankDisplay.canceled += instance.OnRankDisplay;
         }
 
         /// <summary>
@@ -1776,9 +1776,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SwitchModes.started -= instance.OnSwitchModes;
             @SwitchModes.performed -= instance.OnSwitchModes;
             @SwitchModes.canceled -= instance.OnSwitchModes;
-            @TrickTest.started -= instance.OnTrickTest;
-            @TrickTest.performed -= instance.OnTrickTest;
-            @TrickTest.canceled -= instance.OnTrickTest;
+            @RankDisplay.started -= instance.OnRankDisplay;
+            @RankDisplay.performed -= instance.OnRankDisplay;
+            @RankDisplay.canceled -= instance.OnRankDisplay;
         }
 
         /// <summary>
@@ -2308,12 +2308,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwitchModes(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "TrickTest" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "RankDisplay" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnTrickTest(InputAction.CallbackContext context);
+        void OnRankDisplay(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

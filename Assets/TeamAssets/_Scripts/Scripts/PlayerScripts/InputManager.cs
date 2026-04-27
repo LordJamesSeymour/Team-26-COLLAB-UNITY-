@@ -44,6 +44,9 @@ namespace Group26.Player.Inputs
         [Tooltip("Button - Pausing game and triggering UI event")]
         [SerializeField] private InputActionReference pauseAction;
 
+        [Tooltip("Rank Display - Displays players current rank into the console")]
+        [SerializeField] private InputActionReference RankDisplayAction;
+
         [HideInInspector] public Vector2 MoveInput { get; private set; }
         [HideInInspector] public Vector2 LookInput { get; private set; }
 
@@ -63,8 +66,8 @@ namespace Group26.Player.Inputs
         public event Action OnModeSwitchPressed;
         public event Action OnPausePressed;
 
-        //Trick Activation Button
-        public event Action OnTrickPressed;
+        //Rank Dsiplay Activation Button
+        public event Action OnRankDisplayPressed;
 
         void Awake()
         {
@@ -130,6 +133,7 @@ namespace Group26.Player.Inputs
             SubscribeToggled(grappleAction, HandleGrappleChanged);
             SubscribeToggled(crouchAction, HandleCrouchChanged);
             SubscribeToggled(swingAction, HandleSwingChanged);
+            SubscribeToggled(RankDisplayAction, HandleTrick);
         }
 
         private void UnsubFromPlayerControls()
@@ -158,7 +162,7 @@ namespace Group26.Player.Inputs
         private void HandleTrick(InputAction.CallbackContext context)
         {
             //print("1");
-            OnTrickPressed?.Invoke();
+            OnRankDisplayPressed?.Invoke();
         }
 
 

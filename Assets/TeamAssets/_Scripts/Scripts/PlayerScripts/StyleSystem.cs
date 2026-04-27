@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Group26.Player.Movement
 {
-    public class StyleSystem : MonoBehaviour
+    public class TrickSystem : MonoBehaviour
     {
         private InputManager InputManager;
         private PlayerController playerController;
