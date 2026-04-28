@@ -27062,7 +27062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c417f69f252a7d84baa486260ca35733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grappleCamera: {fileID: 0}
+  grappleCamera: {fileID: 4930570926732240291}
   gunTip: {fileID: 8301120222388249484}
   m_grappableLayer:
     serializedVersion: 2
