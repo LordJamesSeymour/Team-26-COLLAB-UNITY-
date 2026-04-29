@@ -4,8 +4,10 @@ Shader "CD"
 {
 	Properties
 	{
-		_CD_01Default_Normal( "CD_01 - Default_Normal", 2D ) = "white" {}
-		_CD_01Default_BaseColor( "CD_01 - Default_BaseColor", 2D ) = "white" {}
+		_CD_01Default_Normal( "CD_01 - Default_Normal", 2D ) = "bump" {}
+		_CDdisk_BaseMap( "CDdisk_BaseMap", 2D ) = "white" {}
+		_CDdisk_MaskMap( "CDdisk_MaskMap", 2D ) = "white" {}
+		_CDdisk_Emissive( "CDdisk_Emissive", 2D ) = "white" {}
 
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
@@ -205,6 +207,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -288,7 +291,6 @@ Shader "CD"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 
@@ -344,8 +346,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -378,34 +382,13 @@ Shader "CD"
 				int _PassValue;
 			#endif
 
-			sampler2D _CD_01Default_BaseColor;
+			sampler2D _CDdisk_BaseMap;
 			sampler2D _CD_01Default_Normal;
+			sampler2D _CDdisk_MaskMap;
+			sampler2D _CDdisk_Emissive;
 
 
 			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
-
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -622,22 +605,23 @@ Shader "CD"
 					BitangentWS = cross(NormalWS, -TangentWS);
 				#endif
 
-				Gradient gradient47 = NewGradient( 0, 2, 2, float4( 0.122152, 0.4148043, 0.5754717, 0 ), float4( 0.1072001, 0.6886792, 0.6192706, 1 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
-				float2 texCoord61 = input.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
-				float2 uv_CD_01Default_BaseColor = input.ase_texcoord7.xy * _CD_01Default_BaseColor_ST.xy + _CD_01Default_BaseColor_ST.zw;
-				float4 blendOpSrc58 = SampleGradient( gradient47, texCoord61.y );
-				float4 blendOpDest58 = tex2D( _CD_01Default_BaseColor, uv_CD_01Default_BaseColor );
+				float2 uv_CDdisk_BaseMap = input.ase_texcoord7.xy * _CDdisk_BaseMap_ST.xy + _CDdisk_BaseMap_ST.zw;
 				
 				float2 uv_CD_01Default_Normal = input.ase_texcoord7.xy * _CD_01Default_Normal_ST.xy + _CD_01Default_Normal_ST.zw;
 				
+				float2 uv_CDdisk_MaskMap = input.ase_texcoord7.xy * _CDdisk_MaskMap_ST.xy + _CDdisk_MaskMap_ST.zw;
+				float4 tex2DNode85 = tex2D( _CDdisk_MaskMap, uv_CDdisk_MaskMap );
+				
+				float2 uv_CDdisk_Emissive = input.ase_texcoord7.xy * _CDdisk_Emissive_ST.xy + _CDdisk_Emissive_ST.zw;
+				
 
-				float3 BaseColor = ( saturate( (( blendOpDest58 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest58 ) * ( 1.0 - blendOpSrc58 ) ) : ( 2.0 * blendOpDest58 * blendOpSrc58 ) ) )).rgb;
+				float3 BaseColor = tex2D( _CDdisk_BaseMap, uv_CDdisk_BaseMap ).rgb;
 				float3 Normal = tex2D( _CD_01Default_Normal, uv_CD_01Default_Normal ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
-				float Smoothness = 0.5;
-				float Occlusion = 1;
-				float3 Emission = 0;
+				float Smoothness = tex2DNode85.g;
+				float Occlusion = tex2DNode85.r;
+				float3 Emission = ( tex2D( _CDdisk_Emissive, uv_CDdisk_Emissive ) * 100 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -915,6 +899,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -981,8 +966,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -1221,6 +1208,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -1285,8 +1273,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -1501,6 +1491,7 @@ Shader "CD"
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -1533,7 +1524,6 @@ Shader "CD"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 
@@ -1564,8 +1554,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -1598,33 +1590,11 @@ Shader "CD"
 				int _PassValue;
 			#endif
 
-			sampler2D _CD_01Default_BaseColor;
+			sampler2D _CDdisk_BaseMap;
+			sampler2D _CDdisk_Emissive;
 
 
 			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
-
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -1773,15 +1743,13 @@ Shader "CD"
 				float3 PositionRWS = GetCameraRelativePositionWS( input.positionWS );
 				float4 ShadowCoord = shadowCoord;
 
-				Gradient gradient47 = NewGradient( 0, 2, 2, float4( 0.122152, 0.4148043, 0.5754717, 0 ), float4( 0.1072001, 0.6886792, 0.6192706, 1 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
-				float2 texCoord61 = input.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
-				float2 uv_CD_01Default_BaseColor = input.ase_texcoord3.xy * _CD_01Default_BaseColor_ST.xy + _CD_01Default_BaseColor_ST.zw;
-				float4 blendOpSrc58 = SampleGradient( gradient47, texCoord61.y );
-				float4 blendOpDest58 = tex2D( _CD_01Default_BaseColor, uv_CD_01Default_BaseColor );
+				float2 uv_CDdisk_BaseMap = input.ase_texcoord3.xy * _CDdisk_BaseMap_ST.xy + _CDdisk_BaseMap_ST.zw;
+				
+				float2 uv_CDdisk_Emissive = input.ase_texcoord3.xy * _CDdisk_Emissive_ST.xy + _CDdisk_Emissive_ST.zw;
 				
 
-				float3 BaseColor = ( saturate( (( blendOpDest58 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest58 ) * ( 1.0 - blendOpSrc58 ) ) : ( 2.0 * blendOpDest58 * blendOpSrc58 ) ) )).rgb;
-				float3 Emission = 0;
+				float3 BaseColor = tex2D( _CDdisk_BaseMap, uv_CDdisk_BaseMap ).rgb;
+				float3 Emission = ( tex2D( _CDdisk_Emissive, uv_CDdisk_Emissive ) * 100 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -1823,6 +1791,7 @@ Shader "CD"
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -1853,9 +1822,7 @@ Shader "CD"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 
 
 			struct Attributes
@@ -1877,8 +1844,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -1911,33 +1880,10 @@ Shader "CD"
 				int _PassValue;
 			#endif
 
-			sampler2D _CD_01Default_BaseColor;
+			sampler2D _CDdisk_BaseMap;
 
 
 			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
-
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -2072,14 +2018,10 @@ Shader "CD"
 				float3 PositionRWS = GetCameraRelativePositionWS( input.positionWS );
 				float4 ShadowCoord = shadowCoord;
 
-				Gradient gradient47 = NewGradient( 0, 2, 2, float4( 0.122152, 0.4148043, 0.5754717, 0 ), float4( 0.1072001, 0.6886792, 0.6192706, 1 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
-				float2 texCoord61 = input.ase_texcoord1.xy * float2( 1,1 ) + float2( 0,0 );
-				float2 uv_CD_01Default_BaseColor = input.ase_texcoord1.xy * _CD_01Default_BaseColor_ST.xy + _CD_01Default_BaseColor_ST.zw;
-				float4 blendOpSrc58 = SampleGradient( gradient47, texCoord61.y );
-				float4 blendOpDest58 = tex2D( _CD_01Default_BaseColor, uv_CD_01Default_BaseColor );
+				float2 uv_CDdisk_BaseMap = input.ase_texcoord1.xy * _CDdisk_BaseMap_ST.xy + _CDdisk_BaseMap_ST.zw;
 				
 
-				float3 BaseColor = ( saturate( (( blendOpDest58 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest58 ) * ( 1.0 - blendOpSrc58 ) ) : ( 2.0 * blendOpDest58 * blendOpSrc58 ) ) )).rgb;
+				float3 BaseColor = tex2D( _CDdisk_BaseMap, uv_CDdisk_BaseMap ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -2116,6 +2058,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -2190,8 +2133,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -2482,6 +2427,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -2560,7 +2506,6 @@ Shader "CD"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_TEXTURE_COORDINATES0
 			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
 
@@ -2611,8 +2556,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -2645,8 +2592,10 @@ Shader "CD"
 				int _PassValue;
 			#endif
 
-			sampler2D _CD_01Default_BaseColor;
+			sampler2D _CDdisk_BaseMap;
 			sampler2D _CD_01Default_Normal;
+			sampler2D _CDdisk_MaskMap;
+			sampler2D _CDdisk_Emissive;
 
 
 			#if ( UNITY_VERSION >= 60010000 )
@@ -2656,29 +2605,6 @@ Shader "CD"
 			#endif
 
 			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
-
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -2886,22 +2812,23 @@ Shader "CD"
 					BitangentWS = cross(NormalWS, -TangentWS);
 				#endif
 
-				Gradient gradient47 = NewGradient( 0, 2, 2, float4( 0.122152, 0.4148043, 0.5754717, 0 ), float4( 0.1072001, 0.6886792, 0.6192706, 1 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
-				float2 texCoord61 = input.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
-				float2 uv_CD_01Default_BaseColor = input.ase_texcoord7.xy * _CD_01Default_BaseColor_ST.xy + _CD_01Default_BaseColor_ST.zw;
-				float4 blendOpSrc58 = SampleGradient( gradient47, texCoord61.y );
-				float4 blendOpDest58 = tex2D( _CD_01Default_BaseColor, uv_CD_01Default_BaseColor );
+				float2 uv_CDdisk_BaseMap = input.ase_texcoord7.xy * _CDdisk_BaseMap_ST.xy + _CDdisk_BaseMap_ST.zw;
 				
 				float2 uv_CD_01Default_Normal = input.ase_texcoord7.xy * _CD_01Default_Normal_ST.xy + _CD_01Default_Normal_ST.zw;
 				
+				float2 uv_CDdisk_MaskMap = input.ase_texcoord7.xy * _CDdisk_MaskMap_ST.xy + _CDdisk_MaskMap_ST.zw;
+				float4 tex2DNode85 = tex2D( _CDdisk_MaskMap, uv_CDdisk_MaskMap );
+				
+				float2 uv_CDdisk_Emissive = input.ase_texcoord7.xy * _CDdisk_Emissive_ST.xy + _CDdisk_Emissive_ST.zw;
+				
 
-				float3 BaseColor = ( saturate( (( blendOpDest58 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest58 ) * ( 1.0 - blendOpSrc58 ) ) : ( 2.0 * blendOpDest58 * blendOpSrc58 ) ) )).rgb;
+				float3 BaseColor = tex2D( _CDdisk_BaseMap, uv_CDdisk_BaseMap ).rgb;
 				float3 Normal = tex2D( _CD_01Default_Normal, uv_CD_01Default_Normal ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
-				float Smoothness = 0.5;
-				float Occlusion = 1;
-				float3 Emission = 0;
+				float Smoothness = tex2DNode85.g;
+				float Occlusion = tex2DNode85.r;
+				float3 Emission = ( tex2D( _CDdisk_Emissive, uv_CDdisk_Emissive ) * 100 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -3056,6 +2983,7 @@ Shader "CD"
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -3120,8 +3048,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -3332,6 +3262,7 @@ Shader "CD"
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -3396,8 +3327,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -3608,6 +3541,7 @@ Shader "CD"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
+			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
@@ -3685,8 +3619,10 @@ Shader "CD"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _CD_01Default_BaseColor_ST;
+			float4 _CDdisk_BaseMap_ST;
 			float4 _CD_01Default_Normal_ST;
+			float4 _CDdisk_MaskMap_ST;
+			float4 _CDdisk_Emissive_ST;
 			float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
@@ -3844,11 +3780,13 @@ Shader "CD"
 Version=19909
 Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;61;-944,-448;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GradientNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;47;-960,-624;Inherit;False;0;2;2;0.122152,0.4148043,0.5754717,0;0.1072001,0.6886792,0.6192706,1;1,0;1,1;0;1;OBJECT;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;59;-784,-304;Inherit;True;Property;_CD_01Default_BaseColor;CD_01 - Default_BaseColor;1;0;Create;True;0;0;0;False;0;False;-1;6355009efc26ca84fbce0ef1c3af2d74;6355009efc26ca84fbce0ef1c3af2d74;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.GradientSampleNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;60;-656,-576;Inherit;True;2;0;OBJECT;;False;1;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.BlendOpsNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;58;-176,-560;Inherit;True;Overlay;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;1;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;-352,-320;Inherit;True;Property;_CD_01Default_Normal;CD_01 - Default_Normal;0;0;Create;True;0;0;0;False;0;False;-1;3621dd963888d374184d72778ebaaf02;3621dd963888d374184d72778ebaaf02;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;83;-400,-80;Inherit;True;Property;_AirconUnit_2_Emission;AirconUnit_2_Emission;2;0;Create;True;0;0;0;False;0;False;83;59d0b37ec27d8fc4e9a4cc27a4a8f168;59d0b37ec27d8fc4e9a4cc27a4a8f168;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;-480,-320;Inherit;True;Property;_CD_01Default_Normal;CD_01 - Default_Normal;0;0;Create;True;0;0;0;False;0;False;-1;94210febdb341e247b523336b4cc4bb6;94210febdb341e247b523336b4cc4bb6;True;0;False;bump;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;85;-544,-112;Inherit;True;Property;_CDdisk_MaskMap;CDdisk_MaskMap;2;0;Create;True;0;0;0;False;0;False;-1;8f1e36cdf4ceb08439ca2f2d6ba6eba8;8f1e36cdf4ceb08439ca2f2d6ba6eba8;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.GradientSampleNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;60;-640,-592;Inherit;True;2;0;OBJECT;;False;1;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;84;-432,-816;Inherit;True;Property;_CDdisk_BaseMap;CDdisk_BaseMap;1;0;Create;True;0;0;0;False;0;False;84;bc459dc21d0f7624b83ac6edaebf714c;bc459dc21d0f7624b83ac6edaebf714c;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;90;-256,64;Inherit;True;Property;_CDdisk_Emissive;CDdisk_Emissive;3;0;Create;True;0;0;0;False;0;False;-1;9471a2dfd057b1a438eda816d6ea1f3c;9471a2dfd057b1a438eda816d6ea1f3c;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;91;114.778,111.3307;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;INT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;92;65.37793,271.2308;Inherit;False;Constant;_Int0;Int 0;4;0;Create;True;0;0;0;False;0;False;100;0;False;0;0;0;1;INT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;69;160,-336;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;6;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;71;160,-336;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;72;160,-336;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -3863,9 +3801,12 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Versi
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;70;160,-336;Float;False;True;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;CD;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;51;Category;0;0;  Instanced Terrain Normals;1;0;Lighting Model;0;0;Workflow;1;0;Surface;0;0;  Keep Alpha;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Alpha Clipping;0;0;  Use Shadow Threshold;0;0;Fragment Normal Space;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;Receive Shadows;2;0;Specular Highlights;2;0;Environment Reflections;2;0;Receive SSAO;1;0;Motion Vectors;1;0;  Add Precomputed Velocity;0;0;  XR Motion Vectors;0;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position;1;0;Debug Display;1;0;Clear Coat;0;0;0;12;False;True;True;True;True;True;True;True;True;True;True;False;False;;False;0
 WireConnection;60;0;47;0
 WireConnection;60;1;61;2
-WireConnection;58;0;60;0
-WireConnection;58;1;59;0
-WireConnection;70;0;58;0
-WireConnection;70;1;12;0
+WireConnection;91;0;90;0
+WireConnection;91;1;92;0
+WireConnection;70;0;84;0
+WireConnection;70;1;12;5
+WireConnection;70;4;85;2
+WireConnection;70;5;85;1
+WireConnection;70;2;91;0
 ASEEND*/
-//CHKSM=BE1832A8157D68AED5DE1DBB5566C88B9F4FE3B2
+//CHKSM=349AE7F88D68B786A6184327B75D12BFB5730B62
