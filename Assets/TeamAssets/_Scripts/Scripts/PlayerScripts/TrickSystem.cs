@@ -57,10 +57,10 @@ namespace Group26.Player.Movement
 
         private void Awake()
         {
-            if (UI_Canvas == null)
-            {
-                UI_Canvas = UI_Refrence.GetComponent<Canvas>();
-            }
+            //if (UI_Canvas == null)
+            //{
+            //    UI_Canvas = UI_Refrence.GetComponent<Canvas>();
+            //}
             UI_Texts = UI_Canvas.gameObject.GetComponentsInChildren<TMP_Text>();
             DecayMeterSlider = UI_Canvas.GetComponentInChildren<Slider>();
 

@@ -666,6 +666,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""92a0d38d-b179-4091-9629-e9f2d475620c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1108,6 +1117,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""TEST_RESTART"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e5c3bde0-21b4-4893-b92f-c5617bc59835"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1511,6 +1531,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_TEST_RESPAWN = m_UI.FindAction("TEST_RESPAWN", throwIfNotFound: true);
         m_UI_TEST_RESTART = m_UI.FindAction("TEST_RESTART", throwIfNotFound: true);
+        m_UI_Restart = m_UI.FindAction("Restart", throwIfNotFound: true);
         // Editor
         m_Editor = asset.FindActionMap("Editor", throwIfNotFound: true);
         m_Editor_Move = m_Editor.FindAction("Move", throwIfNotFound: true);
@@ -1828,6 +1849,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_TEST_RESPAWN;
     private readonly InputAction m_UI_TEST_RESTART;
+    private readonly InputAction m_UI_Restart;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1887,6 +1909,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/TEST_RESTART".
         /// </summary>
         public InputAction @TEST_RESTART => m_Wrapper.m_UI_TEST_RESTART;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Restart".
+        /// </summary>
+        public InputAction @Restart => m_Wrapper.m_UI_Restart;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1949,6 +1975,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @TEST_RESTART.started += instance.OnTEST_RESTART;
             @TEST_RESTART.performed += instance.OnTEST_RESTART;
             @TEST_RESTART.canceled += instance.OnTEST_RESTART;
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
         }
 
         /// <summary>
@@ -1996,6 +2025,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @TEST_RESTART.started -= instance.OnTEST_RESTART;
             @TEST_RESTART.performed -= instance.OnTEST_RESTART;
             @TEST_RESTART.canceled -= instance.OnTEST_RESTART;
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
         }
 
         /// <summary>
@@ -2406,6 +2438,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTEST_RESTART(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Restart" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRestart(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Editor" which allows adding and removing callbacks.

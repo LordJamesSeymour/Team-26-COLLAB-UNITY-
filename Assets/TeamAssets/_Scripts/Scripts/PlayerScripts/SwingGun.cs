@@ -16,7 +16,7 @@ namespace Group26.Player.Movement
         [SerializeField] private Transform firstPersonCam; 
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
-        public Transform gunTip;
+        public Transform firePoint;
         [SerializeField] private Transform player;
         [SerializeField] private LayerMask m_grappableLayer;
         private PlayerController playerController;
@@ -40,6 +40,7 @@ namespace Group26.Player.Movement
         [Header("Prediction")]
         [SerializeField] private RaycastHit predictionHit;
         [SerializeField] private float predictionSphereCastRadius;
+        private float predictionDefaultSphereCastRadius;
         [SerializeField] private Transform predictionPoint;
         [SerializeField] private LayerMask m_ignoredSwingPredictionLayer;
         [SerializeField] private Transform m_maincam;
@@ -62,7 +63,9 @@ namespace Group26.Player.Movement
             if(rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
+
+            predictionDefaultSphereCastRadius = predictionSphereCastRadius;
 
             //~ inverts the layermask bits
             m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
@@ -107,6 +110,16 @@ namespace Group26.Player.Movement
             }
 
             ApplySwingInput();
+        }
+
+        public void WallRunPredictionSphere(float Increase)
+        {
+            predictionSphereCastRadius = Increase;
+        }
+
+        public void PredictionSphereDefault()
+        {
+            predictionSphereCastRadius = predictionDefaultSphereCastRadius;
         }
 
         void CheckForSwingPoints()
@@ -265,7 +278,7 @@ namespace Group26.Player.Movement
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
 
             if (joint != null)
             {

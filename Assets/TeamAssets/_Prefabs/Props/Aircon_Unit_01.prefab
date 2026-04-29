@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6ac3d30fad8e75e46a2df930f3c4f36f, type: 2}
+  - {fileID: 2100000, guid: 5a7ca585a9b2b3c4587125916713263d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -207,7 +207,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6ac3d30fad8e75e46a2df930f3c4f36f, type: 2}
+  - {fileID: 2100000, guid: 6af20d21fdb3e9846be9fcc5368045e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -336,8 +336,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0041957, y: 1, z: 0.96696454}
-  m_Center: {x: 0.0020971969, y: 0, z: -0.0048819385}
+  m_Size: {x: 1.0041957, y: 2, z: 0.96696454}
+  m_Center: {x: 0.0020971969, y: 0.5, z: -0.0048819385}
 --- !u!114 &8901702056740005069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,10 +350,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0793c0cd536d08a4ba17bd7aff4d946e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forceDelay: 0.1
-  m_forceAmmount: 10
+  m_forceDelay: 0.01
+  m_forceAmmount: 50
   m_fanLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   m_bLogForce: 0
   m_bLogStillInFan: 0
