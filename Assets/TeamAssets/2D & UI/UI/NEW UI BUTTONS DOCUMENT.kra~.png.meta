@@ -106,14 +106,731 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_0
+      rect:
+        serializedVersion: 2
+        x: 2900
+        y: 6748
+        width: 562
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a1977373dad02f488f129be4d7018ec
+      internalID: -943933758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_1
+      rect:
+        serializedVersion: 2
+        x: 9123
+        y: 6734
+        width: 863
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30a122e69d756e04f8628ceb093d18ab
+      internalID: 1914680517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_2
+      rect:
+        serializedVersion: 2
+        x: 10030
+        y: 6741
+        width: 225
+        height: 87
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a42fe5fd54026a44a8262347daf1125c
+      internalID: -1463613264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_3
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 5835
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd26c73326f075d4286d144c0db85502
+      internalID: -558710220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_4
+      rect:
+        serializedVersion: 2
+        x: 3421
+        y: 5842
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32ca6e0b3a6495b4e9780dfb994d6107
+      internalID: 423820571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_5
+      rect:
+        serializedVersion: 2
+        x: 7057
+        y: 5835
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1545e09adb61d44283f940fcce4a214
+      internalID: -1990456953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_6
+      rect:
+        serializedVersion: 2
+        x: 9945
+        y: 5842
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c72cdb3477885646a88b707898fdcf2
+      internalID: 1382000985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_7
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 5175
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb30209861337e942871f1379adcc23e
+      internalID: 2133952430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_8
+      rect:
+        serializedVersion: 2
+        x: 3421
+        y: 5161
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb4fd9a033ca5864983208b635268e52
+      internalID: 1211758082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_9
+      rect:
+        serializedVersion: 2
+        x: 7071
+        y: 5175
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef42e9370fb2efc498551f636f649a92
+      internalID: -418505251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_10
+      rect:
+        serializedVersion: 2
+        x: 9945
+        y: 5160
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 358508af29e3cb7458d40cef00da4f47
+      internalID: -556839276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_11
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 4487
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2a6ccd75e712aa44b2744d90e53a888
+      internalID: -606773501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_12
+      rect:
+        serializedVersion: 2
+        x: 3422
+        y: 4487
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79f991257e2316545b0b0c9cd11ba048
+      internalID: 1618353480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_13
+      rect:
+        serializedVersion: 2
+        x: 7078
+        y: 4487
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e169eae1456ba0a4c9b336eb13614c25
+      internalID: -1656276593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_14
+      rect:
+        serializedVersion: 2
+        x: 9951
+        y: 4487
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea14ac7c9ade31146bcb504e5c8a2a7e
+      internalID: -978605372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_15
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 4042
+        width: 2207
+        height: 374
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac2af7c051c59384ca66ac49f910e570
+      internalID: -402739068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_16
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 3616
+        width: 1915
+        height: 382
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0853f714933ab764d856ebe1bf789a7d
+      internalID: -1038091341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_17
+      rect:
+        serializedVersion: 2
+        x: 3422
+        y: 3733
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20f6a9e9174c43a478bc126b6dcca85b
+      internalID: -339498594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_18
+      rect:
+        serializedVersion: 2
+        x: 9951
+        y: 3732
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66c6fb01992c88b4688088a5ac51f4a2
+      internalID: -291355741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_19
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 3097
+        width: 2476
+        height: 379
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd257b6e5b770dd40831f4c3ff0a4f49
+      internalID: 64539177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_20
+      rect:
+        serializedVersion: 2
+        x: 3422
+        y: 3043
+        width: 2406
+        height: 557
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9eb2faab27bd84d4d9ac23dc48a07f11
+      internalID: 1801204522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_21
+      rect:
+        serializedVersion: 2
+        x: 9950
+        y: 3043
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7516b1ab992f01d4985eb4f11662ba1f
+      internalID: 649886086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_22
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 2625
+        width: 2334
+        height: 378
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9ec9e5bea65f09439d0317d3d9dd91f
+      internalID: 2089014917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_23
+      rect:
+        serializedVersion: 2
+        x: 3410
+        y: 2042
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 402f633d4d7dd474a9fb63a052debce3
+      internalID: 1123063191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_24
+      rect:
+        serializedVersion: 2
+        x: 9951
+        y: 2042
+        width: 2406
+        height: 563
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37f677a9a5bfbd041b7d10c1fb1642ae
+      internalID: 2124702983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_25
+      rect:
+        serializedVersion: 2
+        x: 853
+        y: 2176
+        width: 1914
+        height: 350
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b846b80d60db09a45bdac623f323c052
+      internalID: -1955098881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_26
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 1560
+        width: 2080
+        height: 262
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1f7b97bc01e410498cdc571bfa94367
+      internalID: 1913932259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_27
+      rect:
+        serializedVersion: 2
+        x: 3736
+        y: 1671
+        width: 570
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3d3cf9b98b74fb42b8d8e7fa21a1c04
+      internalID: -2122178045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_28
+      rect:
+        serializedVersion: 2
+        x: 4805
+        y: 1643
+        width: 700
+        height: 283
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 311fdf01e288c58459a4137b878d8b0c
+      internalID: -130409176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_29
+      rect:
+        serializedVersion: 2
+        x: 1436
+        y: 1167
+        width: 1231
+        height: 278
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 422213263f48c6346a2c23e777a517bb
+      internalID: -2086132786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_30
+      rect:
+        serializedVersion: 2
+        x: 1499
+        y: 808
+        width: 1138
+        height: 259
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5cc24256b787fc448eb14add16531c8
+      internalID: 265984953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW UI BUTTONS DOCUMENT.kra~_31
+      rect:
+        serializedVersion: 2
+        x: 1910
+        y: 455
+        width: 715
+        height: 250
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9034e87c6e444ca41bfb21977f59d158
+      internalID: -984307463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 67186168317b6a047b890ee659f739e0
     internalID: 0
     vertices: []
     indices: 
@@ -121,8 +838,42 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      NEW UI BUTTONS DOCUMENT.kra~_0: -943933758
+      NEW UI BUTTONS DOCUMENT.kra~_1: 1914680517
+      NEW UI BUTTONS DOCUMENT.kra~_10: -556839276
+      NEW UI BUTTONS DOCUMENT.kra~_11: -606773501
+      NEW UI BUTTONS DOCUMENT.kra~_12: 1618353480
+      NEW UI BUTTONS DOCUMENT.kra~_13: -1656276593
+      NEW UI BUTTONS DOCUMENT.kra~_14: -978605372
+      NEW UI BUTTONS DOCUMENT.kra~_15: -402739068
+      NEW UI BUTTONS DOCUMENT.kra~_16: -1038091341
+      NEW UI BUTTONS DOCUMENT.kra~_17: -339498594
+      NEW UI BUTTONS DOCUMENT.kra~_18: -291355741
+      NEW UI BUTTONS DOCUMENT.kra~_19: 64539177
+      NEW UI BUTTONS DOCUMENT.kra~_2: -1463613264
+      NEW UI BUTTONS DOCUMENT.kra~_20: 1801204522
+      NEW UI BUTTONS DOCUMENT.kra~_21: 649886086
+      NEW UI BUTTONS DOCUMENT.kra~_22: 2089014917
+      NEW UI BUTTONS DOCUMENT.kra~_23: 1123063191
+      NEW UI BUTTONS DOCUMENT.kra~_24: 2124702983
+      NEW UI BUTTONS DOCUMENT.kra~_25: -1955098881
+      NEW UI BUTTONS DOCUMENT.kra~_26: 1913932259
+      NEW UI BUTTONS DOCUMENT.kra~_27: -2122178045
+      NEW UI BUTTONS DOCUMENT.kra~_28: -130409176
+      NEW UI BUTTONS DOCUMENT.kra~_29: -2086132786
+      NEW UI BUTTONS DOCUMENT.kra~_3: -558710220
+      NEW UI BUTTONS DOCUMENT.kra~_30: 265984953
+      NEW UI BUTTONS DOCUMENT.kra~_31: -984307463
+      NEW UI BUTTONS DOCUMENT.kra~_4: 423820571
+      NEW UI BUTTONS DOCUMENT.kra~_5: -1990456953
+      NEW UI BUTTONS DOCUMENT.kra~_6: 1382000985
+      NEW UI BUTTONS DOCUMENT.kra~_7: 2133952430
+      NEW UI BUTTONS DOCUMENT.kra~_8: 1211758082
+      NEW UI BUTTONS DOCUMENT.kra~_9: -418505251
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
