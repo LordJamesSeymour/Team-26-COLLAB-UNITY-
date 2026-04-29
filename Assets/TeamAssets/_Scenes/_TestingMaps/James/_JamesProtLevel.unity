@@ -7734,6 +7734,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!4 &904253815 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8301120222388249484, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
+  m_PrefabInstance: {fileID: 1027719574}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &917302798
 GameObject:
   m_ObjectHideFlags: 0
@@ -8966,6 +8971,10 @@ PrefabInstance:
       propertyPath: UI_Refrence
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7187784388681633182, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
+      propertyPath: firePoint
+      value: 
+      objectReference: {fileID: 904253815}
     - target: {fileID: 7187784388681633182, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_maincam
       value: 
