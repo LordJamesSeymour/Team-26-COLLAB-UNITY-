@@ -6071,6 +6071,10 @@ PrefabInstance:
       propertyPath: wallRunSpeed
       value: 22
       objectReference: {fileID: 0}
+    - target: {fileID: 2919202368038961353, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
+      propertyPath: WallridePredictionIncrease
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3063391191299763813, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_maincam
       value: 
@@ -6079,6 +6083,10 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
+    - target: {fileID: 6341110719995711259, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
+      propertyPath: UI_Refrence
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7187784388681633182, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: m_maincam
       value: 
