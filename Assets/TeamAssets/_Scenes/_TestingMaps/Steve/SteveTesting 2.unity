@@ -10232,6 +10232,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 266772377507157098, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 275698380641259442, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: playerCam
       value: 
@@ -12523,6 +12527,10 @@ PrefabInstance:
     - target: {fileID: 8646533502733398554, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673559985091940021, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8754620256954973700, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

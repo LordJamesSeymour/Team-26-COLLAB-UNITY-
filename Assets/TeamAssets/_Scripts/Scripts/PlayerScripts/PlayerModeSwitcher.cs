@@ -95,7 +95,7 @@ namespace Group26.Player.Utility
                     break;
 
                 case PlayerMode.BallMode:
-
+                    //  This section is for resetting the ball forward when switching from capsule to ball mode. \\
                     Vector3 forwardDirection = capsuleModeTransform.forward;
                     forwardDirection.y = 0f;
 
@@ -103,6 +103,7 @@ namespace Group26.Player.Utility
                     {
                         ballModeObject.transform.rotation = Quaternion.LookRotation(forwardDirection.normalized, Vector3.up);
                     }
+                    // End of ball forward reset \\
 
                     capsuleModeObject.SetActive(false);
                     ballModeObject.SetActive(true);
