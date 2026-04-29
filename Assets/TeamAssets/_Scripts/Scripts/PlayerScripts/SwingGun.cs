@@ -1,6 +1,7 @@
 using UnityEngine;
 using Group26.Player.Inputs;
 using Group26.Player.Camera;
+using Group26.Player.Utility;
 
 namespace Group26.Player.Movement
 {
@@ -9,11 +10,13 @@ namespace Group26.Player.Movement
         [Header("References")]
         private InputManager inputManager;
         private CameraModeManager cameraModeManager;
+
+        private PlayerModeSwitcher PlayerModeSwitcher;
         
         [SerializeField] private Transform firstPersonCam; 
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
-        public Transform gunTip;
+        public Transform firePoint;
         [SerializeField] private Transform player;
         [SerializeField] private LayerMask m_grappableLayer;
         private PlayerController playerController;
@@ -54,10 +57,12 @@ namespace Group26.Player.Movement
             playerController = GetComponent<PlayerController>();
             inputManager = GetComponent<InputManager>();
             cameraModeManager = GetComponent<CameraModeManager>();
+            PlayerModeSwitcher = GetComponent<PlayerModeSwitcher>();
+            
             if(rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
 
             //~ inverts the layermask bits
             m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
@@ -174,7 +179,9 @@ namespace Group26.Player.Movement
         {
             if (predictionHit.point == Vector3.zero) return;
 
-            
+            if (PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.BallMode)
+                return;
+
             if (m_bpreventSwingingThroughWalls)
             {
                 Transform camera = null;
@@ -258,7 +265,7 @@ namespace Group26.Player.Movement
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
 
             if (joint != null)
             {

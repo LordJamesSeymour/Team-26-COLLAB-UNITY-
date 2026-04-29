@@ -137,7 +137,7 @@ namespace Group26.Player.Utility
             switch (source)
             {
                 case RopeSource.Swing:
-                    return swingGun != null ? swingGun.gunTip : null;
+                    return swingGun != null ? swingGun.firePoint : null;
 
                 case RopeSource.Grapple:
                     return grappleGun != null ? grappleGun.GetGunTip() : null;
@@ -164,8 +164,8 @@ namespace Group26.Player.Utility
 
         private Transform GetFallbackGunTip()
         {
-            if (swingGun != null && swingGun.gunTip != null)
-                return swingGun.gunTip;
+            if (swingGun != null && swingGun.firePoint != null)
+                return swingGun.firePoint;
 
             if (grappleGun != null && grappleGun.GetGunTip() != null)
                 return grappleGun.GetGunTip();
