@@ -11,6 +11,7 @@ namespace Group26.Player.Movement
     {
         [Header("References")]
         private InputManager inputManager;
+        private SwingGun swingGunScr;
 
         [Header("Movement")]
         [SerializeField] float walkSpeed;
@@ -60,6 +61,7 @@ namespace Group26.Player.Movement
 
         [Header("Straight Grapple")]
         [SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
+        [SerializeField] private float WallridePredictionIncrease = 3.5f;
 
         public MovementState state;
         public enum MovementState
@@ -139,6 +141,7 @@ namespace Group26.Player.Movement
         private void Awake()
         {
             inputManager = GetComponent<InputManager>();
+            swingGunScr = GetComponent<SwingGun>();
 
             rb = GetComponent<Rigidbody>();
             rb.freezeRotation = true;
@@ -264,11 +267,13 @@ namespace Group26.Player.Movement
             else if (m_bActiveSwing)
             {
                 state = MovementState.swinging;
+                swingGunScr.PredictionSphereDefault();
                 moveSpeed = swingSpeed;
             }
             else if (m_bIsWallRunning)
             {
                 state = MovementState.wallRunning;
+                swingGunScr.WallRunPredictionSphere(WallridePredictionIncrease);
                 desiredMoveSpeed = wallRunSpeed;
             }
             else if (m_bSliding)
@@ -279,11 +284,13 @@ namespace Group26.Player.Movement
             else if (m_bIsGrounded && inputManager.isCrouching)
             {
                 state = MovementState.crouching;
+                swingGunScr.PredictionSphereDefault();
                 desiredMoveSpeed = crouchSpeed;
             }
             else if (m_bIsGrounded)
             {
                 state = MovementState.walking;
+                swingGunScr.PredictionSphereDefault();
                 desiredMoveSpeed = walkSpeed;
             }
             else

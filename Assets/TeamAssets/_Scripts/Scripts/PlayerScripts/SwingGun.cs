@@ -40,6 +40,7 @@ namespace Group26.Player.Movement
         [Header("Prediction")]
         [SerializeField] private RaycastHit predictionHit;
         [SerializeField] private float predictionSphereCastRadius;
+        private float predictionDefaultSphereCastRadius;
         [SerializeField] private Transform predictionPoint;
         [SerializeField] private LayerMask m_ignoredSwingPredictionLayer;
         [SerializeField] private Transform m_maincam;
@@ -63,6 +64,8 @@ namespace Group26.Player.Movement
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
             swingPoint = firePoint.position;
+
+            predictionDefaultSphereCastRadius = predictionSphereCastRadius;
 
             //~ inverts the layermask bits
             m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
@@ -107,6 +110,16 @@ namespace Group26.Player.Movement
             }
 
             ApplySwingInput();
+        }
+
+        public void WallRunPredictionSphere(float Increase)
+        {
+            predictionSphereCastRadius = Increase;
+        }
+
+        public void PredictionSphereDefault()
+        {
+            predictionSphereCastRadius = predictionDefaultSphereCastRadius;
         }
 
         void CheckForSwingPoints()
