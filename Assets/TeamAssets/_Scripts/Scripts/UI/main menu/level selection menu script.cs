@@ -230,6 +230,16 @@ public class levelselectionmenuscript : menuscreenscript
         m_onExitButton = false;
     }
 
+    public void OnPointerEnter(Button button)
+    {
+        button.image.sprite = m_buttonSprites[5];
+    }
+
+    public void OnPointerExit(Button button)
+    {
+        button.image.sprite = m_buttonSprites[4];
+    }
+
     bool CheckIfOnScreen(Button button)
     {
         //Vector3 buttonScreenPos = Camera.main.WorldToScreenPoint(button.transform.position);

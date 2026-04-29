@@ -107,6 +107,16 @@ public class controlsmenuscript : menuscreenscript
         m_onExitButton = false;
     }
 
+    public void OnPointerEnter(Button button)
+    {
+        button.image.sprite = m_buttonSprites[1];
+    }
+
+    public void OnPointerExit(Button button)
+    {
+        button.image.sprite = m_buttonSprites[0];
+    }
+
     // Update is called once per frame
     void Update()
     {
