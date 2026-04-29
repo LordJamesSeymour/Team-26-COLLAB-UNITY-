@@ -246,7 +246,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 6752901469559689708, guid: 2c6040f68cf4e314db73c0a73db7b0ac, type: 3}
+  m_Motion: {fileID: 7400000, guid: a911b295049a7f34ab6c02c34072729d, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -319,7 +319,7 @@ AnimatorState:
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
-  m_Mirror: 1
+  m_Mirror: 0
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
@@ -403,7 +403,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 6752901469559689708, guid: 2c6040f68cf4e314db73c0a73db7b0ac, type: 3}
+  m_Motion: {fileID: 7400000, guid: a911b295049a7f34ab6c02c34072729d, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -417,7 +417,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: JumpEnd_Anim
-  m_Speed: 1.5
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4046049763716553261}
@@ -826,7 +826,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Walking_Anim
+  m_Name: Running_Anim
   m_Speed: 3
   m_CycleOffset: 0
   m_Transitions:
@@ -842,7 +842,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: cb1421740183cd74ba2135911cc1940c, type: 2}
+  m_Motion: {fileID: 7400000, guid: b15977214d54d92458364be4a2addd7e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

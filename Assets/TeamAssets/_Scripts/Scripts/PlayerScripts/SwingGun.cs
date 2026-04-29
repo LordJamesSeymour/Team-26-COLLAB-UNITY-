@@ -16,7 +16,7 @@ namespace Group26.Player.Movement
         [SerializeField] private Transform firstPersonCam; 
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
-        public Transform gunTip;
+        public Transform firePoint;
         [SerializeField] private Transform player;
         [SerializeField] private LayerMask m_grappableLayer;
         private PlayerController playerController;
@@ -62,7 +62,7 @@ namespace Group26.Player.Movement
             if(rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
             if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
 
             //~ inverts the layermask bits
             m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
@@ -265,7 +265,7 @@ namespace Group26.Player.Movement
             playerController.m_bActiveSwing = false;
             m_bClimbingRope = false;
             m_vMoveInput = Vector2.zero;
-            swingPoint = gunTip.position;
+            swingPoint = firePoint.position;
 
             if (joint != null)
             {

@@ -12,7 +12,7 @@ namespace Group26.Player.Movement
 		private PlayerModeSwitcher PlayerModeSwitcher;
 
 		[SerializeField] private Transform grappleCamera;
-		[SerializeField] private Transform gunTip;
+		[SerializeField] private Transform firePoint;
 		[SerializeField] private LayerMask m_grappableLayer;
 		[SerializeField] private LineRenderer lineRenderer;
 		[SerializeField] private Transform m_maincam;
@@ -78,8 +78,8 @@ namespace Group26.Player.Movement
 
 		private void LateUpdate()
 		{
-			if (m_bGrappling && lineRenderer != null && gunTip != null)
-				lineRenderer.SetPosition(0, gunTip.position);
+			if (m_bGrappling && lineRenderer != null && firePoint != null)
+				lineRenderer.SetPosition(0, firePoint.position);
 		}
 
 		private void FixedUpdate()
@@ -366,7 +366,7 @@ namespace Group26.Player.Movement
 
 		public Transform GetGunTip()
 		{
-			return gunTip;
+			return firePoint;
 		}
 
 		public bool IsRopeActive()
