@@ -11,7 +11,7 @@ public class Death : MonoBehaviour
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
-    private Vector3 m_startPoint;
+    public Vector3 m_startPoint;
     private GameObject[] m_checkpoints;
     private int m_totalTime;
     private bool m_buttonPressed = false;
@@ -97,6 +97,19 @@ public class Death : MonoBehaviour
         m_timerScript.m_paused = false;
     }
 
+    private IEnumerator InstaRespawn()
+    {
+        Debug.Log("Respawning");
+
+        transform.position = m_respawnPoint;
+        m_rigidbody.isKinematic = false;
+
+        yield return new WaitForSeconds(0.1f);
+        m_respawn = null;
+
+        m_timerScript.m_paused = false;
+    }
+
     private IEnumerator Restart()
     {
         //restarts the player from the start of the level
@@ -154,14 +167,44 @@ public class Death : MonoBehaviour
             if (Checkpoint.m_checkpointsEnabled)
             {
                 StopCoroutine(Restart());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(InstaRespawn());
                 m_restart = null;
                 m_respawn = StartCoroutine(Respawn());
             }
             else
             {
                 StopCoroutine(Respawn());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(InstaRespawn());
                 m_respawn = null;
                 m_restart = StartCoroutine(Restart());
+            }
+        }
+        else if(other.gameObject.tag == "obstacle")
+        {
+            Debug.Log("Hit Obstacle");
+
+            m_rigidbody.linearVelocity = Vector3.zero;
+            m_rigidbody.angularVelocity = Vector3.zero;
+            m_rigidbody.isKinematic = true;
+            m_timerScript.m_paused = true;
+
+            if (Checkpoint.m_checkpointsEnabled)
+            {
+                StopCoroutine(Restart());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(Respawn());
+                m_restart = null;
+                m_respawn = StartCoroutine(InstaRespawn());
+            }
+            else
+            {
+                StopCoroutine(Respawn());
+                StopCoroutine(Restart());
+                StopCoroutine(InstaRespawn());
+                m_respawn = null;
+                m_restart = StartCoroutine(InstaRestart());
             }
         }
     }
@@ -180,6 +223,7 @@ public class Death : MonoBehaviour
         {
             StopCoroutine(Respawn());
             StopCoroutine(Restart());
+            StopCoroutine(InstaRespawn());
             m_respawn = null;
             m_restart = StartCoroutine(InstaRestart());
         }
