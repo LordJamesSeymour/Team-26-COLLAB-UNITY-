@@ -33,7 +33,7 @@ namespace Group26.Player.Movement
         [SerializeField] public float ComboDecay = 0.5f;
         [SerializeField] public float ConstantPointsDecay = 0.001f;
 
-        public bool ComboDecayBool= false;
+        public bool ComboDecayBool = false;
 
         [Header("Points for trick")]
         [SerializeField] private int PointsForDash = 5;
@@ -75,11 +75,11 @@ namespace Group26.Player.Movement
                 playerController = GetComponent<PlayerController>();
             }
 
-            playerController.TrickSystemEvent += TrickSystemMain;
+            //playerController.TrickSystemEvent += TrickSystemMain;
 
         }
 
-        public void DoATrick() 
+        public void DoATrick()
         {
             print(TotalScore);
         }
@@ -98,7 +98,7 @@ namespace Group26.Player.Movement
 
         public void DecayCalculation(string State)
         {
-            
+
             if (State == null)
             {
                 Debug.Log("Decay Calculation state is NULL");
@@ -111,7 +111,7 @@ namespace Group26.Player.Movement
                 DefaultPointMultiplier = Mathf.Clamp(DefaultPointMultiplier, 0, 3);
 
                 UI_Texts[6].text = "Mult: x" + DefaultPointMultiplier;
-    
+
             }
 
             if (State != LastState)
@@ -126,7 +126,6 @@ namespace Group26.Player.Movement
             LastState = State;
         }
 
-        
         public void UITextOrder(string Name)
         {
             UI_Texts[5].text = "Score: " + TotalScore.ToString();
@@ -162,6 +161,25 @@ namespace Group26.Player.Movement
 
         }
 
+        public void AddStyleCombo(int Points, float Decay, string State, string UIText)
+        {
+            Buffer += 1;
+
+            if (Buffer == 12)
+            {
+                //WallRunningPointsEnabled = false;
+                DecayCalculation(State);
+                PointsCalculation(Points, Decay);
+                UITextOrder(UIText);
+            }
+            else if (Buffer > 12)
+            {
+                Buffer = 0;
+            }
+
+        }
+
+        /*
         private void TrickSystemMain()
         {
             Buffer += 1;
@@ -220,6 +238,9 @@ namespace Group26.Player.Movement
             }
 
         }
-    }
+    }*/
 
+
+    }
 }
+

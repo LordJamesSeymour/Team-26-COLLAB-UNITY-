@@ -7,7 +7,7 @@ using System;
 
 namespace Group26.Player.Movement
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerControllerStyleTesting : MonoBehaviour
     {
         [Header("References")]
         private InputManager inputManager;
@@ -138,6 +138,7 @@ namespace Group26.Player.Movement
 
         private StyleSystem styleSystem;
 
+
         private void Awake()
         {
             inputManager = GetComponent<InputManager>();
@@ -260,7 +261,6 @@ namespace Group26.Player.Movement
             }
             else if (m_bDashing)
             {
-                styleSystem.AddStyleCombo(10, 2, MovementState.dashing.ToString(), "Dash");
                 state = MovementState.dashing;
                 desiredMoveSpeed = dashSpeed;
                 speedChangeFactor = dashSpeedChangeFactor;
