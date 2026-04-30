@@ -18,6 +18,7 @@ namespace Group26.Player.Movement
 		[Header("References")]
 		private InputManager inputManager;
 		private SwingGun swingGunScr;
+		private BallRollController ballRollController;
 
 		[Header("Movement")]
 		[SerializeField] float walkSpeed;
@@ -64,6 +65,9 @@ namespace Group26.Player.Movement
 		[Header("Rail System")]
 		[SerializeField] float railJumpUpForce = 6f;
 		[SerializeField] float railExitForwardBoost = 2f;
+		[SerializeField] float railExitMomentumMultiplier = 1.15f;
+		[SerializeField] float railReattachCooldown = 0.25f;
+		[SerializeField] float railFallbackMinSpeed = 0.1f;
 
 		[Header("Straight Grapple")]
 		[SerializeField] private float m_straightGrappleReleaseDistance = 1.0f;
@@ -96,9 +100,12 @@ namespace Group26.Player.Movement
 		public bool m_bIsWallRunning;
 		public bool m_bOnRail;
 
+		private bool m_bIsBallForm;
+
 		public bool IsOnRail => m_bOnRail;
 		public bool IsGrounded => m_bIsGrounded;
 		public bool IsSliding => m_bSliding;
+		public bool IsBallForm => m_bIsBallForm;
 
 		public bool IsMovementLockedForSlide =>
 			m_bOnRail ||
@@ -139,6 +146,10 @@ namespace Group26.Player.Movement
 		RailSpline currentRail;
 		float currentRailT;
 		float currentRailSpeed;
+		float m_nextRailAttachTime;
+		Vector3 m_lastRailMoveDirection = Vector3.forward;
+		Transform m_railForwardReference;
+		Vector3 m_railForwardFallback = Vector3.forward;
 
 		private float m_peakAirborneDownwardSpeed;
 		private float m_landingShakeSuppressTimer;
@@ -155,6 +166,7 @@ namespace Group26.Player.Movement
 		{
 			inputManager = GetComponent<InputManager>();
 			swingGunScr = GetComponent<SwingGun>();
+			ballRollController = GetComponent<BallRollController>();
 
 			rb = GetComponent<Rigidbody>();
 			rb.freezeRotation = true;
@@ -172,12 +184,16 @@ namespace Group26.Player.Movement
 
 		private void OnEnable()
 		{
-			inputManager.OnJumpPressed += Jump;
+			if (inputManager != null)
+				inputManager.OnJumpPressed += Jump;
 		}
 
 		private void OnDisable()
 		{
-			inputManager.OnJumpPressed -= Jump;
+			if (inputManager != null)
+				inputManager.OnJumpPressed -= Jump;
+
+			CancelRailStateImmediate();
 		}
 
 		private void FixedUpdate()
@@ -192,7 +208,7 @@ namespace Group26.Player.Movement
 
 			UpdateLandingShakeTracking(wasGroundedLastFixedFrame);
 
-			GetInput(inputManager.MoveInput);
+			GetInput(inputManager != null ? inputManager.MoveInput : Vector2.zero);
 
 			if (m_bOnRail)
 			{
@@ -205,6 +221,9 @@ namespace Group26.Player.Movement
 				UpdateStraightGrappleMovement(Time.fixedDeltaTime);
 				return;
 			}
+
+			if (IsActuallyInBallForm())
+				return;
 
 			if (m_bIsGrounded && !m_bActiveGrapple)
 			{
@@ -237,6 +256,17 @@ namespace Group26.Player.Movement
 				MovePlayer(onSlope);
 				SpeedControl(onSlope);
 			}
+		}
+
+		private bool IsActuallyInBallForm()
+		{
+			if (m_bIsBallForm)
+				return true;
+
+			if (ballRollController != null && ballRollController.enabled)
+				return true;
+
+			return false;
 		}
 
 		private void UpdateLandingShakeTracking(bool wasGroundedLastFixedFrame)
@@ -336,7 +366,7 @@ namespace Group26.Player.Movement
 				state = MovementState.sliding;
 				desiredMoveSpeed = slideSpeed;
 			}
-			else if (m_bIsGrounded && inputManager.isCrouching)
+			else if (m_bIsGrounded && inputManager != null && inputManager.isCrouching)
 			{
 				state = MovementState.crouching;
 				swingGunScr.PredictionSphereDefault();
@@ -497,9 +527,12 @@ namespace Group26.Player.Movement
 		{
 			if (m_bOnRail)
 			{
-				ForceExitRail(true);
+				ExitRailInternal(true);
 				return;
 			}
+
+			if (IsActuallyInBallForm())
+				return;
 
 			jumpBufferTimer = jumpBufferTime;
 			TryConsumeJumpBuffer();
@@ -676,8 +709,57 @@ namespace Group26.Player.Movement
 			return moveDir;
 		}
 
+		public void SetBallFormState(bool isBallForm)
+		{
+			m_bIsBallForm = isBallForm;
+
+			if (!m_bIsBallForm && m_bOnRail)
+				ExitRailInternal(false);
+		}
+
+		public bool TryEnterRail(RailSpline rail, Transform forwardReference = null)
+		{
+			if (!CanAttachToRail())
+				return false;
+
+			if (rail == null || rail.SplineContainer == null)
+				return false;
+
+			m_railForwardReference = forwardReference;
+
+			Vector3 fallbackForward = Vector3.zero;
+
+			if (forwardReference != null)
+				fallbackForward = forwardReference.forward;
+
+			if (fallbackForward.sqrMagnitude < 0.0001f && rb.linearVelocity.sqrMagnitude > 0.0001f)
+				fallbackForward = rb.linearVelocity.normalized;
+
+			if (fallbackForward.sqrMagnitude < 0.0001f && orientation != null)
+				fallbackForward = orientation.forward;
+
+			if (fallbackForward.sqrMagnitude < 0.0001f)
+				fallbackForward = transform.forward;
+
+			m_railForwardFallback = fallbackForward.normalized;
+
+			EnterRail(rail);
+			return true;
+		}
+
+		private bool CanAttachToRail()
+		{
+			if (m_bOnRail) return false;
+			if (!IsActuallyInBallForm()) return false;
+			if (Time.time < m_nextRailAttachTime) return false;
+			return true;
+		}
+
 		public void EnterRail(RailSpline rail)
 		{
+			if (!CanAttachToRail())
+				return;
+
 			if (rail == null || rail.SplineContainer == null)
 				return;
 
@@ -693,11 +775,7 @@ namespace Group26.Player.Movement
 			if (m_bSliding && slidingComp != null)
 				slidingComp.ForceEndSlide();
 
-			if (m_bSliding && slidingComp != null)
-				slidingComp.ForceEndSlide();
-
 			inputManager?.ClearRailBlockedInputs();
-
 			StopAllCoroutines();
 
 			m_bActiveGrapple = false;
@@ -733,10 +811,15 @@ namespace Group26.Player.Movement
 				rail.NearestPointIterations);
 
 			currentRailT = nearestT;
+
+			float enforcedMinSpeed = Mathf.Max(rail.MinSpeed, railFallbackMinSpeed);
 			currentRailSpeed = Mathf.Clamp(
-				Mathf.Max(rail.EntrySpeed, incomingVelocity.magnitude),
-				rail.MinSpeed,
+				Mathf.Max(rail.EntrySpeed, incomingVelocity.magnitude, enforcedMinSpeed),
+				enforcedMinSpeed,
 				rail.MaxSpeed);
+
+			Vector3 tangent = ((Vector3)rail.SplineContainer.EvaluateTangent(currentRailT)).normalized;
+			m_lastRailMoveDirection = tangent.sqrMagnitude > 0.0001f ? tangent : m_railForwardFallback;
 
 			SnapToRail();
 		}
@@ -757,7 +840,16 @@ namespace Group26.Player.Movement
 		private void UpdateRailMovement(float deltaTime)
 		{
 			if (!m_bOnRail || currentRail == null)
+			{
+				CancelRailStateImmediate();
 				return;
+			}
+
+			if (!IsActuallyInBallForm())
+			{
+				ExitRailInternal(false);
+				return;
+			}
 
 			inputManager?.ClearRailBlockedInputs();
 
@@ -775,7 +867,8 @@ namespace Group26.Player.Movement
 			rb.angularVelocity = Vector3.zero;
 			rb.linearVelocity = Vector3.zero;
 
-			float railInput = Mathf.Clamp(inputManager.MoveInput.y, -1f, 1f);
+			float railInput = Mathf.Clamp(inputManager != null ? inputManager.MoveInput.y : 0f, -1f, 1f);
+			float enforcedMinSpeed = Mathf.Max(currentRail.MinSpeed, railFallbackMinSpeed);
 
 			if (railInput > 0.01f)
 			{
@@ -790,9 +883,10 @@ namespace Group26.Player.Movement
 				currentRailSpeed -= currentRail.PassiveDeceleration * deltaTime;
 			}
 
-			currentRailSpeed = Mathf.Clamp(currentRailSpeed, currentRail.MinSpeed, currentRail.MaxSpeed);
+			currentRailSpeed = Mathf.Clamp(currentRailSpeed, enforcedMinSpeed, currentRail.MaxSpeed);
 
 			Spline spline = currentRail.SplineContainer.Spline;
+			Vector3 oldWorldPos = currentRail.SplineContainer.transform.TransformPoint((Vector3)SplineUtility.EvaluatePosition(spline, currentRailT));
 
 			float3 localPoint = SplineUtility.GetPointAtLinearDistance(
 				spline,
@@ -807,12 +901,30 @@ namespace Group26.Player.Movement
 				? ((Vector3)currentRail.SplineContainer.EvaluateUpVector(currentRailT)).normalized
 				: Vector3.up;
 
+			Vector3 delta = worldPos - oldWorldPos;
+			if (delta.sqrMagnitude > 0.0001f)
+				m_lastRailMoveDirection = delta.normalized;
+			else
+			{
+				Vector3 tangent = ((Vector3)currentRail.SplineContainer.EvaluateTangent(currentRailT)).normalized;
+				if (tangent.sqrMagnitude > 0.0001f)
+					m_lastRailMoveDirection = tangent;
+			}
+
 			rb.MovePosition(worldPos + up * currentRail.RideOffset);
 
 			if (currentRail.AutoExitAtEnd && currentRailT >= 0.999f)
 			{
-				ForceExitRail(false);
+				ExitRailAtEnd();
 			}
+		}
+
+		public void ExitRailAtEnd()
+		{
+			if (!m_bOnRail)
+				return;
+
+			ExitRailInternal(false);
 		}
 
 		public void ForceExitRail(bool jumpedOff)
@@ -820,16 +932,23 @@ namespace Group26.Player.Movement
 			if (!m_bOnRail)
 				return;
 
-			Vector3 exitDirection = transform.forward;
+			ExitRailInternal(jumpedOff);
+		}
 
-			if (currentRail != null && currentRail.SplineContainer != null)
-			{
-				Vector3 tangent = ((Vector3)currentRail.SplineContainer.EvaluateTangent(currentRailT)).normalized;
-				tangent.y = 0f;
+		private void ExitRailInternal(bool jumpedOff)
+		{
+			if (!m_bOnRail)
+				return;
 
-				if (tangent.sqrMagnitude > 0.0001f)
-					exitDirection = tangent.normalized;
-			}
+			Vector3 exitDirection = GetRailExitDirection();
+			float enforcedMinSpeed = Mathf.Max(currentRail != null ? currentRail.MinSpeed : 0f, railFallbackMinSpeed);
+			float baseSpeed = Mathf.Max(currentRailSpeed, enforcedMinSpeed);
+			float exitSpeed = baseSpeed * railExitMomentumMultiplier;
+
+			Vector3 exitVelocity = exitDirection * exitSpeed;
+
+			if (jumpedOff)
+				exitVelocity += Vector3.up * railJumpUpForce;
 
 			m_bOnRail = false;
 			currentRail = null;
@@ -852,16 +971,55 @@ namespace Group26.Player.Movement
 			rb.useGravity = true;
 			rb.linearDamping = 0f;
 			rb.angularVelocity = Vector3.zero;
-
-			Vector3 exitVelocity = exitDirection * railExitForwardBoost;
-
-			if (jumpedOff)
-				exitVelocity += Vector3.up * railJumpUpForce;
-
 			rb.linearVelocity = exitVelocity;
-			state = MovementState.air;
 
+			m_nextRailAttachTime = Time.time + railReattachCooldown;
+			m_railForwardReference = null;
+			m_railForwardFallback = Vector3.forward;
+			m_lastRailMoveDirection = Vector3.forward;
+
+			state = MovementState.air;
 			inputManager?.ClearRailBlockedInputs();
+		}
+
+		private Vector3 GetRailExitDirection()
+		{
+			Vector3 direction = Vector3.zero;
+
+			if (m_lastRailMoveDirection.sqrMagnitude > 0.0001f)
+				direction = m_lastRailMoveDirection;
+
+			if (direction.sqrMagnitude < 0.0001f && m_railForwardReference != null)
+				direction = m_railForwardReference.forward;
+
+			if (direction.sqrMagnitude < 0.0001f && rb.linearVelocity.sqrMagnitude > 0.0001f)
+				direction = rb.linearVelocity.normalized;
+
+			if (direction.sqrMagnitude < 0.0001f)
+				direction = m_railForwardFallback;
+
+			if (direction.sqrMagnitude < 0.0001f && currentRail != null && currentRail.SplineContainer != null)
+				direction = ((Vector3)currentRail.SplineContainer.EvaluateTangent(currentRailT)).normalized;
+
+			if (direction.sqrMagnitude < 0.0001f)
+				direction = transform.forward;
+
+			return direction.normalized;
+		}
+
+		public void CancelRailStateImmediate()
+		{
+			m_bOnRail = false;
+			currentRail = null;
+			currentRailT = 0f;
+			currentRailSpeed = 0f;
+
+			rb.useGravity = true;
+
+			m_railForwardReference = null;
+			m_railForwardFallback = Vector3.forward;
+			m_lastRailMoveDirection = Vector3.forward;
+			m_nextRailAttachTime = Time.time + railReattachCooldown;
 		}
 	}
 }
