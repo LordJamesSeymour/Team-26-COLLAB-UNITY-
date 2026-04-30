@@ -272,7 +272,7 @@ namespace Group26.Player.Movement
             }
             else if (m_bIsWallRunning)
             {
-                styleSystem.AddStyleCombo(10, 2, MovementState.wallRunning.ToString(), "Wall Run");
+                styleSystem.AddStyleCombo(10, MovementState.wallRunning.ToString(), "Wall Run");
                 state = MovementState.wallRunning;
                 desiredMoveSpeed = wallRunSpeed;
             }

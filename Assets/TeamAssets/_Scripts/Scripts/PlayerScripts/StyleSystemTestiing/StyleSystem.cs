@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Group26.Player.Movement
 {
@@ -49,7 +51,8 @@ namespace Group26.Player.Movement
         private bool SwingingPointsEnabled = true;
 
         private string LastState = "default";
-
+        public bool GrappleBoostState = false;
+        private bool exists = false;
 
         private void Awake()
         {
@@ -129,8 +132,8 @@ namespace Group26.Player.Movement
         public void UITextOrder(string Name)
         {
             UI_Texts[5].text = "Score: " + TotalScore.ToString();
-
-            if (UI_Text_Order >= 5)
+            /*
+            if (UI_Text_Order == 5)
             {
                 UI_Text_Order = 1;
             }
@@ -139,7 +142,85 @@ namespace Group26.Player.Movement
                 UI_Texts[UI_Text_Order].text = "+ " + Name;
                 UI_Text_Order += 1;
             }
-            // make it display xNUM at the end of the trick rather than spamming it 
+            */
+
+            for (int i = 1; i < UI_Texts.Length; i++)
+            {
+                //Debug.Log("Loop");
+                //Debug.Log("Name Existss?" + UI_Texts[i].text.Contains(Name.ToString()));
+                //Debug.Log("Name is :" + Name.ToString());
+                //Debug.Log(UI_Texts[i].text);
+
+                if (UI_Texts[i].text.Contains(Name.ToString()))
+                {
+                    //Debug.Log("Exists :" + Name.ToString());
+                    exists = true;
+                }
+                else
+                {
+                    exists = false;
+                }
+
+                if (exists == true)
+                {
+                    //Debug.Log("Exists == True");
+                    if (UI_Texts[i].text.ToString().Any(char.IsDigit))
+                    {
+                        //Debug.Log("Has A digit");
+                        int ComboNumbers = int.Parse(Regex.Match(UI_Texts[i].text, @"\d+").Value) + 1;
+                        //Debug.Log("DIgit : " + ComboNumbers);
+                        UI_Texts[i].text = "+ " + Name + " " + (ComboNumbers) + "x ";
+                        break;
+                    }
+                    else
+                    {
+                        //Debug.Log("No digit");
+                        UI_Texts[i].text = "+ " + Name + " " + 2 + "x ";
+                        break;
+                    }
+                }
+                else if (!exists && !UI_Texts[i].text.EndsWith("x ") && i < 5)
+                {
+                    //Debug.Log("Empty socket");
+                    UI_Texts[i].text = "+ " + Name;
+                    break;
+                }
+            }
+            /*
+            for (int i = 1; i < UI_Texts.Length; i++)
+            {
+                if (i == 5)
+                {
+                    Debug.Log("Break");
+                    break;
+                }
+                else if (UI_Texts[i].text.Contains(Name.ToString()) )
+                {
+                    //Debug.Log(int.TryParse(UI_Texts[i].text.Substring(Name.Length + 1), out UI_Text_Order));
+                    //UI_Texts[i].text = UI_Texts[i].text + " " + 1 + "x ";
+                    if (UI_Texts[i].text.ToString().Any(char.IsDigit))
+                    {
+                        int ComboNumbers = int.Parse(Regex.Match(UI_Texts[i].text, @"\d+").Value);
+                        UI_Texts[i].text = UI_Texts[i].text + " " + (ComboNumbers + 1) + "x ";
+                    }
+                    else
+                    {
+                        UI_Texts[i].text = UI_Texts[i].text + " " + 2 + "x ";
+                    }
+                    
+
+                }
+
+
+            }
+            */
+
+            if(GrappleBoostState)
+            {
+                GrappleBoostState = false;
+            }
+
+            // for some reason grapple triggers dash 3 times
         }
 
         // Update is called once per frame
@@ -161,15 +242,16 @@ namespace Group26.Player.Movement
 
         }
 
-        public void AddStyleCombo(int Points, float Decay, string State, string UIText)
+        public void AddStyleCombo(int Points, string State, string UIText)
         {
             Buffer += 1;
+            
 
             if (Buffer == 12)
             {
                 //WallRunningPointsEnabled = false;
                 DecayCalculation(State);
-                PointsCalculation(Points, Decay);
+                PointsCalculation(Points, ComboDecay);
                 UITextOrder(UIText);
             }
             else if (Buffer > 12)

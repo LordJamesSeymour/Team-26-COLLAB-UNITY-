@@ -61,8 +61,10 @@ namespace Group26.Player.Movement
 			else grappleCdTimer = grappleCooldown;
 
 			playerController.BeginDashState(maxGrappleYSpeed);
-			StyleSystem style = GetComponent<StyleSystem>();
-			
+
+			StyleSystem styleSystem = GetComponent<StyleSystem>();
+			styleSystem.GrappleBoostState = true;
+
 			Transform forwardT;
 			if (useCameraForward)
 				forwardT = playerCam;

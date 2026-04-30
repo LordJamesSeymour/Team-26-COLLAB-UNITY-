@@ -260,7 +260,15 @@ namespace Group26.Player.Movement
             }
             else if (m_bDashing)
             {
-                styleSystem.AddStyleCombo(10, 2, MovementState.dashing.ToString(), "Dash");
+                if (styleSystem.GrappleBoostState)
+                {
+                    styleSystem.AddStyleCombo(10, "GrappleBoost", "Grapple");
+                }
+                else
+                {
+                    styleSystem.AddStyleCombo(10, MovementState.dashing.ToString(), "Dash");
+                }
+                    
                 state = MovementState.dashing;
                 desiredMoveSpeed = dashSpeed;
                 speedChangeFactor = dashSpeedChangeFactor;
@@ -272,7 +280,7 @@ namespace Group26.Player.Movement
             }
             else if (m_bIsWallRunning)
             {
-                styleSystem.AddStyleCombo(10, 2, MovementState.wallRunning.ToString(), "Wall Run");
+                styleSystem.AddStyleCombo(10, MovementState.wallRunning.ToString(), "Wall Run");
                 state = MovementState.wallRunning;
                 desiredMoveSpeed = wallRunSpeed;
             }
