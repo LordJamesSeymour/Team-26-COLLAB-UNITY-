@@ -75,8 +75,8 @@ public class SlopeMomentum : MonoBehaviour
     {
         //Debug.Log(m_onSlope);
         //Debug.Log(m_locomotionScript.GetDirection());
-        //Debug.Log("Speed: " + m_movementScript.moveSpeed);
-        //Debug.Log("Momentum: " + m_momentum);
+        Debug.Log("Speed: " + m_movementScript.moveSpeed);
+        Debug.Log("Momentum: " + m_momentum);
 
         if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95)
         {
@@ -85,14 +85,15 @@ public class SlopeMomentum : MonoBehaviour
         }
         else if(m_movementScript.GetDirection() == Vector3.zero)
         {
-            if(m_movementScript.moveSpeed > m_startSpeed && m_momentum > m_minMomentum)
-            {
-                StartCoroutine(SlowDown());
-            }
-            else
-            {
+            //if(m_movementScript.moveSpeed > m_startSpeed && m_momentum > m_minMomentum)
+            //{
+            //    StartCoroutine(SlowDown());
+            //}
+            //else
+            //{
+            //    StopCoroutine(SlowDown());
                 m_momentum = 0;
-            }
+            //}
             //reset momentum and speed
             //m_momentum = 0.0f;
             
