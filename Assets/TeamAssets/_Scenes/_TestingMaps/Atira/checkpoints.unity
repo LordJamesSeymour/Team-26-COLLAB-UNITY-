@@ -235,6 +235,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 927507460318148860, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 927507460318148860, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 927507460318148860, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3507836174453789863, guid: 9e21aefef2ed3774f8685c33d3b9819a, type: 3}
       propertyPath: predictionPoint
       value: 
@@ -472,7 +484,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_timerScript: {fileID: 1479634492}
+  m_cameraPivotTransform: {fileID: 0}
   m_respawnPoint: {x: 0, y: 0, z: 0}
+  m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
   m_startPoint: {x: 0, y: 0, z: 0}
 --- !u!136 &282554037
 CapsuleCollider:
@@ -1995,7 +2009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9830c78150b3e85438da4aa513fee558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerDeathScript: {fileID: 282554036}
+  m_playerDeathScript: {fileID: 0}
   m_used: 0
 --- !u!65 &723011045
 BoxCollider:
@@ -2672,7 +2686,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 282554036}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Death, Assembly-CSharp
         m_MethodName: RunRespawn
         m_Mode: 1
@@ -2966,7 +2980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 282554036}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Death, Assembly-CSharp
         m_MethodName: RunRestart
         m_Mode: 1
@@ -4194,7 +4208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9830c78150b3e85438da4aa513fee558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerDeathScript: {fileID: 282554036}
+  m_playerDeathScript: {fileID: 0}
   m_used: 0
 --- !u!65 &1895750451
 BoxCollider:

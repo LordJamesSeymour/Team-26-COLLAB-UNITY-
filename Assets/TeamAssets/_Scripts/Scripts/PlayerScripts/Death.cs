@@ -1,3 +1,4 @@
+using Group26.Player.Inputs;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,8 +7,10 @@ public class Death : MonoBehaviour
 {
     //[SerializeField] private GameObject m_respawnMenuPanel;
     [SerializeField] private Timer m_timerScript;
+    [SerializeField] private Transform m_cameraPivotTransform;
 
     [HideInInspector] public Vector3 m_respawnPoint;
+    [HideInInspector] public Quaternion m_respawnDirection;
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
@@ -15,9 +18,11 @@ public class Death : MonoBehaviour
     private GameObject[] m_checkpoints;
     private int m_totalTime;
     private bool m_buttonPressed = false;
+    private float m_cameraYaw;
 
     private InputAction m_respawnInput;
     private InputAction m_restartInput;
+    private InputManager m_inputManager;
 
     private Coroutine m_respawn;
     private Coroutine m_restart;
@@ -26,12 +31,16 @@ public class Death : MonoBehaviour
     {
         m_respawnPoint = transform.position;
         m_startPoint = transform.position;
+        m_respawnDirection = m_cameraPivotTransform.rotation;
+        m_cameraYaw = m_cameraPivotTransform.rotation.eulerAngles.y;
 
         m_rigidbody = GetComponent<Rigidbody>();
         if (!m_rigidbody)
         {
             Debug.Log("No rigidbody attached to this object");
         }
+
+        m_inputManager = GetComponent<InputManager>();
 
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
@@ -159,6 +168,7 @@ public class Death : MonoBehaviour
             Debug.Log("Player Dead");
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
+            //m_playerBodyTransform.forward = m_respawnDirection;
             m_rigidbody.isKinematic = true;
             //m_respawnMenuPanel.SetActive(true);
             //m_timerScript.m_timerDisplay.gameObject.SetActive(false);
@@ -206,6 +216,13 @@ public class Death : MonoBehaviour
                 m_respawn = null;
                 m_restart = StartCoroutine(InstaRestart());
             }
+
+            Debug.Log(m_respawnDirection);
+            Debug.Log(transform.rotation);
+            m_cameraYaw = 0.0f;
+            m_cameraPivotTransform.rotation = Quaternion.Euler(0.0f, m_cameraYaw, 0.0f);
+            Debug.Log(m_inputManager.LookInput);
+            Debug.Log(m_cameraPivotTransform.rotation);
         }
     }
 

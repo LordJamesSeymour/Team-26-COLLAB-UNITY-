@@ -78,10 +78,10 @@ public class SlopeMomentum : MonoBehaviour
     {
         //Debug.Log(m_onSlope);
         //Debug.Log(m_locomotionScript.GetDirection());
-        Debug.Log("Speed: " + m_movementScript.moveSpeed);
-        Debug.Log("Momentum: " + m_momentum);
-        Debug.Log("Angle: " + m_movementScript.GetSlopeAngle());
-        Debug.Log("Speed Increase Factor: " + m_speedIncreaseFactor * (1 + (m_movementScript.GetSlopeAngle() / 10)));
+        //Debug.Log("Speed: " + m_movementScript.moveSpeed);
+        //Debug.Log("Momentum: " + m_momentum);
+        //Debug.Log("Angle: " + m_movementScript.GetSlopeAngle());
+        //Debug.Log("Speed Increase Factor: " + m_speedIncreaseFactor * (1 + (m_movementScript.GetSlopeAngle() / 10)));
 
         if (m_movementScript.OnSlope() &&  m_momentum < m_maxMomentum && m_movementScript.GetDirection().z >= 0.95 && transform.position.y < m_pos.y)
         {
