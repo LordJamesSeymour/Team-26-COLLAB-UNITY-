@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 6f33352994e50934b9d349cdd86a2958
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _servertower4_AlbedoTransparency: {fileID: 2800000, guid: 9f6f87973c5302d43ad918d9adb45cd5, type: 3}
+  - _servertower4_MetallicSmoothness: {fileID: 2800000, guid: 7af4236c285a0784abf41a354fad55bf, type: 3}
+  - _servertower4_Emission: {fileID: 2800000, guid: bc7eb8d58a33bed448a8986217dfbc9a, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
