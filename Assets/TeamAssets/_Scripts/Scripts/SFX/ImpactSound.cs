@@ -8,8 +8,8 @@ public class ImpactSound : MonoBehaviour
     {
         if (!m_ball.activeSelf) return;
         //Debug.Log(Vector3.Angle(other.relativeVelocity, -other.contacts[0].normal));
-        if (Vector3.Angle(other.relativeVelocity, -other.contacts[0].normal) < 135) return;
+        if (Vector3.Angle(other.relativeVelocity, -other.contacts[0].normal) < 130) return;
 
-        AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.CRASH, other.contacts[0].point, Mathf.Min(.8f, GetComponent<Rigidbody>().linearVelocity.magnitude / 15), .1f, 1, .1f, .8f);
+        AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.CRASH, other.contacts[0].point, Mathf.Min(.5f, GetComponent<Rigidbody>().linearVelocity.magnitude / 20), .1f, 1, .1f, .8f);
     }
 }
