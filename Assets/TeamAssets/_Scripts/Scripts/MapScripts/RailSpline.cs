@@ -15,7 +15,7 @@ namespace Group26.Player.Movement
 		[Header("Rail Movement")]
 		[SerializeField] private float entrySpeed = 8f;
 		[SerializeField] private float minSpeed = 4f;
-		[SerializeField] private float maxSpeed = 20f;
+		[SerializeField] private float maxSpeed = 28f;
 		[SerializeField] private float acceleration = 16f;
 		[SerializeField] private float brakeDeceleration = 22f;
 		[SerializeField] private float passiveDeceleration = 3f;
@@ -49,21 +49,27 @@ namespace Group26.Player.Movement
 		[SerializeField] private float meshSegmentsPerUnit = 3f;
 		[SerializeField] private bool generateRailColliders = false;
 
-		[Header("Wall Height")]
+		[Header("Outer Shell")]
 		[Range(0f, 100f)]
 		[SerializeField] private float wallHeight = 50f;
-
-		[Header("Side Wall Meshes")]
 		[SerializeField] private bool generateSideWallMeshes = true;
 		[SerializeField] private Material sideWallMaterial;
 		[SerializeField] private bool generateSideWallColliders = false;
 		[SerializeField] private bool sideWallsDoubleSided = true;
 
-		[Header("Bridge Plane")]
 		[SerializeField] private bool generateBridgePlane = true;
 		[SerializeField] private Material bridgeMaterial;
 		[SerializeField] private float bridgeVerticalOffset = 0f;
 		[SerializeField] private bool bridgeDoubleSided = true;
+
+		[SerializeField] private bool generateBottomPlane = true;
+		[SerializeField] private bool generateEndCaps = true;
+
+		[Header("Inner Shell")]
+		[SerializeField] private bool generateInnerShell = true;
+		[SerializeField] private Material innerShellMaterial;
+		[SerializeField, Range(0.1f, 0.95f)] private float innerShellScale = 0.75f;
+		[SerializeField] private bool innerShellDoubleSided = true;
 
 		[Header("UV Tiling")]
 		[SerializeField] private float tileEveryUnits = 50f;
@@ -79,18 +85,44 @@ namespace Group26.Player.Movement
 		[SerializeField] private string leftWallName = "LeftWallMesh_Auto";
 		[SerializeField] private string rightWallName = "RightWallMesh_Auto";
 		[SerializeField] private string bridgePlaneName = "BridgePlane_Auto";
+		[SerializeField] private string bottomPlaneName = "BottomPlane_Auto";
+		[SerializeField] private string frontCapName = "FrontCap_Auto";
+		[SerializeField] private string backCapName = "BackCap_Auto";
+
+		[SerializeField] private string innerLeftWallName = "InnerLeftWall_Auto";
+		[SerializeField] private string innerRightWallName = "InnerRightWall_Auto";
+		[SerializeField] private string innerTopPlaneName = "InnerTopPlane_Auto";
+		[SerializeField] private string innerBottomPlaneName = "InnerBottomPlane_Auto";
+		[SerializeField] private string innerFrontCapName = "InnerFrontCap_Auto";
+		[SerializeField] private string innerBackCapName = "InnerBackCap_Auto";
+
 		[SerializeField] private string entryTriggerName = "EntryTrigger";
 		[SerializeField] private string exitTriggerName = "ExitTrigger";
 		[SerializeField] private bool autoGenerateTriggers = true;
 
 		private SplineContainer generatedSplineContainer;
+
+		private Transform entryTriggerTransform;
+		private Transform exitTriggerTransform;
+
 		private Transform leftRailTransform;
 		private Transform rightRailTransform;
 		private Transform leftBottomRailTransform;
 		private Transform rightBottomRailTransform;
+
 		private Transform leftWallTransform;
 		private Transform rightWallTransform;
 		private Transform bridgePlaneTransform;
+		private Transform bottomPlaneTransform;
+		private Transform frontCapTransform;
+		private Transform backCapTransform;
+
+		private Transform innerLeftWallTransform;
+		private Transform innerRightWallTransform;
+		private Transform innerTopPlaneTransform;
+		private Transform innerBottomPlaneTransform;
+		private Transform innerFrontCapTransform;
+		private Transform innerBackCapTransform;
 
 		public SplineContainer SplineContainer => generatedSplineContainer != null ? generatedSplineContainer : sourceSplineContainer;
 		public float EntrySpeed => entrySpeed;
@@ -172,6 +204,7 @@ namespace Group26.Player.Movement
 			meshSegmentsPerUnit = Mathf.Max(0.5f, meshSegmentsPerUnit);
 
 			wallHeight = Mathf.Max(0f, wallHeight);
+			innerShellScale = Mathf.Clamp(innerShellScale, 0.1f, 0.95f);
 			tileEveryUnits = Mathf.Max(0.01f, tileEveryUnits);
 
 			triggerSize.x = Mathf.Max(0.01f, triggerSize.x);
@@ -193,26 +226,55 @@ namespace Group26.Player.Movement
 		private void EnsureGeneratedObjects()
 		{
 			generatedSplineContainer = GetOrCreateSplineChild(generatedPathName);
+
+			entryTriggerTransform = GetOrCreateChild(entryTriggerName);
+			exitTriggerTransform = GetOrCreateChild(exitTriggerName);
+
 			leftRailTransform = GetOrCreateChild(leftRailName);
 			rightRailTransform = GetOrCreateChild(rightRailName);
 			leftBottomRailTransform = GetOrCreateChild(leftBottomRailName);
 			rightBottomRailTransform = GetOrCreateChild(rightBottomRailName);
+
 			leftWallTransform = GetOrCreateChild(leftWallName);
 			rightWallTransform = GetOrCreateChild(rightWallName);
 			bridgePlaneTransform = GetOrCreateChild(bridgePlaneName);
+			bottomPlaneTransform = GetOrCreateChild(bottomPlaneName);
+			frontCapTransform = GetOrCreateChild(frontCapName);
+			backCapTransform = GetOrCreateChild(backCapName);
+
+			innerLeftWallTransform = GetOrCreateChild(innerLeftWallName);
+			innerRightWallTransform = GetOrCreateChild(innerRightWallName);
+			innerTopPlaneTransform = GetOrCreateChild(innerTopPlaneName);
+			innerBottomPlaneTransform = GetOrCreateChild(innerBottomPlaneName);
+			innerFrontCapTransform = GetOrCreateChild(innerFrontCapName);
+			innerBackCapTransform = GetOrCreateChild(innerBackCapName);
 
 			generatedSplineContainer.transform.SetParent(transform, false);
 			generatedSplineContainer.transform.localPosition = Vector3.zero;
 			generatedSplineContainer.transform.localRotation = Quaternion.identity;
 			generatedSplineContainer.transform.localScale = Vector3.one;
 
+			ResetChildTransform(entryTriggerTransform);
+			ResetChildTransform(exitTriggerTransform);
+
 			ResetChildTransform(leftRailTransform);
 			ResetChildTransform(rightRailTransform);
 			ResetChildTransform(leftBottomRailTransform);
 			ResetChildTransform(rightBottomRailTransform);
+
 			ResetChildTransform(leftWallTransform);
 			ResetChildTransform(rightWallTransform);
 			ResetChildTransform(bridgePlaneTransform);
+			ResetChildTransform(bottomPlaneTransform);
+			ResetChildTransform(frontCapTransform);
+			ResetChildTransform(backCapTransform);
+
+			ResetChildTransform(innerLeftWallTransform);
+			ResetChildTransform(innerRightWallTransform);
+			ResetChildTransform(innerTopPlaneTransform);
+			ResetChildTransform(innerBottomPlaneTransform);
+			ResetChildTransform(innerFrontCapTransform);
+			ResetChildTransform(innerBackCapTransform);
 		}
 
 		private void ResetChildTransform(Transform t)
@@ -344,14 +406,11 @@ namespace Group26.Player.Movement
 			if (runtimeSpline == null || runtimeSpline.Spline == null || runtimeSpline.Spline.Count < 2)
 				return;
 
-			Transform entryTransform = GetOrCreateChild(entryTriggerName);
-			Transform exitTransform = GetOrCreateChild(exitTriggerName);
+			ConfigureTrigger(entryTriggerTransform.gameObject, true);
+			ConfigureTrigger(exitTriggerTransform.gameObject, false);
 
-			ConfigureTrigger(entryTransform.gameObject, true);
-			ConfigureTrigger(exitTransform.gameObject, false);
-
-			UpdateTriggerFromSpline(entryTransform, 0f);
-			UpdateTriggerFromSpline(exitTransform, 1f);
+			UpdateTriggerFromSpline(entryTriggerTransform, 0f);
+			UpdateTriggerFromSpline(exitTriggerTransform, 1f);
 		}
 
 		private void ConfigureTrigger(GameObject target, bool isEntry)
@@ -374,16 +433,7 @@ namespace Group26.Player.Movement
 
 				RailExitTrigger wrongExit = target.GetComponent<RailExitTrigger>();
 				if (wrongExit != null)
-				{
-#if UNITY_EDITOR
-					if (!Application.isPlaying)
-						DestroyImmediate(wrongExit);
-					else
-						Destroy(wrongExit);
-#else
-                    Destroy(wrongExit);
-#endif
-				}
+					DestroySafe(wrongExit);
 
 				entry.AutoAssignFromParent();
 			}
@@ -395,16 +445,7 @@ namespace Group26.Player.Movement
 
 				RailEntryTrigger wrongEntry = target.GetComponent<RailEntryTrigger>();
 				if (wrongEntry != null)
-				{
-#if UNITY_EDITOR
-					if (!Application.isPlaying)
-						DestroyImmediate(wrongEntry);
-					else
-						Destroy(wrongEntry);
-#else
-                    Destroy(wrongEntry);
-#endif
-				}
+					DestroySafe(wrongEntry);
 			}
 		}
 
@@ -420,6 +461,13 @@ namespace Group26.Player.Movement
 				? ((Vector3)runtimeSpline.EvaluateUpVector(t)).normalized
 				: Vector3.up;
 
+			float forwardOffset = Mathf.Max(triggerSize.z * 0.5f, 0.5f);
+
+			if (t <= 0.001f)
+				worldPos -= tangent * forwardOffset;
+			else if (t >= 0.999f)
+				worldPos += tangent * forwardOffset;
+
 			triggerTransform.position = worldPos;
 
 			if (tangent.sqrMagnitude > 0.0001f)
@@ -434,10 +482,21 @@ namespace Group26.Player.Movement
 
 			int ringCount = Mathf.Max(4, Mathf.CeilToInt(Mathf.Max(0.01f, runtimeSpline.CalculateLength()) * meshSegmentsPerUnit) + 1);
 
-			Vector3[] leftUpper = new Vector3[ringCount];
-			Vector3[] rightUpper = new Vector3[ringCount];
-			Vector3[] leftLower = new Vector3[ringCount];
-			Vector3[] rightLower = new Vector3[ringCount];
+			Vector3[] leftUpperRail = new Vector3[ringCount];
+			Vector3[] rightUpperRail = new Vector3[ringCount];
+			Vector3[] leftLowerRail = new Vector3[ringCount];
+			Vector3[] rightLowerRail = new Vector3[ringCount];
+
+			Vector3[] outerTopLeft = new Vector3[ringCount];
+			Vector3[] outerTopRight = new Vector3[ringCount];
+			Vector3[] outerBottomLeft = new Vector3[ringCount];
+			Vector3[] outerBottomRight = new Vector3[ringCount];
+
+			Vector3[] innerTopLeft = new Vector3[ringCount];
+			Vector3[] innerTopRight = new Vector3[ringCount];
+			Vector3[] innerBottomLeft = new Vector3[ringCount];
+			Vector3[] innerBottomRight = new Vector3[ringCount];
+
 			Vector3[] railForwards = new Vector3[ringCount];
 			Vector3[] railUps = new Vector3[ringCount];
 
@@ -461,28 +520,67 @@ namespace Group26.Player.Movement
 				if (worldRight.sqrMagnitude < 0.0001f)
 					worldRight = transform.right;
 
-				Vector3 topLeftWorld = worldPos + worldUp * railVerticalOffset - worldRight * railHalfSeparation;
-				Vector3 topRightWorld = worldPos + worldUp * railVerticalOffset + worldRight * railHalfSeparation;
-
+				Vector3 topLeftRailWorld = worldPos + worldUp * railVerticalOffset - worldRight * railHalfSeparation;
+				Vector3 topRightRailWorld = worldPos + worldUp * railVerticalOffset + worldRight * railHalfSeparation;
 				Vector3 bottomOffset = Vector3.down * wallHeight;
-				Vector3 bottomLeftWorld = topLeftWorld + bottomOffset;
-				Vector3 bottomRightWorld = topRightWorld + bottomOffset;
+				Vector3 bottomLeftRailWorld = topLeftRailWorld + bottomOffset;
+				Vector3 bottomRightRailWorld = topRightRailWorld + bottomOffset;
 
-				leftUpper[i] = transform.InverseTransformPoint(topLeftWorld);
-				rightUpper[i] = transform.InverseTransformPoint(topRightWorld);
-				leftLower[i] = transform.InverseTransformPoint(bottomLeftWorld);
-				rightLower[i] = transform.InverseTransformPoint(bottomRightWorld);
+				leftUpperRail[i] = transform.InverseTransformPoint(topLeftRailWorld);
+				rightUpperRail[i] = transform.InverseTransformPoint(topRightRailWorld);
+				leftLowerRail[i] = transform.InverseTransformPoint(bottomLeftRailWorld);
+				rightLowerRail[i] = transform.InverseTransformPoint(bottomRightRailWorld);
+
+				Vector3 outerTopLeftWorld = topLeftRailWorld + worldUp * bridgeVerticalOffset;
+				Vector3 outerTopRightWorld = topRightRailWorld + worldUp * bridgeVerticalOffset;
+				Vector3 outerBottomLeftWorld = bottomLeftRailWorld - worldUp * bridgeVerticalOffset;
+				Vector3 outerBottomRightWorld = bottomRightRailWorld - worldUp * bridgeVerticalOffset;
+
+				outerTopLeft[i] = transform.InverseTransformPoint(outerTopLeftWorld);
+				outerTopRight[i] = transform.InverseTransformPoint(outerTopRightWorld);
+				outerBottomLeft[i] = transform.InverseTransformPoint(outerBottomLeftWorld);
+				outerBottomRight[i] = transform.InverseTransformPoint(outerBottomRightWorld);
+
+				Vector3 outerCenterWorld = (outerTopLeftWorld + outerTopRightWorld + outerBottomLeftWorld + outerBottomRightWorld) * 0.25f;
+				float outerHalfWidth = Vector3.Distance(outerTopLeftWorld, outerTopRightWorld) * 0.5f;
+				float outerHalfHeight = Vector3.Distance(outerTopLeftWorld, outerBottomLeftWorld) * 0.5f;
+
+				float innerHalfWidth = outerHalfWidth * innerShellScale;
+				float innerHalfHeight = outerHalfHeight * innerShellScale;
+
+				Vector3 innerTopLeftWorld = outerCenterWorld + worldUp * innerHalfHeight - worldRight * innerHalfWidth;
+				Vector3 innerTopRightWorld = outerCenterWorld + worldUp * innerHalfHeight + worldRight * innerHalfWidth;
+				Vector3 innerBottomLeftWorld = outerCenterWorld - worldUp * innerHalfHeight - worldRight * innerHalfWidth;
+				Vector3 innerBottomRightWorld = outerCenterWorld - worldUp * innerHalfHeight + worldRight * innerHalfWidth;
+
+				innerTopLeft[i] = transform.InverseTransformPoint(innerTopLeftWorld);
+				innerTopRight[i] = transform.InverseTransformPoint(innerTopRightWorld);
+				innerBottomLeft[i] = transform.InverseTransformPoint(innerBottomLeftWorld);
+				innerBottomRight[i] = transform.InverseTransformPoint(innerBottomRightWorld);
 
 				railForwards[i] = transform.InverseTransformDirection(worldForward).normalized;
 				railUps[i] = transform.InverseTransformDirection(worldUp).normalized;
 			}
 
+			BuildOuterRails(leftUpperRail, rightUpperRail, leftLowerRail, rightLowerRail, railForwards, railUps);
+			BuildOuterShell(outerTopLeft, outerTopRight, outerBottomLeft, outerBottomRight);
+			BuildInnerShell(innerTopLeft, innerTopRight, innerBottomLeft, innerBottomRight);
+		}
+
+		private void BuildOuterRails(
+			Vector3[] leftUpperRail,
+			Vector3[] rightUpperRail,
+			Vector3[] leftLowerRail,
+			Vector3[] rightLowerRail,
+			Vector3[] railForwards,
+			Vector3[] railUps)
+		{
 			if (generateRailMeshes)
 			{
-				BuildRailTubeObject(leftRailTransform, leftUpper, railForwards, railUps, "LeftRailMesh");
-				BuildRailTubeObject(rightRailTransform, rightUpper, railForwards, railUps, "RightRailMesh");
-				BuildRailTubeObject(leftBottomRailTransform, leftLower, railForwards, railUps, "LeftBottomRailMesh");
-				BuildRailTubeObject(rightBottomRailTransform, rightLower, railForwards, railUps, "RightBottomRailMesh");
+				BuildRailTubeObject(leftRailTransform, leftUpperRail, railForwards, railUps, "LeftRailMesh");
+				BuildRailTubeObject(rightRailTransform, rightUpperRail, railForwards, railUps, "RightRailMesh");
+				BuildRailTubeObject(leftBottomRailTransform, leftLowerRail, railForwards, railUps, "LeftBottomRailMesh");
+				BuildRailTubeObject(rightBottomRailTransform, rightLowerRail, railForwards, railUps, "RightBottomRailMesh");
 			}
 			else
 			{
@@ -491,13 +589,20 @@ namespace Group26.Player.Movement
 				ClearGeneratedMesh(leftBottomRailTransform, true);
 				ClearGeneratedMesh(rightBottomRailTransform, true);
 			}
+		}
 
+		private void BuildOuterShell(
+			Vector3[] outerTopLeft,
+			Vector3[] outerTopRight,
+			Vector3[] outerBottomLeft,
+			Vector3[] outerBottomRight)
+		{
 			if (generateSideWallMeshes)
 			{
 				BuildRibbonObject(
 					leftWallTransform,
-					leftLower,
-					leftUpper,
+					outerBottomLeft,
+					outerTopLeft,
 					"LeftWallMesh",
 					sideWallMaterial,
 					sideWallsDoubleSided,
@@ -509,8 +614,8 @@ namespace Group26.Player.Movement
 
 				BuildRibbonObject(
 					rightWallTransform,
-					rightUpper,
-					rightLower,
+					outerTopRight,
+					outerBottomRight,
 					"RightWallMesh",
 					sideWallMaterial,
 					sideWallsDoubleSided,
@@ -528,21 +633,70 @@ namespace Group26.Player.Movement
 
 			if (generateBridgePlane)
 			{
-				Vector3[] bridgeLeft = new Vector3[ringCount];
-				Vector3[] bridgeRight = new Vector3[ringCount];
-
-				for (int i = 0; i < ringCount; i++)
-				{
-					Vector3 offset = railUps[i] * bridgeVerticalOffset;
-					bridgeLeft[i] = leftUpper[i] + offset;
-					bridgeRight[i] = rightUpper[i] + offset;
-				}
-
 				BuildRibbonObject(
 					bridgePlaneTransform,
-					bridgeLeft,
-					bridgeRight,
-					"BridgePlane",
+					outerTopLeft,
+					outerTopRight,
+					"TopPlane",
+					bridgeMaterial,
+					bridgeDoubleSided,
+					generateSideWallColliders,
+					false,
+					false,
+					false,
+					false);
+			}
+			else
+			{
+				ClearGeneratedMesh(bridgePlaneTransform, true);
+			}
+
+			if (generateBottomPlane)
+			{
+				BuildRibbonObject(
+					bottomPlaneTransform,
+					outerBottomRight,
+					outerBottomLeft,
+					"BottomPlane",
+					bridgeMaterial,
+					bridgeDoubleSided,
+					generateSideWallColliders,
+					false,
+					false,
+					false,
+					false);
+			}
+			else
+			{
+				ClearGeneratedMesh(bottomPlaneTransform, true);
+			}
+
+			if (generateEndCaps)
+			{
+				Vector3[] frontLeft = new Vector3[2] { outerBottomLeft[0], outerTopLeft[0] };
+				Vector3[] frontRight = new Vector3[2] { outerBottomRight[0], outerTopRight[0] };
+
+				Vector3[] backLeft = new Vector3[2] { outerBottomLeft[outerBottomLeft.Length - 1], outerTopLeft[outerTopLeft.Length - 1] };
+				Vector3[] backRight = new Vector3[2] { outerBottomRight[outerBottomRight.Length - 1], outerTopRight[outerTopRight.Length - 1] };
+
+				BuildRibbonObject(
+					frontCapTransform,
+					frontLeft,
+					frontRight,
+					"FrontCap",
+					bridgeMaterial,
+					bridgeDoubleSided,
+					false,
+					false,
+					false,
+					false,
+					false);
+
+				BuildRibbonObject(
+					backCapTransform,
+					backRight,
+					backLeft,
+					"BackCap",
 					bridgeMaterial,
 					bridgeDoubleSided,
 					false,
@@ -553,8 +707,111 @@ namespace Group26.Player.Movement
 			}
 			else
 			{
-				ClearGeneratedMesh(bridgePlaneTransform, true);
+				ClearGeneratedMesh(frontCapTransform, true);
+				ClearGeneratedMesh(backCapTransform, true);
 			}
+		}
+
+		private void BuildInnerShell(
+			Vector3[] innerTopLeft,
+			Vector3[] innerTopRight,
+			Vector3[] innerBottomLeft,
+			Vector3[] innerBottomRight)
+		{
+			if (!generateInnerShell)
+			{
+				ClearGeneratedMesh(innerLeftWallTransform, false);
+				ClearGeneratedMesh(innerRightWallTransform, false);
+				ClearGeneratedMesh(innerTopPlaneTransform, false);
+				ClearGeneratedMesh(innerBottomPlaneTransform, false);
+				ClearGeneratedMesh(innerFrontCapTransform, false);
+				ClearGeneratedMesh(innerBackCapTransform, false);
+				return;
+			}
+
+			BuildRibbonObject(
+				innerLeftWallTransform,
+				innerBottomLeft,
+				innerTopLeft,
+				"InnerLeftWall",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				true,
+				false,
+				flipWallUVVertical,
+				false);
+
+			BuildRibbonObject(
+				innerRightWallTransform,
+				innerTopRight,
+				innerBottomRight,
+				"InnerRightWall",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				true,
+				false,
+				flipWallUVVertical,
+				true);
+
+			BuildRibbonObject(
+				innerTopPlaneTransform,
+				innerTopLeft,
+				innerTopRight,
+				"InnerTopPlane",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				false,
+				false,
+				false,
+				false);
+
+			BuildRibbonObject(
+				innerBottomPlaneTransform,
+				innerBottomRight,
+				innerBottomLeft,
+				"InnerBottomPlane",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				false,
+				false,
+				false,
+				false);
+
+			Vector3[] frontLeft = new Vector3[2] { innerBottomLeft[0], innerTopLeft[0] };
+			Vector3[] frontRight = new Vector3[2] { innerBottomRight[0], innerTopRight[0] };
+
+			Vector3[] backLeft = new Vector3[2] { innerBottomLeft[innerBottomLeft.Length - 1], innerTopLeft[innerTopLeft.Length - 1] };
+			Vector3[] backRight = new Vector3[2] { innerBottomRight[innerBottomRight.Length - 1], innerTopRight[innerTopRight.Length - 1] };
+
+			BuildRibbonObject(
+				innerFrontCapTransform,
+				frontLeft,
+				frontRight,
+				"InnerFrontCap",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				false,
+				false,
+				false,
+				false);
+
+			BuildRibbonObject(
+				innerBackCapTransform,
+				backRight,
+				backLeft,
+				"InnerBackCap",
+				innerShellMaterial,
+				innerShellDoubleSided,
+				false,
+				false,
+				false,
+				false,
+				false);
 		}
 
 		private void BuildRailTubeObject(
@@ -699,13 +956,21 @@ namespace Group26.Player.Movement
 			if (collider == null)
 				return;
 
+			DestroySafe(collider);
+		}
+
+		private void DestroySafe(UnityEngine.Object obj)
+		{
+			if (obj == null)
+				return;
+
 #if UNITY_EDITOR
 			if (!Application.isPlaying)
-				DestroyImmediate(collider);
+				DestroyImmediate(obj);
 			else
-				Destroy(collider);
+				Destroy(obj);
 #else
-            Destroy(collider);
+            Destroy(obj);
 #endif
 		}
 

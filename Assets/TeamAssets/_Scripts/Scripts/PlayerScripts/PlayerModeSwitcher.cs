@@ -4,119 +4,136 @@ using Group26.Player.Inputs;
 
 namespace Group26.Player.Utility
 {
-    public enum PlayerMode
-    {
-        CapsuleMode,
-        BallMode
-    }
-    public class PlayerModeSwitcher : MonoBehaviour
-    {
-        [Header("References")]
-        private PlayerController playerController;
-        private BallRollController ballRollController;
-        private InputManager inputManager;
+	public enum PlayerMode
+	{
+		CapsuleMode,
+		BallMode
+	}
 
-        [SerializeField] private GameObject capsuleModeObject;
-        [SerializeField] private GameObject ballModeObject;
+	public class PlayerModeSwitcher : MonoBehaviour
+	{
+		[Header("References")]
+		private PlayerController playerController;
+		private BallRollController ballRollController;
+		private InputManager inputManager;
 
-        [SerializeField] private Transform capsuleModeTransform;
-        [SerializeField] private Transform sphereColliderTransform;
-        
+		[SerializeField] private GameObject capsuleModeObject;
+		[SerializeField] private GameObject ballModeObject;
 
-        private Rigidbody m_rigidbody;
+		[SerializeField] private Transform capsuleModeTransform;
+		[SerializeField] private Transform sphereColliderTransform;
 
-        public PlayerMode currentMode = PlayerMode.CapsuleMode;
+		private Rigidbody m_rigidbody;
+		private GrappleGun m_grappleGunScript;
 
-        private GrappleGun m_grappleGunScript;
+		public PlayerMode currentMode = PlayerMode.CapsuleMode;
 
-        private void Awake()
-        {
-            if(playerController == null)
-            {
-                playerController = GetComponent<PlayerController>();
-            }
-            if(ballRollController == null)
-            {
-                ballRollController = GetComponent<BallRollController>();
-            }
-            if(inputManager == null)
-            {
-                inputManager = GetComponent<InputManager>();
-            }
+		private void Awake()
+		{
+			if (playerController == null)
+				playerController = GetComponent<PlayerController>();
 
-            if(capsuleModeObject == null || ballModeObject == null)
-            {
-                Debug.LogError("PlayerModeSwitcher: One or more mode objects are not assigned.");
-            }
+			if (ballRollController == null)
+				ballRollController = GetComponent<BallRollController>();
 
-            m_grappleGunScript = GetComponent<GrappleGun>();
-            if (m_grappleGunScript == null) {
+			if (inputManager == null)
+				inputManager = GetComponent<InputManager>();
 
-                Debug.LogError("Grapple gun script is not attached");
-            }
+			if (capsuleModeObject == null || ballModeObject == null)
+				Debug.LogError("PlayerModeSwitcher: One or more mode objects are not assigned.");
 
-            m_rigidbody = GetComponent<Rigidbody>();
-        }
+			m_grappleGunScript = GetComponent<GrappleGun>();
+			if (m_grappleGunScript == null)
+				Debug.LogError("Grapple gun script is not attached");
 
-        private void OnEnable()
-        {
-            inputManager.OnModeSwitchPressed += SwitchMode;
-        }
+			m_rigidbody = GetComponent<Rigidbody>();
+		}
 
-        private void OnDisable()
-        {
-            inputManager.OnModeSwitchPressed -= SwitchMode;
-        }
+		private void OnEnable()
+		{
+			if (inputManager != null)
+				inputManager.OnModeSwitchPressed += SwitchMode;
+		}
 
-        private void Start()
-        {
-            ApplyMode(currentMode);
-        }
+		private void OnDisable()
+		{
+			if (inputManager != null)
+				inputManager.OnModeSwitchPressed -= SwitchMode;
+		}
 
-        private void SwitchMode()
-        {
-            currentMode = currentMode == PlayerMode.CapsuleMode ? PlayerMode.BallMode : PlayerMode.CapsuleMode;
-            ApplyMode(currentMode);
-        }
+		private void Start()
+		{
+			ApplyMode(currentMode);
+		}
 
-        private void ApplyMode(PlayerMode mode)
-        {
-            switch(mode)
-            {
-                case PlayerMode.CapsuleMode:
-                    ballModeObject.SetActive(false);
-                    capsuleModeObject.SetActive(true);
-                    playerController.enabled = true;
-                    ballRollController.enabled = false;
+		private void SwitchMode()
+		{
+			currentMode = currentMode == PlayerMode.CapsuleMode ? PlayerMode.BallMode : PlayerMode.CapsuleMode;
+			ApplyMode(currentMode);
+		}
 
-                    m_rigidbody.angularVelocity = Vector3.zero;
-                    sphereColliderTransform.localRotation = Quaternion.identity;
+		private void ApplyMode(PlayerMode mode)
+		{
+			switch (mode)
+			{
+				case PlayerMode.CapsuleMode:
+					{
+						ballModeObject.SetActive(false);
+						capsuleModeObject.SetActive(true);
 
-                    break;
+						// KEEP PlayerController enabled at all times.
+						// It is the script that drives the rail system.
+						if (playerController != null)
+						{
+							playerController.enabled = true;
+							playerController.SetBallFormState(false);
+						}
 
-                case PlayerMode.BallMode:
+						if (ballRollController != null)
+							ballRollController.enabled = false;
 
-                    Vector3 forwardDirection = capsuleModeTransform.forward;
-                    forwardDirection.y = 0f;
+						if (m_rigidbody != null)
+							m_rigidbody.angularVelocity = Vector3.zero;
 
-                    if(forwardDirection.sqrMagnitude > 0.01f)
-                    {
-                        ballModeObject.transform.rotation = Quaternion.LookRotation(forwardDirection.normalized, Vector3.up);
-                    }
+						if (sphereColliderTransform != null)
+							sphereColliderTransform.localRotation = Quaternion.identity;
 
-                    capsuleModeObject.SetActive(false);
-                    ballModeObject.SetActive(true);
+						break;
+					}
 
-                    playerController.m_bIsGrounded = false;
-                    playerController.enabled = false;
-                    ballRollController.enabled = true;
+				case PlayerMode.BallMode:
+					{
+						Vector3 forwardDirection = capsuleModeTransform != null ? capsuleModeTransform.forward : transform.forward;
+						forwardDirection.y = 0f;
 
-                    if (m_grappleGunScript != null)
-                        m_grappleGunScript.ForceStopGrapple();
-                    if (playerController != null)
-                        playerController.ReleaseGrappleMovement();
-                    break;
-            }
-        }
-    }
+						if (forwardDirection.sqrMagnitude > 0.01f)
+							ballModeObject.transform.rotation = Quaternion.LookRotation(forwardDirection.normalized, Vector3.up);
+
+						capsuleModeObject.SetActive(false);
+						ballModeObject.SetActive(true);
+
+						// IMPORTANT:
+						// Do NOT disable PlayerController in ball mode.
+						// It must stay enabled so rail movement can run.
+						if (playerController != null)
+						{
+							playerController.enabled = true;
+							playerController.m_bIsGrounded = false;
+							playerController.SetBallFormState(true);
+						}
+
+						if (ballRollController != null)
+							ballRollController.enabled = true;
+
+						if (m_grappleGunScript != null)
+							m_grappleGunScript.ForceStopGrapple();
+
+						if (playerController != null)
+							playerController.ReleaseGrappleMovement();
+
+						break;
+					}
+			}
+		}
+	}
 }
