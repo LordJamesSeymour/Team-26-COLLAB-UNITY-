@@ -1,5 +1,6 @@
 using UnityEngine;
 using Group26.Player.Camera;
+using Unity.VisualScripting;
 
 namespace Group26.Player.Movement
 {
@@ -32,9 +33,17 @@ namespace Group26.Player.Movement
 		private float horizontalinput;
 		private float verticalinput;
 
-		private void Awake()
+		private StyleSystem styleSystem;
+
+        private void Awake()
 		{
-			if (rigidBody == null)
+			if (styleSystem == null)
+			{
+                styleSystem = GetComponent<StyleSystem>();
+				Debug.Log(styleSystem + "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+            }
+
+            if (rigidBody == null)
 				rigidBody = GetComponent<Rigidbody>();
 			if (playerController == null)
 				playerController = GetComponent<PlayerController>();
@@ -44,7 +53,10 @@ namespace Group26.Player.Movement
 				cameraModeManager = GetComponent<CameraModeManager>();
 
 			rigidBody = GetComponent<Rigidbody>();
-		}
+
+			styleSystem = GetComponent<StyleSystem>();
+
+        }
 
 		private void FixedUpdate()
 		{
@@ -54,18 +66,29 @@ namespace Group26.Player.Movement
 		public void InvokeBoost()
 		{
 			GrappleDash();
-		}
+        }
 		private void GrappleDash()
 		{
-			if (grappleCdTimer > 0) return;
+			Debug.Log("Grapple");
+			
+			if(playerController.GetState() == PlayerController.MovementState.dashing)
+			{
+				Debug.Log("State was grapple dash");
+				ResetGrappleDash();
+			}
+			else
+			{
+				Debug.Log("State is " + playerController.GetState().DisplayName());
+			}
+
+				Debug.Log("GrappleBoost has been applied");
+            if (grappleCdTimer > 0) return;
 			else grappleCdTimer = grappleCooldown;
 
-			playerController.BeginDashState(maxGrappleYSpeed);
 
-			StyleSystem styleSystem = GetComponent<StyleSystem>();
-			styleSystem.GrappleBoostState = true;
+            playerController.BeginDashState(maxGrappleYSpeed, true);
 
-			Transform forwardT;
+            Transform forwardT;
 			if (useCameraForward)
 				forwardT = playerCam;
 			else
@@ -84,7 +107,9 @@ namespace Group26.Player.Movement
 			cameraModeManager?.GrappleBoostFOV();
 
 			grappleGun.ForceStopGrapple();
-		}
+
+            styleSystem.AddStyleCombo(500, "Grapple2", "Boosted end");
+        }
 
         private Vector3 delayedForceToApply;
 		private void DelayedGrappleForce()
@@ -96,7 +121,7 @@ namespace Group26.Player.Movement
 			playerController.ReleaseDashMovementLock();
 		}
 
-		private void ResetGrappleDash()
+		public void ResetGrappleDash()
 		{
 			cameraModeManager?.EndGrappleBoostFOV();
 			playerController.EndDashState();

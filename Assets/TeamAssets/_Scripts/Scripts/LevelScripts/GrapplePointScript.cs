@@ -1,5 +1,7 @@
 using Group26.Player.Movement;
+using Mono.Cecil;
 using System;
+using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
@@ -41,28 +43,57 @@ namespace Group26.Player.Utility
 			if (collisionObject == null)
 				return;
 
-			if (collisionObject.CompareTag("Player"))
+			if (collisionObject.transform.root.CompareTag("Player"))
 			{
+				
 				PlayerController playerController = collisionObject.GetComponent<PlayerController>();
-                GrappleBoosting grappleBoost = collisionObject.GetComponent<GrappleBoosting>();
+				GrappleBoosting grappleBoost = collisionObject.GetComponent<GrappleBoosting>();
 
-                if (playerController == null)
+				if (playerController == null)
 				{
 					Debug.LogError(collisionObject.name + " does not have an attached PlayerController");
 				}
 				else
 				{
-                    grappleBoost.InvokeBoost();
+                    StyleSystem styleSystem = playerController.GetComponent<StyleSystem>();
+                    styleSystem.AddStyleCombo(500, "Grapple", "Boosted");
+
+                    if (grappleBoost == null)
+					{
+						Debug.Log("Grapple boost is not valid");
+					}
+					else
+					{
+                        grappleBoost.InvokeBoost();
+                        Debug.Log("Invoked Booset From GrapplePointScript");
+                    }
 				}
 
 				if (m_logPlayerEntry)
 					Debug.Log("Player collided with " + name);
+			}
+			else
+			{
+				Debug.Log("Collided object is not the player");
 			}
 
 			if (m_logEntry)
 			{
 				Debug.Log(collisionObject.name + " collided with " + name + ". " + collisionObject.name + " has the tag: " + collisionObject.tag);
 			}
+		}
+
+        /*private void OnTriggerExit(Collider other)
+        {
+            if(other.transform.root.tag == "Player")
+			{
+				other.transform.root.GetComponent<GrappleBoosting>().ResetGrappleDash();
+			}
+        }*/
+
+        IEnumerator DelayBoost()
+		{
+			yield return new WaitForSeconds(2);
 		}
 	}
 }

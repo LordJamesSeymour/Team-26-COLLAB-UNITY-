@@ -1,11 +1,13 @@
 using Group26.Player.Inputs;
+using System;
 using System.Collections;
+using System.Linq;
+using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.UIElements.Experimental;
 using static System.Net.Mime.MediaTypeNames;
-using System.Text.RegularExpressions;
-using System.Linq;
 
 namespace Group26.Player.Movement
 {
@@ -132,28 +134,12 @@ namespace Group26.Player.Movement
         public void UITextOrder(string Name)
         {
             UI_Texts[5].text = "Score: " + TotalScore.ToString();
-            /*
-            if (UI_Text_Order == 5)
-            {
-                UI_Text_Order = 1;
-            }
-            else
-            {
-                UI_Texts[UI_Text_Order].text = "+ " + Name;
-                UI_Text_Order += 1;
-            }
-            */
 
             for (int i = 1; i < UI_Texts.Length; i++)
             {
-                //Debug.Log("Loop");
-                //Debug.Log("Name Existss?" + UI_Texts[i].text.Contains(Name.ToString()));
-                //Debug.Log("Name is :" + Name.ToString());
-                //Debug.Log(UI_Texts[i].text);
-
+                Debug.Log(UI_Texts.Length);
                 if (UI_Texts[i].text.Contains(Name.ToString()))
                 {
-                    //Debug.Log("Exists :" + Name.ToString());
                     exists = true;
                 }
                 else
@@ -163,58 +149,25 @@ namespace Group26.Player.Movement
 
                 if (exists == true)
                 {
-                    //Debug.Log("Exists == True");
                     if (UI_Texts[i].text.ToString().Any(char.IsDigit))
                     {
-                        //Debug.Log("Has A digit");
                         int ComboNumbers = int.Parse(Regex.Match(UI_Texts[i].text, @"\d+").Value) + 1;
-                        //Debug.Log("DIgit : " + ComboNumbers);
                         UI_Texts[i].text = "+ " + Name + " " + (ComboNumbers) + "x ";
                         break;
                     }
                     else
                     {
-                        //Debug.Log("No digit");
                         UI_Texts[i].text = "+ " + Name + " " + 2 + "x ";
                         break;
                     }
                 }
                 else if (!exists && !UI_Texts[i].text.EndsWith("x ") && i < 5)
                 {
-                    //Debug.Log("Empty socket");
                     UI_Texts[i].text = "+ " + Name;
                     break;
                 }
             }
-            /*
-            for (int i = 1; i < UI_Texts.Length; i++)
-            {
-                if (i == 5)
-                {
-                    Debug.Log("Break");
-                    break;
-                }
-                else if (UI_Texts[i].text.Contains(Name.ToString()) )
-                {
-                    //Debug.Log(int.TryParse(UI_Texts[i].text.Substring(Name.Length + 1), out UI_Text_Order));
-                    //UI_Texts[i].text = UI_Texts[i].text + " " + 1 + "x ";
-                    if (UI_Texts[i].text.ToString().Any(char.IsDigit))
-                    {
-                        int ComboNumbers = int.Parse(Regex.Match(UI_Texts[i].text, @"\d+").Value);
-                        UI_Texts[i].text = UI_Texts[i].text + " " + (ComboNumbers + 1) + "x ";
-                    }
-                    else
-                    {
-                        UI_Texts[i].text = UI_Texts[i].text + " " + 2 + "x ";
-                    }
-                    
-
-                }
-
-
-            }
-            */
-
+           
             if(GrappleBoostState)
             {
                 GrappleBoostState = false;
@@ -244,84 +197,26 @@ namespace Group26.Player.Movement
 
         public void AddStyleCombo(int Points, string State, string UIText)
         {
-            Buffer += 1;
             
 
-            if (Buffer == 12)
+            Buffer += 1;
+            //Debug.Log("Buffer is " + Buffer);
+            if (Buffer == 1)
             {
-                //WallRunningPointsEnabled = false;
+                Debug.Log("I am adding score for the state " + State + "with the UI text " + UIText);
                 DecayCalculation(State);
                 PointsCalculation(Points, ComboDecay);
                 UITextOrder(UIText);
+
             }
-            else if (Buffer > 12)
-            {
-                Buffer = 0;
-            }
+
 
         }
 
-        /*
-        private void TrickSystemMain()
+        public void ResetBuffer()
         {
-            Buffer += 1;
-
-            //makes sure that you don't get 12x amount of point a second (if there is a better way to make this please tell me)
-            if (Buffer == 12)
-            {
-
-                if (playerController.state == PlayerController.MovementState.dashing)
-                {
-                   // Debug.Log("Dash");
-
-                    PointsCalculation(PointsForDash, DefaultPointMultiplier);
-                    DecayCalculation(PlayerController.MovementState.dashing.ToString());
-                    UITextOrder("Dash");
-                }
-
-                if (playerController.state == PlayerController.MovementState.wallRunning)
-                {
-                    //Debug.Log("Wall Running");
-                    if (WallRunningPointsEnabled)
-                    {
-                        WallRunningPointsEnabled = false;
-                        DecayCalculation(PlayerController.MovementState.wallRunning.ToString());
-                        PointsCalculation(PointsForWallRun, DefaultPointMultiplier);
-                        UITextOrder("Wall Run");
-                    }
-
-                }
-
-                if (playerController.state == PlayerController.MovementState.swinging)
-                {
-                    //Debug.Log("Swinging");
-                    if (SwingingPointsEnabled)
-                    {
-                        SwingingPointsEnabled = false;
-                        PointsCalculation(PointsForGrapple, DefaultPointMultiplier);
-                        DecayCalculation(PlayerController.MovementState.swinging.ToString());
-                        UITextOrder("Grapple");
-                    }
-                }
-
-                if (playerController.state == PlayerController.MovementState.sliding)
-                {
-                    //Debug.Log("Sliding");
-                    PointsCalculation(PointsForSlide, DefaultPointMultiplier);
-                    DecayCalculation(PlayerController.MovementState.sliding.ToString());
-                    UITextOrder("Slide");
-                }
-
-                ComboDecayBool = true;
-            }
-            else if (Buffer > 12)
-            {
-                Buffer = 0;
-            }
-
+            Buffer = 0;
         }
-    }*/
-
 
     }
 }
