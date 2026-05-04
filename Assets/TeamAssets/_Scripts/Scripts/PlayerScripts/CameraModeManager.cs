@@ -133,7 +133,7 @@ namespace Group26.Player.Camera
             }
             catch(Exception e)
             {
-                Debug.LogError(e.Message);
+                Debug.Log("Game data has not been loaded from main menu");
             }
 
             thirdPersonLookSensitivity.x = m_manager.GetGameData().settings.sensitivity;
