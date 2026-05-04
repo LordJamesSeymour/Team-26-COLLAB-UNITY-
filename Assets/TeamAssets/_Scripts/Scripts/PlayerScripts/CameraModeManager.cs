@@ -33,19 +33,19 @@ namespace Group26.Player.Camera
 
 		private Transform cameraHolder;
 
-		[SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
+		//[SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
 		[SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
 
 		public CameraMode currentCameraMode = CameraMode.ThirdPerson;
 		private const int activeCameraPriority = 10;
 		private const int inactiveCameraPriority = 1;
 
-		[Header("First Person Camera References & Settings")]
-		[SerializeField] private Vector2 m_firstPersonPitchLimits = new Vector2(-85f, 85f);
-		[SerializeField] private Transform firstPersonYawRoot;
-		[SerializeField] private Transform firstPersonPitchPivot;
-		private float firstPersonYaw;
-		private float firstPersonPitch;
+		// [Header("First Person Camera References & Settings")]
+		// [SerializeField] private Vector2 m_firstPersonPitchLimits = new Vector2(-85f, 85f);
+		// [SerializeField] private Transform firstPersonYawRoot;
+		// [SerializeField] private Transform firstPersonPitchPivot;
+		// private float firstPersonYaw;
+		// private float firstPersonPitch;
 
 		[Header("Third Person Camera References & Settings")]
 		[SerializeField] private Vector2 m_thirdPersonPitchLimits = new Vector2(-60f, 80f);
