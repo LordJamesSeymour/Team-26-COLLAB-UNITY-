@@ -3052,11 +3052,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec1a61287ccaa34a91a4222a7794a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_matchforcetime: 0.01
-  m_speedMultiplier: 0.25
   m_platformLayer:
     serializedVersion: 2
     m_Bits: 1024
+  m_forceMultiplier: 6
 --- !u!1 &1110683627
 GameObject:
   m_ObjectHideFlags: 0
@@ -4967,7 +4966,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_linkedInteractables:
-  - {fileID: 262442496}
+  - {fileID: 278254959}
   m_bLogTrigger: 0
   m_timerInterval: 1.5
 --- !u!1 &1543798095
@@ -5584,7 +5583,7 @@ MonoBehaviour:
   m_linkedTimer: {fileID: 1535746790}
   m_bToggleTimer: 1
   m_bState: 0
-  m_bAutoStart: 1
+  m_bAutoStart: 0
 --- !u!4 &1778246738
 Transform:
   m_ObjectHideFlags: 0
@@ -5994,7 +5993,7 @@ Transform:
   m_GameObject: {fileID: 1863274874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 3.39, z: 10}
+  m_LocalPosition: {x: 10, y: 9.78, z: 10}
   m_LocalScale: {x: 3.5417285, y: 0.26524, z: 3.2058878}
   m_ConstrainProportionsScale: 0
   m_Children: []

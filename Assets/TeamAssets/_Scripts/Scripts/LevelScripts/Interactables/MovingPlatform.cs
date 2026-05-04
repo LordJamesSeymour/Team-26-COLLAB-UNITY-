@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -37,6 +38,8 @@ public class MovingPlatform : Interactable_Parent
     private float m_lerpAmmount = 0.0f;
 
     private Rigidbody m_rb;
+
+    public event Action m_movingPlatformTick;
 
     private void Awake()
     {
@@ -80,7 +83,11 @@ public class MovingPlatform : Interactable_Parent
                 break;
             }
             if (m_rb != null)
+            {
                 m_rb.MovePosition(Vector3.Lerp(m_startPosition, m_targetPosition, m_lerpAmmount));
+                m_movingPlatformTick?.Invoke();
+            }
+                
             yield return new WaitForSeconds(m_moveIterDelay);
         }
     }

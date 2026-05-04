@@ -2,19 +2,18 @@ using System.Collections;
 using UnityEngine;
 
 public class AttachToPlatform : MonoBehaviour
-{
-    [Header("Parameters")]
-    /// <summary>
-    /// The time between adding the platform force to the player
-    /// </summary>
-    [SerializeField] private float m_matchforcetime = 0.1f;
-    [SerializeField] private float m_speedMultiplier = 1.25f;
-
+{  
     [Header("References")]
     [SerializeField] private LayerMask m_platformLayer;
-    private Rigidbody m_platformRb;
-    private Rigidbody m_rb;
-
+    private Rigidbody m_platformRb = null;
+    private Rigidbody m_rb = null;
+    private MovingPlatform m_movingPlatformScript = null;
+    [SerializeField] private float m_forceMultiplier = 2.0f;
+    /// <summary>
+    /// The force that will be added when an attached platform moves. 
+    /// This will be a zero vector if the player is not attached to a platform.
+    /// </summary>
+    private Vector3 m_forceToAdd = Vector3.zero;
     private void Awake()
     {
         m_rb= GetComponent<Rigidbody>();
@@ -30,7 +29,9 @@ public class AttachToPlatform : MonoBehaviour
             if (other.transform.root.GetComponent<Rigidbody>() != null)
             {
                 m_platformRb = other.transform.root.GetComponent<Rigidbody>();
-                StartCoroutine(MatchPlatformForce());
+
+                m_movingPlatformScript = other.transform.root.GetComponent<MovingPlatform>();
+                m_movingPlatformScript.m_movingPlatformTick += MatchPlatformForce;
             }
             else
                 Debug.LogWarning("The platform " + other.transform.root.name + " does not have a rigidbody, so the player cannot be attached to it.");
@@ -44,24 +45,25 @@ public class AttachToPlatform : MonoBehaviour
         {
             Debug.Log("Stopped touching a platform");
             m_platformRb = null;
-            StopAllCoroutines();
+
+            if(m_movingPlatformScript != null)
+            {
+                m_movingPlatformScript.m_movingPlatformTick -= MatchPlatformForce;
+                m_movingPlatformScript = null;
+            }
         }
     }
 
-    private IEnumerator MatchPlatformForce()
+    private void MatchPlatformForce()
     {
-        while (true)
+        if(m_platformRb == null || m_rb == null)
         {
-            //Stopping the coroutine if the platform or object has no rigidbody
-            if (m_platformRb == null || m_rb == null)
-                StopAllCoroutines();
-            
-            Vector3 forceToAdd = m_platformRb.linearVelocity * m_speedMultiplier;
-            m_rb.AddForce(forceToAdd, ForceMode.Impulse);
-            
-
-            yield return new WaitForSeconds(m_matchforcetime);
+            Debug.LogWarning("Cannot match platform force because either the player or the platform does not have a rigidbody");
+            return;
         }
+        
+        m_rb.AddForce(m_platformRb.linearVelocity, ForceMode.Impulse);
+        
     }
 
 }
