@@ -20,6 +20,8 @@ public class controlsmenuscript : menuscreenscript
     [SerializeField] Sprite m_keyboardControlsPicture;
     [SerializeField] Button m_keyboardButton;
     [SerializeField] Button m_controllerButton;
+    [SerializeField] GameObject m_KBMText;
+    [SerializeField] GameObject m_ControllerText;
     //[SerializeField] Button m_exitButton;
     //[SerializeField] Sprite[] m_buttonSprites;
 
@@ -91,6 +93,8 @@ public class controlsmenuscript : menuscreenscript
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_keyboardButton;
                 m_controlsImage.sprite = m_keyboardControlsPicture;
+                m_ControllerText.SetActive(false);
+                m_KBMText.SetActive(true);
                 break;
             case 1:
                 //if the controller button is pressed
@@ -98,6 +102,8 @@ public class controlsmenuscript : menuscreenscript
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
                 m_currentButton = m_controllerButton;
                 m_controlsImage.sprite = m_controllerControlsPicture;
+                m_ControllerText.SetActive(true);
+                m_KBMText.SetActive(false);
                 break;
             default:
                 break;
@@ -124,19 +130,25 @@ public class controlsmenuscript : menuscreenscript
         {
             if(m_navInputs.ReadValue<Vector2>() == Vector2.right && m_onExitButton == false)
             {
+                // Controller State
                 m_keyboardButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_controllerButton.image.sprite = m_buttonSprites[1];
                 m_currentButton = m_controllerButton;
                 m_controlsImage.sprite = m_controllerControlsPicture;
+                m_ControllerText.SetActive(true);
+                m_KBMText.SetActive(false);
             }
             else if(m_navInputs.ReadValue<Vector2>() == Vector2.left && m_onExitButton == false)
             {
+                // KBM State
                 m_controllerButton.image.sprite = m_buttonSprites[0];
                 m_exitButton.image.sprite = m_buttonSprites[0];
                 m_keyboardButton.image.sprite = m_buttonSprites[1];
                 m_currentButton = m_keyboardButton;
                 m_controlsImage.sprite = m_keyboardControlsPicture;
+                m_ControllerText.SetActive(false);
+                m_KBMText.SetActive(true);
             }
             else if(m_navInputs.ReadValue<Vector2>() == Vector2.down)
             {

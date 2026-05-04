@@ -9131,6 +9131,8 @@ MonoBehaviour:
   m_keyboardControlsPicture: {fileID: 21300000, guid: 1917f15a23e66464da13e4a9a475d968, type: 3}
   m_keyboardButton: {fileID: 1588566150}
   m_controllerButton: {fileID: 944783805}
+  m_KBMText: {fileID: 1132403874}
+  m_ControllerText: {fileID: 646412577}
 --- !u!114 &1106575635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9491,7 +9493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1132403875
 RectTransform:
   m_ObjectHideFlags: 0
