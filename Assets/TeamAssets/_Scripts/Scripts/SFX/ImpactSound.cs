@@ -10,6 +10,6 @@ public class ImpactSound : MonoBehaviour
         //Debug.Log(Vector3.Angle(other.relativeVelocity, -other.contacts[0].normal));
         if (Vector3.Angle(other.relativeVelocity, -other.contacts[0].normal) < 140) return;
 
-        AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.CRASH, other.contacts[0].point, Mathf.Min(.8f, GetComponent<Rigidbody>().linearVelocity.magnitude / 20), .1f, 1, .1f, .8f);
+        AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.CRASH, other.contacts[0].point, Mathf.Min(.8f, GetComponent<Rigidbody>().linearVelocity.magnitude / 30), .1f, 1, .1f, .8f);
     }
 }
