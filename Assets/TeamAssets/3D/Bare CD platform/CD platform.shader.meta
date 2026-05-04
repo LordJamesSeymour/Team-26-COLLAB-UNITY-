@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 2afb0c36241e7724aae55a8fd5d37a5f
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _CD_DefaultMaterial_AlbedoTransparency: {fileID: 2800000, guid: 50a49804a5287d1479027aa96d121ab4, type: 3}
+  - _CD_DefaultMaterial_MetallicSmoothness: {fileID: 2800000, guid: fa7ed9592dca83648be5a88c698b9bc7, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

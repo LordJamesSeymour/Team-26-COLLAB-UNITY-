@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2565073833924150633
+--- !u!114 &-658257138344993672
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Grapple_Mat
-  m_Shader: {fileID: 4800000, guid: d1a8468122571144586bd6f741611c03, type: 3}
+  m_Name: CD Platform_mat
+  m_Shader: {fileID: 4800000, guid: 2afb0c36241e7724aae55a8fd5d37a5f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -42,6 +42,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CD_DefaultMaterial_AlbedoTransparency:
+        m_Texture: {fileID: 2800000, guid: 50a49804a5287d1479027aa96d121ab4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CD_DefaultMaterial_MetallicSmoothness:
+        m_Texture: {fileID: 2800000, guid: fa7ed9592dca83648be5a88c698b9bc7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:

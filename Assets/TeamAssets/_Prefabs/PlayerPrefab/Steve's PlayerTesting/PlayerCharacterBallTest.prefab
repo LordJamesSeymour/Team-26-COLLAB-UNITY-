@@ -4186,7 +4186,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 6000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -11441,7 +11441,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -12601,7 +12601,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -21560,7 +21560,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -22952,7 +22952,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -23348,7 +23348,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -27244,7 +27244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ad9208d78e73249a22ab3ffbdf4c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timerScript: {fileID: 8450953032605841240}
+  m_timerScript: {fileID: 0}
   m_respawnPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &5574873321828607773
 LineRenderer:
