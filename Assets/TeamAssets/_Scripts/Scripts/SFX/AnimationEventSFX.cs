@@ -1,9 +1,7 @@
 using UnityEngine;
-using static AudioManager;
 
 public class AnimationEventSFX : MonoBehaviour
 {
-
     public void PlaySound(AudioEventData data)
     {
         Vector3 TargetPos = transform.position;
@@ -25,5 +23,4 @@ public class AnimationEventSFX : MonoBehaviour
                 break;
         }
     }
-
 }

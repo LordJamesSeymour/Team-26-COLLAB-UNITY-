@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
 public class AudioManager : MonoBehaviour
@@ -11,7 +8,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private SoundList[] soundList;
     public  static AudioManager instance { get; private set;}
     private AudioSource audioSource;
-
     private AudioSource[] audioEmitters = new AudioSource[10];
 
     public enum SoundType
@@ -24,9 +20,9 @@ public class AudioManager : MonoBehaviour
         CRASH,
         DASH,
         LAND,
+        WALL_RUN,
         UI_BUTTON
     }
-
 
     private void Awake()
     {
@@ -121,8 +117,6 @@ public class AudioManager : MonoBehaviour
     {
         StartCoroutine(ReturnToPool(end, 0));
     }
-
-
 
     public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
