@@ -810,6 +810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7296738306967161566}
+  - component: {fileID: 7832045134168756989}
   m_Layer: 8
   m_Name: SphereMode
   m_TagString: Untagged
@@ -833,6 +834,18 @@ Transform:
   - {fileID: 3738866177908750306}
   m_Father: {fileID: 6514609564055611009}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7832045134168756989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266772377507157098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff4bb8c13ff96e24ba486fba5b9be31f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &268733441424058548
 GameObject:
   m_ObjectHideFlags: 0
@@ -8525,6 +8538,7 @@ GameObject:
   - component: {fileID: 2515511480513685262}
   - component: {fileID: 7049687039839387652}
   - component: {fileID: 7954068586701445865}
+  - component: {fileID: 3893369647984432245}
   m_Layer: 8
   m_Name: FinalPlayerCharacter
   m_TagString: Player
@@ -8692,12 +8706,8 @@ MonoBehaviour:
   thirdPersonVirtualCamera: {fileID: 2431141902249883416}
   leftWallRunningVirtualCamera: {fileID: 339420665411541032}
   rightWallRunningVirtualCamera: {fileID: 730646508681374051}
-  firstPersonLookSensitivity: {x: 14, y: 14}
   thirdPersonLookSensitivity: {x: 55, y: 55}
   currentCameraMode: 0
-  m_firstPersonPitchLimits: {x: -100, y: 100}
-  firstPersonYawRoot: {fileID: 7193288468580632257}
-  firstPersonPitchPivot: {fileID: 0}
   m_thirdPersonPitchLimits: {x: -53.35, y: 50}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 0.2
@@ -9055,7 +9065,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_timerScript: {fileID: 0}
+  m_cameraPivotTransform: {fileID: 0}
   m_respawnPoint: {x: 0, y: 0, z: 0}
+  m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
+  m_startPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &2515511480513685262
 LineRenderer:
   serializedVersion: 2
@@ -9283,6 +9296,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: -0.01}
+--- !u!114 &3893369647984432245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181891055657115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b9d102d4b9a02418fc82c9fe571dad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ball: {fileID: 266772377507157098}
 --- !u!1 &2185431779388408211
 GameObject:
   m_ObjectHideFlags: 0
