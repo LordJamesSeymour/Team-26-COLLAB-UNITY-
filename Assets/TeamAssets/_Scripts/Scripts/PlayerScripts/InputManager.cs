@@ -244,7 +244,7 @@ namespace Group26.Player.Inputs
             }
             else
             {
-                if (context.performed)
+                if (context.performed) //grapple sound
                 {
                     OnGrapplePressed?.Invoke();
                     isGrappling = true;

@@ -8,6 +8,12 @@ public class SphereSound : MonoBehaviour
 
     BallRollController ballRollController;
 
+    float targetVol;
+    float targetPitch;
+
+    float velocity = 0f;
+    float velocityb = 0f;
+
     private void Awake()
     {
         rb = transform.parent.GetComponent<Rigidbody>();
@@ -22,14 +28,22 @@ public class SphereSound : MonoBehaviour
     {
         if (!gameObject.activeSelf || !source) return;
 
-        if (!ballRollController.IsGrounded()) { source.volume = 0; return; }
+        if (!ballRollController.IsGrounded()) { MoveToTargetSound(source, 0, 0); return; }
 
         float vel = rb.linearVelocity.magnitude;
-        source.volume = Mathf.Clamp(vel / 30, 0, 1.5f);
-        source.pitch = Mathf.Clamp(vel / 30, .4f, .7f);
+        targetVol = Mathf.Clamp(vel / 30, 0, 1.5f);
+        targetPitch = Mathf.Clamp(vel / 30, .4f, .7f);
+
+        MoveToTargetSound(source, targetVol, targetPitch);
     }
     private void OnDisable()
     {
         AudioManager.instance.EndLoopingSound(source);
+    }
+
+    private void MoveToTargetSound(AudioSource source, float tagetV, float targetP)
+    {
+        source.volume = Mathf.SmoothDamp(source.volume, tagetV, ref velocity, .3f);
+        source.pitch = Mathf.SmoothDamp(source.pitch, targetP, ref velocityb, .3f);
     }
 }

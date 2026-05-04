@@ -622,7 +622,8 @@ namespace Group26.Player.Movement
 			if (m_bSliding && slidingComp != null)
 				slidingComp.ForceEndSlide();
 
-			m_bDashing = true;
+            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+            m_bDashing = true;
 			m_bDashMovementLocked = lockMovement;
 			maxYSpeed = dashMaxYSpeed;
 		}
