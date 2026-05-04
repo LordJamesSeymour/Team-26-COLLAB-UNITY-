@@ -83,8 +83,8 @@ public class Death : MonoBehaviour
     {
         Debug.Log("Restarting");
 
-        transform.position = m_startPoint;
-        m_respawnPoint = m_startPoint;
+        //transform.position = m_startPoint;
+        //m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
 
@@ -99,11 +99,11 @@ public class Death : MonoBehaviour
         }
 
         //m_respawnMenuPanel.SetActive(false);
+        m_timerScript.m_paused = false;
         m_rigidbody.isKinematic = false;
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         m_restart = null;
-        m_timerScript.m_paused = false;
     }
 
     private IEnumerator InstaRespawn()
@@ -241,6 +241,8 @@ public class Death : MonoBehaviour
             StopCoroutine(Respawn());
             StopCoroutine(Restart());
             StopCoroutine(InstaRespawn());
+            transform.position = m_startPoint;
+            m_respawnPoint = m_startPoint;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             m_rigidbody.isKinematic = true;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
@@ -135,6 +136,7 @@ public class AudioManager : MonoBehaviour
         source.spatialBlend = spatialBlend;
 
         source.Play();
+        source.transform.parent = null;
 
         StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
 
@@ -150,7 +152,7 @@ public class AudioManager : MonoBehaviour
     {
         foreach (AudioSource source in audioEmitters)
         {
-            if (!source.gameObject.activeInHierarchy) { return source; }
+            if (!source.gameObject.activeSelf) { return source; }
         }
         return null; // all sources busy, probably play as global sound as back up or add a new source to the pool if not too many
     }
@@ -158,9 +160,9 @@ public class AudioManager : MonoBehaviour
     private IEnumerator ReturnToPool(AudioSource source, float delay) // need to also return to pool if the objects parent is destroyed as to not also destroy the emitter. (maybe also have a 
     {
         yield return new WaitForSeconds(delay);
-        source.Stop();
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
+        if (source.clip != null) { source.Stop(); }
     }
 
 #if UNITY_EDITOR

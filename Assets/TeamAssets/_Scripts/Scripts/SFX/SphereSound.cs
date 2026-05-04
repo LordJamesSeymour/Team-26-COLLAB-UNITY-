@@ -25,9 +25,8 @@ public class SphereSound : MonoBehaviour
         if (!ballRollController.IsGrounded()) { source.volume = 0; return; }
 
         float vel = rb.linearVelocity.magnitude;
-        Debug.Log(vel);
-        source.volume = Mathf.Clamp(vel / 15, 0, 5);
-        source.pitch = Mathf.Clamp(vel / 35, .3f, 5);
+        source.volume = Mathf.Clamp(vel / 40, 0, 5);
+        source.pitch = Mathf.Clamp(vel / 30, .4f, 5);
     }
     private void OnDisable()
     {
