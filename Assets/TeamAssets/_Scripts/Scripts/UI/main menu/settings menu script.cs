@@ -15,6 +15,7 @@ public class settingsmenuscript : menuscreenscript
     [SerializeField] TMP_InputField m_widthInput;
     [SerializeField] TMP_InputField m_heightInput;
     [SerializeField] GameObject m_scrollArea;
+    [SerializeField] TextMeshProUGUI m_sensitivityValueText;
     //[SerializeField] AudioSource m_backgroundMusic;
 
     private Coroutine m_toggleMenu;
@@ -445,6 +446,8 @@ public class settingsmenuscript : menuscreenscript
     // Update is called once per frame
     void Update()
     {
+        m_sensitivityValueText.text = m_sensitivitySlider.value.ToString();
+
         if(m_enabled && m_navInputs.WasPressedThisDynamicUpdate())
         {
             //Debug.Log(m_navInputs.ReadValue<Vector2>());
