@@ -8531,7 +8531,6 @@ GameObject:
   - component: {fileID: 4846128315892136628}
   - component: {fileID: 7691248649997487838}
   - component: {fileID: 7640721532391387119}
-  - component: {fileID: 5873488122590498244}
   - component: {fileID: 3714505558349099049}
   - component: {fileID: 5065373361208652444}
   - component: {fileID: 6797045768519289606}
@@ -8706,8 +8705,12 @@ MonoBehaviour:
   thirdPersonVirtualCamera: {fileID: 2431141902249883416}
   leftWallRunningVirtualCamera: {fileID: 339420665411541032}
   rightWallRunningVirtualCamera: {fileID: 730646508681374051}
+  firstPersonLookSensitivity: {x: 1, y: 1}
   thirdPersonLookSensitivity: {x: 55, y: 55}
   currentCameraMode: 0
+  m_firstPersonPitchLimits: {x: -85, y: 85}
+  firstPersonYawRoot: {fileID: 0}
+  firstPersonPitchPivot: {fileID: 0}
   m_thirdPersonPitchLimits: {x: -53.35, y: 50}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 0.2
@@ -8729,8 +8732,6 @@ MonoBehaviour:
   m_wallRunBodyYawOffsetThreshold: 0.15
   m_wallRunBodyTurnSmoothTime: 0.04
   m_wallRunBodyMaxDegreesPerSecond: 1440
-  m_enableExternalCameraShake: 1
-  m_cameraShakeTransform: {fileID: 0}
   defaultFOV: 60
   sprintFOV: 75
   FOVTransitionDuration: 0.25
@@ -8988,34 +8989,6 @@ MonoBehaviour:
   m_minMomentum: 0
   m_speedIncreaseFactor: 0.2
   m_slowDownFactor: 0.005
---- !u!114 &5873488122590498244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181891055657115564}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5253901ccbb40ef40ab04302c92a92dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UI_Refrence: {fileID: 7596238843653183558}
-  DecaySliderSmoothness: 100
-  ConstnatDecaySliderSmoothness: 100
-  TotalScore: 0
-  DefaultPointMultiplier: 1
-  ComboDecay: 0.2
-  ConstantPointsDecay: 0.001
-  ComboDecayBool: 0
-  PointsForDash: 5
-  PointsForWallRun: 10
-  PointsForGrapple: 5
-  PointsForSlide: 10
-  MaxTimer: 0
-  CurrentTimer: 0
-  LastState: default
-  m_maxWhileIters: 1000
 --- !u!114 &3714505558349099049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9065,7 +9038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_timerScript: {fileID: 0}
-  m_cameraPivotTransform: {fileID: 0}
+  m_cameraPivotTransform: {fileID: 6007508190454296105}
   m_respawnPoint: {x: 0, y: 0, z: 0}
   m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
   m_startPoint: {x: 0, y: 0, z: 0}
