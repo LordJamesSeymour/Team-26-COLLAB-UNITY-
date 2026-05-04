@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: e079b28880a460c4c9bb16a25eb9bc97
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _L_DarkBlue_Plant_AlbedoTransparency: {fileID: 2800000, guid: 3daa2a84e4cbf0c4ebd97a003e62c95d, type: 3}
+  - _L_DarkBlue_Plant_Normal: {fileID: 2800000, guid: c587cc5be37608e43a17a0b522b33620, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -26742,7 +26742,6 @@ GameObject:
   - component: {fileID: 7187784388681633182}
   - component: {fileID: 1807317378687859797}
   - component: {fileID: 8297912057792459659}
-  - component: {fileID: 6341110719995711259}
   - component: {fileID: 6415238293422087101}
   - component: {fileID: 6162569486583183664}
   - component: {fileID: 8798025457755821191}
@@ -26860,20 +26859,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d003a0184591a5543b6048dd4e9885ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 20
+  walkSpeed: 15
   slideSpeed: 30
   wallRunSpeed: 15
   dashSpeed: 30
   swingSpeed: 0
   dashSpeedChangeFactor: 50
-  groundDrag: 5
+  groundDrag: 7
   maxYSpeed: 0
   moveSpeed: 0
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
   jumpForce: 12
   jumpCooldown: 0.12
-  airMultiplier: 0.4
+  airMultiplier: 0.275
   jumpBufferTime: 0.15
   crouchSpeed: 3.5
   m_fGroundDistance: 0.3
@@ -26885,6 +26884,7 @@ MonoBehaviour:
   railJumpUpForce: 6
   railExitForwardBoost: 2
   m_straightGrappleReleaseDistance: 1
+  WallridePredictionIncrease: 3.5
   state: 1
   m_bActiveGrapple: 0
   m_bActiveSwing: 0
@@ -26913,7 +26913,7 @@ MonoBehaviour:
   leftWallRunningVirtualCamera: {fileID: 2930777851727102288}
   rightWallRunningVirtualCamera: {fileID: 8193317024553210788}
   firstPersonLookSensitivity: {x: 14, y: 14}
-  thirdPersonLookSensitivity: {x: 150, y: 150}
+  thirdPersonLookSensitivity: {x: 16, y: 16}
   currentCameraMode: 0
   m_firstPersonPitchLimits: {x: -100, y: 100}
   firstPersonYawRoot: {fileID: 2537187495942133298}
@@ -27063,7 +27063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grappleCamera: {fileID: 0}
-  gunTip: {fileID: 8301120222388249484}
+  firePoint: {fileID: 0}
   m_grappableLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -27099,7 +27099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstPersonCam: {fileID: 9020133489891060627}
   thirdPersonCam: {fileID: 4930570926732240291}
-  gunTip: {fileID: 8301120222388249484}
+  firePoint: {fileID: 8301120222388249484}
   player: {fileID: 8826812923701722165}
   m_grappableLayer:
     serializedVersion: 2
@@ -27186,7 +27186,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8500031205333282589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7a088959ed49da4ba61cb6f60f7f566, type: 3}
   m_Name: 
@@ -27196,34 +27196,6 @@ MonoBehaviour:
   m_minMomentum: 0
   m_speedIncreaseFactor: 0.2
   m_slowDownFactor: 0.005
---- !u!114 &6341110719995711259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8500031205333282589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5253901ccbb40ef40ab04302c92a92dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UI_Refrence: {fileID: 8177557086695297103}
-  DecaySliderSmoothness: 100
-  ConstnatDecaySliderSmoothness: 100
-  TotalScore: 0
-  DefaultPointMultiplier: 1
-  ComboDecay: 0.2
-  ConstantPointsDecay: 0.001
-  ComboDecayBool: 0
-  PointsForDash: 5
-  PointsForWallRun: 10
-  PointsForGrapple: 5
-  PointsForSlide: 10
-  MaxTimer: 0
-  CurrentTimer: 0
-  LastState: default
-  m_maxWhileIters: 1000
 --- !u!114 &6415238293422087101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27231,7 +27203,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8500031205333282589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e2d90293dfe720439ab62a25c18388b, type: 3}
   m_Name: 
@@ -27272,7 +27244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ad9208d78e73249a22ab3ffbdf4c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timerScript: {fileID: 0}
+  m_timerScript: {fileID: 8450953032605841240}
   m_respawnPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &5574873321828607773
 LineRenderer:
