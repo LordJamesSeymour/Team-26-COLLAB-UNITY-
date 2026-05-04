@@ -755,6 +755,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8010601070172612554, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: soundList.Array.data[7].sounds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010601070172612554, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: 'soundList.Array.data[1].sounds.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 280401cd78fb5824fa5728f0bac198bf, type: 3}
+    - target: {fileID: 8010601070172612554, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: 'soundList.Array.data[7].sounds.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 19d985e3c54cf824d8362327abdcad59, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
