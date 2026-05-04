@@ -101,7 +101,7 @@ public class Death : MonoBehaviour
         //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.1f);
         m_restart = null;
         m_timerScript.m_paused = false;
     }
@@ -241,6 +241,10 @@ public class Death : MonoBehaviour
             StopCoroutine(Respawn());
             StopCoroutine(Restart());
             StopCoroutine(InstaRespawn());
+            m_rigidbody.linearVelocity = Vector3.zero;
+            m_rigidbody.angularVelocity = Vector3.zero;
+            m_rigidbody.isKinematic = true;
+            m_timerScript.m_paused = true;
             m_respawn = null;
             m_restart = StartCoroutine(InstaRestart());
         }

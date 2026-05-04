@@ -85,6 +85,7 @@ public class levelselectionmenuscript : menuscreenscript
 
         Debug.Log("levels visible");
 
+        m_manager.SetLocked(3, true);
         m_manager.SetLocked(4, true);
         m_manager.SetLocked(5, true);
         m_manager.SaveGameData();
