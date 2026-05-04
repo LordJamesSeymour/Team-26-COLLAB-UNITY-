@@ -331,7 +331,8 @@ namespace Group26.Player.Movement
 		{
 			if (token != _grappleToken) return;
 
-			PlayerController.m_bFreeze = false;
+            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.GRAPPLE, transform.position, volume: .3f, pitchRange: .2f, spatialBlend: 0);
+            PlayerController.m_bFreeze = false;
 			PlayerController.GrappleToPositionStraight(grapplePoint, straightGrappleSpeed);
 
 			float distanceToTarget = Vector3.Distance(transform.position, grapplePoint);
