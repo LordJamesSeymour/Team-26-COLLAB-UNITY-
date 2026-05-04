@@ -222,7 +222,7 @@ public class settingsmenuscript : menuscreenscript
 
     public void UpdateSoundEffectsVolume(AudioSource source)
     {
-        float volume = m_soundEffectsSlider.value * .8f - 80;
+        float volume = m_soundEffectsSlider.value * .9f - 80;
         audioMixer.SetFloat(effectsVolumeName, volume);
 
         m_manager.SaveGameData();
