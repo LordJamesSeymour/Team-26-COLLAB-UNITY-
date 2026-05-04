@@ -1,14 +1,10 @@
 // Made with Amplify Shader Editor v1.9.9.9
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "RAM"
+Shader "Grapple"
 {
 	Properties
 	{
-		_RAM_low_DefaultMaterial_AlbedoTransparency( "RAM_low_DefaultMaterial_AlbedoTransparency", 2D ) = "white" {}
-		_RAM_low_DefaultMaterial_Emission( "RAM_low_DefaultMaterial_Emission", 2D ) = "white" {}
-		_RAM_low_DefaultMaterial_Normal( "RAM_low_DefaultMaterial_Normal", 2D ) = "white" {}
-		_RAM_low_DefaultMaterial_MetallicSmoothness( "RAM_low_DefaultMaterial_MetallicSmoothness", 2D ) = "white" {}
-
+		
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
@@ -208,7 +204,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -291,8 +286,7 @@ Shader "RAM"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
+			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -340,17 +334,13 @@ Shader "RAM"
 				#if defined(USE_APV_PROBE_OCCLUSION)
 					float4 probeOcclusion : TEXCOORD6;
 				#endif
-				float4 ase_texcoord7 : TEXCOORD7;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -382,13 +372,32 @@ Shader "RAM"
 				int _PassValue;
 			#endif
 
-			sampler2D _RAM_low_DefaultMaterial_AlbedoTransparency;
-			sampler2D _RAM_low_DefaultMaterial_Normal;
-			sampler2D _RAM_low_DefaultMaterial_MetallicSmoothness;
-			sampler2D _RAM_low_DefaultMaterial_Emission;
-
+			
 
 			
+			float4 SampleGradient( Gradient gradient, float time )
+			{
+				float3 color = gradient.colors[0].rgb;
+				UNITY_UNROLL
+				for (int c = 1; c < 8; c++)
+				{
+				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
+				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+				}
+				#ifndef UNITY_COLORSPACE_GAMMA
+				color = SRGBToLinear(color);
+				#endif
+				float alpha = gradient.alphas[0].x;
+				UNITY_UNROLL
+				for (int a = 1; a < 8; a++)
+				{
+				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
+				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
+				}
+				return float4(color, alpha);
+			}
+			
+
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -396,10 +405,7 @@ Shader "RAM"
 				UNITY_TRANSFER_INSTANCE_ID(input, output);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-				output.ase_texcoord7.xy = input.texcoord.xy;
 				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				output.ase_texcoord7.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = input.positionOS.xyz;
@@ -605,23 +611,16 @@ Shader "RAM"
 					BitangentWS = cross(NormalWS, -TangentWS);
 				#endif
 
-				float2 uv_RAM_low_DefaultMaterial_AlbedoTransparency = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_AlbedoTransparency_ST.xy + _RAM_low_DefaultMaterial_AlbedoTransparency_ST.zw;
-				
-				float2 uv_RAM_low_DefaultMaterial_Normal = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_Normal_ST.xy + _RAM_low_DefaultMaterial_Normal_ST.zw;
-				
-				float2 uv_RAM_low_DefaultMaterial_MetallicSmoothness = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_MetallicSmoothness_ST.xy + _RAM_low_DefaultMaterial_MetallicSmoothness_ST.zw;
-				float4 tex2DNode15 = tex2D( _RAM_low_DefaultMaterial_MetallicSmoothness, uv_RAM_low_DefaultMaterial_MetallicSmoothness );
-				
-				float2 uv_RAM_low_DefaultMaterial_Emission = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_Emission_ST.xy + _RAM_low_DefaultMaterial_Emission_ST.zw;
+				Gradient gradient19 = NewGradient( 0, 2, 2, float4( 1, 0, 0.8977079, 0.5470665 ), float4( 1, 0.9606119, 0, 0.997055 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
 				
 
-				float3 BaseColor = tex2D( _RAM_low_DefaultMaterial_AlbedoTransparency, uv_RAM_low_DefaultMaterial_AlbedoTransparency ).rgb;
-				float3 Normal = tex2D( _RAM_low_DefaultMaterial_Normal, uv_RAM_low_DefaultMaterial_Normal ).rgb;
+				float3 BaseColor = SampleGradient( gradient19, 0.0 ).rgb;
+				float3 Normal = float3(0, 0, 1);
 				float3 Specular = 0.5;
-				float Metallic = tex2DNode15.r;
-				float Smoothness = tex2DNode15.g;
+				float Metallic = 0;
+				float Smoothness = 0.5;
 				float Occlusion = 1;
-				float3 Emission = ( tex2D( _RAM_low_DefaultMaterial_Emission, uv_RAM_low_DefaultMaterial_Emission ).rgb * 2 );
+				float3 Emission = ( SampleGradient( gradient19, 0.0 ) * 20 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -900,7 +899,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -966,11 +964,7 @@ Shader "RAM"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -1209,7 +1203,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -1273,11 +1266,7 @@ Shader "RAM"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -1492,7 +1481,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -1524,8 +1512,7 @@ Shader "RAM"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
+			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 
 
 			struct Attributes
@@ -1548,17 +1535,13 @@ Shader "RAM"
 					float4 VizUV : TEXCOORD1;
 					float4 LightCoord : TEXCOORD2;
 				#endif
-				float4 ase_texcoord3 : TEXCOORD3;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -1590,11 +1573,32 @@ Shader "RAM"
 				int _PassValue;
 			#endif
 
-			sampler2D _RAM_low_DefaultMaterial_AlbedoTransparency;
-			sampler2D _RAM_low_DefaultMaterial_Emission;
-
+			
 
 			
+			float4 SampleGradient( Gradient gradient, float time )
+			{
+				float3 color = gradient.colors[0].rgb;
+				UNITY_UNROLL
+				for (int c = 1; c < 8; c++)
+				{
+				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
+				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+				}
+				#ifndef UNITY_COLORSPACE_GAMMA
+				color = SRGBToLinear(color);
+				#endif
+				float alpha = gradient.alphas[0].x;
+				UNITY_UNROLL
+				for (int a = 1; a < 8; a++)
+				{
+				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
+				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
+				}
+				return float4(color, alpha);
+			}
+			
+
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -1602,10 +1606,7 @@ Shader "RAM"
 				UNITY_TRANSFER_INSTANCE_ID(input, output);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-				output.ase_texcoord3.xy = input.texcoord.xy;
 				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				output.ase_texcoord3.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = input.positionOS.xyz;
@@ -1743,13 +1744,11 @@ Shader "RAM"
 				float3 PositionRWS = GetCameraRelativePositionWS( input.positionWS );
 				float4 ShadowCoord = shadowCoord;
 
-				float2 uv_RAM_low_DefaultMaterial_AlbedoTransparency = input.ase_texcoord3.xy * _RAM_low_DefaultMaterial_AlbedoTransparency_ST.xy + _RAM_low_DefaultMaterial_AlbedoTransparency_ST.zw;
-				
-				float2 uv_RAM_low_DefaultMaterial_Emission = input.ase_texcoord3.xy * _RAM_low_DefaultMaterial_Emission_ST.xy + _RAM_low_DefaultMaterial_Emission_ST.zw;
+				Gradient gradient19 = NewGradient( 0, 2, 2, float4( 1, 0, 0.8977079, 0.5470665 ), float4( 1, 0.9606119, 0, 0.997055 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
 				
 
-				float3 BaseColor = tex2D( _RAM_low_DefaultMaterial_AlbedoTransparency, uv_RAM_low_DefaultMaterial_AlbedoTransparency ).rgb;
-				float3 Emission = ( tex2D( _RAM_low_DefaultMaterial_Emission, uv_RAM_low_DefaultMaterial_Emission ).rgb * 2 );
+				float3 BaseColor = SampleGradient( gradient19, 0.0 ).rgb;
+				float3 Emission = ( SampleGradient( gradient19, 0.0 ) * 20 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -1792,7 +1791,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -1822,7 +1820,7 @@ Shader "RAM"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
+			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 
 
 			struct Attributes
@@ -1830,7 +1828,7 @@ Shader "RAM"
 				float4 positionOS : POSITION;
 				half3 normalOS : NORMAL;
 				half4 tangentOS : TANGENT;
-				float4 ase_texcoord : TEXCOORD0;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1838,17 +1836,13 @@ Shader "RAM"
 			{
 				float4 positionCS : SV_POSITION;
 				float3 positionWS : TEXCOORD0;
-				float4 ase_texcoord1 : TEXCOORD1;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -1880,10 +1874,32 @@ Shader "RAM"
 				int _PassValue;
 			#endif
 
-			sampler2D _RAM_low_DefaultMaterial_AlbedoTransparency;
-
+			
 
 			
+			float4 SampleGradient( Gradient gradient, float time )
+			{
+				float3 color = gradient.colors[0].rgb;
+				UNITY_UNROLL
+				for (int c = 1; c < 8; c++)
+				{
+				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
+				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+				}
+				#ifndef UNITY_COLORSPACE_GAMMA
+				color = SRGBToLinear(color);
+				#endif
+				float alpha = gradient.alphas[0].x;
+				UNITY_UNROLL
+				for (int a = 1; a < 8; a++)
+				{
+				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
+				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
+				}
+				return float4(color, alpha);
+			}
+			
+
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -1891,10 +1907,7 @@ Shader "RAM"
 				UNITY_TRANSFER_INSTANCE_ID( input, output );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( output );
 
-				output.ase_texcoord1.xy = input.ase_texcoord.xy;
 				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				output.ase_texcoord1.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = input.positionOS.xyz;
@@ -1926,8 +1939,7 @@ Shader "RAM"
 				float4 positionOS : INTERNALTESSPOS;
 				half3 normalOS : NORMAL;
 				half4 tangentOS : TANGENT;
-				float4 ase_texcoord : TEXCOORD0;
-
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1945,7 +1957,7 @@ Shader "RAM"
 				output.positionOS = input.positionOS;
 				output.normalOS = input.normalOS;
 				output.tangentOS = input.tangentOS;
-				output.ase_texcoord = input.ase_texcoord;
+				
 				return output;
 			}
 
@@ -1985,7 +1997,7 @@ Shader "RAM"
 				output.positionOS = patch[0].positionOS * bary.x + patch[1].positionOS * bary.y + patch[2].positionOS * bary.z;
 				output.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
 				output.tangentOS = patch[0].tangentOS * bary.x + patch[1].tangentOS * bary.y + patch[2].tangentOS * bary.z;
-				output.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -2018,10 +2030,10 @@ Shader "RAM"
 				float3 PositionRWS = GetCameraRelativePositionWS( input.positionWS );
 				float4 ShadowCoord = shadowCoord;
 
-				float2 uv_RAM_low_DefaultMaterial_AlbedoTransparency = input.ase_texcoord1.xy * _RAM_low_DefaultMaterial_AlbedoTransparency_ST.xy + _RAM_low_DefaultMaterial_AlbedoTransparency_ST.zw;
+				Gradient gradient19 = NewGradient( 0, 2, 2, float4( 1, 0, 0.8977079, 0.5470665 ), float4( 1, 0.9606119, 0, 0.997055 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
 				
 
-				float3 BaseColor = tex2D( _RAM_low_DefaultMaterial_AlbedoTransparency, uv_RAM_low_DefaultMaterial_AlbedoTransparency ).rgb;
+				float3 BaseColor = SampleGradient( gradient19, 0.0 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -2059,7 +2071,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -2100,8 +2111,7 @@ Shader "RAM"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-
+			
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
 				#define ASE_SV_DEPTH SV_DepthLessEqual
@@ -2127,17 +2137,13 @@ Shader "RAM"
 				float3 positionWS : TEXCOORD0;
 				half3 normalWS : TEXCOORD1;
 				float4 tangentWS : TEXCOORD2; // holds terrainUV ifdef ENABLE_TERRAIN_PERPIXEL_NORMAL
-				float4 ase_texcoord3 : TEXCOORD3;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -2169,8 +2175,7 @@ Shader "RAM"
 				int _PassValue;
 			#endif
 
-			sampler2D _RAM_low_DefaultMaterial_Normal;
-
+			
 
 			
 			PackedVaryings VertexFunction( Attributes input  )
@@ -2180,10 +2185,7 @@ Shader "RAM"
 				UNITY_TRANSFER_INSTANCE_ID(input, output);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-				output.ase_texcoord3.xy = input.texcoord.xy;
 				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				output.ase_texcoord3.zw = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = input.positionOS.xyz;
 				#else
@@ -2344,10 +2346,9 @@ Shader "RAM"
 					BitangentWS = cross(NormalWS, -TangentWS);
 				#endif
 
-				float2 uv_RAM_low_DefaultMaterial_Normal = input.ase_texcoord3.xy * _RAM_low_DefaultMaterial_Normal_ST.xy + _RAM_low_DefaultMaterial_Normal_ST.zw;
 				
 
-				float3 Normal = tex2D( _RAM_low_DefaultMaterial_Normal, uv_RAM_low_DefaultMaterial_Normal ).rgb;
+				float3 Normal = float3(0, 0, 1);
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -2428,7 +2429,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -2506,8 +2506,7 @@ Shader "RAM"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_TEXTURE_COORDINATES0
-			#define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
+			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -2550,17 +2549,13 @@ Shader "RAM"
 				#if defined(USE_APV_PROBE_OCCLUSION)
 					float4 probeOcclusion : TEXCOORD6;
 				#endif
-				float4 ase_texcoord7 : TEXCOORD7;
+				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -2592,11 +2587,7 @@ Shader "RAM"
 				int _PassValue;
 			#endif
 
-			sampler2D _RAM_low_DefaultMaterial_AlbedoTransparency;
-			sampler2D _RAM_low_DefaultMaterial_Normal;
-			sampler2D _RAM_low_DefaultMaterial_MetallicSmoothness;
-			sampler2D _RAM_low_DefaultMaterial_Emission;
-
+			
 
 			#if ( UNITY_VERSION >= 60010000 )
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutput.hlsl"
@@ -2605,6 +2596,29 @@ Shader "RAM"
 			#endif
 
 			
+			float4 SampleGradient( Gradient gradient, float time )
+			{
+				float3 color = gradient.colors[0].rgb;
+				UNITY_UNROLL
+				for (int c = 1; c < 8; c++)
+				{
+				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
+				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+				}
+				#ifndef UNITY_COLORSPACE_GAMMA
+				color = SRGBToLinear(color);
+				#endif
+				float alpha = gradient.alphas[0].x;
+				UNITY_UNROLL
+				for (int a = 1; a < 8; a++)
+				{
+				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
+				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
+				}
+				return float4(color, alpha);
+			}
+			
+
 			PackedVaryings VertexFunction( Attributes input  )
 			{
 				PackedVaryings output = (PackedVaryings)0;
@@ -2612,10 +2626,7 @@ Shader "RAM"
 				UNITY_TRANSFER_INSTANCE_ID(input, output);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-				output.ase_texcoord7.xy = input.texcoord.xy;
 				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				output.ase_texcoord7.zw = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = input.positionOS.xyz;
 				#else
@@ -2812,23 +2823,16 @@ Shader "RAM"
 					BitangentWS = cross(NormalWS, -TangentWS);
 				#endif
 
-				float2 uv_RAM_low_DefaultMaterial_AlbedoTransparency = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_AlbedoTransparency_ST.xy + _RAM_low_DefaultMaterial_AlbedoTransparency_ST.zw;
-				
-				float2 uv_RAM_low_DefaultMaterial_Normal = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_Normal_ST.xy + _RAM_low_DefaultMaterial_Normal_ST.zw;
-				
-				float2 uv_RAM_low_DefaultMaterial_MetallicSmoothness = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_MetallicSmoothness_ST.xy + _RAM_low_DefaultMaterial_MetallicSmoothness_ST.zw;
-				float4 tex2DNode15 = tex2D( _RAM_low_DefaultMaterial_MetallicSmoothness, uv_RAM_low_DefaultMaterial_MetallicSmoothness );
-				
-				float2 uv_RAM_low_DefaultMaterial_Emission = input.ase_texcoord7.xy * _RAM_low_DefaultMaterial_Emission_ST.xy + _RAM_low_DefaultMaterial_Emission_ST.zw;
+				Gradient gradient19 = NewGradient( 0, 2, 2, float4( 1, 0, 0.8977079, 0.5470665 ), float4( 1, 0.9606119, 0, 0.997055 ), 0, 0, 0, 0, 0, 0, float2( 1, 0 ), float2( 1, 1 ), 0, 0, 0, 0, 0, 0 );
 				
 
-				float3 BaseColor = tex2D( _RAM_low_DefaultMaterial_AlbedoTransparency, uv_RAM_low_DefaultMaterial_AlbedoTransparency ).rgb;
-				float3 Normal = tex2D( _RAM_low_DefaultMaterial_Normal, uv_RAM_low_DefaultMaterial_Normal ).rgb;
+				float3 BaseColor = SampleGradient( gradient19, 0.0 ).rgb;
+				float3 Normal = float3(0, 0, 1);
 				float3 Specular = 0.5;
-				float Metallic = tex2DNode15.r;
-				float Smoothness = tex2DNode15.g;
+				float Metallic = 0;
+				float Smoothness = 0.5;
 				float Occlusion = 1;
-				float3 Emission = ( tex2D( _RAM_low_DefaultMaterial_Emission, uv_RAM_low_DefaultMaterial_Emission ).rgb * 2 );
+				float3 Emission = ( SampleGradient( gradient19, 0.0 ) * 20 ).rgb;
 				float Alpha = 1;
 				#if defined( _ALPHATEST_ON )
 					float AlphaClipThreshold = _Cutoff;
@@ -2984,7 +2988,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -3048,11 +3051,7 @@ Shader "RAM"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -3263,7 +3262,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -3327,11 +3325,7 @@ Shader "RAM"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -3542,7 +3536,6 @@ Shader "RAM"
 			#define ASE_FOG 1
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
 			#define _EMISSION
-			#define _NORMALMAP 1
 			#define ASE_VERSION 19909
 			#define ASE_SRP_VERSION 170100
 
@@ -3619,11 +3612,7 @@ Shader "RAM"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _RAM_low_DefaultMaterial_AlbedoTransparency_ST;
-			float4 _RAM_low_DefaultMaterial_Normal_ST;
-			float4 _RAM_low_DefaultMaterial_MetallicSmoothness_ST;
-			float4 _RAM_low_DefaultMaterial_Emission_ST;
-			float _AlphaClip;
+						float _AlphaClip;
 			float _Cutoff;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
@@ -3778,12 +3767,12 @@ Shader "RAM"
 
 /*ASEBEGIN
 Version=19909
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;-640,-48;Inherit;True;Property;_RAM_low_DefaultMaterial_AlbedoTransparency;RAM_low_DefaultMaterial_AlbedoTransparency;0;0;Create;True;0;0;0;False;0;False;-1;76624b6ec3d56af44b61c2fe67b41d34;76624b6ec3d56af44b61c2fe67b41d34;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;14;-272,-281.5;Inherit;True;Property;_RAM_low_DefaultMaterial_Normal;RAM_low_DefaultMaterial_Normal;2;0;Create;True;0;0;0;False;0;False;-1;934eb439679606a40a0d3aae26e44331;934eb439679606a40a0d3aae26e44331;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;15;-672,-336;Inherit;True;Property;_RAM_low_DefaultMaterial_MetallicSmoothness;RAM_low_DefaultMaterial_MetallicSmoothness;3;0;Create;True;0;0;0;False;0;False;-1;87f9655d5410174479aee2541787fbd8;87f9655d5410174479aee2541787fbd8;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;16;-80,128;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;INT;0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;13;-704,224;Inherit;True;Property;_RAM_low_DefaultMaterial_Emission;RAM_low_DefaultMaterial_Emission;1;0;Create;True;0;0;0;False;0;False;-1;c8bab4153b0586749a0c2f6114333cb2;c8bab4153b0586749a0c2f6114333cb2;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;17;-176,304;Inherit;False;Constant;_Int0;Int 0;4;0;Create;True;0;0;0;False;0;False;2;0;False;0;0;0;1;INT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;31;526.6888,-9.654541;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;INT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;33;272,96;Inherit;False;Constant;_Int1;Int 1;0;0;Create;True;0;0;0;False;0;False;20;0;False;0;0;0;1;INT;0
+Node;AmplifyShaderEditor.WorldPosInputsNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;34;-544,-96;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;35;-320,-128;Inherit;True;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.GradientNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;19;-288,-368;Inherit;False;0;2;2;1,0,0.8977079,0.5470665;1,0.9606119,0,0.997055;1,0;1,1;0;1;OBJECT;0
+Node;AmplifyShaderEditor.GradientSampleNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;15;48,-240;Inherit;True;2;0;OBJECT;;False;1;FLOAT;0;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;6;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;3;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -3795,13 +3784,12 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Versi
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;9;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;10;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;MotionVectors;0;10;MotionVectors;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;False;False;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=MotionVectors;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;11;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;XRMotionVectors;0;11;XRMotionVectors;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;True;1;False;;255;False;;1;False;;7;False;;3;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;False;True;1;LightMode=XRMotionVectors;False;False;0;;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;1;192,-48;Float;False;True;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;RAM;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;51;Category;0;0;  Instanced Terrain Normals;1;0;Lighting Model;0;0;Workflow;1;0;Surface;0;0;  Keep Alpha;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Alpha Clipping;0;0;  Use Shadow Threshold;0;0;Fragment Normal Space;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;Receive Shadows;2;0;Specular Highlights;2;0;Environment Reflections;2;0;Receive SSAO;1;0;Motion Vectors;1;0;  Add Precomputed Velocity;0;0;  XR Motion Vectors;0;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position;1;0;Debug Display;1;0;Clear Coat;0;0;0;12;False;True;True;True;True;True;True;True;True;True;True;False;False;;False;0
-WireConnection;16;0;13;5
-WireConnection;16;1;17;0
-WireConnection;1;0;12;0
-WireConnection;1;1;14;5
-WireConnection;1;3;15;1
-WireConnection;1;4;15;2
-WireConnection;1;2;16;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;1;688,-288;Float;False;True;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;Grapple;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;51;Category;0;0;  Instanced Terrain Normals;1;0;Lighting Model;0;0;Workflow;1;0;Surface;0;0;  Keep Alpha;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Alpha Clipping;0;0;  Use Shadow Threshold;0;0;Fragment Normal Space;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;Receive Shadows;2;0;Specular Highlights;2;0;Environment Reflections;2;0;Receive SSAO;1;0;Motion Vectors;1;0;  Add Precomputed Velocity;0;0;  XR Motion Vectors;0;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position;1;0;Debug Display;1;0;Clear Coat;0;0;0;12;False;True;True;True;True;True;True;True;True;True;True;False;False;;False;0
+WireConnection;31;0;15;0
+WireConnection;31;1;33;0
+WireConnection;35;0;34;0
+WireConnection;15;0;19;0
+WireConnection;1;0;15;0
+WireConnection;1;2;31;0
 ASEEND*/
-//CHKSM=7CD8CF8B63D99455A9876F1C949267229427099A
+//CHKSM=CF2577FF1DE8ABED271F8551992AFDEEBB61E3D7
