@@ -22952,7 +22952,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1000
+    FarClipPlane: 2000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -26883,8 +26883,12 @@ MonoBehaviour:
   MaxSlopeAngle: 40
   railJumpUpForce: 6
   railExitForwardBoost: 2
+  railExitMomentumMultiplier: 1.15
+  railReattachCooldown: 0.25
+  railFallbackMinSpeed: 0.1
   m_straightGrappleReleaseDistance: 1
   WallridePredictionIncrease: 3.5
+  m_grappleLandingShakeSuppressTime: 0.1
   state: 1
   m_bActiveGrapple: 0
   m_bActiveSwing: 0
@@ -27075,7 +27079,7 @@ MonoBehaviour:
   m_preventGrappleThroughWalls: 1
   m_ignoredGrapplePredictionLayer:
     serializedVersion: 2
-    m_Bits: 260
+    m_Bits: 1796
   predictionSphereCastRadius: 4
   predictionPoint: {fileID: 0}
   m_maxDistanceColor: {r: 0, g: 1, b: 0, a: 1}
@@ -27115,7 +27119,7 @@ MonoBehaviour:
   predictionPoint: {fileID: 0}
   m_ignoredSwingPredictionLayer:
     serializedVersion: 2
-    m_Bits: 260
+    m_Bits: 1796
   m_maincam: {fileID: 0}
   m_bDrawPredictionRays: 0
   m_bLogIncorrectLayerHits: 0
@@ -27245,7 +27249,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_timerScript: {fileID: 8450953032605841240}
+  m_cameraPivotTransform: {fileID: 414403218648493129}
   m_respawnPoint: {x: 0, y: 0, z: 0}
+  m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
+  m_startPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &5574873321828607773
 LineRenderer:
   serializedVersion: 2
