@@ -169,7 +169,8 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 19d985e3c54cf824d8362327abdcad59, type: 3}
   - name: DASH
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: 7a3f98e9c8c8d6541931d07b94e07efa, type: 3}
   - name: LAND
     sounds:
     - {fileID: 8300000, guid: dfdd4fc706f8e774db15236a9b761321, type: 3}
@@ -238,7 +239,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
