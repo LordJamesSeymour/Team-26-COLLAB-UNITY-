@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 750d354b539b9314c8be3921391dadfc
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _Aircon_Unit1_AlbedoTransparency: {fileID: 2800000, guid: 03805db418613af42a7a7719f03b4a22, type: 3}
+  - _Aircon_Unit1_Normal: {fileID: 2800000, guid: eb03650eb2e160b4e8f49222d1b400c1, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

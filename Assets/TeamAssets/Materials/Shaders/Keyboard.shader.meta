@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: b8e30497b8aca5a43a84e6dad870912e
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _Keyboard_Platform_BaseMap: {fileID: 2800000, guid: 712583ab84e44de4d997e317118baf11, type: 3}
+  - _Keyboard_Platform_Normal: {fileID: 2800000, guid: 6ff6e66a9f17849459e27357d06e56c9, type: 3}
+  - _Keyboard_Platform_MaskMap: {fileID: 2800000, guid: ecbcdfb6d93229c47af364dd8df19bb0, type: 3}
+  - _Keyboard_Platform_Emissive: {fileID: 2800000, guid: 7e8bd557680639943968692865927df2, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
