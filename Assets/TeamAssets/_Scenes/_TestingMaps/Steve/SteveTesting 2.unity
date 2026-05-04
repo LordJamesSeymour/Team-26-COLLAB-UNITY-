@@ -10018,13 +10018,9 @@ PrefabInstance:
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 1226302156}
-    - target: {fileID: 884658323363199780, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
-      propertyPath: thirdPersonLookSensitivity.x
-      value: 55
-      objectReference: {fileID: 0}
-    - target: {fileID: 884658323363199780, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
-      propertyPath: thirdPersonLookSensitivity.y
-      value: 55
+    - target: {fileID: 619756406282949522, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: CameraRadius
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1007806949215814423, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_maincam
@@ -10034,10 +10030,18 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
+    - target: {fileID: 1853192483817986600, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: CameraRadius
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2181891055657115564, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_Name
       value: FinalPlayerCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 3257735959931384534, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: CameraRadius
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4846128315892136628, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_maincam
       value: 
@@ -10046,9 +10050,9 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
-    - target: {fileID: 5873488122590498244, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 6114801893747949296, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: CameraRadius
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6514609564055611009, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10089,6 +10093,10 @@ PrefabInstance:
     - target: {fileID: 6514609564055611009, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519944943548019529, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: CameraRadius
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8616444844697365488, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: playerCam
