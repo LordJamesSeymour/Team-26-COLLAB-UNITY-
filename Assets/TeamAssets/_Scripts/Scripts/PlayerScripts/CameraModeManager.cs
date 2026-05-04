@@ -4,6 +4,7 @@ using System.Collections;
 using Group26.Player.Movement;
 using Group26.Player.Inputs;
 using Group26.Player.Utility;
+using System;
 
 namespace Group26.Player.Camera
 {
@@ -126,7 +127,14 @@ namespace Group26.Player.Camera
         private void Awake()
         {
             m_manager = new datamanager(6);
-            m_manager.LoadGameData();
+            try
+            {
+                m_manager.LoadGameData();
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
 
             thirdPersonLookSensitivity.x = m_manager.GetGameData().settings.sensitivity;
             thirdPersonLookSensitivity.y = m_manager.GetGameData().settings.sensitivity;
