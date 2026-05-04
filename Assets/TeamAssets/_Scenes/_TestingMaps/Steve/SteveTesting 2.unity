@@ -10018,6 +10018,14 @@ PrefabInstance:
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 1226302156}
+    - target: {fileID: 884658323363199780, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: thirdPersonLookSensitivity.x
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 884658323363199780, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: thirdPersonLookSensitivity.y
+      value: 55
+      objectReference: {fileID: 0}
     - target: {fileID: 1007806949215814423, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_maincam
       value: 
@@ -10038,6 +10046,10 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 608019952}
+    - target: {fileID: 5873488122590498244, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6514609564055611009, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -10082,7 +10094,8 @@ PrefabInstance:
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 1226302156}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5873488122590498244, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
