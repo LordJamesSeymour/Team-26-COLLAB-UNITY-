@@ -50,6 +50,9 @@ public class buttonnavscript : MonoBehaviour
 
         m_currentButton = m_buttons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     //function for when the mouse hovers over a button

@@ -1,25 +1,69 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class levelcompletescript : MonoBehaviour
 {
     [HideInInspector] public bool m_enabled = false;
-    [SerializeField] protected Sprite[] m_buttonSprites;
-    [SerializeField] TextMeshProUGUI m_uiTexts;
+    public int m_levelNum;
+
+    [SerializeField] private Sprite[] m_buttonSprites;
+    [SerializeField] private TextMeshProUGUI[] m_uiTexts;
+    [SerializeField] private Button m_mainMenuButton;
+    [SerializeField] private menuscreeneventsmanager m_menuEventsManager;
+    [SerializeField] Rigidbody m_playerRigidbody;
+    [SerializeField] GameObject m_endOfLevelUIPanel;
 
     private InputAction m_navInputs;
     private InputAction m_selectInput;
+    private bool m_onMainMenuButton = false;
+    private datamanager m_manager;
 
     private void Awake()
     {
+        m_manager = new datamanager(6);
+        try
+        {
+            m_manager.LoadGameData();
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+
         m_navInputs = InputSystem.actions.FindAction("Navigate");
         m_selectInput = InputSystem.actions.FindAction("Select");
+        m_menuEventsManager.IsVisible += OnVisible;
     }
 
-    private void OnEnable()
+    public void OnMainMenuButtonPressed(int mainMenuNum)
     {
-        
+        m_manager.SetCompleted(m_levelNum, true);
+        m_manager.SaveGameData();
+        SceneManager.LoadScene(mainMenuNum);
+    }
+
+    private void OnVisible()
+    {
+        m_playerRigidbody.linearVelocity = Vector3.zero;
+        m_playerRigidbody.angularVelocity = Vector3.zero;
+        m_playerRigidbody.isKinematic = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (Checkpoint.m_checkpointsEnabled)
+            m_uiTexts[3].text = "Deathless: No";
+        else
+            m_uiTexts[3].text = "Deathless: Yes";
+    }
+
+    public void ToggleMenuOn()
+    {
+        m_endOfLevelUIPanel.SetActive(true);
+        m_enabled = true;
     }
 
     // Update is called once per frame
@@ -27,7 +71,13 @@ public class levelcompletescript : MonoBehaviour
     {
         if(m_navInputs.WasPressedThisDynamicUpdate() && m_enabled)
         {
+            m_mainMenuButton.image.sprite = m_buttonSprites[1];
+            m_onMainMenuButton = true;
+        }
 
+        if(m_selectInput.WasPressedThisDynamicUpdate() && m_enabled && m_onMainMenuButton)
+        {
+            m_mainMenuButton.onClick.Invoke();
         }
     }
 }
