@@ -21,7 +21,8 @@ public class Checkpoint : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError(e.Message);
+            Debug.Log("Game data has not been loaded from main menu");
+            //Debug.LogError(e.Message);
         }
 
         m_checkpointsEnabled = m_manager.GetGameData().settings.checkpointsEnabled;
