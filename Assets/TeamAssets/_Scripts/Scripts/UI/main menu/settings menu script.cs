@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using System;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class settingsmenuscript : menuscreenscript
 {
@@ -17,6 +18,10 @@ public class settingsmenuscript : menuscreenscript
     [SerializeField] GameObject m_scrollArea;
     [SerializeField] TextMeshProUGUI m_sensitivityValueText;
     //[SerializeField] AudioSource m_backgroundMusic;
+
+    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private string effectsVolumeName = "EffectsVolume";
+    [SerializeField] private string musicVolumeName = "MusicVolume";
 
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
@@ -208,16 +213,18 @@ public class settingsmenuscript : menuscreenscript
 
     public void UpdateBackgroundVolume(AudioSource source)
     {
-        source.volume = m_backgroundMusicSlider.value / 100;
-        m_manager.SetBackgroundVolume(m_backgroundMusicSlider.value);
+        float volume = m_backgroundMusicSlider.value * .8f - 80;
+        audioMixer.SetFloat(musicVolumeName, volume);
+
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
     }
 
     public void UpdateSoundEffectsVolume(AudioSource source)
     {
-        source.volume = m_soundEffectsSlider.value / 100;
-        m_manager.SetSoundEffectsVolume(m_soundEffectsSlider.value);
+        float volume = m_soundEffectsSlider.value * .8f - 80;
+        audioMixer.SetFloat(effectsVolumeName, volume);
+
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
     }
