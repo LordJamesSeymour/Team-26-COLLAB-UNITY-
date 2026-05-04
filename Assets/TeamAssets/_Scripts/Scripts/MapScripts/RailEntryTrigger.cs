@@ -2,58 +2,45 @@ using UnityEngine;
 
 namespace Group26.Player.Movement
 {
-    public class RailEntryTrigger : MonoBehaviour
-    {
-        [SerializeField] private RailSpline railSpline;
+	public class RailEntryTrigger : MonoBehaviour
+	{
+		[SerializeField] private RailSpline railSpline;
 
-        public RailSpline RailSpline => railSpline;
+		public RailSpline RailSpline => railSpline;
 
-        private void Reset()
-        {
-            AutoAssignFromParent();
-        }
+		private void Reset()
+		{
+			AutoAssignFromParent();
+		}
 
-        private void Awake()
-        {
-            AutoAssignFromParent();
-        }
+		private void Awake()
+		{
+			AutoAssignFromParent();
+		}
 
-        private void OnValidate()
-        {
-            AutoAssignFromParent();
-        }
+		private void OnValidate()
+		{
+			AutoAssignFromParent();
+		}
 
-        public void AutoAssignFromParent()
-        {
-            if (railSpline == null)
-                railSpline = GetComponentInParent<RailSpline>();
-        }
+		public void AutoAssignFromParent()
+		{
+			if (railSpline == null)
+				railSpline = GetComponentInParent<RailSpline>();
+		}
 
-        private void OnTriggerEnter(Collider other)
-        {
-            TryEnter(other);
-        }
+		private void OnTriggerEnter(Collider other)
+		{
+			AutoAssignFromParent();
 
-        private void OnTriggerStay(Collider other)
-        {
-            TryEnter(other);
-        }
+			if (railSpline == null)
+				return;
 
-        private void TryEnter(Collider other)
-        {
-            AutoAssignFromParent();
+			PlayerController controller = other.GetComponentInParent<PlayerController>();
+			if (controller == null)
+				return;
 
-            if (railSpline == null)
-                return;
-
-            PlayerController controller = other.GetComponentInParent<PlayerController>();
-            if (controller == null)
-                return;
-
-            if (controller.IsOnRail)
-                return;
-
-            controller.EnterRail(railSpline);
-        }
-    }
+			controller.TryEnterRail(railSpline, other.transform);
+		}
+	}
 }

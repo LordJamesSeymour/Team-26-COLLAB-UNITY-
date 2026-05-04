@@ -98,6 +98,15 @@ namespace Group26.Player.Camera
 		[SerializeField, Range(90f, 2160f)] private float m_wallRunBodyMaxDegreesPerSecond = 1440f;
 		private float m_wallRunBodyYawVel;
 
+		[Header("Camera Shake Output")]
+		[SerializeField] private bool m_enableExternalCameraShake = true;
+		[SerializeField] private Transform m_cameraShakeTransform;
+		private Vector3 m_cameraShakePositionOffset;
+		private Vector3 m_cameraShakeRotationOffset;
+		private Vector3 m_cameraShakeBaseLocalPosition;
+		private Quaternion m_cameraShakeBaseLocalRotation;
+		private bool m_cachedCameraShakeBase;
+
 		[Header("FOV Settings")]
 		[SerializeField] private float defaultFOV = 60f;
 		[SerializeField] private float sprintFOV = 75f;
@@ -161,6 +170,14 @@ namespace Group26.Player.Camera
 				m_yaw = pivotEuler.y;
 				m_pitch = NormalizePitch(pivotEuler.x);
 			}
+
+			ResolveCameraShakeTransform();
+			CacheCameraShakeBase();
+		}
+
+		private void Start()
+		{
+			ApplyCameraShakeOffsets();
 		}
 
 		private void OnEnable()
@@ -227,6 +244,63 @@ namespace Group26.Player.Camera
 			}
 
 			HandleRunFOV();
+		}
+
+		private void LateUpdate()
+		{
+			ApplyCameraShakeOffsets();
+		}
+
+		private void ResolveCameraShakeTransform()
+		{
+			if (m_cameraShakeTransform != null)
+				return;
+
+			if (thirdPersonVirtualCamera != null && thirdPersonVirtualCamera.transform.parent != null)
+			{
+				m_cameraShakeTransform = thirdPersonVirtualCamera.transform.parent;
+				return;
+			}
+
+			m_cameraShakeTransform = m_cameraPivot;
+		}
+
+		private void CacheCameraShakeBase()
+		{
+			ResolveCameraShakeTransform();
+
+			if (m_cachedCameraShakeBase || m_cameraShakeTransform == null)
+				return;
+
+			m_cameraShakeBaseLocalPosition = m_cameraShakeTransform.localPosition;
+			m_cameraShakeBaseLocalRotation = m_cameraShakeTransform.localRotation;
+			m_cachedCameraShakeBase = true;
+		}
+
+		public void SetCameraShakeOffsets(Vector3 localPositionOffset, Vector3 localRotationEulerOffset)
+		{
+			if (!m_enableExternalCameraShake)
+				return;
+
+			m_cameraShakePositionOffset = localPositionOffset;
+			m_cameraShakeRotationOffset = localRotationEulerOffset;
+		}
+
+		public void ClearCameraShakeOffsets()
+		{
+			m_cameraShakePositionOffset = Vector3.zero;
+			m_cameraShakeRotationOffset = Vector3.zero;
+		}
+
+		private void ApplyCameraShakeOffsets()
+		{
+			CacheCameraShakeBase();
+
+			if (m_cameraShakeTransform == null)
+				return;
+
+			m_cameraShakeTransform.localPosition = m_cameraShakeBaseLocalPosition + m_cameraShakePositionOffset;
+			m_cameraShakeTransform.localRotation = m_cameraShakeBaseLocalRotation * Quaternion.Euler(m_cameraShakeRotationOffset);
 		}
 
 		private IEnumerator DoBallMovementFOV()
