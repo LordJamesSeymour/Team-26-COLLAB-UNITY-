@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
@@ -8,18 +9,27 @@ public class Checkpoint : MonoBehaviour
     public static bool m_checkpointsEnabled;    //this is static as if one checkpoint is disabled, all of them are
                                                 //this variable is the one set in the settings menu when the player decides if
                                                 //checkpoints are enabled or not
+    private datamanager m_manager;
 
     private void Awake()
     {
-        m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
+        //m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
+        m_manager = new datamanager(6);
+        try
+        {
+            m_manager.LoadGameData();
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Game data has not been loaded from main menu");
+            //Debug.LogError(e.Message);
+        }
+
+        m_checkpointsEnabled = m_manager.GetGameData().settings.checkpointsEnabled;
+        Debug.Log("checkpoints: " + m_manager.GetGameData().settings.checkpointsEnabled);
+
         m_used = false;
         if(!m_checkpointsEnabled) gameObject.SetActive(false);
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -35,11 +45,5 @@ public class Checkpoint : MonoBehaviour
             //the checkpoint
             m_used = true;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

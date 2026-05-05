@@ -81,11 +81,8 @@ namespace Group26.Player.Utility
 						ballModeObject.SetActive(false);
 						capsuleModeObject.SetActive(true);
 
-						// KEEP PlayerController enabled at all times.
-						// It is the script that drives the rail system.
 						if (playerController != null)
 						{
-							playerController.enabled = true;
 							playerController.SetBallFormState(false);
 						}
 
@@ -117,7 +114,7 @@ namespace Group26.Player.Utility
 						// It must stay enabled so rail movement can run.
 						if (playerController != null)
 						{
-							playerController.enabled = true;
+							//playerController.enabled = true;
 							playerController.m_bIsGrounded = false;
 							playerController.SetBallFormState(true);
 						}
@@ -137,3 +134,4 @@ namespace Group26.Player.Utility
 		}
 	}
 }
+

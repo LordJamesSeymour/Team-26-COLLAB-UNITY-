@@ -595,7 +595,7 @@ Shader "Code"
 
 				float2 texCoord19 = input.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
 				float2 panner17 = ( 1.0 * _Time.y * float2( 0,0.2 ) + texCoord19);
-				float4 color23 = IsGammaSpace() ? float4( 0.2915628, 0.7986991, 0.9811321, 0 ) : float4( 0.06913067, 0.6016248, 0.957614, 0 );
+				float4 color23 = IsGammaSpace() ? float4( 0.2901962, 0.608404, 0.9803922, 0 ) : float4( 0.06847821, 0.3284442, 0.9559735, 0 );
 				float4 color13 = IsGammaSpace() ? float4( 0, 0, 0, 0 ) : float4( 0, 0, 0, 0 );
 				float4 lerpResult21 = lerp( ( tex2D( _Testparticlealpha, panner17 ) * color23 ) , color13 , float4( 0,0,0,0 ));
 				
@@ -1713,7 +1713,7 @@ Shader "Code"
 
 				float2 texCoord19 = input.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
 				float2 panner17 = ( 1.0 * _Time.y * float2( 0,0.2 ) + texCoord19);
-				float4 color23 = IsGammaSpace() ? float4( 0.2915628, 0.7986991, 0.9811321, 0 ) : float4( 0.06913067, 0.6016248, 0.957614, 0 );
+				float4 color23 = IsGammaSpace() ? float4( 0.2901962, 0.608404, 0.9803922, 0 ) : float4( 0.06847821, 0.3284442, 0.9559735, 0 );
 				float4 color13 = IsGammaSpace() ? float4( 0, 0, 0, 0 ) : float4( 0, 0, 0, 0 );
 				float4 lerpResult21 = lerp( ( tex2D( _Testparticlealpha, panner17 ) * color23 ) , color13 , float4( 0,0,0,0 ));
 				
@@ -1985,7 +1985,7 @@ Shader "Code"
 
 				float2 texCoord19 = input.ase_texcoord1.xy * float2( 1,1 ) + float2( 0,0 );
 				float2 panner17 = ( 1.0 * _Time.y * float2( 0,0.2 ) + texCoord19);
-				float4 color23 = IsGammaSpace() ? float4( 0.2915628, 0.7986991, 0.9811321, 0 ) : float4( 0.06913067, 0.6016248, 0.957614, 0 );
+				float4 color23 = IsGammaSpace() ? float4( 0.2901962, 0.608404, 0.9803922, 0 ) : float4( 0.06847821, 0.3284442, 0.9559735, 0 );
 				float4 color13 = IsGammaSpace() ? float4( 0, 0, 0, 0 ) : float4( 0, 0, 0, 0 );
 				float4 lerpResult21 = lerp( ( tex2D( _Testparticlealpha, panner17 ) * color23 ) , color13 , float4( 0,0,0,0 ));
 				
@@ -2763,7 +2763,7 @@ Shader "Code"
 
 				float2 texCoord19 = input.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
 				float2 panner17 = ( 1.0 * _Time.y * float2( 0,0.2 ) + texCoord19);
-				float4 color23 = IsGammaSpace() ? float4( 0.2915628, 0.7986991, 0.9811321, 0 ) : float4( 0.06913067, 0.6016248, 0.957614, 0 );
+				float4 color23 = IsGammaSpace() ? float4( 0.2901962, 0.608404, 0.9803922, 0 ) : float4( 0.06847821, 0.3284442, 0.9559735, 0 );
 				float4 color13 = IsGammaSpace() ? float4( 0, 0, 0, 0 ) : float4( 0, 0, 0, 0 );
 				float4 lerpResult21 = lerp( ( tex2D( _Testparticlealpha, panner17 ) * color23 ) , color13 , float4( 0,0,0,0 ));
 				
@@ -3714,11 +3714,11 @@ Node;AmplifyShaderEditor.Vector2Node, AmplifyShaderEditor, Version=0.0.0.0, Cult
 Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;19;-976,-304;Inherit;True;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.PannerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;17;-560,-256;Inherit;True;3;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SamplerNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;12;-224,-256;Inherit;True;Property;_Testparticlealpha;Testparticlealpha;0;0;Create;True;0;0;0;False;0;False;-1;None;1f481369de5eeff4c9fd2f99352bd246;True;0;False;black;Auto;False;Object;-1;Auto;Texture2D;False;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-192,-32;Inherit;False;Constant;_Color1;Color 1;1;0;Create;True;0;0;0;False;0;False;0.2915628,0.7986991,0.9811321,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;23;-192,-32;Inherit;False;Constant;_Color1;Color 1;1;0;Create;True;0;0;0;False;0;False;0.2901962,0.608404,0.9803922,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.ColorNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;13;-1392,-432;Inherit;False;Constant;_Color0;Color 0;1;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.LerpOp, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;21;496,-464;Inherit;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;15;800,240;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;INT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.IntNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;16;544,240;Inherit;False;Constant;_Int0;Int 0;1;0;Create;True;0;0;0;False;0;False;10;0;False;0;0;0;1;INT;0
+Node;AmplifyShaderEditor.LerpOp, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;21;496,-464;Inherit;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;6;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;3;0,0;Float;False;False;-1;3;UnityEditor.ShaderGraphLitGUI;0;15;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;14;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -3736,11 +3736,11 @@ WireConnection;22;1;23;0
 WireConnection;17;0;19;0
 WireConnection;17;2;20;0
 WireConnection;12;1;17;0
-WireConnection;21;0;22;0
-WireConnection;21;1;13;0
 WireConnection;15;0;21;0
 WireConnection;15;1;16;0
+WireConnection;21;0;22;0
+WireConnection;21;1;13;0
 WireConnection;1;0;21;0
 WireConnection;1;2;15;0
 ASEEND*/
-//CHKSM=BA341C70DAEA72DF78C1D6063D2E3EAEE65718AC
+//CHKSM=EEE1C9545A10A2570136BF8F341CE47A9B4E27AA

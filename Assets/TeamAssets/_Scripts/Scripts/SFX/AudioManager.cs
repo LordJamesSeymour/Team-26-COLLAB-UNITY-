@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
@@ -57,12 +58,12 @@ public class AudioManager : MonoBehaviour
         audioSource.PlayOneShot(SelectRandomSound(sound), volume);
     }
 
-    public void PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    public AudioSource PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
 
-        if (source == null) { return; }
+        if (source == null) { return null; }
 
         source.gameObject.SetActive(true);
         source.transform.parent = target;
@@ -82,6 +83,8 @@ public class AudioManager : MonoBehaviour
         }
 
         StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+
+        return source;
 
     }
 
@@ -118,12 +121,12 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(ReturnToPool(end, 0));
     }
 
-    public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    public AudioSource PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
 
-        if (source == null) { return; }
+        if (source == null) { return null; }
 
         source.gameObject.SetActive(true);
         source.transform.position = target;
@@ -135,8 +138,11 @@ public class AudioManager : MonoBehaviour
         source.spatialBlend = spatialBlend;
 
         source.Play();
+        source.transform.parent = null;
 
         StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+
+        return source;
 
     }
 
@@ -150,7 +156,7 @@ public class AudioManager : MonoBehaviour
     {
         foreach (AudioSource source in audioEmitters)
         {
-            if (!source.gameObject.activeInHierarchy) { return source; }
+            if (!source.gameObject.activeSelf) { return source; }
         }
         return null; // all sources busy, probably play as global sound as back up or add a new source to the pool if not too many
     }
@@ -158,9 +164,9 @@ public class AudioManager : MonoBehaviour
     private IEnumerator ReturnToPool(AudioSource source, float delay) // need to also return to pool if the objects parent is destroyed as to not also destroy the emitter. (maybe also have a 
     {
         yield return new WaitForSeconds(delay);
-        source.Stop();
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
+        if (source.clip != null) { source.Stop(); }
     }
 
 #if UNITY_EDITOR
