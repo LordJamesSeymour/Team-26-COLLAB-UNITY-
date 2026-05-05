@@ -3359,7 +3359,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -8427,7 +8427,6 @@ GameObject:
   - component: {fileID: 5065373361208652444}
   - component: {fileID: 6797045768519289606}
   - component: {fileID: 2515511480513685262}
-  - component: {fileID: 7049687039839387652}
   - component: {fileID: 7954068586701445865}
   - component: {fileID: 3893369647984432245}
   - component: {fileID: 7508703135353221040}
@@ -8541,20 +8540,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d003a0184591a5543b6048dd4e9885ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 20
+  walkSpeed: 15
   slideSpeed: 30
   wallRunSpeed: 15
   dashSpeed: 30
   swingSpeed: 0
   dashSpeedChangeFactor: 50
-  groundDrag: 5
+  groundDrag: 7
   maxYSpeed: 0
   moveSpeed: 0
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
   jumpForce: 12
   jumpCooldown: 0.12
-  airMultiplier: 0.4
+  airMultiplier: 0.275
   jumpBufferTime: 0.15
   crouchSpeed: 3.5
   m_fGroundDistance: 0.3
@@ -8750,7 +8749,7 @@ MonoBehaviour:
   m_grappableLayer:
     serializedVersion: 2
     m_Bits: 128
-  lineRenderer: {fileID: 0}
+  lineRenderer: {fileID: 2515511480513685262}
   m_maincam: {fileID: 0}
   maxGrappleDistance: 30
   grappleDelayTime: 0
@@ -9038,103 +9037,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!82 &7049687039839387652
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181891055657115564}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 5b896a6f44a8abf44a0ccc75f3f9b599, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.267
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!136 &7954068586701445865
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -10683,7 +10585,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -14728,7 +14630,7 @@ Transform:
   m_GameObject: {fileID: 3420827800429369602}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.169, z: 0}
+  m_LocalPosition: {x: 0, y: 0.107, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15080,7 +14982,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.05
-    FarClipPlane: 1000
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
