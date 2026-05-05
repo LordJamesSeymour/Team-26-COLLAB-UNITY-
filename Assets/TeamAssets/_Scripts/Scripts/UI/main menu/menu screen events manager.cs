@@ -9,7 +9,14 @@ public class menuscreeneventsmanager : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("enabled");
-        IsVisible.Invoke();
+        try
+        {
+            IsVisible.Invoke();
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
     private void OnDisable()

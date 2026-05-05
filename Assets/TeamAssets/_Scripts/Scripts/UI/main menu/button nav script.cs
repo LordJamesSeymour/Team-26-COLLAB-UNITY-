@@ -18,6 +18,7 @@ public class buttonnavscript : MonoBehaviour
     [SerializeField] public GameObject m_menuPanel;
     [SerializeField] public GameObject m_controlsPanel;
     [SerializeField] private GameObject m_levelsPanel;
+    [SerializeField] private GameObject m_levelsBackground;
     [SerializeField] public GameObject m_settingsPanel;
     [SerializeField] protected Button[] m_buttons;
     [SerializeField] protected Sprite[] m_buttonSprites;
@@ -30,6 +31,8 @@ public class buttonnavscript : MonoBehaviour
     //public void SetMainMenuEnabled(bool enabled) { m_mainMenuPanelEnabled = enabled; }
     //public GameObject GetMainMenuPanel() { return m_mainMenuPanel; }
     public GameObject GetLevelsPanel() { return m_levelsPanel; }
+
+    public GameObject GetLevelsBackground() { return m_levelsBackground; }
     
     private void Awake()
     {
@@ -89,6 +92,7 @@ public class buttonnavscript : MonoBehaviour
 
     private IEnumerator ToggleLevelMenuOn(GameObject menu)
     {
+        m_levelsBackground.SetActive(true);
         menu.SetActive(true);
         m_menuPanel.SetActive(false);
         m_enabled = false;
