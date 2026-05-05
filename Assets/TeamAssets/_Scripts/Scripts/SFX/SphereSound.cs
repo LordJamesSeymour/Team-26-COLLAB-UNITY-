@@ -31,7 +31,7 @@ public class SphereSound : MonoBehaviour
         if (!ballRollController.IsGrounded()) { MoveToTargetSound(source, 0, 0); return; }
 
         float vel = rb.linearVelocity.magnitude;
-        targetVol = Mathf.Clamp(vel / 30, 0, 1.5f);
+        targetVol = Mathf.Clamp(vel / 35, 0, 1.5f);
         targetPitch = Mathf.Clamp(vel / 30, .4f, .7f);
 
         MoveToTargetSound(source, targetVol, targetPitch);
