@@ -2322,7 +2322,7 @@ Transform:
   m_GameObject: {fileID: 669508575012574753}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052596, y: -0, z: -0, w: 0.99144495}
-  m_LocalPosition: {x: 0, y: 4.01, z: -5.65}
+  m_LocalPosition: {x: 0, y: 3.5, z: -5.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8601,7 +8601,7 @@ MonoBehaviour:
   firstPersonLookSensitivity: {x: 1, y: 1}
   thirdPersonLookSensitivity: {x: 14, y: 14}
   currentCameraMode: 0
-  m_thirdPersonPitchLimits: {x: 51, y: 50}
+  m_thirdPersonPitchLimits: {x: -51, y: 50}
   m_bodyTurnSmoothTime: 0.1
   m_turnWhenCameraYawOffsetExceeds: 0.2
   m_enableWallRunYawReconciliation: 1
@@ -26895,7 +26895,7 @@ Transform:
   m_GameObject: {fileID: 6659991051890435806}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
