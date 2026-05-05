@@ -930,7 +930,7 @@ GameObject:
   - component: {fileID: 9116120729429228981}
   - component: {fileID: 3481663816164615678}
   m_Layer: 8
-  m_Name: PlayerCharacter
+  m_Name: PlayerCharacter (Deprecated)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

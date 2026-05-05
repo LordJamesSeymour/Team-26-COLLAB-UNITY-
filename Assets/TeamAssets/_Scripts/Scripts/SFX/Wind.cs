@@ -1,8 +1,5 @@
-using Group26.Player.Movement;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using static Unity.VisualScripting.Member;
 
 public class Wind : MonoBehaviour
 {

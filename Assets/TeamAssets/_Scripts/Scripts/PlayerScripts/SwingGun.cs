@@ -13,7 +13,7 @@ namespace Group26.Player.Movement
 
         private PlayerModeSwitcher PlayerModeSwitcher;
         
-        [SerializeField] private Transform firstPersonCam; 
+        //[SerializeField] private Transform firstPersonCam; 
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
         public Transform firePoint;

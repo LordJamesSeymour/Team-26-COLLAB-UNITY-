@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 254738429247674583}
   - component: {fileID: 4712059057357584047}
   m_Layer: 8
-  m_Name: PlayerCharacterAnimTest
+  m_Name: PlayerCharacterAnimTest (Deprecated)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
