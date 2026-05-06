@@ -58,6 +58,7 @@ public class Death : MonoBehaviour
         //player points don't need to change
 
         yield return new WaitForSeconds(0.5f);
+        yield return new WaitForEndOfFrame();
 
         Debug.Log("Respawning");
 
@@ -69,8 +70,9 @@ public class Death : MonoBehaviour
         //{
         //    m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         //}
-
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(0.5f);
+
         m_respawn = null;
 
         //yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);

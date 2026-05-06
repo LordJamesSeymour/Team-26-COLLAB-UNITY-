@@ -63,6 +63,8 @@ public class pausemenuscript : buttonnavscript
         m_currentButton = m_buttons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_enabled = false;
+        m_cameraModeManager.m_immoveable = false;
+        m_playerRigidbody.isKinematic = false;
         yield return new WaitUntil(() => m_menuPanel.activeSelf == false);
     }
 
@@ -158,8 +160,6 @@ public class pausemenuscript : buttonnavscript
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        m_playerRigidbody.isKinematic = false;
-        m_cameraModeManager.m_immoveable = false;
     }
 
     // Update is called once per frame
