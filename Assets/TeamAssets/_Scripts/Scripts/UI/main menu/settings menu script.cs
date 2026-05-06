@@ -229,6 +229,8 @@ public class settingsmenuscript : menuscreenscript
         m_manager.SetBackgroundVolume(db);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
+
+        source.Play();
     }
 
     public void UpdateSoundEffectsVolume(AudioSource source)
@@ -239,6 +241,8 @@ public class settingsmenuscript : menuscreenscript
         m_manager.SetSoundEffectsVolume(db);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
+
+        source.Play();
     }
 
     public void UpdateSensitivitySlider()
