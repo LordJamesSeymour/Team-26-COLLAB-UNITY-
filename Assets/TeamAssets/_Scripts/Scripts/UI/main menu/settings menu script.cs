@@ -216,7 +216,7 @@ public class settingsmenuscript : menuscreenscript
         //float volume = m_backgroundMusicSlider.value * .8f - 80;
         float db = Mathf.Log10(Mathf.Max(0.0001f, m_backgroundMusicSlider.value / 100)) * 20;
         audioMixer.SetFloat(musicVolumeName, db);
-
+        m_manager.SetBackgroundVolume(db);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
     }
@@ -226,7 +226,7 @@ public class settingsmenuscript : menuscreenscript
         //float volume = m_soundEffectsSlider.value * .9f - 80;
         float db = Mathf.Log10(Mathf.Max(0.0001f, m_soundEffectsSlider.value / 100)) * 20;
         audioMixer.SetFloat(effectsVolumeName, db);
-
+        m_manager.SetSoundEffectsVolume(db);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
 public class AudioManager : MonoBehaviour
@@ -10,6 +11,12 @@ public class AudioManager : MonoBehaviour
     public  static AudioManager instance { get; private set;}
     private AudioSource audioSource;
     private AudioSource[] audioEmitters = new AudioSource[10];
+
+    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private string effectsVolumeName = "EffectsVolume";
+    [SerializeField] private string musicVolumeName = "MusicVolume";
+
+    public datamanager dm;
 
     public enum SoundType
     {
@@ -36,6 +43,15 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        dm = new datamanager(6);
+        try
+        {
+            dm.LoadGameData();
+            audioMixer.SetFloat(effectsVolumeName, dm.GetGameData().settings.soundEffectsVolume);
+            audioMixer.SetFloat(musicVolumeName, dm.GetGameData().settings.backgroundMusicVolume);
+        }
+        catch (Exception e) { Debug.Log("None Found"); }
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
