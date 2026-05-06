@@ -16,6 +16,7 @@ public class levelcompletescript : MonoBehaviour
     [SerializeField] private menuscreeneventsmanager m_menuEventsManager;
     [SerializeField] Rigidbody m_playerRigidbody;
     [SerializeField] GameObject m_endOfLevelUIPanel;
+    [SerializeField] Timer m_timer;
 
     private InputAction m_navInputs;
     private InputAction m_selectInput;
@@ -53,6 +54,7 @@ public class levelcompletescript : MonoBehaviour
         m_playerRigidbody.isKinematic = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        m_uiTexts[1].text = "Completion Time: " + m_timer.m_timerDisplay.text;
 
         if (Checkpoint.m_checkpointsEnabled)
             m_uiTexts[3].text = "Deathless: No";
@@ -64,6 +66,7 @@ public class levelcompletescript : MonoBehaviour
     {
         m_endOfLevelUIPanel.SetActive(true);
         m_enabled = true;
+        m_timer.m_paused = true;
     }
 
     // Update is called once per frame
@@ -78,6 +81,10 @@ public class levelcompletescript : MonoBehaviour
         if(m_selectInput.WasPressedThisDynamicUpdate() && m_enabled && m_onMainMenuButton)
         {
             m_mainMenuButton.onClick.Invoke();
+        }
+        else if(m_selectInput.WasPressedThisDynamicUpdate() && m_enabled == false)
+        {
+            ToggleMenuOn();
         }
     }
 }

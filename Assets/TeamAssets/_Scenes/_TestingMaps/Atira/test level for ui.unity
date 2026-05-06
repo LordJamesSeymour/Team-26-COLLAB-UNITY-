@@ -8822,6 +8822,7 @@ MonoBehaviour:
   m_menuEventsManager: {fileID: 2068479428}
   m_playerRigidbody: {fileID: 1269630517}
   m_endOfLevelUIPanel: {fileID: 2068479424}
+  m_timer: {fileID: 658112521}
 --- !u!1 &1364782366
 GameObject:
   m_ObjectHideFlags: 0
