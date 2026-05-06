@@ -7006,6 +7006,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6060779505620636773, guid: 5732308bdea79034ca012a435101190f, type: 3}
+      propertyPath: m_cameraPivotTransform
+      value: 
+      objectReference: {fileID: 1073399134}
     - target: {fileID: 6729170346735244407, guid: 5732308bdea79034ca012a435101190f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 417.81036
@@ -7059,6 +7063,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5732308bdea79034ca012a435101190f, type: 3}
+--- !u!4 &1073399134 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8532890940778843785, guid: 5732308bdea79034ca012a435101190f, type: 3}
+  m_PrefabInstance: {fileID: 1073399133}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1111598101
 GameObject:
   m_ObjectHideFlags: 0
@@ -8742,6 +8751,7 @@ MonoBehaviour:
   m_menuPanel: {fileID: 2075586003}
   m_controlsPanel: {fileID: 1259777724}
   m_levelsPanel: {fileID: 0}
+  m_levelsBackground: {fileID: 0}
   m_settingsPanel: {fileID: 1646082434}
   m_buttons:
   - {fileID: 2138759214}
