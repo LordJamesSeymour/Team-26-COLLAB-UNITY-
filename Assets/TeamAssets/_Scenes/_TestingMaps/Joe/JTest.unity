@@ -5467,10 +5467,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FinalPlayerCharacter
       objectReference: {fileID: 0}
-    - target: {fileID: 2181891055657115564, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4846128315892136628, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: predictionPoint
       value: 

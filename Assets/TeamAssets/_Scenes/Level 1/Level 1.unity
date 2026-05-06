@@ -134634,6 +134634,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2732432673156344587, guid: 07f492d2c3a7fb346a1bc687bc2c5a0b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4079438761954009276, guid: 07f492d2c3a7fb346a1bc687bc2c5a0b, type: 3}
       propertyPath: m_Name
       value: PredictionPoint

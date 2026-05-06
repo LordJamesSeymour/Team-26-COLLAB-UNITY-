@@ -42,6 +42,7 @@ namespace Group26.Player.Movement
 		[SerializeField] float jumpForce;
 		[SerializeField] float jumpCooldown = 0.1f;
 		[SerializeField] float airMultiplier = 0.4f;
+		[SerializeField] AudioEventData JumpSFX;
 
 		[Header("Jump Buffering")]
 		[SerializeField] float jumpBufferTime = 0.15f;
@@ -561,6 +562,8 @@ namespace Group26.Player.Movement
 
 			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+			AudioManager.instance.PlaySoundAtPoint(JumpSFX.sound, transform.position, JumpSFX.volume, JumpSFX.volumeRange, JumpSFX.pitch, JumpSFX.pitchRange, JumpSFX.spatialBlend);
 		}
 
 		private void ResetJump()

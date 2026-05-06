@@ -8554,6 +8554,7 @@ MonoBehaviour:
   jumpForce: 12
   jumpCooldown: 0.12
   airMultiplier: 0.275
+  JumpSFX: {fileID: 11400000, guid: 99c04c659390f8b43828be0049e5222f, type: 2}
   jumpBufferTime: 0.15
   crouchSpeed: 3.5
   m_fGroundDistance: 0.3
