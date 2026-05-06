@@ -1,5 +1,7 @@
+using Group26.Player.Movement;
 using System;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -14,12 +16,16 @@ public class levelcompletescript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI[] m_uiTexts;
     [SerializeField] private Button m_mainMenuButton;
     [SerializeField] private menuscreeneventsmanager m_menuEventsManager;
-    [SerializeField] Rigidbody m_playerRigidbody;
     [SerializeField] GameObject m_endOfLevelUIPanel;
     [SerializeField] Timer m_timer;
+    [SerializeField] GameObject m_player;
 
+    private Rigidbody m_playerRigidbody;
+    private TrickSystem m_trickSystem;
+    private Death m_playerDeathScript;
     private InputAction m_navInputs;
     private InputAction m_selectInput;
+    private InputAction m_completeInput;
     private bool m_onMainMenuButton = false;
     private datamanager m_manager;
 
@@ -35,8 +41,13 @@ public class levelcompletescript : MonoBehaviour
             Debug.Log(e.Message);
         }
 
+        m_playerRigidbody = m_player.GetComponent<Rigidbody>();
+        m_trickSystem = m_player.GetComponent<TrickSystem>();
+        m_playerDeathScript = m_player.GetComponent<Death>();
+
         m_navInputs = InputSystem.actions.FindAction("Navigate");
         m_selectInput = InputSystem.actions.FindAction("Select");
+        m_completeInput = InputSystem.actions.FindAction("Complete");
         m_menuEventsManager.IsVisible += OnVisible;
     }
 
@@ -54,12 +65,13 @@ public class levelcompletescript : MonoBehaviour
         m_playerRigidbody.isKinematic = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
         m_uiTexts[1].text = "Completion Time: " + m_timer.m_timerDisplay.text;
 
-        if (Checkpoint.m_checkpointsEnabled)
-            m_uiTexts[3].text = "Deathless: No";
-        else
+        if (m_playerDeathScript.m_deathless)
             m_uiTexts[3].text = "Deathless: Yes";
+        else
+            m_uiTexts[3].text = "Deathless: No";
     }
 
     public void ToggleMenuOn()
@@ -82,7 +94,8 @@ public class levelcompletescript : MonoBehaviour
         {
             m_mainMenuButton.onClick.Invoke();
         }
-        else if(m_selectInput.WasPressedThisDynamicUpdate() && m_enabled == false)
+        
+        if(m_completeInput.WasPressedThisDynamicUpdate() && m_enabled == false)
         {
             ToggleMenuOn();
         }

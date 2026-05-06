@@ -12,6 +12,7 @@ public class Death : MonoBehaviour
 
     [HideInInspector] public Vector3 m_respawnPoint;
     [HideInInspector] public Quaternion m_respawnDirection;
+    [HideInInspector] public bool m_deathless = true;
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
@@ -88,6 +89,7 @@ public class Death : MonoBehaviour
         //m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -135,6 +137,7 @@ public class Death : MonoBehaviour
         m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -168,6 +171,7 @@ public class Death : MonoBehaviour
         if (other.gameObject.tag == "death zone")
         {       
             Debug.Log("Player Dead");
+            m_deathless = false;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             //m_playerBodyTransform.forward = m_respawnDirection;
@@ -197,6 +201,7 @@ public class Death : MonoBehaviour
         {
             Debug.Log("Hit Obstacle");
 
+            m_deathless = false;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             m_rigidbody.isKinematic = true;
