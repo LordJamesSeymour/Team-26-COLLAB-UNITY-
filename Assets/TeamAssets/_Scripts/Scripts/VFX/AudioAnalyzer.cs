@@ -6,7 +6,7 @@ public class AudioAnalyzer : MonoBehaviour
     [SerializeField] private Renderer targetRenderer;
 
     [Header("Audio Auto-Find")]
-    [SerializeField] private string playerTag = "Player";
+    [SerializeField] private string playerTag = "AudioSource";
     [SerializeField] private bool searchInChildren = true;
 
     [Header("Audio")]
