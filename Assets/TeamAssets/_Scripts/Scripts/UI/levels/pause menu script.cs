@@ -1,3 +1,4 @@
+using Group26.Player.Inputs;
 using Group26.Player.Movement;
 using System.Collections;
 using Unity.VisualScripting;
@@ -13,6 +14,7 @@ public class pausemenuscript : buttonnavscript
     [SerializeField] private Timer m_timer;
     [SerializeField] private TrickSystem m_trickSystemScript;
     [SerializeField] menuscreeneventsmanager m_menuEventsManager;
+    [SerializeField] private InputManager m_inputManager;
 
     private Coroutine m_toggleMenuOff;
     private Coroutine m_toggleMenuOn;
@@ -46,6 +48,7 @@ public class pausemenuscript : buttonnavscript
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
         m_menuEventsManager.IsVisible += IsVisible;
         m_menuEventsManager.IsInvisible += IsInvisible;
+        m_inputManager.OnPausePressed += RunPause;
     }
 
     private IEnumerator TogglePauseMenuOff()
@@ -67,6 +70,17 @@ public class pausemenuscript : buttonnavscript
         m_enabled = true;
         m_timer.m_paused = true;
         yield return new WaitUntil(() => m_menuPanel.activeSelf == true);
+    }
+
+    private void RunPause()
+    {
+        Debug.Log(m_toggleMenuOn == null);
+        if (m_toggleMenuOn == null)
+            m_toggleMenuOn = StartCoroutine(Pause());
+
+        m_toggleMenuOn = null;
+        StopCoroutine(Pause());
+        Debug.Log("pausing");
     }
 
     private IEnumerator RestartLevel()
@@ -147,16 +161,16 @@ public class pausemenuscript : buttonnavscript
     void Update()
     {
         //Debug.Log(m_enabled);
-        if(m_enabled == false && m_pauseInput.WasReleasedThisDynamicUpdate())
-        {
-            Debug.Log(m_toggleMenuOn == null);
-            if(m_toggleMenuOn == null)
-                m_toggleMenuOn = StartCoroutine(Pause());
+        //if(m_enabled == false && m_pauseInput.WasReleasedThisDynamicUpdate())
+        //{
+        //    Debug.Log(m_toggleMenuOn == null);
+        //    if(m_toggleMenuOn == null)
+        //        m_toggleMenuOn = StartCoroutine(Pause());
 
-            m_toggleMenuOn = null;
-            StopCoroutine(Pause());
-            Debug.Log("pausing");
-        }
+        //    m_toggleMenuOn = null;
+        //    StopCoroutine(Pause());
+        //    Debug.Log("pausing");
+        //}
 
         if (m_navInputs.WasPressedThisDynamicUpdate() && m_enabled)
         {
