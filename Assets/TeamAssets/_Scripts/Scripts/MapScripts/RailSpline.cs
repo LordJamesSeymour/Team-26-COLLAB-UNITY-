@@ -12,9 +12,6 @@ namespace Group26.Player.Movement
 		[Header("Source Spline")]
 		[SerializeField] private SplineContainer sourceSplineContainer;
 
-		[Header("Build / Bake Behaviour")]
-		[SerializeField] private bool useBakedGeometryInPlayMode = true;
-
 		[Header("Rail Movement")]
 		[SerializeField] private float entrySpeed = 8f;
 		[SerializeField] private float minSpeed = 4f;
@@ -143,40 +140,19 @@ namespace Group26.Player.Movement
 		private void Reset()
 		{
 			AutoAssignSourceSpline();
-			ClampSettings();
 			RebuildAll();
 		}
 
 		private void Awake()
 		{
 			AutoAssignSourceSpline();
+			RebuildAll();
 		}
 
 		private void OnEnable()
 		{
 			AutoAssignSourceSpline();
-
-			if (!Application.isPlaying)
-			{
-				ClampSettings();
-				RebuildAll();
-			}
-		}
-
-		private System.Collections.IEnumerator Start()
-		{
-			if (!Application.isPlaying)
-				yield break;
-
-			yield return null;
-
-			AutoAssignSourceSpline();
-			ClampSettings();
-
-			if (useBakedGeometryInPlayMode)
-				RebuildRuntimeRailLogicOnly();
-			else
-				RebuildAll();
+			RebuildAll();
 		}
 
 		private void OnValidate()
@@ -234,16 +210,6 @@ namespace Group26.Player.Movement
 			triggerSize.x = Mathf.Max(0.01f, triggerSize.x);
 			triggerSize.y = Mathf.Max(0.01f, triggerSize.y);
 			triggerSize.z = Mathf.Max(0.01f, triggerSize.z);
-		}
-
-		private void RebuildRuntimeRailLogicOnly()
-		{
-			if (sourceSplineContainer == null)
-				return;
-
-			EnsureGeneratedObjects();
-			BuildRuntimeSpline();
-			SyncGeneratedTriggers();
 		}
 
 		private void RebuildAll()
@@ -347,47 +313,6 @@ namespace Group26.Player.Movement
 			GameObject go = new GameObject(childName);
 			go.transform.SetParent(transform, false);
 			return go.transform;
-		}
-
-		private Mesh GetOrCreateWorkingMesh(MeshFilter meshFilter, string meshName)
-		{
-			Mesh mesh;
-
-			if (Application.isPlaying)
-			{
-				mesh = meshFilter.mesh;
-
-				if (mesh == null)
-				{
-					mesh = new Mesh();
-					mesh.name = meshName;
-					meshFilter.mesh = mesh;
-				}
-				else
-				{
-					mesh.Clear();
-					mesh.name = meshName;
-				}
-			}
-			else
-			{
-				mesh = meshFilter.sharedMesh;
-
-				if (mesh == null)
-				{
-					mesh = new Mesh();
-					mesh.name = meshName;
-					meshFilter.sharedMesh = mesh;
-				}
-				else
-				{
-					mesh.Clear();
-					mesh.name = meshName;
-				}
-			}
-
-			mesh.MarkDynamic();
-			return mesh;
 		}
 
 		private void BuildRuntimeSpline()
@@ -910,7 +835,16 @@ namespace Group26.Player.Movement
 			if (railMaterial != null)
 				meshRenderer.sharedMaterial = railMaterial;
 
-			Mesh mesh = GetOrCreateWorkingMesh(meshFilter, meshName);
+			Mesh mesh = meshFilter.sharedMesh;
+			if (mesh == null)
+			{
+				mesh = new Mesh { name = meshName };
+				meshFilter.sharedMesh = mesh;
+			}
+			else
+			{
+				mesh.Clear();
+			}
 
 			RailMeshUtility.BuildTubeMesh(
 				mesh,
@@ -964,7 +898,16 @@ namespace Group26.Player.Movement
 			if (material != null)
 				meshRenderer.sharedMaterial = material;
 
-			Mesh mesh = GetOrCreateWorkingMesh(meshFilter, meshName);
+			Mesh mesh = meshFilter.sharedMesh;
+			if (mesh == null)
+			{
+				mesh = new Mesh { name = meshName };
+				meshFilter.sharedMesh = mesh;
+			}
+			else
+			{
+				mesh.Clear();
+			}
 
 			RailMeshUtility.BuildRibbonMesh(
 				mesh,
@@ -1000,20 +943,8 @@ namespace Group26.Player.Movement
 				return;
 
 			MeshFilter meshFilter = target.GetComponent<MeshFilter>();
-			if (meshFilter != null)
-			{
-				if (Application.isPlaying)
-				{
-					Mesh runtimeMesh = meshFilter.mesh;
-					if (runtimeMesh != null)
-						runtimeMesh.Clear();
-				}
-				else
-				{
-					if (meshFilter.sharedMesh != null)
-						meshFilter.sharedMesh.Clear();
-				}
-			}
+			if (meshFilter != null && meshFilter.sharedMesh != null)
+				meshFilter.sharedMesh.Clear();
 
 			if (removeCollider)
 				RemoveMeshCollider(target.gameObject);
@@ -1039,7 +970,7 @@ namespace Group26.Player.Movement
 			else
 				Destroy(obj);
 #else
-			Destroy(obj);
+            Destroy(obj);
 #endif
 		}
 

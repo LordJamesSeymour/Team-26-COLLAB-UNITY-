@@ -8,7 +8,6 @@ TagManager:
   - death zone
   - checkpoint
   - obstacle
-  - AudioSource
   layers:
   - Default
   - TransparentFX
@@ -20,7 +19,7 @@ TagManager:
   - Grappable
   - Player
   - Fan
-  - CheckPoints
+  - 
   - 
   - 
   - 

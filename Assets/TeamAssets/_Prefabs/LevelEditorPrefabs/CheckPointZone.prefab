@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6483089614285912971}
   - component: {fileID: 7521173986350768662}
   - component: {fileID: 6575423463549220173}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: CheckPointZone
   m_TagString: checkpoint
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8841840393805019234}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -107,7 +107,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.3, y: 50, z: 1}
+  m_Size: {x: 1, y: 35, z: 1}
   m_Center: {x: 0, y: 18, z: 0}
 --- !u!114 &6575423463549220173
 MonoBehaviour:

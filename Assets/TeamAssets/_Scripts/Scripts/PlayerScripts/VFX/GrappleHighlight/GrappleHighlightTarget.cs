@@ -17,7 +17,7 @@ namespace Group26.Player.Utility
 		[SerializeField] private bool m_useSmoothedNormalsForOutline = true;
 
 		[Header("Shader Property Names")]
-		[SerializeField] private string m_outlineColorPropertyName = "_OutlineColour";
+		[SerializeField] private string m_outlineColorPropertyName = "_OutlineColor";
 
 		private const string OutlineSuffix = "__GrappleOutline";
 
@@ -25,7 +25,7 @@ namespace Group26.Player.Utility
 		private readonly Dictionary<Mesh, Mesh> m_outlineMeshCache = new Dictionary<Mesh, Mesh>();
 		private readonly List<Mesh> m_generatedOutlineMeshes = new List<Mesh>();
 
-		private Material m_runtimeOutlineMaterial;
+		private MaterialPropertyBlock m_propertyBlock;
 		private int m_outlineColorPropertyId = -1;
 		private string m_resolvedOutlineColorPropertyName = string.Empty;
 		private Color m_currentHighlightColor = Color.white;
@@ -34,19 +34,18 @@ namespace Group26.Player.Utility
 
 		private void Awake()
 		{
-			CreateRuntimeMaterialInstance();
+			m_propertyBlock = new MaterialPropertyBlock();
+			ResolveOutlineColorProperty();
 
 			if (m_buildOnAwake)
 				RebuildOutlineObjects();
 
-			SetHighlightColor(m_currentHighlightColor);
 			SetHighlighted(m_startHighlighted);
 		}
 
-		private void OnEnable()
+		private void OnValidate()
 		{
-			if (m_buildOnAwake && m_outlineRenderers.Count == 0)
-				RebuildOutlineObjects();
+			ResolveOutlineColorProperty();
 		}
 
 		private void OnDisable()
@@ -57,16 +56,6 @@ namespace Group26.Player.Utility
 		private void OnDestroy()
 		{
 			DestroyGeneratedOutlineMeshes();
-			DestroyRuntimeMaterialInstance();
-		}
-
-		private void OnValidate()
-		{
-			if (!Application.isPlaying)
-				return;
-
-			ResolveOutlineColorProperty();
-			ApplyCurrentColorToMaterial();
 		}
 
 		[ContextMenu("Rebuild Outline Objects")]
@@ -84,12 +73,11 @@ namespace Group26.Player.Utility
 				return;
 			}
 
-			CreateRuntimeMaterialInstance();
+			ResolveOutlineColorProperty();
 
 			BuildStaticMeshOutlines();
 			BuildSkinnedMeshOutlines();
-
-			ApplyCurrentColorToMaterial();
+			ApplyCurrentColorToRenderers();
 			SetHighlighted(false);
 		}
 
@@ -102,12 +90,15 @@ namespace Group26.Player.Utility
 				if (m_outlineRenderers[i] != null)
 					m_outlineRenderers[i].enabled = highlighted;
 			}
+
+			if (highlighted)
+				ApplyCurrentColorToRenderers();
 		}
 
 		public void SetHighlightColor(Color color)
 		{
 			m_currentHighlightColor = color;
-			ApplyCurrentColorToMaterial();
+			ApplyCurrentColorToRenderers();
 		}
 
 		private void EnsureBuilt()
@@ -116,40 +107,12 @@ namespace Group26.Player.Utility
 				RebuildOutlineObjects();
 		}
 
-		private void CreateRuntimeMaterialInstance()
-		{
-			DestroyRuntimeMaterialInstance();
-
-			if (m_outlineMaterial == null)
-				return;
-
-			m_runtimeOutlineMaterial = new Material(m_outlineMaterial);
-			m_runtimeOutlineMaterial.name = m_outlineMaterial.name + "_Runtime_" + gameObject.name;
-
-			ResolveOutlineColorProperty();
-			ApplyCurrentColorToMaterial();
-		}
-
-		private void DestroyRuntimeMaterialInstance()
-		{
-			if (m_runtimeOutlineMaterial == null)
-				return;
-
-			if (Application.isPlaying)
-				Destroy(m_runtimeOutlineMaterial);
-			else
-				DestroyImmediate(m_runtimeOutlineMaterial);
-
-			m_runtimeOutlineMaterial = null;
-		}
-
 		private void ResolveOutlineColorProperty()
 		{
 			m_outlineColorPropertyId = -1;
 			m_resolvedOutlineColorPropertyName = string.Empty;
 
-			Material materialToCheck = m_runtimeOutlineMaterial != null ? m_runtimeOutlineMaterial : m_outlineMaterial;
-			if (materialToCheck == null)
+			if (m_outlineMaterial == null)
 				return;
 
 			List<string> candidates = new List<string>();
@@ -164,10 +127,10 @@ namespace Group26.Player.Utility
 					candidates.Add(m_outlineColorPropertyName.TrimStart('_'));
 			}
 
-			candidates.Add("_OutlineColour");
 			candidates.Add("_OutlineColor");
-			candidates.Add("OutlineColour");
+			candidates.Add("_OutlineColour");
 			candidates.Add("OutlineColor");
+			candidates.Add("OutlineColour");
 
 			for (int i = 0; i < candidates.Count; i++)
 			{
@@ -175,7 +138,7 @@ namespace Group26.Player.Utility
 				if (string.IsNullOrWhiteSpace(candidate))
 					continue;
 
-				if (materialToCheck.HasProperty(candidate))
+				if (m_outlineMaterial.HasProperty(candidate))
 				{
 					m_resolvedOutlineColorPropertyName = candidate;
 					m_outlineColorPropertyId = Shader.PropertyToID(candidate);
@@ -184,22 +147,27 @@ namespace Group26.Player.Utility
 			}
 
 			Debug.LogWarning(
-				$"[{nameof(GrappleHighlightTarget)}] Could not find a valid outline color property on material '{materialToCheck.name}' " +
+				$"[{nameof(GrappleHighlightTarget)}] Could not find a valid outline color property on material '{m_outlineMaterial.name}' " +
 				$"for object '{name}'. Tried: {string.Join(", ", candidates)}");
 		}
 
-		private void ApplyCurrentColorToMaterial()
+		private void ApplyCurrentColorToRenderers()
 		{
-			if (m_runtimeOutlineMaterial == null)
-				return;
-
-			if (m_outlineColorPropertyId == -1)
-				ResolveOutlineColorProperty();
-
 			if (m_outlineColorPropertyId == -1)
 				return;
 
-			m_runtimeOutlineMaterial.SetColor(m_outlineColorPropertyId, m_currentHighlightColor);
+			if (m_propertyBlock == null)
+				m_propertyBlock = new MaterialPropertyBlock();
+
+			for (int i = 0; i < m_outlineRenderers.Count; i++)
+			{
+				Renderer renderer = m_outlineRenderers[i];
+				if (renderer == null) continue;
+
+				m_propertyBlock.Clear();
+				m_propertyBlock.SetColor(m_outlineColorPropertyId, m_currentHighlightColor);
+				renderer.SetPropertyBlock(m_propertyBlock);
+			}
 		}
 
 		private void BuildStaticMeshOutlines()
@@ -339,10 +307,8 @@ namespace Group26.Player.Utility
 			int count = (sourceMaterials != null && sourceMaterials.Length > 0) ? sourceMaterials.Length : 1;
 			Material[] mats = new Material[count];
 
-			Material materialToUse = m_runtimeOutlineMaterial != null ? m_runtimeOutlineMaterial : m_outlineMaterial;
-
 			for (int i = 0; i < count; i++)
-				mats[i] = materialToUse;
+				mats[i] = m_outlineMaterial;
 
 			return mats;
 		}
