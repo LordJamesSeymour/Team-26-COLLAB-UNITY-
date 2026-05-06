@@ -1,3 +1,4 @@
+using Group26.Player.Camera;
 using Group26.Player.Inputs;
 using Group26.Player.Movement;
 using System.Collections;
@@ -23,6 +24,7 @@ public class pausemenuscript : buttonnavscript
     private Death m_playerDeathScript;
     private Rigidbody m_playerRigidbody;
     private Transform m_playerTransform;
+    private CameraModeManager m_cameraModeManager;
     private GameObject[] m_checkpoints;
 
     void Awake()
@@ -45,6 +47,7 @@ public class pausemenuscript : buttonnavscript
         m_playerDeathScript = m_player.GetComponent<Death>();
         m_playerTransform = m_player.transform;
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
+        m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
         m_menuEventsManager.IsVisible += IsVisible;
         m_menuEventsManager.IsInvisible += IsInvisible;
@@ -148,6 +151,7 @@ public class pausemenuscript : buttonnavscript
         m_playerRigidbody.linearVelocity = Vector3.zero;
         m_playerRigidbody.angularVelocity = Vector3.zero;
         m_playerRigidbody.isKinematic = true;
+        m_cameraModeManager.m_immoveable = true;
     }
 
     private void IsInvisible()
@@ -155,6 +159,7 @@ public class pausemenuscript : buttonnavscript
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         m_playerRigidbody.isKinematic = false;
+        m_cameraModeManager.m_immoveable = false;
     }
 
     // Update is called once per frame

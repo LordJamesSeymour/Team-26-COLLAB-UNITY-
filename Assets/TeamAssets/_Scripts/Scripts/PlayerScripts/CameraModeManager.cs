@@ -123,6 +123,7 @@ namespace Group26.Player.Camera
         private Coroutine grappleBoostFOVCoroutine;
         private Coroutine ballMovementFOVCoroutine;
         private datamanager m_manager;
+        public bool m_immoveable = false;
 
         private void Awake()
         {
@@ -196,6 +197,9 @@ namespace Group26.Player.Camera
 
         private void Update()
         {
+            if (m_immoveable)
+                return;
+
             if (currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);

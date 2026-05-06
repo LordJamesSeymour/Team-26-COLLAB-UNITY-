@@ -1,3 +1,4 @@
+using Group26.Player.Camera;
 using Group26.Player.Movement;
 using System;
 using TMPro;
@@ -28,6 +29,7 @@ public class levelcompletescript : MonoBehaviour
     private InputAction m_completeInput;
     private bool m_onMainMenuButton = false;
     private datamanager m_manager;
+    private CameraModeManager m_cameraModeManager;
 
     private void Awake()
     {
@@ -44,6 +46,7 @@ public class levelcompletescript : MonoBehaviour
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
         m_trickSystem = m_player.GetComponent<TrickSystem>();
         m_playerDeathScript = m_player.GetComponent<Death>();
+        m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
 
         m_navInputs = InputSystem.actions.FindAction("Navigate");
         m_selectInput = InputSystem.actions.FindAction("Select");
@@ -60,6 +63,7 @@ public class levelcompletescript : MonoBehaviour
 
     private void OnVisible()
     {
+        m_cameraModeManager.m_immoveable = true;
         m_playerRigidbody.linearVelocity = Vector3.zero;
         m_playerRigidbody.angularVelocity = Vector3.zero;
         m_playerRigidbody.isKinematic = true;
