@@ -3510,7 +3510,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60.000004
   orthographic: 0
   orthographic size: 5
@@ -3538,7 +3538,7 @@ Transform:
   m_GameObject: {fileID: 1226302151}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052596, y: 0, z: 0, w: 0.99144495}
-  m_LocalPosition: {x: 2.21, y: 4.203874, z: -6.683468}
+  m_LocalPosition: {x: 2.21, y: 4.443874, z: -6.8034678}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4434,7 +4434,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 78.8, y: 0.35, z: 0.5}
-  m_LocalScale: {x: 216.36, y: 0.1, z: 20}
+  m_LocalScale: {x: 216.36, y: 0.1, z: 47.872}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1801046043}
@@ -5467,10 +5467,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FinalPlayerCharacter
       objectReference: {fileID: 0}
-    - target: {fileID: 4846128315892136628, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
-      propertyPath: m_maincam
-      value: 
-      objectReference: {fileID: 1226302156}
     - target: {fileID: 4846128315892136628, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: predictionPoint
       value: 

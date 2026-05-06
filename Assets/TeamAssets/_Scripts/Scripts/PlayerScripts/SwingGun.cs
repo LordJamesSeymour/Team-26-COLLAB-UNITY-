@@ -13,7 +13,7 @@ namespace Group26.Player.Movement
 
         private PlayerModeSwitcher PlayerModeSwitcher;
         
-        [SerializeField] private Transform firstPersonCam; 
+        //[SerializeField] private Transform firstPersonCam; 
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
         public Transform firePoint;
@@ -246,6 +246,7 @@ namespace Group26.Player.Movement
             //	Destroy(joint);
             //	joint = null;
             //}
+            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.GRAPPLE, transform.position, volume: .7f, pitchRange: .2f, spatialBlend: 0);
 
             playerController.m_bActiveSwing = true;
             swingPoint = predictionHit.point;
