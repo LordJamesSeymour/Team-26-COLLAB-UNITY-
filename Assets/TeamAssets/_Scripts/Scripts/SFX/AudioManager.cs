@@ -182,7 +182,7 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
-        source.Pause();
+        //source.Pause();
         if (source.clip != null) { source.Stop(); }
     }
 
