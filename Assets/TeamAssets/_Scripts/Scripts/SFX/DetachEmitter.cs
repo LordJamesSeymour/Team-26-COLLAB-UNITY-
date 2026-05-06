@@ -9,7 +9,7 @@ public class DetachEmitter : MonoBehaviour
 
     private void OnDisable()
     {
-        Invoke("ReturnToPool", 0.01f);
+        ReturnToPool();
     }
 
     void ReturnToPool()
