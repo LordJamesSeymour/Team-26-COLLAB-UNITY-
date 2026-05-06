@@ -181,6 +181,9 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4903b981149d5ba40a1ad8be7719cf38, type: 3}
   - name: UI_BUTTON
     sounds: []
+  audioMixer: {fileID: 0}
+  effectsVolumeName: EffectsVolume
+  musicVolumeName: MusicVolume
 --- !u!1 &5660924927601774571
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +242,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0

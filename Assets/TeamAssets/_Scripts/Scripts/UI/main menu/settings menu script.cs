@@ -61,7 +61,7 @@ public class settingsmenuscript : menuscreenscript
         m_maxWidth = maxResolution.width;
         m_maxHeight = maxResolution.height;
 
-        if(m_started == false)
+        if (m_started == false)
         {
             m_started = true;
             Screen.SetResolution(maxResolution.width, maxResolution.height, true);
@@ -90,6 +90,16 @@ public class settingsmenuscript : menuscreenscript
         m_onExitButton = false;
         m_eventSystem = GameObject.Find("EventSystem");
         m_buttonScript.m_settingsPanel.GetComponent<menuscreeneventsmanager>().IsVisible += SettingsVisible;
+
+        float musicDB;
+        audioMixer.GetFloat(musicVolumeName, out musicDB);
+        float sfxDB;
+        audioMixer.GetFloat(effectsVolumeName, out sfxDB);
+
+        float musicVolume = 100 * Mathf.Pow(10, musicDB / 20);
+        m_backgroundMusicSlider.value = musicVolume;
+        float SFXVolume = 100 * Mathf.Pow(10, sfxDB / 20);
+        m_soundEffectsSlider.value = SFXVolume;
     }
 
     private void SettingsVisible()
