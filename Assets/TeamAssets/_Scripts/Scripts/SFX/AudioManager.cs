@@ -116,7 +116,7 @@ public class AudioManager : MonoBehaviour
         return source; // need to 
     }
 
-    public void EndLoopingSound(AudioSource end)
+    public void EndSound(AudioSource end)
     {
         StartCoroutine(ReturnToPool(end, 0));
     }
@@ -166,6 +166,7 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
+        source.Pause();
         if (source.clip != null) { source.Stop(); }
     }
 

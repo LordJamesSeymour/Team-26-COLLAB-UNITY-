@@ -38,7 +38,7 @@ public class SphereSound : MonoBehaviour
     }
     private void OnDisable()
     {
-        AudioManager.instance.EndLoopingSound(source);
+        AudioManager.instance.EndSound(source);
     }
 
     private void MoveToTargetSound(AudioSource source, float tagetV, float targetP)

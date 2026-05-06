@@ -18,8 +18,7 @@ public class DetachEmitter : MonoBehaviour
         {
             if (child.GetComponent<AudioSource>())
             {
-                child.SetParent(AudioManager.instance.transform);
-                child.GetComponent<AudioSource>().Pause();
+                AudioManager.instance.EndSound(child.GetComponent<AudioSource>());
                 // can also have the sound cut or continue or fade on end instantly from here
             }
         }
