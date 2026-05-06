@@ -167,7 +167,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: c52e484b725fccc4cb9a89f70986a5ee, type: 3}
   - name: CRASH
     sounds:
-    - {fileID: 8300000, guid: 19d985e3c54cf824d8362327abdcad59, type: 3}
+    - {fileID: 8300000, guid: 3585b7106b3242545aa07d9e4b1ffced, type: 3}
   - name: DASH
     sounds:
     - {fileID: 8300000, guid: 7a3f98e9c8c8d6541931d07b94e07efa, type: 3}
@@ -180,7 +180,9 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 4903b981149d5ba40a1ad8be7719cf38, type: 3}
   - name: UI_BUTTON
-    sounds: []
+    sounds:
+    - {fileID: 8300000, guid: 23da7f67d7746f44f9dfc0189f24e122, type: 3}
+    - {fileID: 8300000, guid: 521026b6d13748f4589b49b639188ebc, type: 3}
   audioMixer: {fileID: 0}
   effectsVolumeName: EffectsVolume
   musicVolumeName: MusicVolume
