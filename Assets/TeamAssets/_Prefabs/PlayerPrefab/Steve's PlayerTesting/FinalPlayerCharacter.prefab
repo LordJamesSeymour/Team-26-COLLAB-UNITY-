@@ -9157,23 +9157,23 @@ MonoBehaviour:
   m_playerModeSwitcher: {fileID: 6480615574806900738}
   m_impulseSource: {fileID: 6596841248015430315}
   enableLandingImpulse: 1
-  landingMinImpactSpeed: 2.5
-  landingMaxImpactSpeed: 18
-  landingMinForce: 0.25
-  landingMaxForce: 1
+  landingMinImpactSpeed: 3.5
+  landingMaxImpactSpeed: 16
+  landingMinForce: 0.1
+  landingMaxForce: 0.32
   landingCooldown: 0.05
   enableGrappleImpactImpulse: 1
   grappleMinImpactSpeed: 3
-  grappleMaxImpactSpeed: 26
-  grappleMinForce: 0.35
-  grappleMaxForce: 1.35
+  grappleMaxImpactSpeed: 22
+  grappleMinForce: 0.25
+  grappleMaxForce: 0.75
   grappleCooldown: 0.05
-  defaultLandingMultiplier: 1
-  wallRunLandingMultiplier: 0.9
-  swingLandingMultiplier: 1.1
-  dashLandingMultiplier: 1.05
-  ballModeLandingMultiplier: 1.25
-  grappleImpactMultiplier: 1.15
+  defaultLandingMultiplier: 0.85
+  wallRunLandingMultiplier: 0.85
+  swingLandingMultiplier: 0.95
+  dashLandingMultiplier: 1
+  ballModeLandingMultiplier: 1.1
+  grappleImpactMultiplier: 1
   defaultLandingDirection: {x: 0, y: -1, z: 0}
   useVelocityDirectionForGrappleImpact: 1
 --- !u!1 &2185431779388408211
