@@ -87,6 +87,9 @@ MonoBehaviour:
   m_heightInput: {fileID: 0}
   m_scrollArea: {fileID: 0}
   m_sensitivityValueText: {fileID: 0}
+  audioMixer: {fileID: 0}
+  effectsVolumeName: EffectsVolume
+  musicVolumeName: MusicVolume
 --- !u!114 &8567641646080571108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,7 +120,6 @@ MonoBehaviour:
   m_darkenedBackground: {fileID: 0}
   m_player: {fileID: 0}
   m_timer: {fileID: 0}
-  m_trickSystemScript: {fileID: 0}
   m_menuEventsManager: {fileID: 0}
   m_inputManager: {fileID: 0}
 --- !u!114 &7732767287510871820
@@ -138,8 +140,6 @@ MonoBehaviour:
   - {fileID: -2085178620, guid: 4816ee1f9a72f84448a5290954e633ee, type: 3}
   - {fileID: -2057693018, guid: 4816ee1f9a72f84448a5290954e633ee, type: 3}
   m_uiTexts:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

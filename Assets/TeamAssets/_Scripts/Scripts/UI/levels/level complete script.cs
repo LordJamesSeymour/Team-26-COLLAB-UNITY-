@@ -70,12 +70,12 @@ public class levelcompletescript : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         //m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
-        m_uiTexts[1].text = "Completion Time: " + m_timer.m_timerDisplay.text;
+        m_uiTexts[0].text = "Completion Time: " + m_timer.m_timerDisplay.text;
 
         if (m_playerDeathScript.m_deathless)
-            m_uiTexts[3].text = "Deathless: Yes";
+            m_uiTexts[2].text = "Deathless: Yes";
         else
-            m_uiTexts[3].text = "Deathless: No";
+            m_uiTexts[2].text = "Deathless: No";
     }
 
     public void ToggleMenuOn()
