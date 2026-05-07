@@ -563,7 +563,8 @@ namespace Group26.Player.Movement
 			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-			AudioManager.instance.PlaySoundAtPoint(JumpSFX.sound, transform.position, JumpSFX.volume, JumpSFX.volumeRange, JumpSFX.pitch, JumpSFX.pitchRange, JumpSFX.spatialBlend);
+			if (AudioManager.instance != null)
+				AudioManager.instance.PlaySoundAtPoint(JumpSFX.sound, transform.position, JumpSFX.volume, JumpSFX.volumeRange, JumpSFX.pitch, JumpSFX.pitchRange, JumpSFX.spatialBlend);
 		}
 
 		private void ResetJump()
@@ -625,7 +626,9 @@ namespace Group26.Player.Movement
 			if (m_bSliding && slidingComp != null)
 				slidingComp.ForceEndSlide();
 
-            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+				if (AudioManager.instance != null)
+					AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+
             m_bDashing = true;
 			m_bDashMovementLocked = lockMovement;
 			maxYSpeed = dashMaxYSpeed;
