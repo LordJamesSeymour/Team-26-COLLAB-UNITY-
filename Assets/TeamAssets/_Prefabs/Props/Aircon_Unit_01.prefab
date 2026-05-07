@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8259989478397509754}
   - component: {fileID: 394010488580974358}
   - component: {fileID: 5798427095382013469}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Aircon_Unit_01_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6091405587880654702}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Aircon_Unit_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 7081009241249747048}
   - component: {fileID: 2587303331815042327}
   - component: {fileID: 6297963848613099028}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Aircon_Unit_01_Fan_Blades
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 7384632810078318836}
   - component: {fileID: 8542112402341081439}
   - component: {fileID: 8901702056740005069}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FanForceCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

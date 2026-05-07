@@ -1,4 +1,5 @@
 using Group26.Player.Inputs;
+using Group26.Player.Movement;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -100,10 +101,11 @@ public class Death : MonoBehaviour
 
         //m_respawnMenuPanel.SetActive(false);
         m_timerScript.m_paused = false;
-        m_rigidbody.isKinematic = false;
 
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(0.1f);
         m_restart = null;
+        m_rigidbody.isKinematic = false;
     }
 
     private IEnumerator InstaRespawn()

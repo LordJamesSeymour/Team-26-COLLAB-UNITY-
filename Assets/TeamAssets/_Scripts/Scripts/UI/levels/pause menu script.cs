@@ -12,6 +12,7 @@ public class pausemenuscript : buttonnavscript
     [SerializeField] GameObject m_player;
     [SerializeField] private Timer m_timer;
     [SerializeField] private TrickSystem m_trickSystemScript;
+    [SerializeField] menuscreeneventsmanager m_menuEventsManager;
 
     private Coroutine m_toggleMenuOff;
     private Coroutine m_toggleMenuOn;
@@ -43,6 +44,8 @@ public class pausemenuscript : buttonnavscript
         m_playerTransform = m_player.transform;
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_menuEventsManager.IsVisible += IsVisible;
+        m_menuEventsManager.IsInvisible += IsInvisible;
     }
 
     private IEnumerator TogglePauseMenuOff()
@@ -124,16 +127,20 @@ public class pausemenuscript : buttonnavscript
         SceneManager.LoadScene(menuSceneNum);
     }
 
-    private void OnEnable()
+    private void IsVisible()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        m_playerRigidbody.linearVelocity = Vector3.zero;
+        m_playerRigidbody.angularVelocity = Vector3.zero;
+        m_playerRigidbody.isKinematic = true;
     }
 
-    private void OnDisable()
+    private void IsInvisible()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        m_playerRigidbody.isKinematic = false;
     }
 
     // Update is called once per frame
