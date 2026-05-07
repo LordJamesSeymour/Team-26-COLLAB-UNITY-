@@ -1,2 +1,22 @@
 fileFormatVersion: 2
 guid: 63721346061a56544bcdd2400fbc8930
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_exitButton: {instanceID: 0}
+  - m_checkpointToggle: {instanceID: 0}
+  - m_fullscreenToggle: {instanceID: 0}
+  - m_backgroundMusicSlider: {instanceID: 0}
+  - m_soundEffectsSlider: {instanceID: 0}
+  - m_sensitivitySlider: {instanceID: 0}
+  - m_widthInput: {instanceID: 0}
+  - m_heightInput: {instanceID: 0}
+  - m_scrollArea: {instanceID: 0}
+  - m_sensitivityValueText: {instanceID: 0}
+  - audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

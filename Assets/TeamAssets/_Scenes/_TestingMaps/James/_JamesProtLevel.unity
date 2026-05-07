@@ -26787,42 +26787,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2897136671533016221, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: Gain
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2897136671533016221, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2897136671533016221, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: Use2DDistance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: field of view
-      value: 60.000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: m_FocalLength
-      value: 13.858139
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: far clip plane
-      value: 5000
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: m_SensorSize.x
-      value: 21.946
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: m_SensorSize.y
-      value: 16.002
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: m_projectionMatrixMode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6452394476422909918, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: m_Name
       value: Main Camera
