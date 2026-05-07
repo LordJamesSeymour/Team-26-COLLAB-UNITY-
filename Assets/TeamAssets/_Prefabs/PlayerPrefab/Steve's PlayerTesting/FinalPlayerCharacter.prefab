@@ -8426,10 +8426,12 @@ GameObject:
   - component: {fileID: 3714505558349099049}
   - component: {fileID: 5065373361208652444}
   - component: {fileID: 6797045768519289606}
-  - component: {fileID: 2515511480513685262}
-  - component: {fileID: 7954068586701445865}
   - component: {fileID: 3893369647984432245}
   - component: {fileID: 7508703135353221040}
+  - component: {fileID: 8391555171068217190}
+  - component: {fileID: 620073042156731961}
+  - component: {fileID: 2515511480513685262}
+  - component: {fileID: 7954068586701445865}
   m_Layer: 8
   m_Name: FinalPlayerCharacter
   m_TagString: Player
@@ -8551,7 +8553,7 @@ MonoBehaviour:
   moveSpeed: 0
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
-  jumpForce: 12
+  jumpForce: 14.5
   jumpCooldown: 0.12
   airMultiplier: 0.275
   JumpSFX: {fileID: 11400000, guid: 99c04c659390f8b43828be0049e5222f, type: 2}
@@ -8931,6 +8933,119 @@ MonoBehaviour:
   m_respawnPoint: {x: 0, y: 0, z: 0}
   m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
   m_startPoint: {x: 0, y: 0, z: 0}
+--- !u!114 &3893369647984432245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181891055657115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b9d102d4b9a02418fc82c9fe571dad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ball: {fileID: 266772377507157098}
+--- !u!114 &7508703135353221040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181891055657115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b08be11d8a09944903a5853d560758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8391555171068217190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181891055657115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ImpulseDefinition:
+    ImpulseChannel: 1
+    ImpulseShape: 2
+    CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ImpulseDuration: 0.2
+    ImpulseType: 0
+    DissipationRate: 0.25
+    RawSignal: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    RepeatMode: 0
+    Randomize: 1
+    TimeEnvelope:
+      AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackTime: 0
+      SustainTime: 0.2
+      DecayTime: 0.7
+      ScaleWithImpact: 1
+      HoldForever: 0
+    ImpactRadius: 100
+    DirectionMode: 0
+    DissipationMode: 2
+    DissipationDistance: 100
+    PropagationSpeed: 343
+  DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &620073042156731961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181891055657115564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a86b2259943dfc41abf1d77e57982d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerController: {fileID: 5360163084992432912}
+  m_playerModeSwitcher: {fileID: 6480615574806900738}
+  m_impulseSource: {fileID: 8391555171068217190}
+  enableLandingImpulse: 1
+  landingMinImpactSpeed: 2.5
+  landingMaxImpactSpeed: 18
+  landingMinForce: 0.25
+  landingMaxForce: 1
+  landingCooldown: 0.05
+  enableGrappleImpactImpulse: 1
+  grappleMinImpactSpeed: 3
+  grappleMaxImpactSpeed: 26
+  grappleMinForce: 0.35
+  grappleMaxForce: 1.35
+  grappleCooldown: 0.05
+  defaultLandingMultiplier: 1
+  wallRunLandingMultiplier: 0.9
+  swingLandingMultiplier: 1.1
+  dashLandingMultiplier: 1.05
+  ballModeLandingMultiplier: 1.25
+  grappleImpactMultiplier: 1.15
+  defaultLandingDirection: {x: 0, y: -1, z: 0}
+  useVelocityDirectionForGrappleImpact: 1
 --- !u!120 &2515511480513685262
 LineRenderer:
   serializedVersion: 2
@@ -9061,31 +9176,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: -0.01}
---- !u!114 &3893369647984432245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181891055657115564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55b9d102d4b9a02418fc82c9fe571dad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ball: {fileID: 266772377507157098}
---- !u!114 &7508703135353221040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181891055657115564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8b08be11d8a09944903a5853d560758, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2185431779388408211
 GameObject:
   m_ObjectHideFlags: 0
@@ -14631,7 +14721,7 @@ Transform:
   m_GameObject: {fileID: 3420827800429369602}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.107, z: 0}
+  m_LocalPosition: {x: 0, y: 0.079, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
