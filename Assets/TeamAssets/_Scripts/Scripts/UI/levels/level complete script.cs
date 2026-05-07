@@ -1,5 +1,6 @@
 using Group26.Player.Camera;
 using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System;
 using TMPro;
 using Unity.Cinemachine;
@@ -71,6 +72,7 @@ public class levelcompletescript : MonoBehaviour
         Cursor.visible = true;
         //m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
         m_uiTexts[0].text = "Completion Time: " + m_timer.m_timerDisplay.text;
+        m_uiTexts[1].text = "Pickups Collected: " + Collectable.m_pickupsCollected;
 
         if (m_playerDeathScript.m_deathless)
             m_uiTexts[2].text = "Deathless: Yes";

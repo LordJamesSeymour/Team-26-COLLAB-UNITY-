@@ -12,7 +12,7 @@ namespace RadicalForge.Gameplay
     
     public class Collectable : MonoBehaviour
     {
-
+        public static int m_pickupsCollected;
 		public ParticleSystem particleToStop;
 		public ParticleSystem particleToSpawn;
         
@@ -21,11 +21,14 @@ namespace RadicalForge.Gameplay
         {
             if (other.CompareTag("Player"))
             {
-                var ct = FindObjectOfType<CollectionTrigger>();
+                var ct = FindAnyObjectByType<CollectionTrigger>();
 				if (ct) {
+                    //Debug.Log("collecting");
 					particleToStop.Stop ();
 					particleToSpawn.Play ();
-					ct.Collect (gameObject);
+                    m_pickupsCollected += 1;
+                    //Debug.Log(m_pickupsCollected);
+                    ct.Collect (gameObject);
 					GetComponent<Collider> ().enabled = false;
 				}
             }
@@ -39,7 +42,8 @@ namespace RadicalForge.Gameplay
 				if (ct) {
 					particleToStop.Stop ();
 					particleToSpawn.Play ();
-					ct.Collect (gameObject);
+                    m_pickupsCollected += 1;
+                    ct.Collect (gameObject);
 					GetComponent<Collider> ().enabled = false;
 				}
             }
