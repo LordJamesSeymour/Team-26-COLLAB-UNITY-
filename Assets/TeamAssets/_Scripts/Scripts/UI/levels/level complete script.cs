@@ -22,11 +22,11 @@ public class levelcompletescript : MonoBehaviour
     [SerializeField] GameObject m_player;
 
     private Rigidbody m_playerRigidbody;
-    private TrickSystem m_trickSystem;
+    //private TrickSystem m_trickSystem;
     private Death m_playerDeathScript;
     private InputAction m_navInputs;
     private InputAction m_selectInput;
-    private InputAction m_completeInput;
+    //private InputAction m_completeInput;
     private bool m_onMainMenuButton = false;
     private datamanager m_manager;
     private CameraModeManager m_cameraModeManager;
@@ -44,13 +44,13 @@ public class levelcompletescript : MonoBehaviour
         }
 
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
-        m_trickSystem = m_player.GetComponent<TrickSystem>();
+        //m_trickSystem = m_player.GetComponent<TrickSystem>();
         m_playerDeathScript = m_player.GetComponent<Death>();
         m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
 
         m_navInputs = InputSystem.actions.FindAction("Navigate");
         m_selectInput = InputSystem.actions.FindAction("Select");
-        m_completeInput = InputSystem.actions.FindAction("Complete");
+        //m_completeInput = InputSystem.actions.FindAction("Complete");
         m_menuEventsManager.IsVisible += OnVisible;
     }
 
@@ -69,7 +69,7 @@ public class levelcompletescript : MonoBehaviour
         m_playerRigidbody.isKinematic = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
+        //m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
         m_uiTexts[1].text = "Completion Time: " + m_timer.m_timerDisplay.text;
 
         if (m_playerDeathScript.m_deathless)
@@ -99,9 +99,9 @@ public class levelcompletescript : MonoBehaviour
             m_mainMenuButton.onClick.Invoke();
         }
         
-        if(m_completeInput.WasPressedThisDynamicUpdate() && m_enabled == false)
-        {
-            ToggleMenuOn();
-        }
+        //if(m_completeInput.WasPressedThisDynamicUpdate() && m_enabled == false)
+        //{
+        //    ToggleMenuOn();
+        //}
     }
 }
