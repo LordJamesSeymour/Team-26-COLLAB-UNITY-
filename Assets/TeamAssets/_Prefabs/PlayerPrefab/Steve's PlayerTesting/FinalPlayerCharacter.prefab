@@ -8752,7 +8752,6 @@ MonoBehaviour:
   m_grappableLayer:
     serializedVersion: 2
     m_Bits: 128
-  lineRenderer: {fileID: 2515511480513685262}
   m_maincam: {fileID: 0}
   maxGrappleDistance: 30
   grappleDelayTime: 0
@@ -8791,6 +8790,9 @@ MonoBehaviour:
   maxSwingDistance: 25
   joint: {fileID: 0}
   m_bpreventSwingingThroughWalls: 1
+  preserveMomentumOnSwingStart: 1
+  momentumRestoreMultiplier: 1
+  preserveAngularMomentumOnSwingStart: 1
   Orientation: {fileID: 7193288468580632257}
   horizontalThrustForce: 2000
   forwardThrustForce: 3000
@@ -21231,7 +21233,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5168427095661570192}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
