@@ -1,5 +1,6 @@
 using Group26.Player.Inputs;
 using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,6 +19,7 @@ public class Death : MonoBehaviour
     private Rigidbody m_rigidbody;
     public Vector3 m_startPoint;
     private GameObject[] m_checkpoints;
+    private GameObject[] m_collectables;
     private int m_totalTime;
     private bool m_buttonPressed = false;
     private float m_cameraYaw;
@@ -50,6 +52,7 @@ public class Death : MonoBehaviour
         m_restartInput.Enable();
 
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_collectables = GameObject.FindGameObjectsWithTag("collectable");
     }
 
     private IEnumerator Respawn()
@@ -92,6 +95,7 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
         m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -100,6 +104,16 @@ public class Death : MonoBehaviour
             foreach (GameObject checkpoint in m_checkpoints)
             {
                 checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();      
             }
         }
 
@@ -140,6 +154,7 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
         m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -150,6 +165,16 @@ public class Death : MonoBehaviour
             foreach(GameObject checkpoint in m_checkpoints)
             {
                 checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();
             }
         }
 

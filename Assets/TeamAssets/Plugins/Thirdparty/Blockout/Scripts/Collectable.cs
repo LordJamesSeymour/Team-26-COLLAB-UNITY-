@@ -29,8 +29,9 @@ namespace RadicalForge.Gameplay
                     m_pickupsCollected += 1;
                     //Debug.Log(m_pickupsCollected);
                     ct.Collect (gameObject);
-					GetComponent<Collider> ().enabled = false;
-				}
+					//gameObject.GetComponent<Collider> ().enabled = false;
+                    gameObject.SetActive(false);
+                }
             }
         }
 
