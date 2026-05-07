@@ -5,15 +5,15 @@ using Group26.Player.Utility;
 
 namespace Group26.Player.Movement
 {
-    public class SwingGun : MonoBehaviour
-    {
-        [Header("References")]
-        private InputManager inputManager;
-        private CameraModeManager cameraModeManager;
+	public class SwingGun : MonoBehaviour
+	{
+		[Header("References")]
+		private InputManager inputManager;
+		private CameraModeManager cameraModeManager;
 
-        private PlayerModeSwitcher PlayerModeSwitcher;
-        
-        //[SerializeField] private Transform firstPersonCam; 
+		private PlayerModeSwitcher PlayerModeSwitcher;
+		private BallRollController ballRollController;
+
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
         public Transform firePoint;
