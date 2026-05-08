@@ -12,7 +12,7 @@ public class buttonnavscript : MonoBehaviour
     protected controlsmenuscript m_controlsScreenScript;
     private levelselectionmenuscript m_levelScreenScript;
     protected settingsmenuscript m_settingsScreenScript;
-    public bool m_enabled = true;
+    [HideInInspector] public bool m_enabled = true;
     //private Vector2 direction;
 
     [SerializeField] public GameObject m_menuPanel;
