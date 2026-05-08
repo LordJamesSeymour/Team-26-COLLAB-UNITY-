@@ -81,6 +81,7 @@ public class AudioManager : MonoBehaviour
 
         if (source == null) { return null; }
 
+        source.loop = false;
         source.gameObject.SetActive(true);
         source.transform.parent = target;
         source.transform.localPosition = Vector3.zero;
@@ -144,6 +145,7 @@ public class AudioManager : MonoBehaviour
 
         if (source == null) { return null; }
 
+        source.loop = false;
         source.gameObject.SetActive(true);
         source.transform.position = target;
         source.clip = clip;
@@ -156,7 +158,7 @@ public class AudioManager : MonoBehaviour
         source.Play();
         source.transform.parent = null;
 
-        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
+        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch))); // can add .1f to these for safety if there is cutoff issues
 
         return source;
 
@@ -180,7 +182,18 @@ public class AudioManager : MonoBehaviour
     private IEnumerator ReturnToPool(AudioSource source, float delay) // need to also return to pool if the objects parent is destroyed as to not also destroy the emitter. (maybe also have a 
     {
         yield return new WaitForSeconds(delay);
-        source.transform.parent = transform;
+
+        // fade out
+        /*
+        float startVol = source.volume;
+        while (source.volume > 0)
+        {
+            source.volume -= startVol * Time.deltaTime * 10f; // 0.1s fade
+            yield return null;
+        }
+        */
+
+        source.transform.parent = transform; 
         source.gameObject.SetActive(false);
         //source.Pause();
         if (source.clip != null) { source.Stop(); }
