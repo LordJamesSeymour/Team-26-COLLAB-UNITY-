@@ -103,8 +103,8 @@ public class settingsmenuscript : menuscreenscript
 
         Debug.Log("settings visible");
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
-        m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
-        m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+        //m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
+        //m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
         m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
 
         float musicDB;

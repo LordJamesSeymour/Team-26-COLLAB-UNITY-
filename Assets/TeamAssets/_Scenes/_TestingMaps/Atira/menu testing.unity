@@ -291,6 +291,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &12325372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1221,6 +1233,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1334,6 +1358,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 78874303}
             m_ObjectArgumentAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1106575637}
+          m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+            m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -1571,6 +1607,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 401531971}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2538,6 +2586,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &161932566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2901,6 +2961,22 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 261768509}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1106575637}
+          m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+            m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -4006,6 +4082,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &414551055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4721,6 +4809,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &469452670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5046,6 +5146,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 972841573}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5786,6 +5898,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7853,6 +7977,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &944783806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9456,6 +9592,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!114 &1101955438
 MonoBehaviour:
@@ -9499,6 +9647,7 @@ GameObject:
   - component: {fileID: 1106575634}
   - component: {fileID: 1106575635}
   - component: {fileID: 1106575636}
+  - component: {fileID: 1106575637}
   m_Layer: 0
   m_Name: button controller
   m_TagString: Untagged
@@ -9635,6 +9784,18 @@ MonoBehaviour:
   audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   effectsVolumeName: EffectsVolume
   musicVolumeName: MusicVolume
+--- !u!114 &1106575637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106575631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa09d7932f0a3b4a9acd1178f3b08ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1107829085
 GameObject:
   m_ObjectHideFlags: 0
@@ -9727,6 +9888,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 852883239}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -10347,6 +10520,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1190083912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10521,6 +10706,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 1231012397}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1106575637}
+          m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+            m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -11408,6 +11605,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1410108313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11769,6 +11978,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -12489,6 +12710,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1588566151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12777,6 +13010,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1618548488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12907,6 +13152,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -13263,6 +13520,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1106575637}
+        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -13376,6 +13645,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 1644927174}
             m_ObjectArgumentAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1106575637}
+          m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+            m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -15647,6 +15928,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940968886}
   m_CullTransparentMesh: 1
+--- !u!1001 &1970285303
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.06546
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.48447
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 117.8484
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4759418781719365077, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
 --- !u!1 &1973010638
 GameObject:
   m_ObjectHideFlags: 0
@@ -16275,3 +16613,4 @@ SceneRoots:
   - {fileID: 1106575633}
   - {fileID: 1442188375}
   - {fileID: 1075893541}
+  - {fileID: 1970285303}
