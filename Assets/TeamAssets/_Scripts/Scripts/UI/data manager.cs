@@ -6,7 +6,7 @@ public class datamanager
 {
     private GameData m_gameData;
     //private LevelData m_data;
-    private static string m_filePath = Path.Combine(Application.persistentDataPath, "level1_data.json");
+    private static string m_filePath = Path.Combine(Application.persistentDataPath, "level_data.json");
 
     public datamanager(int numOfLevels, int level = 0)
     {

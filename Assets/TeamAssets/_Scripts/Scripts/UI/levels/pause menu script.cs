@@ -1,3 +1,5 @@
+using Group26.Player.Camera;
+using Group26.Player.Inputs;
 using Group26.Player.Movement;
 using System.Collections;
 using Unity.VisualScripting;
@@ -11,7 +13,9 @@ public class pausemenuscript : buttonnavscript
     [SerializeField] private GameObject m_darkenedBackground;
     [SerializeField] GameObject m_player;
     [SerializeField] private Timer m_timer;
-    [SerializeField] private TrickSystem m_trickSystemScript;
+    //[SerializeField] private TrickSystem m_trickSystemScript;
+    [SerializeField] menuscreeneventsmanager m_menuEventsManager;
+    [SerializeField] private InputManager m_inputManager;
 
     private Coroutine m_toggleMenuOff;
     private Coroutine m_toggleMenuOn;
@@ -20,6 +24,7 @@ public class pausemenuscript : buttonnavscript
     private Death m_playerDeathScript;
     private Rigidbody m_playerRigidbody;
     private Transform m_playerTransform;
+    private CameraModeManager m_cameraModeManager;
     private GameObject[] m_checkpoints;
 
     void Awake()
@@ -42,7 +47,11 @@ public class pausemenuscript : buttonnavscript
         m_playerDeathScript = m_player.GetComponent<Death>();
         m_playerTransform = m_player.transform;
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
+        m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_menuEventsManager.IsVisible += IsVisible;
+        m_menuEventsManager.IsInvisible += IsInvisible;
+        m_inputManager.OnPausePressed += RunPause;
     }
 
     private IEnumerator TogglePauseMenuOff()
@@ -54,6 +63,8 @@ public class pausemenuscript : buttonnavscript
         m_currentButton = m_buttons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_enabled = false;
+        m_cameraModeManager.m_immoveable = false;
+        m_playerRigidbody.isKinematic = false;
         yield return new WaitUntil(() => m_menuPanel.activeSelf == false);
     }
 
@@ -66,11 +77,22 @@ public class pausemenuscript : buttonnavscript
         yield return new WaitUntil(() => m_menuPanel.activeSelf == true);
     }
 
+    private void RunPause()
+    {
+        Debug.Log(m_toggleMenuOn == null);
+        if (m_toggleMenuOn == null)
+            m_toggleMenuOn = StartCoroutine(Pause());
+
+        m_toggleMenuOn = null;
+        StopCoroutine(Pause());
+        Debug.Log("pausing");
+    }
+
     private IEnumerator RestartLevel()
     {
         m_playerTransform.position = m_playerDeathScript.m_startPoint;
         m_playerDeathScript.m_respawnPoint = m_playerDeathScript.m_startPoint;
-        m_trickSystemScript.TotalScore = 0;
+        //m_trickSystemScript.TotalScore = 0;
         m_timer.ResetTimer();
 
         if (m_checkpoints != null && Checkpoint.m_checkpointsEnabled)
@@ -124,13 +146,17 @@ public class pausemenuscript : buttonnavscript
         SceneManager.LoadScene(menuSceneNum);
     }
 
-    private void OnEnable()
+    private void IsVisible()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        m_playerRigidbody.linearVelocity = Vector3.zero;
+        m_playerRigidbody.angularVelocity = Vector3.zero;
+        m_playerRigidbody.isKinematic = true;
+        m_cameraModeManager.m_immoveable = true;
     }
 
-    private void OnDisable()
+    private void IsInvisible()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -140,16 +166,16 @@ public class pausemenuscript : buttonnavscript
     void Update()
     {
         //Debug.Log(m_enabled);
-        if(m_enabled == false && m_pauseInput.WasReleasedThisDynamicUpdate())
-        {
-            Debug.Log(m_toggleMenuOn == null);
-            if(m_toggleMenuOn == null)
-                m_toggleMenuOn = StartCoroutine(Pause());
+        //if(m_enabled == false && m_pauseInput.WasReleasedThisDynamicUpdate())
+        //{
+        //    Debug.Log(m_toggleMenuOn == null);
+        //    if(m_toggleMenuOn == null)
+        //        m_toggleMenuOn = StartCoroutine(Pause());
 
-            m_toggleMenuOn = null;
-            StopCoroutine(Pause());
-            Debug.Log("pausing");
-        }
+        //    m_toggleMenuOn = null;
+        //    StopCoroutine(Pause());
+        //    Debug.Log("pausing");
+        //}
 
         if (m_navInputs.WasPressedThisDynamicUpdate() && m_enabled)
         {
