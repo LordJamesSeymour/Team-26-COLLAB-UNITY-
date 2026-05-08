@@ -9592,18 +9592,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1106575637}
-        m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
-        m_MethodName: PlaySound
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
-          m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   m_IsOn: 0
 --- !u!114 &1101955438
 MonoBehaviour:
@@ -9629,6 +9617,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 1101955437}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1106575637}
+          m_TargetAssemblyTypeName: AnimationEventSFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 8e37d1dbd42cd8f41953692418d654cf, type: 2}
+            m_ObjectArgumentAssemblyTypeName: AudioEventData, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
