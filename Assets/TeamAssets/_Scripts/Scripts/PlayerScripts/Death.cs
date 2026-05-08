@@ -1,3 +1,6 @@
+using Group26.Player.Inputs;
+using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,18 +9,24 @@ public class Death : MonoBehaviour
 {
     //[SerializeField] private GameObject m_respawnMenuPanel;
     [SerializeField] private Timer m_timerScript;
+    [SerializeField] private Transform m_cameraPivotTransform;
 
     [HideInInspector] public Vector3 m_respawnPoint;
+    [HideInInspector] public Quaternion m_respawnDirection;
+    [HideInInspector] public bool m_deathless = true;
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
-    private Vector3 m_startPoint;
+    public Vector3 m_startPoint;
     private GameObject[] m_checkpoints;
+    private GameObject[] m_collectables;
     private int m_totalTime;
     private bool m_buttonPressed = false;
+    private float m_cameraYaw;
 
     private InputAction m_respawnInput;
     private InputAction m_restartInput;
+    private InputManager m_inputManager;
 
     private Coroutine m_respawn;
     private Coroutine m_restart;
@@ -26,6 +35,8 @@ public class Death : MonoBehaviour
     {
         m_respawnPoint = transform.position;
         m_startPoint = transform.position;
+        m_respawnDirection = m_cameraPivotTransform.rotation;
+        m_cameraYaw = m_cameraPivotTransform.rotation.eulerAngles.y;
 
         m_rigidbody = GetComponent<Rigidbody>();
         if (!m_rigidbody)
@@ -33,12 +44,15 @@ public class Death : MonoBehaviour
             Debug.Log("No rigidbody attached to this object");
         }
 
+        m_inputManager = GetComponent<InputManager>();
+
         m_respawnInput = InputSystem.actions.FindAction("TEST_RESPAWN");
         m_restartInput = InputSystem.actions.FindAction("TEST_RESTART");
         m_restartInput = InputSystem.actions.FindAction("Restart");
         m_restartInput.Enable();
 
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_collectables = GameObject.FindGameObjectsWithTag("collectable");
     }
 
     private IEnumerator Respawn()
@@ -47,6 +61,7 @@ public class Death : MonoBehaviour
         //player points don't need to change
 
         yield return new WaitForSeconds(0.5f);
+        yield return new WaitForEndOfFrame();
 
         Debug.Log("Respawning");
 
@@ -58,8 +73,9 @@ public class Death : MonoBehaviour
         //{
         //    m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         //}
-
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(0.5f);
+
         m_respawn = null;
 
         //yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
@@ -74,10 +90,12 @@ public class Death : MonoBehaviour
     {
         Debug.Log("Restarting");
 
-        transform.position = m_startPoint;
-        m_respawnPoint = m_startPoint;
+        //transform.position = m_startPoint;
+        //m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -89,11 +107,35 @@ public class Death : MonoBehaviour
             }
         }
 
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();      
+            }
+        }
+
         //m_respawnMenuPanel.SetActive(false);
+        m_timerScript.m_paused = false;
+
+
+        yield return new WaitForSeconds(0.1f);
+        m_restart = null;
+        m_rigidbody.isKinematic = false;
+    }
+
+    private IEnumerator InstaRespawn()
+    {
+        Debug.Log("Respawning");
+
+        transform.position = m_respawnPoint;
         m_rigidbody.isKinematic = false;
 
-        yield return new WaitForSeconds(0.01f);
-        m_restart = null;
+        yield return new WaitForSeconds(0.1f);
+        m_respawn = null;
+
         m_timerScript.m_paused = false;
     }
 
@@ -111,6 +153,8 @@ public class Death : MonoBehaviour
         m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -121,6 +165,16 @@ public class Death : MonoBehaviour
             foreach(GameObject checkpoint in m_checkpoints)
             {
                 checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();
             }
         }
 
@@ -144,8 +198,10 @@ public class Death : MonoBehaviour
         if (other.gameObject.tag == "death zone")
         {       
             Debug.Log("Player Dead");
+            m_deathless = false;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
+            //m_playerBodyTransform.forward = m_respawnDirection;
             m_rigidbody.isKinematic = true;
             //m_respawnMenuPanel.SetActive(true);
             //m_timerScript.m_timerDisplay.gameObject.SetActive(false);
@@ -154,15 +210,53 @@ public class Death : MonoBehaviour
             if (Checkpoint.m_checkpointsEnabled)
             {
                 StopCoroutine(Restart());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(InstaRespawn());
                 m_restart = null;
                 m_respawn = StartCoroutine(Respawn());
             }
             else
             {
                 StopCoroutine(Respawn());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(InstaRespawn());
                 m_respawn = null;
                 m_restart = StartCoroutine(Restart());
             }
+        }
+        else if(other.gameObject.tag == "obstacle")
+        {
+            Debug.Log("Hit Obstacle");
+
+            m_deathless = false;
+            m_rigidbody.linearVelocity = Vector3.zero;
+            m_rigidbody.angularVelocity = Vector3.zero;
+            m_rigidbody.isKinematic = true;
+            m_timerScript.m_paused = true;
+
+            if (Checkpoint.m_checkpointsEnabled)
+            {
+                StopCoroutine(Restart());
+                StopCoroutine(InstaRestart());
+                StopCoroutine(Respawn());
+                m_restart = null;
+                m_respawn = StartCoroutine(InstaRespawn());
+            }
+            else
+            {
+                StopCoroutine(Respawn());
+                StopCoroutine(Restart());
+                StopCoroutine(InstaRespawn());
+                m_respawn = null;
+                m_restart = StartCoroutine(InstaRestart());
+            }
+
+            Debug.Log(m_respawnDirection);
+            Debug.Log(transform.rotation);
+            m_cameraYaw = 0.0f;
+            m_cameraPivotTransform.rotation = Quaternion.Euler(0.0f, m_cameraYaw, 0.0f);
+            Debug.Log(m_inputManager.LookInput);
+            Debug.Log(m_cameraPivotTransform.rotation);
         }
     }
 
@@ -180,6 +274,13 @@ public class Death : MonoBehaviour
         {
             StopCoroutine(Respawn());
             StopCoroutine(Restart());
+            StopCoroutine(InstaRespawn());
+            transform.position = m_startPoint;
+            m_respawnPoint = m_startPoint;
+            m_rigidbody.linearVelocity = Vector3.zero;
+            m_rigidbody.angularVelocity = Vector3.zero;
+            m_rigidbody.isKinematic = true;
+            m_timerScript.m_paused = true;
             m_respawn = null;
             m_restart = StartCoroutine(InstaRestart());
         }

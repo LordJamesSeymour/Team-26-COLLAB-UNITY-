@@ -7,7 +7,9 @@ TagManager:
   - slope
   - death zone
   - checkpoint
-  - Collectable
+  - obstacle
+  - AudioSource
+  - collectable
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Grappable
   - Player
   - Fan
-  - 
+  - CheckPoints
   - 
   - 
   - 

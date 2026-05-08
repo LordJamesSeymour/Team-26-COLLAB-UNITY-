@@ -1,11 +1,9 @@
-using Group26.Player.Inputs;
-using System;
-using System.Collections;
-using System.Net;
-using Unity.Mathematics;
 using UnityEngine;
+using System.Collections;
+using Group26.Player.Inputs;
+using Unity.Mathematics;
 using UnityEngine.Splines;
-using UnityEngine.UIElements.Experimental;
+using System;
 
 namespace Group26.Player.Movement
 {
@@ -44,6 +42,7 @@ namespace Group26.Player.Movement
 		[SerializeField] float jumpForce;
 		[SerializeField] float jumpCooldown = 0.1f;
 		[SerializeField] float airMultiplier = 0.4f;
+		[SerializeField] AudioEventData JumpSFX;
 
 		[Header("Jump Buffering")]
 		[SerializeField] float jumpBufferTime = 0.15f;
@@ -164,15 +163,11 @@ namespace Group26.Player.Movement
 		public float CurrentHorizontalSpeed => FlatVelocity.magnitude;
 		public Rigidbody Body => rb;
 
-		private StyleSystem styleSystem;
-
-        int grappleBuffer = 0;
-        private void Awake()
+		private void Awake()
 		{
 			inputManager = GetComponent<InputManager>();
 			swingGunScr = GetComponent<SwingGun>();
 			ballRollController = GetComponent<BallRollController>();
-			styleSystem = GetComponent<StyleSystem>();
 
 			rb = GetComponent<Rigidbody>();
 			rb.freezeRotation = true;
@@ -354,12 +349,7 @@ namespace Group26.Player.Movement
 				state = MovementState.dashing;
 				desiredMoveSpeed = dashSpeed;
 				speedChangeFactor = dashSpeedChangeFactor;
-
-                styleSystem.AddStyleCombo(200, "dashing", "Dash");
-
-                styleSystem.GrappleBoostState = false;
-                //Debug.Log("Buffer: " +grappleBuffer);
-            }
+			}
 			else if (m_bActiveSwing)
 			{
 				state = MovementState.swinging;
@@ -371,7 +361,6 @@ namespace Group26.Player.Movement
 				state = MovementState.wallRunning;
 				swingGunScr.WallRunPredictionSphere(WallridePredictionIncrease);
 				desiredMoveSpeed = wallRunSpeed;
-				styleSystem.AddStyleCombo(200, state.ToString(), "Wall Run");
 			}
 			else if (m_bSliding)
 			{
@@ -409,11 +398,6 @@ namespace Group26.Player.Movement
 			bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
 			if (lastState == MovementState.dashing)
 				keepMomentum = true;
-
-			if(state != lastState && styleSystem != null)
-			{
-				styleSystem.ResetBuffer();
-            }
 
 			if (desiredMoveSpeedHasChanged)
 			{
@@ -578,6 +562,8 @@ namespace Group26.Player.Movement
 
 			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+			AudioManager.instance.PlaySoundAtPoint(JumpSFX.sound, transform.position, JumpSFX.volume, JumpSFX.volumeRange, JumpSFX.pitch, JumpSFX.pitchRange, JumpSFX.spatialBlend);
 		}
 
 		private void ResetJump()
@@ -634,18 +620,15 @@ namespace Group26.Player.Movement
 			m_straightGrappleTarget = Vector3.zero;
 		}
 
-		public void BeginDashState(float dashMaxYSpeed, bool lockMovement = true) 
+		public void BeginDashState(float dashMaxYSpeed, bool lockMovement = true)
 		{
-
-            m_bDashing = true;
-            if (m_bSliding && slidingComp != null)
+			if (m_bSliding && slidingComp != null)
 				slidingComp.ForceEndSlide();
-			
-            m_bDashMovementLocked = lockMovement;
-			maxYSpeed = dashMaxYSpeed;
 
-			
-			Debug.Log("Style system: " + styleSystem.GrappleBoostState);
+            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+            m_bDashing = true;
+			m_bDashMovementLocked = lockMovement;
+			maxYSpeed = dashMaxYSpeed;
 		}
 
 		public void ReleaseDashMovementLock()
@@ -1042,11 +1025,5 @@ namespace Group26.Player.Movement
 			m_lastRailMoveDirection = Vector3.forward;
 			m_nextRailAttachTime = Time.time + railReattachCooldown;
 		}
-
-		public MovementState GetState()
-		{
-			return state;
-		}
-
 	}
 }

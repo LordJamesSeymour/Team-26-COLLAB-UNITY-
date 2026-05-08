@@ -486,7 +486,7 @@
                     "name": "Submit",
                     "type": "Button",
                     "id": "7607c7b6-cd76-4816-beef-bd0341cfe950",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -564,18 +564,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TEST_RESPAWN",
+                    "name": "Select",
                     "type": "Button",
-                    "id": "2effca73-809c-4470-a6d0-7ba59a812ea9",
+                    "id": "32d07624-7921-4911-994b-53227c600963",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TEST_RESTART",
+                    "name": "Pause",
                     "type": "Button",
-                    "id": "fa1e2aa8-105c-4206-884e-403f7e1a746a",
+                    "id": "88f04123-eda6-427a-8145-fb3f101b35da",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -585,6 +585,15 @@
                     "name": "Restart",
                     "type": "Button",
                     "id": "92a0d38d-b179-4091-9629-e9f2d475620c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Complete",
+                    "type": "Button",
+                    "id": "cb853c53-c046-494d-ae54-ae12343a616c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -770,30 +779,8 @@
                 },
                 {
                     "name": "up",
-                    "id": "563fbfdd-0f09-408d-aa75-8642c4f08ef0",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "up",
                     "id": "eb480147-c587-4a33-85ed-eb0ab9942c43",
                     "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "2bf42165-60bc-42ca-8072-8c13ab40239b",
-                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -814,30 +801,8 @@
                 },
                 {
                     "name": "left",
-                    "id": "74214943-c580-44e4-98eb-ad7eebe17902",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
                     "id": "cea9b045-a000-445b-95b8-0c171af70a3b",
                     "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "8607c725-d935-4808-84b1-8354e29bab63",
-                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -1012,23 +977,34 @@
                 },
                 {
                     "name": "",
-                    "id": "e1e16ac0-8acf-4d20-8675-11ba04b86b1b",
-                    "path": "<Keyboard>/1",
+                    "id": "b22ef21c-58b9-47db-88ab-1bbf38d2f0ae",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TEST_RESPAWN",
+                    "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "01f8bfae-47e5-485e-9060-31d5db1ffbbf",
-                    "path": "<Keyboard>/2",
+                    "id": "e847143e-0827-4c49-ae59-be642a5b7b97",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "TEST_RESTART",
+                    "groups": ";Gamepad",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b34078d0-0f3f-4150-8d93-aba7f0252d2d",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1040,6 +1016,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e65df3a4-cb26-4c93-a046-e5bfbd112f64",
+                    "path": "<Keyboard>/#(C)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Complete",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

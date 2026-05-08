@@ -5,311 +5,337 @@ using Group26.Player.Utility;
 
 namespace Group26.Player.Movement
 {
-    public class SwingGun : MonoBehaviour
-    {
-        [Header("References")]
-        private InputManager inputManager;
-        private CameraModeManager cameraModeManager;
+	public class SwingGun : MonoBehaviour
+	{
+		[Header("References")]
+		private InputManager inputManager;
+		private CameraModeManager cameraModeManager;
 
-        private PlayerModeSwitcher PlayerModeSwitcher;
-        
-        [SerializeField] private Transform firstPersonCam; 
+		private PlayerModeSwitcher PlayerModeSwitcher;
+		private BallRollController ballRollController;
+
 		[SerializeField] private Transform thirdPersonCam;
 		private Transform Cam;
-        public Transform firePoint;
-        [SerializeField] private Transform player;
-        [SerializeField] private LayerMask m_grappableLayer;
-        private PlayerController playerController;
+		public Transform firePoint;
+		[SerializeField] private Transform player;
+		[SerializeField] private LayerMask m_grappableLayer;
+		private PlayerController playerController;
 
-        [Header("Swinging")]
-        [SerializeField] private float maxSwingDistance = 25f;
-        private Vector3 swingPoint;
-        [HideInInspector] public SpringJoint joint;
-        /// <summary>
-        /// Testing variable for toggling the swing through walls prevention
-        /// </summary>
-        [SerializeField] private bool m_bpreventSwingingThroughWalls = true;
+		[Header("Swinging")]
+		[SerializeField] private float maxSwingDistance = 25f;
+		private Vector3 swingPoint;
+		[HideInInspector] public SpringJoint joint;
+		[SerializeField] private bool m_bpreventSwingingThroughWalls = true;
 
-        [Header("ODMGear")]
-        [SerializeField] private Transform Orientation;
-        private Rigidbody rigidBody;
-        [SerializeField] private float horizontalThrustForce;
-        [SerializeField] private float forwardThrustForce;
-        [SerializeField] private float extendedCableSpeed;
+		[Header("Momentum Preservation")]
+		[SerializeField] private bool preserveMomentumOnSwingStart = true;
+		[SerializeField] private float momentumRestoreMultiplier = 1f;
+		[SerializeField] private bool preserveAngularMomentumOnSwingStart = true;
 
-        [Header("Prediction")]
-        [SerializeField] private RaycastHit predictionHit;
-        [SerializeField] private float predictionSphereCastRadius;
-        private float predictionDefaultSphereCastRadius;
-        [SerializeField] private Transform predictionPoint;
-        [SerializeField] private LayerMask m_ignoredSwingPredictionLayer;
-        [SerializeField] private Transform m_maincam;
+		[Header("ODMGear")]
+		[SerializeField] private Transform Orientation;
+		private Rigidbody rigidBody;
+		[SerializeField] private float horizontalThrustForce;
+		[SerializeField] private float forwardThrustForce;
+		[SerializeField] private float extendedCableSpeed;
 
-        [Header("Debug")]
-        [SerializeField] private bool m_bDrawPredictionRays = false;
-        [SerializeField] private bool m_bLogIncorrectLayerHits = false;
+		[Header("Prediction")]
+		[SerializeField] private RaycastHit predictionHit;
+		[SerializeField] private float predictionSphereCastRadius;
+		private float predictionDefaultSphereCastRadius;
+		[SerializeField] private Transform predictionPoint;
+		[SerializeField] private LayerMask m_ignoredSwingPredictionLayer;
+		[SerializeField] private Transform m_maincam;
 
-        private Vector2 m_vMoveInput;
-        private bool m_bClimbingRope;
+		[Header("Debug")]
+		[SerializeField] private bool m_bDrawPredictionRays = false;
+		[SerializeField] private bool m_bLogIncorrectLayerHits = false;
 
-        private void Awake()
-        {
-            rigidBody = GetComponent<Rigidbody>();
-            playerController = GetComponent<PlayerController>();
-            inputManager = GetComponent<InputManager>();
-            cameraModeManager = GetComponent<CameraModeManager>();
-            PlayerModeSwitcher = GetComponent<PlayerModeSwitcher>();
-            
-            if(rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
-            if(playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
+		private Vector2 m_vMoveInput;
+		private bool m_bClimbingRope;
+		private bool m_reenableBallRollAfterSwing;
 
-            swingPoint = firePoint.position;
+		private Vector3 m_cachedPreSwingLinearVelocity;
+		private Vector3 m_cachedPreSwingAngularVelocity;
 
-            predictionDefaultSphereCastRadius = predictionSphereCastRadius;
+		private void Awake()
+		{
+			rigidBody = GetComponent<Rigidbody>();
+			playerController = GetComponent<PlayerController>();
+			inputManager = GetComponent<InputManager>();
+			cameraModeManager = GetComponent<CameraModeManager>();
+			PlayerModeSwitcher = GetComponent<PlayerModeSwitcher>();
+			ballRollController = GetComponent<BallRollController>();
 
-            //~ inverts the layermask bits
-            m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
-        }
+			if (rigidBody == null) Debug.LogError("No rigidbody found on SwingGun object.");
+			if (playerController == null) Debug.LogError("No PlayerController found on SwingGun object.");
 
-        private void OnEnable()
-        {
-            inputManager.OnSwingStarted += StartSwing;
-            inputManager.OnSwingStopped += StopSwing;
+			swingPoint = firePoint.position;
+			predictionDefaultSphereCastRadius = predictionSphereCastRadius;
 
-            // inputManager.OnJumpPressed += GetClimbingRope;
-            // inputManager.OnJumpRelease += StopClimbingRope;
-        }
+			m_ignoredSwingPredictionLayer = ~m_ignoredSwingPredictionLayer;
+		}
 
-        private void OnDisable()
-        {
-            inputManager.OnSwingStarted -= StartSwing;
-            inputManager.OnSwingStopped -= StopSwing;
+		private void OnEnable()
+		{
+			inputManager.OnSwingStarted += StartSwing;
+			inputManager.OnSwingStopped += StopSwing;
+		}
 
-            // inputManager.OnJumpPressed -= GetClimbingRope;
-            // inputManager.OnJumpRelease -= StopClimbingRope;
-        }
+		private void OnDisable()
+		{
+			inputManager.OnSwingStarted -= StartSwing;
+			inputManager.OnSwingStopped -= StopSwing;
 
-        private void FixedUpdate()
-        {
-            GetInput(inputManager.MoveInput);
-            CheckForSwingPoints();
+			StopSwing();
+		}
 
-            // Only run actual swing physics if a swing joint exists
-            if (joint == null)
-                return;
+		private void FixedUpdate()
+		{
+			GetInput(inputManager.MoveInput);
+			CheckForSwingPoints();
 
-            // Pull towards swing point while jump is held
-            if (m_bClimbingRope)
-            {
-                Vector3 directionToPoint = swingPoint - transform.position;
-                rigidBody.AddForce(directionToPoint.normalized * forwardThrustForce * Time.fixedDeltaTime);
+			if (joint == null)
+				return;
 
-                float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-                joint.maxDistance = distanceFromPoint * 0.8f;
-                joint.minDistance = distanceFromPoint * 0.25f;
-            }
+			if (m_bClimbingRope)
+			{
+				Vector3 directionToPoint = swingPoint - transform.position;
+				rigidBody.AddForce(directionToPoint.normalized * forwardThrustForce * Time.fixedDeltaTime, ForceMode.Force);
 
-            ApplySwingInput();
-        }
+				float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
+				joint.maxDistance = distanceFromPoint * 0.8f;
+				joint.minDistance = distanceFromPoint * 0.25f;
+			}
 
-        public void WallRunPredictionSphere(float Increase)
-        {
-            predictionSphereCastRadius = Increase;
-        }
+			ApplySwingInput();
+		}
 
-        public void PredictionSphereDefault()
-        {
-            predictionSphereCastRadius = predictionDefaultSphereCastRadius;
-        }
+		public void WallRunPredictionSphere(float Increase)
+		{
+			predictionSphereCastRadius = Increase;
+		}
 
-        void CheckForSwingPoints()
-        {
-            if (joint != null) return;
+		public void PredictionSphereDefault()
+		{
+			predictionSphereCastRadius = predictionDefaultSphereCastRadius;
+		}
 
-            //Cam = cameraModeManager.currentCameraMode == CameraMode.FirstPerson ? firstPersonCam : thirdPersonCam;
-            Cam = thirdPersonCam;
+		private void CacheMomentumBeforeSwing()
+		{
+			if (rigidBody == null)
+				return;
 
-            RaycastHit sphereCastHit;
-            Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_grappableLayer);
+			m_cachedPreSwingLinearVelocity = rigidBody.linearVelocity;
+			m_cachedPreSwingAngularVelocity = rigidBody.angularVelocity;
+		}
 
-            RaycastHit raycastHit;
-            Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_grappableLayer);
+		private void RestoreMomentumAfterSwingAttach()
+		{
+			if (rigidBody == null)
+				return;
 
-            Vector3 realHitPoint;
+			if (preserveMomentumOnSwingStart)
+				rigidBody.linearVelocity = m_cachedPreSwingLinearVelocity * momentumRestoreMultiplier;
 
-            // Option 1 - Direct hit
-            if (raycastHit.point != Vector3.zero)
-                realHitPoint = raycastHit.point;
+			if (preserveAngularMomentumOnSwingStart)
+				rigidBody.angularVelocity = m_cachedPreSwingAngularVelocity;
+		}
 
-            // Option 2 - Indirect (predicted) hit
-            else if (sphereCastHit.point != Vector3.zero)
-                realHitPoint = sphereCastHit.point;
+		private void PrepareRigidbodyForSwing()
+		{
+			if (rigidBody == null)
+				return;
 
-            // Option 3 - Miss
-            else 
-                realHitPoint = Vector3.zero;
+			if (rigidBody.isKinematic)
+				rigidBody.isKinematic = false;
 
-            // Real hit point found
-            if(realHitPoint != Vector3.zero)
-            {
-                predictionPoint.gameObject.SetActive(true);
-                predictionPoint.position = realHitPoint;
-            }
-            else 
-                predictionPoint.gameObject.SetActive(false);
+			rigidBody.detectCollisions = true;
+			rigidBody.useGravity = true;
+			rigidBody.WakeUp();
+		}
 
-            predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
-        }
+		private void SuspendBallRollForSwing()
+		{
+			m_reenableBallRollAfterSwing = false;
 
-        private void ApplySwingInput()
-        {
-            if (m_vMoveInput == Vector2.zero || joint == null)
-                return;
+			if (ballRollController != null && ballRollController.enabled)
+			{
+				m_reenableBallRollAfterSwing = true;
+				ballRollController.enabled = false;
+			}
+		}
 
-            // Forwards
-            if (m_vMoveInput.y > 0f)
-                rigidBody.AddForce(Orientation.forward * forwardThrustForce * Time.fixedDeltaTime);
+		private void RestoreBallRollAfterSwing()
+		{
+			if (ballRollController == null)
+				return;
 
-            // Left
-            if (m_vMoveInput.x < 0f)
-                rigidBody.AddForce(-Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+			if (!m_reenableBallRollAfterSwing)
+				return;
 
-            // Right
-            if (m_vMoveInput.x > 0f)
-                rigidBody.AddForce(Orientation.right * horizontalThrustForce * Time.fixedDeltaTime);
+			if (PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode == PlayerMode.BallMode)
+				ballRollController.enabled = true;
 
-            // Backwards (extend cable)
-            // if (m_vMoveInput.y < 0f)
-            // {
-            //     float extendDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendedCableSpeed;
+			m_reenableBallRollAfterSwing = false;
+		}
 
-            //     joint.maxDistance = extendDistanceFromPoint * 0.8f;
-            //     joint.minDistance = extendDistanceFromPoint * 0.25f;
-            // }
-        }
+		void CheckForSwingPoints()
+		{
+			if (joint != null) return;
 
-        private void StartSwing()
-        {
-            if (predictionHit.point == Vector3.zero) return;
+			Cam = thirdPersonCam;
 
-            if (PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.BallMode)
-                return;
+			RaycastHit sphereCastHit;
+			Physics.SphereCast(Cam.position, predictionSphereCastRadius, Cam.forward, out sphereCastHit, maxSwingDistance, m_grappableLayer);
 
-            if (m_bpreventSwingingThroughWalls)
-            {
-                Transform camera = null;
-                if(m_maincam != null)
-                {
-                    camera = m_maincam;
-                }
-                else
-                {
-                    Debug.LogWarning("No main cam reference set in the SwingGun script, obstacle prevent ray may be inaccurate");
-                    camera = Cam;
-                }
+			RaycastHit raycastHit;
+			Physics.Raycast(Cam.position, Cam.forward, out raycastHit, maxSwingDistance, m_grappableLayer);
 
-                //casts a ray to the predicted grapple point to check for obstacles in the way and prevent grappling through walls
-                RaycastHit obstaclePrevention;
-                Vector3 distance = predictionHit.point - camera.position;
-                Physics.Raycast(camera.position, distance.normalized, out obstaclePrevention, maxSwingDistance,m_ignoredSwingPredictionLayer);
-                if (obstaclePrevention.collider != null)
-                {
-                    if (m_bDrawPredictionRays)
-                    {
-                        Vector3 direction = obstaclePrevention.point - camera.position;
-                        Debug.DrawRay(camera.position, direction.normalized * maxSwingDistance, Color.red, 100.0f);
-                }
+			Vector3 realHitPoint;
 
-                    if (obstaclePrevention.collider.gameObject != null)
-                    {
-                        //layers need to be bit shifted to the left by 1 to be compared with a layer mask
-                        if ((1 << obstaclePrevention.collider.gameObject.layer) != m_grappableLayer.value)
-                        {
-                            if (m_bLogIncorrectLayerHits)
-                            {
-                                Debug.Log("Swing cancelled because it hit an object with the layer: " + (1 << obstaclePrevention.collider.gameObject.layer) + " first, instead of the expected " + m_grappableLayer.value.ToString() + " layer");
-                                Debug.Log("Hit object is named: " + obstaclePrevention.collider.gameObject.name);
-                            }
-                            return;
-                        }
-                    }
-                }
-            }
+			if (raycastHit.point != Vector3.zero)
+				realHitPoint = raycastHit.point;
+			else if (sphereCastHit.point != Vector3.zero)
+				realHitPoint = sphereCastHit.point;
+			else
+				realHitPoint = Vector3.zero;
 
+			if (realHitPoint != Vector3.zero)
+			{
+				predictionPoint.gameObject.SetActive(true);
+				predictionPoint.position = realHitPoint;
+			}
+			else
+			{
+				predictionPoint.gameObject.SetActive(false);
+			}
 
-            GetComponent<GrappleGun>().ForceStopGrapple();
-            playerController.ResetRestrictions();
+			predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
+		}
 
-            // Safety: remove any previous joint reference first
-            //if (joint != null)
-            //{
-            //	Destroy(joint);
-            //	joint = null;
-            //}
+		private void ApplySwingInput()
+		{
+			if (m_vMoveInput == Vector2.zero || joint == null)
+				return;
 
-            playerController.m_bActiveSwing = true;
-            swingPoint = predictionHit.point;
-            joint = player.gameObject.AddComponent<SpringJoint>();
-            joint.autoConfigureConnectedAnchor = false;
-            joint.connectedAnchor = swingPoint;
+			if (m_vMoveInput.y > 0f)
+				rigidBody.AddForce(Orientation.forward * forwardThrustForce * Time.fixedDeltaTime, ForceMode.Force);
 
-            float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
+			if (m_vMoveInput.x < 0f)
+				rigidBody.AddForce(-Orientation.right * horizontalThrustForce * Time.fixedDeltaTime, ForceMode.Force);
 
-            joint.maxDistance = distanceFromPoint * 0.8f;
-            joint.minDistance = distanceFromPoint * 0.25f;
+			if (m_vMoveInput.x > 0f)
+				rigidBody.AddForce(Orientation.right * horizontalThrustForce * Time.fixedDeltaTime, ForceMode.Force);
+		}
 
-            joint.spring = 4.5f;
-            joint.damper = 7f;
-            joint.massScale = 4.5f;
+		private void StartSwing()
+		{
+			if (predictionHit.point == Vector3.zero) return;
 
-            //RaycastHit hit;
-            //if (Physics.Raycast(cam.position, cam.forward, out hit, maxSwingDistance, m_lGrappable))
-            //{
-                
-            //}
-            //else
-            //{
-            //	swingPoint = gunTip.position;
-            //}
-        }
+			if (PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.BallMode)
+				return;
 
-        public void StopSwing()
-        {
-            playerController.m_bActiveSwing = false;
-            m_bClimbingRope = false;
-            m_vMoveInput = Vector2.zero;
-            swingPoint = firePoint.position;
+			if (m_bpreventSwingingThroughWalls)
+			{
+				Transform camera = null;
+				if (m_maincam != null)
+				{
+					camera = m_maincam;
+				}
+				else
+				{
+					Debug.LogWarning("No main cam reference set in the SwingGun script, obstacle prevent ray may be inaccurate");
+					camera = Cam;
+				}
 
-            if (joint != null)
-            {
-                Destroy(joint);
-                joint = null;
-            }
-        }
+				RaycastHit obstaclePrevention;
+				Vector3 distance = predictionHit.point - camera.position;
+				Physics.Raycast(camera.position, distance.normalized, out obstaclePrevention, maxSwingDistance, m_ignoredSwingPredictionLayer);
+				if (obstaclePrevention.collider != null)
+				{
+					if (m_bDrawPredictionRays)
+					{
+						Vector3 direction = obstaclePrevention.point - camera.position;
+						Debug.DrawRay(camera.position, direction.normalized * maxSwingDistance, Color.red, 100.0f);
+					}
 
-        private void GetInput(Vector2 inputs)
-        {
-            m_vMoveInput = inputs;
-        }
+					if (obstaclePrevention.collider.gameObject != null)
+					{
+						if ((1 << obstaclePrevention.collider.gameObject.layer) != m_grappableLayer.value)
+						{
+							if (m_bLogIncorrectLayerHits)
+							{
+								Debug.Log("Swing cancelled because it hit an object with the layer: " + (1 << obstaclePrevention.collider.gameObject.layer) + " first, instead of the expected " + m_grappableLayer.value.ToString() + " layer");
+								Debug.Log("Hit object is named: " + obstaclePrevention.collider.gameObject.name);
+							}
+							return;
+						}
+					}
+				}
+			}
 
-        // private void GetClimbingRope()
-        // {
-        //     m_bClimbingRope = true;
-        // }
+			GrappleGun grappleGun = GetComponent<GrappleGun>();
+			if (grappleGun != null)
+				grappleGun.ForceStopGrapple();
 
-        // private void StopClimbingRope()
-        // {
-        //     m_bClimbingRope = false;
-        // }
+			playerController.ResetRestrictions();
 
-        public Vector3 GetSwingPoint()
-        {
-            return swingPoint;
-        }
+			CacheMomentumBeforeSwing();
+			SuspendBallRollForSwing();
+			PrepareRigidbodyForSwing();
 
-        public bool IsSwinging()
-        {
-            return joint != null;
-        }
-    }
+			AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.GRAPPLE, transform.position, volume: .7f, pitchRange: .2f, spatialBlend: 0);
+
+			playerController.m_bActiveSwing = true;
+			swingPoint = predictionHit.point;
+			joint = player.gameObject.AddComponent<SpringJoint>();
+			joint.autoConfigureConnectedAnchor = false;
+			joint.connectedAnchor = swingPoint;
+
+			float distanceFromPoint = Vector3.Distance(player.position, swingPoint);
+
+			joint.maxDistance = distanceFromPoint * 0.8f;
+			joint.minDistance = distanceFromPoint * 0.25f;
+
+			joint.spring = 4.5f;
+			joint.damper = 7f;
+			joint.massScale = 4.5f;
+
+			RestoreMomentumAfterSwingAttach();
+		}
+
+		public void StopSwing()
+		{
+			if (playerController != null)
+				playerController.m_bActiveSwing = false;
+
+			m_bClimbingRope = false;
+			m_vMoveInput = Vector2.zero;
+			swingPoint = firePoint.position;
+
+			if (joint != null)
+			{
+				Destroy(joint);
+				joint = null;
+			}
+
+			RestoreBallRollAfterSwing();
+		}
+
+		private void GetInput(Vector2 inputs)
+		{
+			m_vMoveInput = inputs;
+		}
+
+		public Vector3 GetSwingPoint()
+		{
+			return swingPoint;
+		}
+
+		public bool IsSwinging()
+		{
+			return joint != null;
+		}
+	}
 }
