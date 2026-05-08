@@ -184,16 +184,16 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         // fade out
-        /*
+
         float startVol = source.volume;
         while (source.volume > 0)
         {
-            source.volume -= startVol * Time.deltaTime * 10f; // 0.1s fade
+            source.volume -= startVol * (Time.deltaTime / .05f); // .05s fade
             yield return null;
         }
-        */
 
-        source.transform.parent = transform; 
+
+        source.transform.parent = transform;
         source.gameObject.SetActive(false);
         //source.Pause();
         if (source.clip != null) { source.Stop(); }
