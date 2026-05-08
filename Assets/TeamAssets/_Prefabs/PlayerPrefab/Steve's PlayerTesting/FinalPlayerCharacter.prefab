@@ -8632,6 +8632,7 @@ MonoBehaviour:
   grappleBoostFOV: 85
   grappleBoostTransitionUpDuration: 0.25
   grappleBoostTransitionDownDuration: 0.75
+  m_immoveable: 0
 --- !u!114 &425882953658022828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8934,6 +8935,7 @@ MonoBehaviour:
   m_cameraPivotTransform: {fileID: 6007508190454296105}
   m_respawnPoint: {x: 0, y: 0, z: 0}
   m_respawnDirection: {x: 0, y: 0, z: 0, w: 0}
+  m_deathless: 1
   m_startPoint: {x: 0, y: 0, z: 0}
 --- !u!120 &2515511480513685262
 LineRenderer:
@@ -29176,7 +29178,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ad1c6db8e6f82674bb448ceee96802d8, type: 2}
+  - {fileID: 2100000, guid: 8bd44013f3c8ea2419d9aa1b5bdf7179, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
