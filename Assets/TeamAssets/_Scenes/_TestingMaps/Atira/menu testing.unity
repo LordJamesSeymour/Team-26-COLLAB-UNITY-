@@ -2376,19 +2376,7 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1106575636}
-        m_TargetAssemblyTypeName: settingsmenuscript, Assembly-CSharp
-        m_MethodName: UpdateSoundEffectsVolume
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1442188374}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!224 &152118605
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2435,6 +2423,22 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 152118604}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1106575636}
+          m_TargetAssemblyTypeName: settingsmenuscript, Assembly-CSharp
+          m_MethodName: UpdateSoundEffectsVolume
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1075893540}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -9168,7 +9172,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &1075893540
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9178,13 +9182,13 @@ AudioSource:
   m_GameObject: {fileID: 1075893539}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 1312903464595707263, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 96149f331e31475439f4434031995b64, type: 3}
-  m_PlayOnAwake: 1
+  m_Resource: {fileID: 8300000, guid: 276629197e90db244a8807e795366a36, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -9628,6 +9632,9 @@ MonoBehaviour:
   m_heightInput: {fileID: 1644927174}
   m_scrollArea: {fileID: 630949715}
   m_sensitivityValueText: {fileID: 1163209820}
+  audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
+  effectsVolumeName: EffectsVolume
+  musicVolumeName: MusicVolume
 --- !u!1 &1107829085
 GameObject:
   m_ObjectHideFlags: 0
@@ -11494,13 +11501,13 @@ AudioSource:
   m_GameObject: {fileID: 1442188373}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8145647074802892343, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 96149f331e31475439f4434031995b64, type: 3}
-  m_PlayOnAwake: 1
+  m_Resource: {fileID: 8300000, guid: 276629197e90db244a8807e795366a36, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -12339,19 +12346,7 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1106575636}
-        m_TargetAssemblyTypeName: settingsmenuscript, Assembly-CSharp
-        m_MethodName: UpdateBackgroundVolume
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1442188374}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1587655644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12376,6 +12371,22 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 1587655643}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1106575636}
+          m_TargetAssemblyTypeName: settingsmenuscript, Assembly-CSharp
+          m_MethodName: UpdateBackgroundVolume
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1442188374}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
