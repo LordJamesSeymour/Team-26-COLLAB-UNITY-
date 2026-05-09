@@ -20,21 +20,30 @@ public class MusicManager : MonoBehaviour
     void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        musicSource = GetComponent<AudioSource>();
     }
 
+    private void Start()
+    {
+        CheckScene(SceneManager.GetActiveScene());
+    }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (mode != LoadSceneMode.Single) return;
 
+        CheckScene(scene);
+    }
+
+    void CheckScene(Scene scene)
+    {
         foreach (SceneTrack ST in SceneMusic)
         {
             if (ST.SceneName == scene.name)
             {
-                Shuffle(ST.songs);
-
                 if (m_Playing != null) { m_Playing = null; }
 
+                currentSongIndex = 0;
                 m_Playing = StartCoroutine(PlayPlaylist(ST.songs));
                 return;
             }
@@ -56,26 +65,12 @@ public class MusicManager : MonoBehaviour
                 yield return new WaitForSeconds(1.0f);
             }
 
-            currentSongIndex++;
+            currentSongIndex = UnityEngine.Random.Range(0, playlist.Length);
 
             if (currentSongIndex >= playlist.Length)
             {
                 currentSongIndex = 0;
             }
-        }
-    }
-
-    private void Shuffle<T>(T[] array)
-    {
-        for (int i = array.Length - 1; i > 0; i--)
-        {
-            // Pick a random index from 0 to i
-            int randomIndex = UnityEngine.Random.Range(0, i + 1);
-
-            // Swap the elements
-            T temp = array[i];
-            array[i] = array[randomIndex];
-            array[randomIndex] = temp;
         }
     }
 
