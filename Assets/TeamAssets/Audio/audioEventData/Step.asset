@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91848b3ba3efad7489027d1bed458052, type: 3}
   m_Name: Step
   m_EditorClassIdentifier: 
-  Type: 1
+  Type: 3
   sound: 0
-  volume: 0.35
-  volumeRange: 0.1
+  volume: 0.6
+  volumeRange: 0.03
   pitch: 1
   pitchRange: 0.1
-  spatialBlend: 0.3
+  spatialBlend: 0

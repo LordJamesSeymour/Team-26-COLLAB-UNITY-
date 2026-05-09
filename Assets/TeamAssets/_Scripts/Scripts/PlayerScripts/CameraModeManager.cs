@@ -37,16 +37,16 @@ namespace Group26.Player.Camera
         [SerializeField] private Vector2 firstPersonLookSensitivity = Vector2.one;
         [SerializeField] private Vector2 thirdPersonLookSensitivity = Vector2.one;
 
-        public CameraMode currentCameraMode = CameraMode.ThirdPerson;
+        [HideInInspector] public CameraMode currentCameraMode = CameraMode.ThirdPerson;
         private const int activeCameraPriority = 10;
         private const int inactiveCameraPriority = 1;
 
-        [Header("First Person Camera References & Settings")]
-        [SerializeField] private Vector2 m_firstPersonPitchLimits = new Vector2(-85f, 85f);
-        [SerializeField] private Transform firstPersonYawRoot;
-        [SerializeField] private Transform firstPersonPitchPivot;
-        private float firstPersonYaw;
-        private float firstPersonPitch;
+        // [Header("First Person Camera References & Settings")]
+        // [SerializeField] private Vector2 m_firstPersonPitchLimits = new Vector2(-85f, 85f);
+        // [SerializeField] private Transform firstPersonYawRoot;
+        // [SerializeField] private Transform firstPersonPitchPivot;
+        // private float firstPersonYaw;
+        // private float firstPersonPitch;
 
         [Header("Third Person Camera References & Settings")]
         [SerializeField] private Vector2 m_thirdPersonPitchLimits = new Vector2(-60f, 80f);
@@ -123,6 +123,7 @@ namespace Group26.Player.Camera
         private Coroutine grappleBoostFOVCoroutine;
         private Coroutine ballMovementFOVCoroutine;
         private datamanager m_manager;
+        public bool m_immoveable = false;
 
         private void Awake()
         {
@@ -131,7 +132,7 @@ namespace Group26.Player.Camera
             {
                 m_manager.LoadGameData();
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 Debug.Log("Game data has not been loaded from main menu");
             }
@@ -196,6 +197,9 @@ namespace Group26.Player.Camera
 
         private void Update()
         {
+            if (m_immoveable)
+                return;
+
             if (currentCameraMode == CameraMode.ThirdPerson)
             {
                 ApplyThirdPersonLook(playerInput?.LookInput ?? Vector2.zero);
@@ -210,15 +214,15 @@ namespace Group26.Player.Camera
 
                 if (playerController != null && wallRunning != null && playerController.m_bIsWallRunning && wallRunning.wallLeft)
                 {
-                    leftWallRunningVirtualCamera.Priority = activeCameraPriority;
-                    rightWallRunningVirtualCamera.Priority = inactiveCameraPriority;
                     thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
+                    rightWallRunningVirtualCamera.Priority = inactiveCameraPriority;
+                    leftWallRunningVirtualCamera.Priority = activeCameraPriority;
                 }
                 else if (playerController != null && wallRunning != null && playerController.m_bIsWallRunning && wallRunning.wallRight)
                 {
+                    thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
                     leftWallRunningVirtualCamera.Priority = inactiveCameraPriority;
                     rightWallRunningVirtualCamera.Priority = activeCameraPriority;
-                    thirdPersonVirtualCamera.Priority = inactiveCameraPriority;
                 }
                 else
                 {

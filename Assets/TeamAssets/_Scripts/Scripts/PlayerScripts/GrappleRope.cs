@@ -3,174 +3,186 @@ using UnityEngine;
 
 namespace Group26.Player.Utility
 {
-    public class GrappleRope : MonoBehaviour
-    {
-        private enum RopeSource
-        {
-            None,
-            Swing,
-            Grapple
-        }
+	public class GrappleRope : MonoBehaviour
+	{
+		private enum RopeSource
+		{
+			None,
+			Swing,
+			Grapple
+		}
 
-        private Spring spring;
-        private LineRenderer lineRenderer;
-        private Vector3 currentGrapplePosition;
+		private Spring spring;
+		private LineRenderer lineRenderer;
+		private Vector3 currentGrapplePosition;
 
-        [Header("Sources")]
-        private SwingGun swingGun;
-        private GrappleGun grappleGun;
+		[Header("Sources")]
+		private SwingGun swingGun;
+		private GrappleGun grappleGun;
 
-        [Header("Rope Settings")]
-        [SerializeField] private int quality = 20;
-        [SerializeField] private float damper = 14f;
-        [SerializeField] private float strength = 800f;
-        [SerializeField] private float velocity = 15f;
-        [SerializeField] private float waveCount = 2f;
-        [SerializeField] private float waveHeight = 1f;
-        [SerializeField] private AnimationCurve affectCurve;
+		[Header("Rope Settings")]
+		[SerializeField] private int quality = 20;
+		[SerializeField] private float damper = 14f;
+		[SerializeField] private float strength = 800f;
+		[SerializeField] private float velocity = 15f;
+		[SerializeField] private float waveCount = 2f;
+		[SerializeField] private float waveHeight = 1f;
+		[SerializeField] private AnimationCurve affectCurve;
 
-        private RopeSource lastSource = RopeSource.None;
+		private RopeSource lastSource = RopeSource.None;
 
-        private void Awake()
-        {
-            swingGun = GetComponent<SwingGun>();
-            grappleGun = GetComponent<GrappleGun>();
+		private void Awake()
+		{
+			swingGun = GetComponent<SwingGun>();
+			grappleGun = GetComponent<GrappleGun>();
+			lineRenderer = GetComponent<LineRenderer>();
 
-            lineRenderer = GetComponent<LineRenderer>();
+			spring = new Spring();
+			spring.SetTarget(0);
 
-            spring = new Spring();
-            spring.SetTarget(0);
+			Transform tip = GetFallbackGunTip();
+			if (tip != null)
+				currentGrapplePosition = tip.position;
 
-            Transform tip = GetFallbackGunTip();
-            if (tip != null)
-                currentGrapplePosition = tip.position;
-        }
+			if (lineRenderer != null)
+			{
+				lineRenderer.enabled = false;
+				lineRenderer.positionCount = 0;
+			}
+		}
 
-        private void LateUpdate()
-        {
-            DrawRope();
-        }
+		private void LateUpdate()
+		{
+			DrawRope();
+		}
 
-        private void DrawRope()
-        {
-            RopeSource activeSource = GetActiveSource();
+		private void DrawRope()
+		{
+			if (lineRenderer == null)
+				return;
 
-            if (activeSource == RopeSource.None)
-            {
-                Transform fallbackTip = GetFallbackGunTip();
-                if (fallbackTip != null)
-                    currentGrapplePosition = fallbackTip.position;
+			RopeSource activeSource = GetActiveSource();
 
-                spring.Reset();
+			if (activeSource == RopeSource.None)
+			{
+				Transform fallbackTip = GetFallbackGunTip();
+				if (fallbackTip != null)
+					currentGrapplePosition = fallbackTip.position;
 
-                if (lineRenderer.positionCount > 0)
-                    lineRenderer.positionCount = 0;
+				spring.Reset();
 
-                lastSource = RopeSource.None;
-                return;
-            }
+				lineRenderer.positionCount = 0;
+				lineRenderer.enabled = false;
 
-            Transform gunTip = GetGunTip(activeSource);
-            if (gunTip == null)
-                return;
+				lastSource = RopeSource.None;
+				return;
+			}
 
-            Vector3 targetPoint = GetTargetPoint(activeSource);
+			Transform gunTip = GetGunTip(activeSource);
+			if (gunTip == null)
+			{
+				lineRenderer.positionCount = 0;
+				lineRenderer.enabled = false;
+				lastSource = RopeSource.None;
+				return;
+			}
 
-            // If we switched from swing -> grapple or grapple -> swing,
-            // restart the rope cleanly from the new gun tip.
-            if (activeSource != lastSource)
-            {
-                currentGrapplePosition = gunTip.position;
-                spring.Reset();
-                lineRenderer.positionCount = 0;
-            }
+			Vector3 targetPoint = GetTargetPoint(activeSource);
+			lineRenderer.enabled = true;
 
-            if (lineRenderer.positionCount == 0)
-            {
-                spring.SetVelocity(velocity);
-                lineRenderer.positionCount = quality + 1;
-            }
+			if (activeSource != lastSource)
+			{
+				currentGrapplePosition = gunTip.position;
+				spring.Reset();
+				lineRenderer.positionCount = 0;
+			}
 
-            spring.SetDamper(damper);
-            spring.SetStrength(strength);
-            spring.Update(Time.deltaTime);
+			if (lineRenderer.positionCount == 0)
+			{
+				spring.SetVelocity(velocity);
+				lineRenderer.positionCount = quality + 1;
+			}
 
-            Vector3 gunTipPosition = gunTip.position;
-            Vector3 ropeDirection = targetPoint - gunTipPosition;
+			spring.SetDamper(damper);
+			spring.SetStrength(strength);
+			spring.Update(Time.deltaTime);
 
-            Vector3 up = ropeDirection.sqrMagnitude > 0.0001f
-                ? Quaternion.LookRotation(ropeDirection.normalized) * Vector3.up
-                : Vector3.up;
+			Vector3 gunTipPosition = gunTip.position;
+			Vector3 ropeDirection = targetPoint - gunTipPosition;
 
-            currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, targetPoint, Time.deltaTime * 12f);
+			Vector3 up = ropeDirection.sqrMagnitude > 0.0001f
+				? Quaternion.LookRotation(ropeDirection.normalized) * Vector3.up
+				: Vector3.up;
 
-            for (int i = 0; i <= quality; i++)
-            {
-                float delta = i / (float)quality;
+			currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, targetPoint, Time.deltaTime * 12f);
 
-                Vector3 offset =
-                    up *
-                    waveHeight *
-                    Mathf.Sin(delta * waveCount * Mathf.PI) *
-                    spring.Value *
-                    affectCurve.Evaluate(delta);
+			for (int i = 0; i <= quality; i++)
+			{
+				float delta = i / (float)quality;
 
-                lineRenderer.SetPosition(i, Vector3.Lerp(gunTipPosition, currentGrapplePosition, delta) + offset);
-            }
+				Vector3 offset =
+					up *
+					waveHeight *
+					Mathf.Sin(delta * waveCount * Mathf.PI) *
+					spring.Value *
+					affectCurve.Evaluate(delta);
 
-            lastSource = activeSource;
-        }
+				lineRenderer.SetPosition(i, Vector3.Lerp(gunTipPosition, currentGrapplePosition, delta) + offset);
+			}
 
-        private RopeSource GetActiveSource()
-        {
-            if (swingGun != null && swingGun.IsSwinging())
-                return RopeSource.Swing;
+			lastSource = activeSource;
+		}
 
-            if (grappleGun != null && grappleGun.IsRopeActive())
-                return RopeSource.Grapple;
+		private RopeSource GetActiveSource()
+		{
+			if (swingGun != null && swingGun.IsSwinging())
+				return RopeSource.Swing;
 
-            return RopeSource.None;
-        }
+			if (grappleGun != null && grappleGun.IsRopeActive())
+				return RopeSource.Grapple;
 
-        private Transform GetGunTip(RopeSource source)
-        {
-            switch (source)
-            {
-                case RopeSource.Swing:
-                    return swingGun != null ? swingGun.firePoint : null;
+			return RopeSource.None;
+		}
 
-                case RopeSource.Grapple:
-                    return grappleGun != null ? grappleGun.GetGunTip() : null;
+		private Transform GetGunTip(RopeSource source)
+		{
+			switch (source)
+			{
+				case RopeSource.Swing:
+					return swingGun != null ? swingGun.firePoint : null;
 
-                default:
-                    return null;
-            }
-        }
+				case RopeSource.Grapple:
+					return grappleGun != null ? grappleGun.GetGunTip() : null;
 
-        private Vector3 GetTargetPoint(RopeSource source)
-        {
-            switch (source)
-            {
-                case RopeSource.Swing:
-                    return swingGun != null ? swingGun.GetSwingPoint() : Vector3.zero;
+				default:
+					return null;
+			}
+		}
 
-                case RopeSource.Grapple:
-                    return grappleGun != null ? grappleGun.GetGrapplePoint() : Vector3.zero;
+		private Vector3 GetTargetPoint(RopeSource source)
+		{
+			switch (source)
+			{
+				case RopeSource.Swing:
+					return swingGun != null ? swingGun.GetSwingPoint() : Vector3.zero;
 
-                default:
-                    return Vector3.zero;
-            }
-        }
+				case RopeSource.Grapple:
+					return grappleGun != null ? grappleGun.GetGrapplePoint() : Vector3.zero;
 
-        private Transform GetFallbackGunTip()
-        {
-            if (swingGun != null && swingGun.firePoint != null)
-                return swingGun.firePoint;
+				default:
+					return Vector3.zero;
+			}
+		}
 
-            if (grappleGun != null && grappleGun.GetGunTip() != null)
-                return grappleGun.GetGunTip();
+		private Transform GetFallbackGunTip()
+		{
+			if (swingGun != null && swingGun.firePoint != null)
+				return swingGun.firePoint;
 
-            return null;
-        }
-    }
+			if (grappleGun != null && grappleGun.GetGunTip() != null)
+				return grappleGun.GetGunTip();
+
+			return null;
+		}
+	}
 }

@@ -1,4 +1,6 @@
 using Group26.Player.Inputs;
+using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,11 +13,13 @@ public class Death : MonoBehaviour
 
     [HideInInspector] public Vector3 m_respawnPoint;
     [HideInInspector] public Quaternion m_respawnDirection;
+    [HideInInspector] public bool m_deathless = true;
     //[HideInInspector] public bool m_isDead;
 
     private Rigidbody m_rigidbody;
     public Vector3 m_startPoint;
     private GameObject[] m_checkpoints;
+    private GameObject[] m_collectables;
     private int m_totalTime;
     private bool m_buttonPressed = false;
     private float m_cameraYaw;
@@ -48,6 +52,7 @@ public class Death : MonoBehaviour
         m_restartInput.Enable();
 
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_collectables = GameObject.FindGameObjectsWithTag("collectable");
     }
 
     private IEnumerator Respawn()
@@ -56,6 +61,7 @@ public class Death : MonoBehaviour
         //player points don't need to change
 
         yield return new WaitForSeconds(0.5f);
+        yield return new WaitForEndOfFrame();
 
         Debug.Log("Respawning");
 
@@ -67,8 +73,9 @@ public class Death : MonoBehaviour
         //{
         //    m_timerScript.m_timerDisplay.gameObject.SetActive(true);
         //}
-
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(0.5f);
+
         m_respawn = null;
 
         //yield return new WaitUntil(() => m_respawnMenuPanel.activeSelf == false);
@@ -87,6 +94,8 @@ public class Death : MonoBehaviour
         //m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -98,12 +107,23 @@ public class Death : MonoBehaviour
             }
         }
 
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();      
+            }
+        }
+
         //m_respawnMenuPanel.SetActive(false);
         m_timerScript.m_paused = false;
-        m_rigidbody.isKinematic = false;
 
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(0.1f);
         m_restart = null;
+        m_rigidbody.isKinematic = false;
     }
 
     private IEnumerator InstaRespawn()
@@ -133,6 +153,8 @@ public class Death : MonoBehaviour
         m_respawnPoint = m_startPoint;
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
+        m_deathless = true;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -143,6 +165,16 @@ public class Death : MonoBehaviour
             foreach(GameObject checkpoint in m_checkpoints)
             {
                 checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                collectable.GetComponent<Collectable>().particleToStop.Play();
             }
         }
 
@@ -166,6 +198,7 @@ public class Death : MonoBehaviour
         if (other.gameObject.tag == "death zone")
         {       
             Debug.Log("Player Dead");
+            m_deathless = false;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             //m_playerBodyTransform.forward = m_respawnDirection;
@@ -195,6 +228,7 @@ public class Death : MonoBehaviour
         {
             Debug.Log("Hit Obstacle");
 
+            m_deathless = false;
             m_rigidbody.linearVelocity = Vector3.zero;
             m_rigidbody.angularVelocity = Vector3.zero;
             m_rigidbody.isKinematic = true;

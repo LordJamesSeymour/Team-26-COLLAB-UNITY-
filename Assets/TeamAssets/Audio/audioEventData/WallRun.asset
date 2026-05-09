@@ -15,7 +15,7 @@ MonoBehaviour:
   Type: 3
   sound: 8
   volume: 0.1
-  volumeRange: 0.01
+  volumeRange: 0.005
   pitch: 1
   pitchRange: 0.01
-  spatialBlend: 0.3
+  spatialBlend: 0
