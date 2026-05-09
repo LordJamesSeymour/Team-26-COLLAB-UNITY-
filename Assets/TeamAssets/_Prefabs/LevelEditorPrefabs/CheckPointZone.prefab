@@ -104,7 +104,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5569290641738311404
 Transform:
   m_ObjectHideFlags: 0
@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 5878406910352319814}
   - component: {fileID: 5088394459478002388}
   - component: {fileID: 6575423463549220173}
+  - component: {fileID: 5238665374722881532}
   m_Layer: 2
   m_Name: CheckPointZone
   m_TagString: checkpoint
@@ -199,3 +200,24 @@ MonoBehaviour:
   m_playerDeathScript: {fileID: 0}
   m_floppyDisc: {fileID: 174320743956275189}
   m_used: 0
+--- !u!65 &5238665374722881532
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8841840393805019234}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 6, z: 1}
+  m_Center: {x: 0, y: 3, z: 0}
