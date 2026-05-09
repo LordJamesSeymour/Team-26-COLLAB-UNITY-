@@ -1,6 +1,7 @@
 using Group26.Player.Camera;
 using Group26.Player.Inputs;
 using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,6 +27,7 @@ public class pausemenuscript : buttonnavscript
     private Transform m_playerTransform;
     private CameraModeManager m_cameraModeManager;
     private GameObject[] m_checkpoints;
+    private GameObject[] m_collectables;
 
     void Awake()
     {
@@ -49,6 +51,7 @@ public class pausemenuscript : buttonnavscript
         m_playerRigidbody = m_player.GetComponent<Rigidbody>();
         m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
         m_checkpoints = GameObject.FindGameObjectsWithTag("checkpoint");
+        m_collectables = GameObject.FindGameObjectsWithTag("collectable");
         m_menuEventsManager.IsVisible += IsVisible;
         m_menuEventsManager.IsInvisible += IsInvisible;
         m_inputManager.OnPausePressed += RunPause;
@@ -63,6 +66,8 @@ public class pausemenuscript : buttonnavscript
         m_currentButton = m_buttons[m_index];
         m_currentButton.image.sprite = m_buttonSprites[1];
         m_enabled = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         m_cameraModeManager.m_immoveable = false;
         m_playerRigidbody.isKinematic = false;
         yield return new WaitUntil(() => m_menuPanel.activeSelf == false);
@@ -99,7 +104,21 @@ public class pausemenuscript : buttonnavscript
         {
             foreach (GameObject checkpoint in m_checkpoints)
             {
-                checkpoint.GetComponent<Checkpoint>().m_used = false;
+                if(checkpoint.GetComponent<Checkpoint>() != null)
+                    checkpoint.GetComponent<Checkpoint>().m_used = false;
+            }
+        }
+
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                if (collectable.GetComponent<Collectable>() != null)
+                {
+                    collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                    collectable.GetComponent<Collectable>().particleToStop.Play();
+                }
             }
         }
 
@@ -158,8 +177,9 @@ public class pausemenuscript : buttonnavscript
 
     private void IsInvisible()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        m_enabled = false;
     }
 
     // Update is called once per frame
