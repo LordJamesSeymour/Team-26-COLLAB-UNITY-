@@ -14,6 +14,7 @@ public class DetachEmitter : MonoBehaviour
 
     void ReturnToPool()
     {
+        if (AudioManager.instance == null) return;
         foreach (Transform child in transform)
         {
             if (child.GetComponent<AudioSource>())

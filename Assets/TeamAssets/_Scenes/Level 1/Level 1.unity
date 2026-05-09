@@ -61289,7 +61289,7 @@ Transform:
   m_GameObject: {fileID: 807357487}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.5584968, z: -0, w: 0.82950675}
-  m_LocalPosition: {x: 122.024605, y: 52.475, z: 1177.7231}
+  m_LocalPosition: {x: 122.024605, y: 40, z: 1177.7231}
   m_LocalScale: {x: 650, y: 1, z: 1000}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -117030,14 +117030,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
-    - target: {fileID: 5660924927601774571, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
-      propertyPath: m_TagString
-      value: AudioSource
-      objectReference: {fileID: 0}
-    - target: {fileID: 8010601070172612554, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
-      propertyPath: audioMixer
-      value: 
-      objectReference: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

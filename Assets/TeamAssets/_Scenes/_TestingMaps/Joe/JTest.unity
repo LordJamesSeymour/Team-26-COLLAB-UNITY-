@@ -751,10 +751,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4609235835851318123, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4759418781719365077, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5432028835112225570, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: 'SceneMusic.Array.data[5].songs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+    - target: {fileID: 5432028835112225570, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: 'SceneMusic.Array.data[5].songs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3867,7 +3879,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226302151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13052596, y: 0, z: 0, w: 0.99144495}
+  m_LocalRotation: {x: -0.13052568, y: 0.0000001623702, z: -0.00000002230799, w: -0.991445}
   m_LocalPosition: {x: 2.21, y: 4.443874, z: -6.8034678}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

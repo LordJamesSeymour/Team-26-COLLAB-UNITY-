@@ -17,5 +17,5 @@ MonoBehaviour:
   volume: 1
   volumeRange: 0.2
   pitch: 1
-  pitchRange: 0.03
+  pitchRange: 0.1
   spatialBlend: 0
