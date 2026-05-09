@@ -183,7 +183,7 @@ MonoBehaviour:
     sounds:
     - {fileID: 8300000, guid: 23da7f67d7746f44f9dfc0189f24e122, type: 3}
     - {fileID: 8300000, guid: 521026b6d13748f4589b49b639188ebc, type: 3}
-  audioMixer: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   effectsVolumeName: EffectsVolume
   musicVolumeName: MusicVolume
 --- !u!1 &5660924927601774571
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 4609235835851318123}
   m_Layer: 0
   m_Name: MusicManager
-  m_TagString: Untagged
+  m_TagString: AudioSource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -231,6 +231,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd63c2bc26cf39d4a8b1019dce53d1a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SceneMusic:
+  - LevelSceneName: Menu
+    songs:
+    - {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+  - LevelSceneName: Level 1
+    songs:
+    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
+  - LevelSceneName: Level1
+    songs:
+    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
+  - LevelSceneName: Level2
+    songs:
+    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
+  - LevelSceneName: Level3
+    songs:
+    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
 --- !u!82 &4609235835851318123
 AudioSource:
   m_ObjectHideFlags: 0
@@ -242,7 +258,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -8145647074802892343, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+  m_Resource: {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
