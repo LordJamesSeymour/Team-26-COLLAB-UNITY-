@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: NeonTest
-  m_Shader: {fileID: -6465566751694194690, guid: ee17a15096ffc5346877441cb7d4661e, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 50f71e3ff91da0b45b8d4dd5f866bb21, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
