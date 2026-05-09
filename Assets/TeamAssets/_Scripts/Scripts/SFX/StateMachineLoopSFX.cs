@@ -14,6 +14,6 @@ public class StateMachineLoopSFX : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateExit(animator, stateInfo, layerIndex);
-        AudioManager.instance.EndSound(source);
+        AudioManager.instance.EndLoopingSound(source);
     }
 }

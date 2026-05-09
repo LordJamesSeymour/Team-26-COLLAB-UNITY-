@@ -42,7 +42,6 @@ namespace Group26.Player.Movement
 		[SerializeField] float jumpForce;
 		[SerializeField] float jumpCooldown = 0.1f;
 		[SerializeField] float airMultiplier = 0.4f;
-		[SerializeField] AudioEventData JumpSFX;
 
 		[Header("Jump Buffering")]
 		[SerializeField] float jumpBufferTime = 0.15f;
@@ -562,8 +561,6 @@ namespace Group26.Player.Movement
 
 			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-			AudioManager.instance.PlaySoundAtPoint(JumpSFX.sound, transform.position, JumpSFX.volume, JumpSFX.volumeRange, JumpSFX.pitch, JumpSFX.pitchRange, JumpSFX.spatialBlend);
 		}
 
 		private void ResetJump()
@@ -625,8 +622,7 @@ namespace Group26.Player.Movement
 			if (m_bSliding && slidingComp != null)
 				slidingComp.ForceEndSlide();
 
-            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
-            m_bDashing = true;
+			m_bDashing = true;
 			m_bDashMovementLocked = lockMovement;
 			maxYSpeed = dashMaxYSpeed;
 		}

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
 public class AudioManager : MonoBehaviour
@@ -11,12 +10,6 @@ public class AudioManager : MonoBehaviour
     public  static AudioManager instance { get; private set;}
     private AudioSource audioSource;
     private AudioSource[] audioEmitters = new AudioSource[10];
-
-    [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private string effectsVolumeName = "EffectsVolume";
-    [SerializeField] private string musicVolumeName = "MusicVolume";
-
-    public datamanager dm;
 
     public enum SoundType
     {
@@ -44,15 +37,6 @@ public class AudioManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        dm = new datamanager(6);
-        try
-        {
-            dm.LoadGameData();
-            audioMixer.SetFloat(effectsVolumeName, dm.GetGameData().settings.soundEffectsVolume);
-            audioMixer.SetFloat(musicVolumeName, dm.GetGameData().settings.backgroundMusicVolume);
-        }
-        catch (Exception e) { Debug.Log("None Found"); }
-
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
         {
@@ -74,14 +58,13 @@ public class AudioManager : MonoBehaviour
         audioSource.PlayOneShot(SelectRandomSound(sound), volume);
     }
 
-    public AudioSource PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    public void PlaySoundFromObject(SoundType sound, Transform target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
 
-        if (source == null) { return null; }
+        if (source == null) { return; }
 
-        source.loop = false;
         source.gameObject.SetActive(true);
         source.transform.parent = target;
         source.transform.localPosition = Vector3.zero;
@@ -100,8 +83,6 @@ public class AudioManager : MonoBehaviour
         }
 
         StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
-
-        return source;
 
     }
 
@@ -133,19 +114,18 @@ public class AudioManager : MonoBehaviour
         return source; // need to 
     }
 
-    public void EndSound(AudioSource end)
+    public void EndLoopingSound(AudioSource end)
     {
         StartCoroutine(ReturnToPool(end, 0));
     }
 
-    public AudioSource PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
+    public void PlaySoundAtPoint(SoundType sound, Vector3 target, float volume = 1, float volumeRange = 0, float pitch = 1, float pitchRange = 0, float spatialBlend = 1)
     {
         AudioSource source = GetAvailableSource();
         AudioClip clip = SelectRandomSound(sound);
 
-        if (source == null) { return null; }
+        if (source == null) { return; }
 
-        source.loop = false;
         source.gameObject.SetActive(true);
         source.transform.position = target;
         source.clip = clip;
@@ -158,9 +138,7 @@ public class AudioManager : MonoBehaviour
         source.Play();
         source.transform.parent = null;
 
-        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch))); // can add .1f to these for safety if there is cutoff issues
-
-        return source;
+        StartCoroutine(ReturnToPool(source, clip.length / Mathf.Abs(source.pitch)));
 
     }
 
@@ -182,20 +160,8 @@ public class AudioManager : MonoBehaviour
     private IEnumerator ReturnToPool(AudioSource source, float delay) // need to also return to pool if the objects parent is destroyed as to not also destroy the emitter. (maybe also have a 
     {
         yield return new WaitForSeconds(delay);
-
-        // fade out
-
-        float startVol = source.volume;
-        while (source.volume > 0)
-        {
-            source.volume -= startVol * (Time.deltaTime / .05f); // .05s fade
-            yield return null;
-        }
-
-
         source.transform.parent = transform;
         source.gameObject.SetActive(false);
-        //source.Pause();
         if (source.clip != null) { source.Stop(); }
     }
 

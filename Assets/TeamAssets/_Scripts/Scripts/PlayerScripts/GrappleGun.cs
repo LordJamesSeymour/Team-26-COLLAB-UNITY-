@@ -14,6 +14,7 @@ namespace Group26.Player.Movement
 		[SerializeField] private Transform grappleCamera;
 		[SerializeField] private Transform firePoint;
 		[SerializeField] private LayerMask m_grappableLayer;
+		[SerializeField] private LineRenderer lineRenderer;
 		[SerializeField] private Transform m_maincam;
 
 		private Vector3 grapplePoint;
@@ -73,6 +74,12 @@ namespace Group26.Player.Movement
 
 			ClearCurrentHighlight();
 			CancelInvoke();
+		}
+
+		private void LateUpdate()
+		{
+			if (m_bGrappling && lineRenderer != null && firePoint != null)
+				lineRenderer.SetPosition(0, firePoint.position);
 		}
 
 		private void FixedUpdate()
@@ -249,7 +256,7 @@ namespace Group26.Player.Movement
 			if (activeCam == null)
 				return;
 
-			if (PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.CapsuleMode)
+			if(PlayerModeSwitcher != null && PlayerModeSwitcher.currentMode != PlayerMode.CapsuleMode)
 				return;
 
 			if (grappleCooldownTimer > 0f) return;
@@ -324,7 +331,6 @@ namespace Group26.Player.Movement
 		{
 			if (token != _grappleToken) return;
 
-			AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.GRAPPLE, transform.position, volume: .7f, pitchRange: .2f, spatialBlend: 0);
 			PlayerController.m_bFreeze = false;
 			PlayerController.GrappleToPositionStraight(grapplePoint, straightGrappleSpeed);
 
@@ -348,6 +354,9 @@ namespace Group26.Player.Movement
 			PlayerController.m_bFreeze = false;
 			m_bGrappling = false;
 			grappleCooldownTimer = grappleCooldown;
+
+			if (lineRenderer != null)
+				lineRenderer.enabled = false;
 		}
 
 		public Vector3 GetGrapplePoint()

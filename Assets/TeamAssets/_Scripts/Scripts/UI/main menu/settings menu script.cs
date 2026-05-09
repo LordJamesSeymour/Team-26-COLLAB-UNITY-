@@ -61,7 +61,7 @@ public class settingsmenuscript : menuscreenscript
         m_maxWidth = maxResolution.width;
         m_maxHeight = maxResolution.height;
 
-        if (m_started == false)
+        if(m_started == false)
         {
             m_started = true;
             Screen.SetResolution(maxResolution.width, maxResolution.height, true);
@@ -92,7 +92,6 @@ public class settingsmenuscript : menuscreenscript
         m_buttonScript.m_settingsPanel.GetComponent<menuscreeneventsmanager>().IsVisible += SettingsVisible;
     }
 
-
     private void SettingsVisible()
     {
         Debug.Log(m_run);
@@ -103,19 +102,9 @@ public class settingsmenuscript : menuscreenscript
 
         Debug.Log("settings visible");
         m_checkpointToggle.isOn = m_manager.GetGameData().settings.checkpointsEnabled;
-        //m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
-        //m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+        m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
+        m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
         m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
-
-        float musicDB;
-        audioMixer.GetFloat(musicVolumeName, out musicDB);
-        float sfxDB;
-        audioMixer.GetFloat(effectsVolumeName, out sfxDB);
-
-        float musicVolume = 100 * Mathf.Pow(10, musicDB / 20);
-        m_backgroundMusicSlider.value = musicVolume;
-        float SFXVolume = 100 * Mathf.Pow(10, sfxDB / 20);
-        m_soundEffectsSlider.value = SFXVolume;
     }
 
     private Resolution FindHighestRes()
@@ -224,26 +213,20 @@ public class settingsmenuscript : menuscreenscript
 
     public void UpdateBackgroundVolume(AudioSource source)
     {
-        //float volume = m_backgroundMusicSlider.value * .8f - 80;
-        float db = Mathf.Log10(Mathf.Max(0.0001f, m_backgroundMusicSlider.value / 100)) * 20;
-        audioMixer.SetFloat(musicVolumeName, db);
-        m_manager.SetBackgroundVolume(db);
+        float volume = m_backgroundMusicSlider.value * .8f - 80;
+        audioMixer.SetFloat(musicVolumeName, volume);
+
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
-
-        source.Play();
     }
 
     public void UpdateSoundEffectsVolume(AudioSource source)
     {
-        //float volume = m_soundEffectsSlider.value * .9f - 80;
-        float db = Mathf.Log10(Mathf.Max(0.0001f, m_soundEffectsSlider.value / 100)) * 20;
-        audioMixer.SetFloat(effectsVolumeName, db);
-        m_manager.SetSoundEffectsVolume(db);
+        float volume = m_soundEffectsSlider.value * .8f - 80;
+        audioMixer.SetFloat(effectsVolumeName, volume);
+
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
-
-        source.Play();
     }
 
     public void UpdateSensitivitySlider()

@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/TeamAssets/_Scenes/_TestingMaps/Scott/Level3/ReflectionProbe-0.exr.meta
 guid: 212a5b92f4101bf43ae9a1c544452e4f
-========
-guid: 50de6abc76f7ff34a8e8c83d357899c3
->>>>>>>> origin/unstable:Assets/TeamAssets/2D & UI/Tutorial images/cursor ball transform illust.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,11 +39,11 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 0
-  nPOTScale: 0
+    wrapW: 1
+  nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 0
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -56,15 +52,10 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
-<<<<<<<< HEAD:Assets/TeamAssets/_Scenes/_TestingMaps/Scott/Level3/ReflectionProbe-0.exr.meta
   textureType: 0
   textureShape: 2
-========
-  textureType: 8
-  textureShape: 1
->>>>>>>> origin/unstable:Assets/TeamAssets/2D & UI/Tutorial images/cursor ball transform illust.png.meta
   singleChannelComponent: 0
   flipbookRows: 1
   flipbookColumns: 1
@@ -82,11 +73,7 @@ TextureImporter:
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
-<<<<<<<< HEAD:Assets/TeamAssets/_Scenes/_TestingMaps/Scott/Level3/ReflectionProbe-0.exr.meta
     compressionQuality: 100
-========
-    compressionQuality: 50
->>>>>>>> origin/unstable:Assets/TeamAssets/2D & UI/Tutorial images/cursor ball transform illust.png.meta
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -139,7 +126,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 

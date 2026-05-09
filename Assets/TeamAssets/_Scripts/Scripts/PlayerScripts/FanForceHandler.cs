@@ -49,7 +49,7 @@ public class FanForceHandler : MonoBehaviour
             }
 
             //if the force is being limited, the force is only added if the linear velocity is less than the max force
-            if (m_rb.linearVelocity.y < m_maxUpwardsForce)
+            if (m_rb.linearVelocity.magnitude < m_maxUpwardsForce)
             {
                 m_rb.AddForce(forcetoapply, ForceMode.Impulse);
             }

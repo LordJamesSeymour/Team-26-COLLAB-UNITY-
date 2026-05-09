@@ -14008,10 +14008,6 @@ PrefabInstance:
       propertyPath: UI_Refrence
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6410841948288547233, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
-      propertyPath: Lens.FarClipPlane
-      value: 5000
-      objectReference: {fileID: 0}
     - target: {fileID: 7187784388681633182, guid: 544234dffefbf3a4c8007cb6810d0e1d, type: 3}
       propertyPath: firePoint
       value: 
@@ -26787,6 +26783,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2897136671533016221, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
+      propertyPath: Gain
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6452394476422909918, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: m_Name
       value: Main Camera

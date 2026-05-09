@@ -119,7 +119,6 @@ public class levelselectionmenuscript : menuscreenscript
 
     private IEnumerator ToggleLevelsScreenOff()
     {
-        m_buttonScript.GetLevelsBackground().SetActive(false);
         m_buttonScript.GetLevelsPanel().SetActive(false);
         m_buttonScript.m_menuPanel.SetActive(true);
 
