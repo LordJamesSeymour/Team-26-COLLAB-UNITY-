@@ -197,13 +197,34 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 3
+        m_Name: Size
+        m_Overridden: 1
+      - m_Value: 0.5
+        m_Name: Trail lifetime
+        m_Overridden: 1
+      - m_Value: 30
+        m_Name: Trail Spawn rate
+        m_Overridden: 1
+      - m_Value: 50000
+        m_Name: SpawnRate
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: OuterParticlesLifetime
+        m_Overridden: 1
+      - m_Value: 0.5
+        m_Name: Centre Lifetime
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.94873625, y: 1.8803798, z: 3.0943396, w: 1000}
+        m_Name: Color
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -227,7 +248,7 @@ Transform:
   m_GameObject: {fileID: 526630740}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -114.843, y: 1.6325989, z: -31.947208}
+  m_LocalPosition: {x: -114.843, y: 5.632599, z: -33.94721}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
