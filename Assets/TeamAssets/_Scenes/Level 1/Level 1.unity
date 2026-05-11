@@ -48177,9 +48177,11 @@ MonoBehaviour:
   m_enabled: 1
   m_menuPanel: {fileID: 2082895952}
   m_controlsPanel: {fileID: 328583005}
+  m_controlsBackground: {fileID: 0}
   m_levelsPanel: {fileID: 0}
   m_levelsBackground: {fileID: 0}
   m_settingsPanel: {fileID: 203339789}
+  m_settingsBackground: {fileID: 0}
   m_buttons:
   - {fileID: 1369755353}
   - {fileID: 1326221957}

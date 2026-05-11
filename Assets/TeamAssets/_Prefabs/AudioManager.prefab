@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SceneMusic:
-  - SceneName: menu testing
+  - SceneName: menu testing duplicate
     songs:
     - {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}

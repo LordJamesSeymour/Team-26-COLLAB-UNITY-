@@ -19,8 +19,8 @@ public class settingsmenuscript : menuscreenscript
     //[SerializeField] AudioSource m_backgroundMusic;
 
     [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] string m_effects;
-    [SerializeField] string m_music;
+    string m_effects = "EffectsVolume";
+    string m_music = "MusicVolume";
 
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
