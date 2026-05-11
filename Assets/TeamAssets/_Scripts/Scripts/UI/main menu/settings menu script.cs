@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -54,9 +53,9 @@ public class settingsmenuscript : menuscreenscript
     {
         base.Awake();
 
-        //Screen.fullScreen = true;
+        Screen.fullScreen = true;
+        Screen.SetResolution(1920, 1080, true);
 
-        //Screen.SetResolution(1920, 888, true);
         Resolution maxResolution = FindHighestRes();
         m_maxWidth = maxResolution.width;
         m_maxHeight = maxResolution.height;
@@ -135,6 +134,9 @@ public class settingsmenuscript : menuscreenscript
 
     private IEnumerator ToggleSettingsMenuOff()
     {
+        if(m_buttonScript.m_settingsBackground != null)
+            m_buttonScript.m_settingsBackground.SetActive(false);
+
         m_buttonScript.m_settingsPanel.SetActive(false);
         m_buttonScript.m_menuPanel.SetActive(true);
         m_onExitButton = false;
