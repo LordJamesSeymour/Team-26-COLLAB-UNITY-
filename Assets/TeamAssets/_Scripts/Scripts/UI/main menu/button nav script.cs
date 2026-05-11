@@ -17,9 +17,11 @@ public class buttonnavscript : MonoBehaviour
 
     [SerializeField] public GameObject m_menuPanel;
     [SerializeField] public GameObject m_controlsPanel;
+    [SerializeField] public GameObject m_controlsBackground;
     [SerializeField] private GameObject m_levelsPanel;
     [SerializeField] private GameObject m_levelsBackground;
     [SerializeField] public GameObject m_settingsPanel;
+    [SerializeField] public GameObject m_settingsBackground;
     [SerializeField] protected Button[] m_buttons;
     [SerializeField] protected Sprite[] m_buttonSprites;
 
@@ -92,7 +94,8 @@ public class buttonnavscript : MonoBehaviour
 
     private IEnumerator ToggleLevelMenuOn(GameObject menu)
     {
-        m_levelsBackground.SetActive(true);
+        if(m_levelsBackground != null)
+            m_levelsBackground.SetActive(true);
         menu.SetActive(true);
         m_menuPanel.SetActive(false);
         m_enabled = false;
@@ -106,6 +109,8 @@ public class buttonnavscript : MonoBehaviour
 
     protected IEnumerator ToggleSettingsMenuOn(GameObject menu)
     {
+        if(m_settingsBackground != null)
+            m_settingsBackground.SetActive(true);
         menu.SetActive(true);
         m_menuPanel.SetActive(false);
         m_enabled = false;
@@ -119,6 +124,9 @@ public class buttonnavscript : MonoBehaviour
 
     public void RunControlsMenuToggle(GameObject menu)
     {
+        if(m_controlsBackground != null)
+            m_controlsBackground.SetActive(true);
+
         if(m_toggleControlsOn == null)
             m_toggleControlsOn = StartCoroutine(ToggleControlsMenuOn(menu));
 

@@ -40,6 +40,8 @@ public class controlsmenuscript : menuscreenscript
 
     public IEnumerator ToggleControlsMenuOff()
     {
+        if(m_buttonScript.m_controlsBackground != null)
+            m_buttonScript.m_controlsBackground.SetActive(false);
         m_buttonScript.m_controlsPanel.SetActive(false);
         m_buttonScript.m_menuPanel.SetActive(true);
         m_exitButton.image.sprite = m_buttonSprites[0];

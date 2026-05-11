@@ -71,6 +71,7 @@ public class Checkpoint : MonoBehaviour
         {
             m_playerDeathScript.m_respawnPoint = transform.position;
             m_playerDeathScript.m_respawnPoint.y = transform.position.y + 0.841f;
+            m_playerDeathScript.m_respawnDirection = Quaternion.LookRotation(transform.forward);
             StartCoroutine(MoveFloppyDisc());
             //DESIGN HAVE SAID THAT THE PLAYER SHOULD RESPAWN AT A CHECKPOINT WITH THE NUMBER OF POINTS THEY HAD UPON DEATH
             //e.g. if they have 500 points when they cross the checkpoint but have 1000 points when they die, they respawn at
