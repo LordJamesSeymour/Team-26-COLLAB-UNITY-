@@ -8511,7 +8511,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e58332270314f6f4ab62e1f960595094, type: 2}
+  - {fileID: 2100000, guid: 5464340c42f60494280df34a11bd5ea1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8700,6 +8700,8 @@ MonoBehaviour:
   railExitMomentumMultiplier: 1.15
   railReattachCooldown: 0.25
   railFallbackMinSpeed: 0.1
+  preserveRailExitMomentum: 1
+  railExitMomentumGraceTime: 0.35
   m_straightGrappleReleaseDistance: 1
   WallridePredictionIncrease: 3.5
   m_grappleLandingShakeSuppressTime: 0.1
