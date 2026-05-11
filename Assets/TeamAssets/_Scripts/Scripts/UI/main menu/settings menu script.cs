@@ -53,35 +53,18 @@ public class settingsmenuscript : menuscreenscript
     {
         base.Awake();
 
-        Screen.fullScreen = true;
-        Screen.SetResolution(1920, 1080, true);
+        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+        //Screen.fullScreen = true;
 
-        Resolution maxResolution = FindHighestRes();
-        m_maxWidth = maxResolution.width;
-        m_maxHeight = maxResolution.height;
-
-        if (m_started == false)
-        {
-            m_started = true;
-            Screen.SetResolution(maxResolution.width, maxResolution.height, true);
-        }
+        Resolution current = Screen.currentResolution;
+        m_maxWidth = current.width;
+        m_maxHeight = current.height;
 
         m_manager = new datamanager(6);
-
-        //if (m_run == false)
-        //{
-        //    m_run = true;
-        //}
-        //else
-        //{
-        //    m_manager.LoadGameData();
-        //}
 
         m_scrollRect = m_scrollArea.GetComponent<ScrollRect>();
         if (!m_scrollRect)
             Debug.LogError("no scroll rect on object");
-
-        //Debug.Log(m_manager.GetGameData().settings.checkpointsEnabled);
 
         m_fullscreenToggle.isOn = true;
         m_widthInput.interactable = false;
