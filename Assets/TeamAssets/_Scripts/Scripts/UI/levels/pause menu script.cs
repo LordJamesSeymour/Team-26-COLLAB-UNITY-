@@ -5,6 +5,7 @@ using RadicalForge.Gameplay;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -68,6 +69,7 @@ public class pausemenuscript : buttonnavscript
         m_enabled = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        EventSystem.current.sendNavigationEvents = false;
         m_cameraModeManager.m_immoveable = false;
         m_playerRigidbody.isKinematic = false;
         yield return new WaitUntil(() => m_menuPanel.activeSelf == false);
@@ -180,6 +182,7 @@ public class pausemenuscript : buttonnavscript
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        EventSystem.current.sendNavigationEvents = true;
         m_playerRigidbody.linearVelocity = Vector3.zero;
         m_playerRigidbody.angularVelocity = Vector3.zero;
         m_playerRigidbody.isKinematic = true;
