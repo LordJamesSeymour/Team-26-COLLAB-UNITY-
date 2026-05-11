@@ -107,6 +107,7 @@ public class settingsmenuscript : menuscreenscript
         //m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
         m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
 
+        /*
         float musicDB;
         audioMixer.GetFloat(musicVolumeName, out musicDB);
         float sfxDB;
@@ -116,6 +117,16 @@ public class settingsmenuscript : menuscreenscript
         m_backgroundMusicSlider.value = musicVolume;
         float SFXVolume = 100 * Mathf.Pow(10, sfxDB / 20);
         m_soundEffectsSlider.value = SFXVolume;
+        
+
+        float musicDB = m_manager.GetGameData().settings.soundEffectsVolume;
+        float sfxDB = m_manager.GetGameData().settings.backgroundMusicVolume;
+
+        float musicVolume = 100 * Mathf.Pow(10, musicDB / 20);
+        m_backgroundMusicSlider.value = musicVolume;
+        float SFXVolume = 100 * Mathf.Pow(10, sfxDB / 20);
+        m_soundEffectsSlider.value = SFXVolume;
+        */
     }
 
     private Resolution FindHighestRes()
