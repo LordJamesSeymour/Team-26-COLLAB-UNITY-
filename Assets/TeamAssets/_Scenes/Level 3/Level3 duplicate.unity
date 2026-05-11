@@ -6418,7 +6418,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6511,7 +6511,7 @@ MonoBehaviour:
   generateSideWallColliders: 0
   sideWallsDoubleSided: 0
   generateBridgePlane: 1
-  bridgeMaterial: {fileID: 0}
+  bridgeMaterial: {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   bridgeVerticalOffset: 0
   bridgeDoubleSided: 1
   generateBottomPlane: 1
@@ -14974,7 +14974,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15060,7 +15060,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16196,7 +16196,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17764,6 +17764,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &813250269 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6797045768519289606, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+  m_PrefabInstance: {fileID: 231829518}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813250245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ad9208d78e73249a22ab3ffbdf4c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &818276795
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18404,7 +18415,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18552,7 +18563,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21186,7 +21197,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -22077,7 +22088,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -23105,7 +23116,7 @@ MonoBehaviour:
   generateSideWallColliders: 0
   sideWallsDoubleSided: 0
   generateBridgePlane: 1
-  bridgeMaterial: {fileID: 0}
+  bridgeMaterial: {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   bridgeVerticalOffset: 0
   bridgeDoubleSided: 1
   generateBottomPlane: 1
@@ -23533,7 +23544,7 @@ MonoBehaviour:
   generateSideWallColliders: 0
   sideWallsDoubleSided: 0
   generateBridgePlane: 1
-  bridgeMaterial: {fileID: 0}
+  bridgeMaterial: {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   bridgeVerticalOffset: 0
   bridgeDoubleSided: 1
   generateBottomPlane: 1
@@ -24552,7 +24563,7 @@ PrefabInstance:
     - target: {fileID: 6575423463549220173, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_playerDeathScript
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250269}
     - target: {fileID: 8841840393805019234, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_Name
       value: CheckPointZone (2)
@@ -24909,7 +24920,7 @@ MonoBehaviour:
   generateSideWallColliders: 0
   sideWallsDoubleSided: 0
   generateBridgePlane: 1
-  bridgeMaterial: {fileID: 0}
+  bridgeMaterial: {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   bridgeVerticalOffset: 0
   bridgeDoubleSided: 1
   generateBottomPlane: 1
@@ -25122,7 +25133,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -25544,7 +25555,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -26318,7 +26329,7 @@ PrefabInstance:
     - target: {fileID: 6575423463549220173, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_playerDeathScript
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250269}
     - target: {fileID: 8841840393805019234, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_Name
       value: CheckPointZone
@@ -26741,7 +26752,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27267,7 +27278,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27988,7 +27999,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -36198,7 +36209,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -36896,6 +36907,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1820624178687479003, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
     - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.42085
@@ -38591,7 +38606,7 @@ PrefabInstance:
     - target: {fileID: 6575423463549220173, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_playerDeathScript
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250269}
     - target: {fileID: 8841840393805019234, guid: bfe9457d28409da44bc324ad64742252, type: 3}
       propertyPath: m_Name
       value: CheckPointZone (1)
@@ -41881,7 +41896,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -42262,6 +42277,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
+      propertyPath: far clip plane
+      value: 6000
+      objectReference: {fileID: 0}
     - target: {fileID: 6452394476422909918, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -43010,7 +43029,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 56c750de72de2e745b6fdcf0c79a0d06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
