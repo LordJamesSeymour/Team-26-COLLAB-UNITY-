@@ -27307,6 +27307,10 @@ PrefabInstance:
       propertyPath: predictionPoint
       value: 
       objectReference: {fileID: 1224464901081401010}
+    - target: {fileID: 5360163084992432912, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      propertyPath: walkSpeed
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 6514609564055611009, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
