@@ -6,19 +6,19 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: InnerBackCap
+  m_Name: InnerBackCap_Auto
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
-    indexCount: 12
+    indexCount: 0
     topology: 0
     baseVertex: 0
     firstVertex: 0
-    vertexCount: 4
+    vertexCount: 0
     localAABB:
-      m_Center: {x: -6.9986877, y: 28.119968, z: 19.00232}
-      m_Extent: {x: 0.2949829, y: 0, z: 0.16400146}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -35,10 +35,10 @@ Mesh:
   m_KeepVertices: 1
   m_KeepIndices: 1
   m_IndexFormat: 0
-  m_IndexBuffer: 000002000100010002000300010002000000030002000100
+  m_IndexBuffer: 
   m_VertexData:
     serializedVersion: 3
-    m_VertexCount: 4
+    m_VertexCount: 0
     m_Channels:
     - stream: 0
       offset: 0
@@ -96,8 +96,8 @@ Mesh:
       offset: 0
       format: 0
       dimension: 0
-    m_DataSize: 128
-    _typelessdata: c065e9c0b2f5e041a05499410000000000000000000000000000000000000000c084d6c0b2f5e041e0b4964100000000000000000000000063305d3c00000000c065e9c0b2f5e041a05499410000000000000000000000000000000000000000c084d6c0b2f5e041e0b4964100000000000000000000000063305d3c00000000
+    m_DataSize: 0
+    _typelessdata: 
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
