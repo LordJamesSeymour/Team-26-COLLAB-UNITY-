@@ -540,6 +540,11 @@ namespace Group26.Player.Camera
             m_playerTransform.rotation = Quaternion.Euler(0f, groundedYaw, 0f);
         }
 
+        public void SetYaw(Quaternion targetDir)
+        {
+            m_yaw = targetDir.eulerAngles.y;
+        }
+
         public void GrappleBoostFOV()
         {
             if (grappleBoostFOVCoroutine != null)
