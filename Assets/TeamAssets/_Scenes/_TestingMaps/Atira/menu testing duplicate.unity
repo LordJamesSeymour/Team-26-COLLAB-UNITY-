@@ -1680,7 +1680,7 @@ MonoBehaviour:
         m_MethodName: RunControlsMenuToggle
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 401531971}
+          m_ObjectArgument: {fileID: 278672904}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3701,7 +3701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &278672905
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3722,11 +3722,11 @@ RectTransform:
   - {fileID: 12325370}
   - {fileID: 1132403875}
   - {fileID: 646412578}
-  m_Father: {fileID: 401531972}
+  m_Father: {fileID: 956065731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000020981, y: 0.000013351}
+  m_AnchoredPosition: {x: -7.6459002, y: 30.363625}
   m_SizeDelta: {x: 1262.0535, y: 813.2125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &278672906
@@ -4333,8 +4333,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 278672905}
+  m_Children: []
   m_Father: {fileID: 956065731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5459,7 +5458,7 @@ MonoBehaviour:
         m_MethodName: RunSettingsMenuToggle
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 972841573}
+          m_ObjectArgument: {fileID: 1265400434}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -8908,6 +8907,8 @@ Transform:
   - {fileID: 63950144}
   - {fileID: 1092837711}
   - {fileID: 852883240}
+  - {fileID: 278672905}
+  - {fileID: 1265400435}
   - {fileID: 401531972}
   - {fileID: 972841574}
   m_Father: {fileID: 1868716825}
@@ -9232,8 +9233,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1265400435}
+  m_Children: []
   m_Father: {fileID: 956065731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10071,7 +10071,7 @@ GameObject:
   - component: {fileID: 1092837713}
   - component: {fileID: 1092837712}
   m_Layer: 5
-  m_Name: levels background
+  m_Name: background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10310,10 +10310,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_enabled: 1
   m_menuPanel: {fileID: 63950143}
-  m_controlsPanel: {fileID: 401531971}
+  m_controlsPanel: {fileID: 278672904}
+  m_controlsBackground: {fileID: 1092837710}
   m_levelsPanel: {fileID: 852883239}
   m_levelsBackground: {fileID: 1092837710}
-  m_settingsPanel: {fileID: 972841573}
+  m_settingsPanel: {fileID: 1265400434}
+  m_settingsBackground: {fileID: 1092837710}
   m_buttons:
   - {fileID: 1107829087}
   - {fileID: 86274678}
@@ -11714,13 +11716,14 @@ GameObject:
   - component: {fileID: 1265400435}
   - component: {fileID: 1265400437}
   - component: {fileID: 1265400436}
+  - component: {fileID: 1265400438}
   m_Layer: 5
   m_Name: settings panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1265400435
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11737,11 +11740,11 @@ RectTransform:
   - {fileID: 274338698}
   - {fileID: 469452668}
   - {fileID: 630949716}
-  m_Father: {fileID: 972841574}
+  m_Father: {fileID: 956065731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015259, y: -0.000015259}
+  m_AnchoredPosition: {x: -7.645906, y: 30.363646}
   m_SizeDelta: {x: 1320.0564, y: 786.1085}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1265400436
@@ -11782,6 +11785,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1265400434}
   m_CullTransparentMesh: 1
+--- !u!114 &1265400438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1265400434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 001dbf125c5fe934f8f172eaeb37cf9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1275179135
 GameObject:
   m_ObjectHideFlags: 0
