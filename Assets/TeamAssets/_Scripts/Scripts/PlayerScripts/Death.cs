@@ -103,7 +103,8 @@ public class Death : MonoBehaviour
         {
             foreach (GameObject checkpoint in m_checkpoints)
             {
-                checkpoint.GetComponent<Checkpoint>().m_used = false;
+                if(checkpoint.GetComponent<Checkpoint>() != null)
+                    checkpoint.GetComponent<Checkpoint>().m_used = false;
             }
         }
 
@@ -112,8 +113,11 @@ public class Death : MonoBehaviour
             foreach (GameObject collectable in m_collectables)
             {
                 collectable.SetActive(true);
-                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
-                collectable.GetComponent<Collectable>().particleToStop.Play();      
+                if (collectable.GetComponent<Collectable>() != null)
+                {
+                    collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                    collectable.GetComponent<Collectable>().particleToStop.Play();
+                }    
             }
         }
 
@@ -164,7 +168,8 @@ public class Death : MonoBehaviour
         {
             foreach(GameObject checkpoint in m_checkpoints)
             {
-                checkpoint.GetComponent<Checkpoint>().m_used = false;
+                if(checkpoint.GetComponent<Checkpoint>() != null)
+                    checkpoint.GetComponent<Checkpoint>().m_used = false;
             }
         }
 
@@ -173,8 +178,11 @@ public class Death : MonoBehaviour
             foreach (GameObject collectable in m_collectables)
             {
                 collectable.SetActive(true);
-                collectable.GetComponent<Collectable>().particleToSpawn.Stop();
-                collectable.GetComponent<Collectable>().particleToStop.Play();
+                if (collectable.GetComponent<Collectable>() != null)
+                {
+                    collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                    collectable.GetComponent<Collectable>().particleToStop.Play();
+                }
             }
         }
 
