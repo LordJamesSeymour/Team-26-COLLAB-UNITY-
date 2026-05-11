@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class FanForceHandler : MonoBehaviour
@@ -15,6 +16,9 @@ public class FanForceHandler : MonoBehaviour
     /// The maximum force that can be added by a fan. This is a float as fans only add upwards force
     /// </summary>
     [SerializeField] private float m_maxTotalForce = 25.0f;
+    //testing to toggle between the total force limit and vector3 force limit. If we decide to go with either or this can be removed
+    [SerializeField] private bool m_bLimitForceAxisSeperately = true;
+    [SerializeField] private Vector3 m_totalVectorForce = Vector3.zero;
 
     [Header("Debug")]
     ///<summary>
@@ -48,10 +52,13 @@ public class FanForceHandler : MonoBehaviour
                 return;
             }
 
-            //if the force is being limited, the force is only added if the linear velocity is less than the max force
-            if (m_rb.linearVelocity.magnitude < m_maxTotalForce)
+            if (m_bLimitForceAxisSeperately)
             {
-                m_rb.AddForce(forcetoapply, ForceMode.Impulse);
+                LimitVectorForce(forcetoapply);
+            }
+            else
+            {
+                limitTotalForce(forcetoapply);
             }
 
         }
@@ -61,4 +68,43 @@ public class FanForceHandler : MonoBehaviour
         }
     }
 
+    private void limitTotalForce(Vector3 forcetoapply)
+    {
+        //if the force is being limited, the force is only added if the linear velocity is less than the max force
+        if (m_rb.linearVelocity.magnitude < m_maxTotalForce && m_rb != null)
+        {
+            m_rb.AddForce(forcetoapply, ForceMode.Impulse);
+        }
+    }
+
+    private void LimitVectorForce(Vector3 forcetoapply)
+    {
+        if(m_rb == null)
+        {
+            return;
+        }
+
+        Vector3 newforce = Vector3.zero;
+        if (m_rb.linearVelocity.x < m_totalVectorForce.x)
+        {
+            newforce.x = forcetoapply.x;
+            m_rb.AddForce(newforce, ForceMode.Impulse);
+        }
+
+        newforce = Vector3.zero;
+        if (m_rb.linearVelocity.y < m_totalVectorForce.y)
+        {
+            newforce.y = forcetoapply.y;
+            m_rb.AddForce(newforce, ForceMode.Impulse);
+        }
+        
+        newforce = Vector3.zero;
+        if (m_rb.linearVelocity.z < m_totalVectorForce.z)
+        {
+            newforce.z = forcetoapply.z;
+            m_rb.AddForce(newforce, ForceMode.Impulse);
+        }
+    }
+
 }
+

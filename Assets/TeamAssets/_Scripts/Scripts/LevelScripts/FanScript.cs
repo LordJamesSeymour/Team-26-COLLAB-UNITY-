@@ -77,6 +77,6 @@ public class FanScript : MonoBehaviour
     private bool IsInFan()
     {
         RaycastHit hit;
-        return Physics.SphereCast(m_collidedObject.transform.position, 20, m_collidedObject.transform.forward,out hit,m_fanLayer);
+        return Physics.SphereCast(m_collidedObject.transform.position, 25, m_collidedObject.transform.forward,out hit,m_fanLayer);
     }
 }
