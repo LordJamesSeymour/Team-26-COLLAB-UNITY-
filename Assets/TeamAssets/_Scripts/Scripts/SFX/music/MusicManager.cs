@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Unity.VisualScripting.Member;
 
 public class MusicManager : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class MusicManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (mode != LoadSceneMode.Single) return;
-
+        Debug.Log("-----------------------------------------------");
         CheckScene(scene);
     }
 
@@ -41,8 +42,8 @@ public class MusicManager : MonoBehaviour
         {
             if (ST.SceneName == scene.name)
             {
-                if (m_Playing != null) { m_Playing = null; }
-
+                if (m_Playing != null) { StopCoroutine(m_Playing); m_Playing = null; }
+                musicSource.Pause();
                 currentSongIndex = 0;
                 m_Playing = StartCoroutine(PlayPlaylist(ST.songs));
                 return;
@@ -52,7 +53,7 @@ public class MusicManager : MonoBehaviour
 
     IEnumerator PlayPlaylist(AudioClip[] playlist)
     {
-        while (true) // Keep the playlist loop running forever
+        while (true)
         {
             musicSource.clip = playlist[currentSongIndex];
             musicSource.Play();
@@ -60,10 +61,7 @@ public class MusicManager : MonoBehaviour
             Debug.Log("Playing: " + playlist[currentSongIndex].name);
 
             // wait while isPlaying is true OR if the game is paused
-            while (musicSource.isPlaying || Math.Abs(musicSource.time - musicSource.clip.length) < 0.1f)
-            {
-                yield return new WaitForSeconds(1.0f);
-            }
+            yield return new WaitForSeconds(musicSource.clip.length / Mathf.Abs(musicSource.pitch));
 
             currentSongIndex = UnityEngine.Random.Range(0, playlist.Length);
 

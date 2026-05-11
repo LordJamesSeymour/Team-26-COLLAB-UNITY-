@@ -10425,8 +10425,6 @@ MonoBehaviour:
   m_scrollArea: {fileID: 630949715}
   m_sensitivityValueText: {fileID: 1163209820}
   audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
-  m_effects: EffectsVolume
-  m_music: MusicVolume
 --- !u!114 &1106575637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16766,6 +16764,10 @@ PrefabInstance:
     - target: {fileID: 4280280810977589260, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609235835851318123, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
+      propertyPath: m_Resource
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4759418781719365077, guid: 8d37bd22cdcddc343939eb35daed512c, type: 3}
       propertyPath: m_Name

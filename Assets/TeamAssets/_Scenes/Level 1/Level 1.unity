@@ -48225,8 +48225,6 @@ MonoBehaviour:
   m_scrollArea: {fileID: 2033124461}
   m_sensitivityValueText: {fileID: 2084642460}
   audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
-  m_effects: EffectsVolume
-  m_music: MusicVolume
 --- !u!114 &494650103
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -239,6 +239,9 @@ MonoBehaviour:
   - SceneName: Level 1
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
+  - SceneName: Level 1 Duplicate
+    songs:
+    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
   - SceneName: Level1
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
