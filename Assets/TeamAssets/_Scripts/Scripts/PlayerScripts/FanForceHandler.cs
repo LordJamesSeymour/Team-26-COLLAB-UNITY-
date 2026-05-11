@@ -14,7 +14,7 @@ public class FanForceHandler : MonoBehaviour
     /// <summary>
     /// The maximum force that can be added by a fan. This is a float as fans only add upwards force
     /// </summary>
-    [SerializeField] private float m_maxUpwardsForce = 25.0f;
+    [SerializeField] private float m_maxTotalForce = 25.0f;
 
     [Header("Debug")]
     ///<summary>
@@ -38,7 +38,7 @@ public class FanForceHandler : MonoBehaviour
 
             if (m_bLogUpwardsSpeed)
             {
-                Debug.Log(this.name + " is moving at a speed of: " + m_rb.linearVelocity.magnitude + ". The max speed is: " + m_maxUpwardsForce);
+                Debug.Log(this.name + " is moving at a speed of: " + m_rb.linearVelocity.magnitude + ". The max speed is: " + m_maxTotalForce);
             }
 
             //if the force is not being limited, the force is added and the function returns / exits early
@@ -49,7 +49,7 @@ public class FanForceHandler : MonoBehaviour
             }
 
             //if the force is being limited, the force is only added if the linear velocity is less than the max force
-            if (m_rb.linearVelocity.y < m_maxUpwardsForce)
+            if (m_rb.linearVelocity.magnitude < m_maxTotalForce)
             {
                 m_rb.AddForce(forcetoapply, ForceMode.Impulse);
             }
