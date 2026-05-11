@@ -18550,6 +18550,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6034338449736850975, guid: f04816f34030c5441b69d3aec239552d, type: 3}
   m_PrefabInstance: {fileID: 1709054770}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &813250245 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2181891055657115564, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+  m_PrefabInstance: {fileID: 231829518}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &813250264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5458920800282119644, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+  m_PrefabInstance: {fileID: 231829518}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813250245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &817481463
 Mesh:
   m_ObjectHideFlags: 0
@@ -25617,6 +25633,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2071477835761955151, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
+      propertyPath: audioMixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
+    - target: {fileID: 2071477835761955151, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_exitButton
       value: 
       objectReference: {fileID: 1304909325}
@@ -25691,7 +25711,7 @@ PrefabInstance:
     - target: {fileID: 7732767287510871820, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250245}
     - target: {fileID: 7732767287510871820, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_levelNum
       value: 1
@@ -25767,7 +25787,7 @@ PrefabInstance:
     - target: {fileID: 8567641646080571108, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250245}
     - target: {fileID: 8567641646080571108, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_menuPanel
       value: 
@@ -25775,7 +25795,7 @@ PrefabInstance:
     - target: {fileID: 8567641646080571108, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_inputManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 813250264}
     - target: {fileID: 8567641646080571108, guid: 20cf1aad55ef3054f8827471bb63e719, type: 3}
       propertyPath: m_controlsPanel
       value: 
