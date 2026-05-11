@@ -65,15 +65,11 @@ public class AudioManager : MonoBehaviour
         dm = new datamanager(6);
         try
         {
-            Debug.Log("!!!");
-
             dm.LoadGameData();
-            Debug.Log(dm.GetGameData().settings.backgroundMusicVolume);
             float effectdb = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, dm.GetGameData().settings.soundEffectsVolume / 100)) * 20, -80, 0);
             audioMixer.SetFloat(m_effects, effectdb);
             float musicdb = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, dm.GetGameData().settings.backgroundMusicVolume / 100)) * 20, -80, 0);
             audioMixer.SetFloat(m_music, musicdb);
-            Debug.Log(musicdb);
         }
         catch (Exception e) { Debug.Log("None Found"); }
     }
