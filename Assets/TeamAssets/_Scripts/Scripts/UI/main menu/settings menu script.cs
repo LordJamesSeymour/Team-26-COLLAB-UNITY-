@@ -135,6 +135,9 @@ public class settingsmenuscript : menuscreenscript
 
     private IEnumerator ToggleSettingsMenuOff()
     {
+        if(m_buttonScript.m_settingsBackground != null)
+            m_buttonScript.m_settingsBackground.SetActive(false);
+
         m_buttonScript.m_settingsPanel.SetActive(false);
         m_buttonScript.m_menuPanel.SetActive(true);
         m_onExitButton = false;
