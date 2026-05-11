@@ -19,8 +19,8 @@ public class settingsmenuscript : menuscreenscript
     //[SerializeField] AudioSource m_backgroundMusic;
 
     [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private string effectsVolumeName = "EffectsVolume";
-    [SerializeField] private string musicVolumeName = "MusicVolume";
+    [SerializeField] string m_effects;
+    [SerializeField] string m_music;
 
     private Coroutine m_toggleMenu;
     private Coroutine m_toggleCheckpoint;
@@ -106,15 +106,22 @@ public class settingsmenuscript : menuscreenscript
         //m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
         m_sensitivitySlider.value = m_manager.GetGameData().settings.sensitivity;
 
+        
         float musicDB;
-        audioMixer.GetFloat(musicVolumeName, out musicDB);
+        audioMixer.GetFloat(m_music, out musicDB);
         float sfxDB;
-        audioMixer.GetFloat(effectsVolumeName, out sfxDB);
+        audioMixer.GetFloat(m_effects, out sfxDB);
 
         float musicVolume = 100 * Mathf.Pow(10, musicDB / 20);
         m_backgroundMusicSlider.value = musicVolume;
         float SFXVolume = 100 * Mathf.Pow(10, sfxDB / 20);
         m_soundEffectsSlider.value = SFXVolume;
+        
+
+        //m_backgroundMusicSlider.value = m_manager.GetGameData().settings.backgroundMusicVolume;
+        //m_soundEffectsSlider.value = m_manager.GetGameData().settings.soundEffectsVolume;
+
+        Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
     }
 
     private Resolution FindHighestRes()
@@ -227,9 +234,9 @@ public class settingsmenuscript : menuscreenscript
     public void UpdateBackgroundVolume(AudioSource source)
     {
         //float volume = m_backgroundMusicSlider.value * .8f - 80;
-        float db = Mathf.Log10(Mathf.Max(0.0001f, m_backgroundMusicSlider.value / 100)) * 20;
-        audioMixer.SetFloat(musicVolumeName, db);
-        m_manager.SetBackgroundVolume(db);
+        float db = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, m_backgroundMusicSlider.value / 100)) * 20, -80, 0);
+        audioMixer.SetFloat(m_music, db);
+        m_manager.SetBackgroundVolume(m_backgroundMusicSlider.value);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.backgroundMusicVolume);
 
@@ -239,9 +246,9 @@ public class settingsmenuscript : menuscreenscript
     public void UpdateSoundEffectsVolume(AudioSource source)
     {
         //float volume = m_soundEffectsSlider.value * .9f - 80;
-        float db = Mathf.Log10(Mathf.Max(0.0001f, m_soundEffectsSlider.value / 100)) * 20;
-        audioMixer.SetFloat(effectsVolumeName, db);
-        m_manager.SetSoundEffectsVolume(db);
+        float db = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, m_soundEffectsSlider.value / 100)) * 20, -80, 0);
+        audioMixer.SetFloat(m_effects, db);
+        m_manager.SetSoundEffectsVolume(m_soundEffectsSlider.value);
         m_manager.SaveGameData();
         Debug.Log(m_manager.GetGameData().settings.soundEffectsVolume);
 

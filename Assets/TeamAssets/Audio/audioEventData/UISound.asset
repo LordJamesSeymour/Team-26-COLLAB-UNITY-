@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 3
   sound: 9
-  volume: 0.6
+  volume: 0.5
   volumeRange: 0.1
   pitch: 1
   pitchRange: 0.1
