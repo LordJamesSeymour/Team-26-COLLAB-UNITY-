@@ -165,6 +165,17 @@ public class pausemenuscript : buttonnavscript
         SceneManager.LoadScene(menuSceneNum);
     }
 
+    private IEnumerator LoadLevelAsync(int i)
+    {
+        AsyncOperation loadScene = SceneManager.LoadSceneAsync(i);
+
+        while (!loadScene.isDone)
+        {
+            Debug.Log("Scene Loading Progress: " + loadScene.progress);
+            yield return null;
+        }
+    }
+
     private void IsVisible()
     {
         Cursor.lockState = CursorLockMode.None;

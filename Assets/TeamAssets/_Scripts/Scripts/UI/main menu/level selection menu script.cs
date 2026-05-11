@@ -189,6 +189,18 @@ public class levelselectionmenuscript : menuscreenscript
     public void LoadLevel(int i)
     {
         SceneManager.LoadScene(i);
+        //StartCoroutine(LoadLevelAsync(i));
+    }
+
+    private IEnumerator LoadLevelAsync(int i)
+    {
+        AsyncOperation loadScene = SceneManager.LoadSceneAsync(i);
+
+        while (!loadScene.isDone)
+        {
+            Debug.Log("Scene Loading Progress: " + loadScene.progress);
+            yield return null;
+        }
     }
 
     public void OnPointerPressed(int i)

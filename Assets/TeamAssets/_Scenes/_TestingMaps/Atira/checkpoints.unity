@@ -1878,7 +1878,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 585211516}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13052596, y: 0, z: 0, w: 0.99144495}
+  m_LocalRotation: {x: -0.13052568, y: 0.0000001623702, z: -0.00000002230799, w: -0.991445}
   m_LocalPosition: {x: 10.825956, y: 16.296875, z: -51.123466}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1961,6 +1961,11 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!1 &608674191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4213342670214232512, guid: e4dbc58cd0a52584886cec1c2a54834f, type: 3}
+  m_PrefabInstance: {fileID: 1564086491}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &613856317
 GameObject:
   m_ObjectHideFlags: 0
@@ -2345,8 +2350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9830c78150b3e85438da4aa513fee558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerDeathScript: {fileID: 0}
-  m_floppyDisc: {fileID: 0}
+  m_playerDeathScript: {fileID: 810251666}
+  m_floppyDisc: {fileID: 608674191}
   m_used: 0
 --- !u!65 &723011045
 BoxCollider:
@@ -2583,6 +2588,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e64a1b2b26c8495439cc00e2c5a30e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &810251666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6797045768519289606, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+  m_PrefabInstance: {fileID: 810251638}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810251641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ad9208d78e73249a22ab3ffbdf4c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &912807078 stripped
@@ -5177,7 +5193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9830c78150b3e85438da4aa513fee558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerDeathScript: {fileID: 0}
+  m_playerDeathScript: {fileID: 810251666}
   m_floppyDisc: {fileID: 0}
   m_used: 0
 --- !u!65 &1895750451
@@ -6045,7 +6061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4751858551305094980, guid: 0f34a95532132ef488e3a6636870c61c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8227018668438705523, guid: 0f34a95532132ef488e3a6636870c61c, type: 3}
       propertyPath: m_LocalPosition.x
