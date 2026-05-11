@@ -87,8 +87,8 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 23da7f67d7746f44f9dfc0189f24e122, type: 3}
     - {fileID: 8300000, guid: 521026b6d13748f4589b49b639188ebc, type: 3}
   audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
-  effectsVolumeName: EffectsVolume
-  musicVolumeName: MusicVolume
+  m_effects: EffectsVolume
+  m_music: MusicVolume
 --- !u!82 &1820624178687479003
 AudioSource:
   m_ObjectHideFlags: 0
