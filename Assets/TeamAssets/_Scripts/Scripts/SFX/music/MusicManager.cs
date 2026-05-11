@@ -32,7 +32,6 @@ public class MusicManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (mode != LoadSceneMode.Single) return;
-        Debug.Log("-----------------------------------------------");
         CheckScene(scene);
     }
 
