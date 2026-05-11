@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
@@ -13,10 +14,11 @@ public class AudioManager : MonoBehaviour
     private AudioSource[] audioEmitters = new AudioSource[10];
 
     [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private string effectsVolumeName = "EffectsVolume";
-    [SerializeField] private string musicVolumeName = "MusicVolume";
+    [SerializeField] string m_effects;
+    [SerializeField] string m_music;
 
     public datamanager dm;
+
 
     public enum SoundType
     {
@@ -43,15 +45,7 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-
-        dm = new datamanager(6);
-        try
-        {
-            dm.LoadGameData();
-            audioMixer.SetFloat(effectsVolumeName, dm.GetGameData().settings.soundEffectsVolume);
-            audioMixer.SetFloat(musicVolumeName, dm.GetGameData().settings.backgroundMusicVolume);
-        }
-        catch (Exception e) { Debug.Log("None Found"); }
+        
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
@@ -67,6 +61,21 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+
+        dm = new datamanager(6);
+        try
+        {
+            Debug.Log("!!!");
+
+            dm.LoadGameData();
+            Debug.Log(dm.GetGameData().settings.backgroundMusicVolume);
+            float effectdb = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, dm.GetGameData().settings.soundEffectsVolume / 100)) * 20, -80, 0);
+            audioMixer.SetFloat(m_effects, effectdb);
+            float musicdb = Mathf.Clamp(Mathf.Log10(Mathf.Max(0.0001f, dm.GetGameData().settings.backgroundMusicVolume / 100)) * 20, -80, 0);
+            audioMixer.SetFloat(m_music, musicdb);
+            Debug.Log(musicdb);
+        }
+        catch (Exception e) { Debug.Log("None Found"); }
     }
 
     public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
