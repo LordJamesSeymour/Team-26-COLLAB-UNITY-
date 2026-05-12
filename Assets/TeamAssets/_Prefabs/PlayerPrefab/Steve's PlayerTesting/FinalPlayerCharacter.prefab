@@ -8432,7 +8432,7 @@ GameObject:
   - component: {fileID: 7508703135353221040}
   - component: {fileID: 6596841248015430315}
   - component: {fileID: 5308787185863939389}
-  - component: {fileID: 3651496617029494516}
+  - component: {fileID: 6000938457106576836}
   m_Layer: 8
   m_Name: FinalPlayerCharacter
   m_TagString: Player
@@ -9183,7 +9183,7 @@ MonoBehaviour:
   grappleImpactMultiplier: 1
   defaultLandingDirection: {x: 0, y: -1, z: 0}
   useVelocityDirectionForGrappleImpact: 1
---- !u!114 &3651496617029494516
+--- !u!114 &6000938457106576836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
