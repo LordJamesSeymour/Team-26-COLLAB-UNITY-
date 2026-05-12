@@ -66,7 +66,7 @@ public class Death : MonoBehaviour
 
         transform.position = m_respawnPoint;
         // transform.rotation = m_respawnDirection;
-        //                              GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
+        GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
         //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
@@ -141,7 +141,7 @@ public class Death : MonoBehaviour
         Debug.Log("Respawning");
 
         transform.position = m_respawnPoint;
-        //                              GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
+        GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
         m_rigidbody.isKinematic = false;
 
         yield return new WaitForSeconds(0.1f);
