@@ -1,5 +1,4 @@
 using Group26.Player.Camera;
-using RadicalForge.Gameplay;
 using System;
 using TMPro;
 using UnityEngine;
@@ -55,6 +54,12 @@ public class levelcompletescript : MonoBehaviour
 
     public void OnMainMenuButtonPressed(int mainMenuNum)
     {
+        var collectableTracker = FindAnyObjectByType<Collectable_Tracker>();
+        if (collectableTracker != null)
+        {
+            collectableTracker.ResetPickups();
+        }
+
         m_manager.SetCompleted(m_levelNum, true);
         m_manager.SaveGameData();
         SceneManager.LoadScene(mainMenuNum);
