@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Collectable_Tracker : MonoBehaviour
 {
-    public static int m_pickupsCollected;
+    [SerializeField] public static int m_pickupsCollected;
 
     public void CollectUSB()
     {
