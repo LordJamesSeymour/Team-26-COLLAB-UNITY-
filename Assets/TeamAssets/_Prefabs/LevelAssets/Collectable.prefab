@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 5207037469864764191}
   - component: {fileID: 6573715575246721371}
   - component: {fileID: 5007109928091281560}
+  - component: {fileID: 1481920431811902396}
   m_Layer: 0
   m_Name: Collectable
   m_TagString: collectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7737881315721210273
 Transform:
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7947981343918186132}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 2, z: 3}
   m_LocalScale: {x: 125, y: 125, z: 125}
   m_ConstrainProportionsScale: 0
@@ -106,5 +107,18 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.012454205, y: 0.0034242026, z: 0.019488264}
-  m_Center: {x: 0.00011065531, y: -0.0001079526, z: 0.008026261}
+  m_Size: {x: 0.012454212, y: 0.008268036, z: 0.019488275}
+  m_Center: {x: 0.00011065531, y: -0.00008519221, z: 0.008026265}
+--- !u!114 &1481920431811902396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947981343918186132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b7fbc8503e32ac49952cc59af56b707, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 140
