@@ -4,6 +4,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource)), ExecuteAlways]
 public class AudioManager : MonoBehaviour
@@ -45,7 +46,8 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
         //set up emitter pool
         for (int i = 0; i < audioEmitters.Length; i++)
@@ -72,6 +74,21 @@ public class AudioManager : MonoBehaviour
             audioMixer.SetFloat(m_music, musicdb);
         }
         catch (Exception e) { Debug.Log("None Found"); }
+    }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (mode != LoadSceneMode.Single) return;
+        StopAllCoroutines();
+        for (int i = 0; i < audioEmitters.Length; i++)
+        {
+            if (audioEmitters[i] != null) Destroy(audioEmitters[i].gameObject);
+            audioEmitters[i] = new GameObject().AddComponent<AudioSource>();
+            audioEmitters[i].spatialBlend = 1.0f;
+            audioEmitters[i].gameObject.SetActive(false);
+            audioEmitters[i].transform.parent = transform;
+            audioEmitters[i].outputAudioMixerGroup = GetComponent<AudioSource>().outputAudioMixerGroup;
+            //audioEmitters[i].outputAudioMixerGroup = Resources.Load("GameAudio") as AudioMixer mixer.FindMatchingGroups(OutputMixer)[0];
+        }
     }
 
     public void PlayOneShotSound(SoundType sound, float volume) // only use for global sounds with no pitch variation, use as mutch as possible to avoid over using pool
