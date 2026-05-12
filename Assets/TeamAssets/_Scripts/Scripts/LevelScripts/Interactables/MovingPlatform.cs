@@ -15,7 +15,7 @@ public class MovingPlatform : Interactable_Parent
     /// This will affect the speed of the movement, but not the smoothness.
     /// This should be the primary way of manipulating the speed of the platform.
     /// </summary>
-    [SerializeField] private float m_lerpAmmountPerIter = 0.1f;
+    [SerializeField] public float m_lerpAmmountPerIter = 0.1f;
     [SerializeField] private Vector3 m_targetPosition = Vector3.zero;
     private Vector3 m_startPosition = Vector3.zero;
     /// <summary>

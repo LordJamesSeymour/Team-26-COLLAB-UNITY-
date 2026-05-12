@@ -56,14 +56,15 @@ public class AttachToPlatform : MonoBehaviour
 
     private void MatchPlatformForce()
     {
-        if(m_platformRb == null || m_rb == null)
+        if(m_platformRb == null || m_rb == null || m_movingPlatformScript == null)
         {
-            Debug.LogWarning("Cannot match platform force because either the player or the platform does not have a rigidbody");
+            Debug.LogWarning("Cannot match platform force because either the player or the platform does not have a rigidbody, or the platform does not have a moving platform script");
             return;
         }
-        
-        m_rb.AddForce(m_platformRb.linearVelocity, ForceMode.Impulse);
-        
+        //m_rb.AddForce(m_platformRb.linearVelocity, ForceMode.Impulse);
+        Vector3 vectortoplatform = m_platformRb.position - transform.position;
+        vectortoplatform.y = 0.0f;
+        m_rb.AddForce(vectortoplatform, ForceMode.Impulse);
     }
 
 }
