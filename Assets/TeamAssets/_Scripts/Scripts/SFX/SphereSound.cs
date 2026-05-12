@@ -31,8 +31,8 @@ public class SphereSound : MonoBehaviour
         if (!gameObject.activeSelf || !source) return;
         if (playerController.IsOnRail)
         {
-            source.volume = .35f;
-            source.pitch = .7f;
+            source.volume = .55f;
+            source.pitch = .75f;
             return;
         }
         if (!ballRollController.IsGrounded()) { MoveToTargetSound(source, 0, 0); return; }
