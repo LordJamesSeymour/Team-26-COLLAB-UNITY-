@@ -7,6 +7,7 @@ public class SphereSound : MonoBehaviour
     Rigidbody rb;
 
     BallRollController ballRollController;
+    PlayerController playerController;
 
     float targetVol;
     float targetPitch;
@@ -18,6 +19,7 @@ public class SphereSound : MonoBehaviour
     {
         rb = transform.parent.GetComponent<Rigidbody>();
         ballRollController = transform.parent.GetComponent<BallRollController>();
+        playerController = transform.parent.GetComponent<PlayerController>();
     }
 
     private void OnEnable()
@@ -27,7 +29,12 @@ public class SphereSound : MonoBehaviour
     private void Update()
     {
         if (!gameObject.activeSelf || !source) return;
-
+        if (playerController.IsOnRail)
+        {
+            source.volume = .35f;
+            source.pitch = .7f;
+            return;
+        }
         if (!ballRollController.IsGrounded()) { MoveToTargetSound(source, 0, 0); return; }
 
         float vel = rb.linearVelocity.magnitude;

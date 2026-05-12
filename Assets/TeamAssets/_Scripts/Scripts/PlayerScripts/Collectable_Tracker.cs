@@ -16,7 +16,7 @@ public class Collectable_Tracker : MonoBehaviour
 
         if (audioManager != null)        
         {
-            audioManager.PlayOneShotSound(AudioManager.SoundType.COLLECTABLE, 0.4f);
+            audioManager.PlayOneShotSound(AudioManager.SoundType.COLLECTABLE, 0.3f);
         }
         else
         {
