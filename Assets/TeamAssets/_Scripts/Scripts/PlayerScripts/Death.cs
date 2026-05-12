@@ -66,7 +66,7 @@ public class Death : MonoBehaviour
 
         transform.position = m_respawnPoint;
         // transform.rotation = m_respawnDirection;
-        GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
+        //                              GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
         //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;
 
@@ -96,7 +96,12 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
         m_deathless = true;
-        Collectable_Tracker.m_pickupsCollected = 0;
+
+        var collectableTracker = GetComponent<Collectable_Tracker>();
+        if(collectableTracker != null)
+        {
+            collectableTracker.ResetPickups();
+        }
 
         Debug.Log(m_checkpoints.Length);
 
@@ -136,7 +141,7 @@ public class Death : MonoBehaviour
         Debug.Log("Respawning");
 
         transform.position = m_respawnPoint;
-        GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
+        //                              GetComponent<CameraModeManager>().SetYaw(m_respawnDirection);
         m_rigidbody.isKinematic = false;
 
         yield return new WaitForSeconds(0.1f);
