@@ -3,25 +3,13 @@ using UnityEngine;
 public class Collectable_Tracker : MonoBehaviour
 {
     [SerializeField] public static int m_pickupsCollected;
+    [SerializeField] private AudioSource m_pickupSound;
 
     public void CollectUSB()
     {
         m_pickupsCollected += 1;
-        PlaySFX();
-    }
 
-    private void PlaySFX()
-    {
-        var audioManager = FindAnyObjectByType<AudioManager>();
-
-        if (audioManager != null)        
-        {
-            audioManager.PlayOneShotSound(AudioManager.SoundType.COLLECTABLE, 0.4f);
-        }
-        else
-        {
-            Debug.LogWarning("AudioManager component not found on Collectable_Tracker.");
-        }
+        
     }
 
     public void ResetPickups()
