@@ -771,10 +771,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: RAM_NEW
       objectReference: {fileID: 0}
-    - target: {fileID: 2741602761682658887, guid: 1ba40505aba9f6545bd898c997a0e45f, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 2847249766753487616, guid: 1ba40505aba9f6545bd898c997a0e45f, type: 3}
       propertyPath: m_LocalScale.x
       value: 798.07477
@@ -37410,10 +37406,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.329
       objectReference: {fileID: 0}
-    - target: {fileID: 7737364626556903437, guid: e0aff4248523a1a4782187b217c761f2, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8040450978121800871, guid: e0aff4248523a1a4782187b217c761f2, type: 3}
       propertyPath: m_Name
       value: CD (1)
@@ -42288,10 +42280,6 @@ PrefabInstance:
     - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: far clip plane
       value: 6000
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
-      propertyPath: near clip plane
-      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6452394476422909918, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: m_Name
