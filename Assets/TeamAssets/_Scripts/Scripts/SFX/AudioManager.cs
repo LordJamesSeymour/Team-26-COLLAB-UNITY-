@@ -221,6 +221,11 @@ public class AudioManager : MonoBehaviour
         if (source.clip != null) { source.Stop(); }
     }
 
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
 #if UNITY_EDITOR
     private void OnEnable()
     {
