@@ -232,26 +232,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SceneMusic:
-  - SceneName: menu testing
+  - SceneName: menu testing duplicate
     songs:
-    - {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+    - {fileID: 8300000, guid: cf078fcbf0365424a9ec18327c7e0f8a, type: 3}
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
-  - SceneName: Level 1
-    songs:
-    - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
-  - SceneName: Level1
+  - SceneName: Level 1 Duplicate
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
-  - SceneName: Level2
+  - SceneName: level 2
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
-  - SceneName: Level3
+  - SceneName: Level3 duplicate
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
   - SceneName: JTest
     songs:
     - {fileID: 8300000, guid: 76ae0f9dd365d7e468ac7218590d714c, type: 3}
-    - {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+    - {fileID: 8300000, guid: cf078fcbf0365424a9ec18327c7e0f8a, type: 3}
 --- !u!82 &4609235835851318123
 AudioSource:
   m_ObjectHideFlags: 0
@@ -263,7 +260,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -8145647074802892343, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: c7889e7931047e4448ab86e2645db364, type: 3}
+  m_Resource: {fileID: 8300000, guid: cf078fcbf0365424a9ec18327c7e0f8a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.1
   m_Pitch: 1

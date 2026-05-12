@@ -26,12 +26,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/test level for ui.unity
     guid: b9909a46b512ab74682ced75579e700d
+  - enabled: 0
+    path: Assets/TeamAssets/_Scenes/Level 2/SCOTT-GAME2.unity
+    guid: 24cf1c7058a96744f9c6c4e094bc2d64
   - enabled: 1
     path: Assets/TeamAssets/_Scenes/_TestingMaps/Atira/menu testing duplicate.unity
     guid: b6e90625b84f15a4a835e40cc013257e
   - enabled: 1
     path: Assets/TeamAssets/_Scenes/Level 1/Level 1 Duplicate.unity
     guid: 422878bd1e61c3747ba2219330540652
+  - enabled: 1
+    path: Assets/TeamAssets/_Scenes/Level 2/level 2.unity
+    guid: 27a13d6e3e18d8d448f9b4ce055f8d65
   - enabled: 1
     path: Assets/TeamAssets/_Scenes/Level 3/Level3 duplicate.unity
     guid: c912953abe0e4dc41889a5027cfd2bb7

@@ -27346,7 +27346,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2181891055657115564, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1660941552}
   m_SourcePrefab: {fileID: 100100000, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
 --- !u!114 &210879458 stripped
 MonoBehaviour:
@@ -47686,6 +47689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5798427095382013469, guid: e83687f620e31744ca16088988eb6ff1, type: 3}
+    - {fileID: 8542112402341081439, guid: e83687f620e31744ca16088988eb6ff1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -48177,9 +48181,11 @@ MonoBehaviour:
   m_enabled: 1
   m_menuPanel: {fileID: 2082895952}
   m_controlsPanel: {fileID: 328583005}
+  m_controlsBackground: {fileID: 0}
   m_levelsPanel: {fileID: 0}
   m_levelsBackground: {fileID: 0}
   m_settingsPanel: {fileID: 203339789}
+  m_settingsBackground: {fileID: 0}
   m_buttons:
   - {fileID: 1369755353}
   - {fileID: 1326221957}
@@ -48223,8 +48229,6 @@ MonoBehaviour:
   m_scrollArea: {fileID: 2033124461}
   m_sensitivityValueText: {fileID: 2084642460}
   audioMixer: {fileID: 24100000, guid: 5eec30eafc057564dbdb9c77c5763760, type: 2}
-  m_effects: EffectsVolume
-  m_music: MusicVolume
 --- !u!114 &494650103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98413,6 +98417,14 @@ PrefabInstance:
       propertyPath: m_RenderPostProcessing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
+      propertyPath: far clip plane
+      value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4982190153565758281, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6452394476422909918, guid: cf696251cfa0f454f85ce7049e06369d, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -100312,6 +100324,18 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 5806160083228314708, guid: adc4f265209716f45a7ea11e1358c027, type: 3}
   m_PrefabInstance: {fileID: 210879457}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1660941552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210879459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2394b9d558f386142905f2748d25f172, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1662766882
 GameObject:
   m_ObjectHideFlags: 0
