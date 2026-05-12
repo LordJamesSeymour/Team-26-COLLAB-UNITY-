@@ -16,6 +16,8 @@ public class Checkpoint : MonoBehaviour
     private float m_maxPoint;
     private float m_minPoint;
 
+    private Vector3 SpawnDir;
+
     private void Awake()
     {
         //m_checkpointsEnabled = true;    //REMOVE THIS LINE WHEN SETTINGS MENU IS MADE
@@ -30,6 +32,7 @@ public class Checkpoint : MonoBehaviour
             //Debug.LogError(e.Message);
         }
 
+        SpawnDir = transform.forward;
         m_checkpointsEnabled = m_manager.GetGameData().settings.checkpointsEnabled;
         Debug.Log("checkpoints: " + m_manager.GetGameData().settings.checkpointsEnabled);
         m_floppyDiscStartPosY = m_floppyDisc.transform.position.y;
@@ -71,7 +74,7 @@ public class Checkpoint : MonoBehaviour
         {
             m_playerDeathScript.m_respawnPoint = transform.position;
             m_playerDeathScript.m_respawnPoint.y = transform.position.y + 0.841f;
-            m_playerDeathScript.m_respawnDirection = Quaternion.LookRotation(transform.forward);
+            m_playerDeathScript.m_respawnDirection = Quaternion.LookRotation(SpawnDir);
             StartCoroutine(MoveFloppyDisc());
             //DESIGN HAVE SAID THAT THE PLAYER SHOULD RESPAWN AT A CHECKPOINT WITH THE NUMBER OF POINTS THEY HAD UPON DEATH
             //e.g. if they have 500 points when they cross the checkpoint but have 1000 points when they die, they respawn at
