@@ -29,7 +29,6 @@ public class levelcompletescript : MonoBehaviour
     private bool m_onMainMenuButton = false;
     private datamanager m_manager;
     private CameraModeManager m_cameraModeManager;
-    private Collectable_Tracker m_collectableTracker;
 
     private void Awake()
     {
@@ -47,8 +46,6 @@ public class levelcompletescript : MonoBehaviour
         //m_trickSystem = m_player.GetComponent<TrickSystem>();
         m_playerDeathScript = m_player.GetComponent<Death>();
         m_cameraModeManager = m_player.GetComponent<CameraModeManager>();
-
-            //m_collectableTracker = m_player.FindAnyObjectByType<Collectable_Tracker>();
 
         m_navInputs = InputSystem.actions.FindAction("Navigate");
         m_selectInput = InputSystem.actions.FindAction("Select");
@@ -73,8 +70,8 @@ public class levelcompletescript : MonoBehaviour
         Cursor.visible = true;
         //m_uiTexts[0].text = "Game Score: " + m_trickSystem.TotalScore;
         m_uiTexts[0].text = "Completion Time: " + m_timer.m_timerDisplay.text;
-            //m_uiTexts[1].text = "Pickups Collected: " + Collectable.m_pickupsCollected;
-            //m_uiTexts[1].text = "Pickups Collected: " + Collectable_Tracker.m_pickupsCollected;
+        //m_uiTexts[1].text = "Pickups Collected: " + Collectable.m_pickupsCollected;
+        m_uiTexts[1].text = "Pickups Collected: " + Collectable_Tracker.m_pickupsCollected + " / 8";
 
         if (m_playerDeathScript.m_deathless)
             m_uiTexts[2].text = "Deathless: Yes";
