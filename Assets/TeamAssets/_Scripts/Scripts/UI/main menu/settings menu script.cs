@@ -603,7 +603,10 @@ public class settingsmenuscript : menuscreenscript
 			}
 			else
 			{
-				int width = Mathf.Clamp(int.Parse(input.text), MinWindowWidth, m_maxWidth);
+				int width = int.Parse(input.text);
+				if (width > m_maxWidth)
+					width = m_maxWidth;
+				//int width = Mathf.Clamp(int.Parse(input.text), MinWindowWidth, m_maxWidth);
 				input.SetTextWithoutNotify(width.ToString());
 				m_widthInputText = input.text;
 			}
@@ -616,7 +619,10 @@ public class settingsmenuscript : menuscreenscript
 			}
 			else
 			{
-				int height = Mathf.Clamp(int.Parse(input.text), MinWindowHeight, m_maxHeight);
+				int height = int.Parse(input.text);
+				if(height > m_maxHeight)
+					height = m_maxHeight;
+				//int height = Mathf.Clamp(int.Parse(input.text), MinWindowHeight, m_maxHeight);
 				input.SetTextWithoutNotify(height.ToString());
 				m_heightInputText = input.text;
 			}
