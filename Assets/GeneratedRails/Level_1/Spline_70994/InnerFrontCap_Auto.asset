@@ -11,14 +11,14 @@ Mesh:
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
-    indexCount: 0
+    indexCount: 6
     topology: 0
     baseVertex: 0
     firstVertex: 0
-    vertexCount: 0
+    vertexCount: 4
     localAABB:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0, y: 0, z: 0}
+      m_Center: {x: 2.2500048, y: -7.3799973, z: -6.24998}
+      m_Extent: {x: 0.016677022, y: 5.625, z: 0.33708167}
   m_Shapes:
     vertices: []
     shapes: []
@@ -35,10 +35,10 @@ Mesh:
   m_KeepVertices: 1
   m_KeepIndices: 1
   m_IndexFormat: 0
-  m_IndexBuffer: 
+  m_IndexBuffer: 000002000100010002000300
   m_VertexData:
     serializedVersion: 3
-    m_VertexCount: 0
+    m_VertexCount: 4
     m_Channels:
     - stream: 0
       offset: 0
@@ -96,8 +96,8 @@ Mesh:
       offset: 0
       format: 0
       dimension: 0
-    m_DataSize: 0
-    _typelessdata: 
+    m_DataSize: 128
+    _typelessdata: d7ee0e40781450c135c9d2c0f0af7f3f00000000a1664abd000000000000000050111140781450c17636bdc0f0af7f3f00000000a1664abd0f74933b00000000d7ee0e40c0a3e0bf35c9d2c0f0af7f3f00000000a1664abd000000009a99993d50111140c0a3e0bf7636bdc0f0af7f3f00000000a1664abd0f74933b9a99993d
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
