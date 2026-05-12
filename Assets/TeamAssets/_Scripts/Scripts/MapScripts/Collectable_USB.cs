@@ -1,27 +1,31 @@
 using System.Collections;
 using UnityEngine;
 
-public class Collectable_USB : MonoBehaviour
+namespace Group26.Utils
 {
-    [SerializeField, Range(100, 200)] private float rotateSpeed = 140f;
-
-    private void OnTriggerEnter(Collider other)
+    public class Collectable_USB : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        [SerializeField, Range(100, 200)] private float rotateSpeed = 50f;
+
+        private void OnTriggerEnter(Collider other)
         {
-            other.GetComponent<Collectable_Tracker>().CollectUSB();
-            StartCoroutine(DebounceDisable());
+            if (other.CompareTag("Player"))
+            {
+                //Collectable_Tracker.m_pickupsCollected += 1;
+
+                StartCoroutine(DebounceDisable());
+            }
         }
-    }
 
-    private void FixedUpdate()
-    {
-        gameObject.transform.Rotate(new Vector3(0,0,1) * rotateSpeed * Time.fixedDeltaTime);
-    }
+        private void Update()
+        {
+           gameObject.transform.Rotate(new Vector3(0,0,1) * rotateSpeed * Time.deltaTime);
+        }
 
-    private IEnumerator DebounceDisable()
-    {
-        yield return new WaitForSeconds(0.025f);
-        gameObject.SetActive(false);
+        private IEnumerator DebounceDisable()
+        {
+            yield return new WaitForSeconds(0.05f);
+            gameObject.SetActive(false);
+        }
     }
 }

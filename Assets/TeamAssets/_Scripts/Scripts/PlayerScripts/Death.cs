@@ -1,5 +1,7 @@
 using Group26.Player.Camera;
 using Group26.Player.Inputs;
+using Group26.Player.Movement;
+using RadicalForge.Gameplay;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -96,7 +98,7 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
         m_deathless = true;
-        Collectable_Tracker.m_pickupsCollected = 0;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -114,11 +116,11 @@ public class Death : MonoBehaviour
             foreach (GameObject collectable in m_collectables)
             {
                 collectable.SetActive(true);
-                // if (collectable.GetComponent<Collectable>() != null)
-                // {
-                //     collectable.GetComponent<Collectable>().particleToSpawn.Stop();
-                //     collectable.GetComponent<Collectable>().particleToStop.Play();
-                // }    
+                if (collectable.GetComponent<Collectable>() != null)
+                {
+                    collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                    collectable.GetComponent<Collectable>().particleToStop.Play();
+                }    
             }
         }
 
@@ -160,7 +162,7 @@ public class Death : MonoBehaviour
         m_timerScript.ResetTimer();
         m_timerScript.UpdateTimerText("00:00");
         m_deathless = true;
-        Collectable_Tracker.m_pickupsCollected = 0;
+        Collectable.m_pickupsCollected = 0;
 
         Debug.Log(m_checkpoints.Length);
 
@@ -175,18 +177,18 @@ public class Death : MonoBehaviour
             }
         }
 
-        // if (m_collectables != null)
-        // {
-        //     foreach (GameObject collectable in m_collectables)
-        //     {
-        //         collectable.SetActive(true);
-        //         if (collectable.GetComponent<Collectable_Tracker>() != null)
-        //         {
-        //             collectable.GetComponent<Collectable_Tracker>().particleToSpawn.Stop();
-        //             collectable.GetComponent<Collectable_Tracker>().particleToStop.Play();
-        //         }
-        //     }
-        // }
+        if (m_collectables != null)
+        {
+            foreach (GameObject collectable in m_collectables)
+            {
+                collectable.SetActive(true);
+                if (collectable.GetComponent<Collectable>() != null)
+                {
+                    collectable.GetComponent<Collectable>().particleToSpawn.Stop();
+                    collectable.GetComponent<Collectable>().particleToStop.Play();
+                }
+            }
+        }
 
         //m_respawnMenuPanel.SetActive(false);
         m_rigidbody.isKinematic = false;

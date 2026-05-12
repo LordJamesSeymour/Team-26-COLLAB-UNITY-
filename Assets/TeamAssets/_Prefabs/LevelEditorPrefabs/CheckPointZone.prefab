@@ -152,10 +152,8 @@ GameObject:
   - component: {fileID: 5878406910352319814}
   - component: {fileID: 5088394459478002388}
   - component: {fileID: 6575423463549220173}
-  - component: {fileID: 2572588019868174083}
   - component: {fileID: 5238665374722881532}
   - component: {fileID: 7491339362469239778}
-  - component: {fileID: 5846952375540708225}
   m_Layer: 2
   m_Name: CheckPointZone
   m_TagString: checkpoint
@@ -203,19 +201,6 @@ MonoBehaviour:
   m_playerDeathScript: {fileID: 0}
   m_floppyDisc: {fileID: 174320743956275189}
   m_used: 0
---- !u!114 &2572588019868174083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8841840393805019234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e284abcf69c468542a83f49cede1dd5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotateSpeed: 140
 --- !u!65 &5238665374722881532
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -235,8 +220,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 6, z: 7.796419}
-  m_Center: {x: 0, y: 3, z: -0.3008839}
+  m_Size: {x: 10, y: 6, z: 1}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!82 &7491339362469239778
 AudioSource:
   m_ObjectHideFlags: 0
@@ -370,16 +355,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5846952375540708225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8841840393805019234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e284abcf69c468542a83f49cede1dd5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotateSpeed: 140

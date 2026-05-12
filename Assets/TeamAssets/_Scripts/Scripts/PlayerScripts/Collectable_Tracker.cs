@@ -2,11 +2,15 @@ using UnityEngine;
 
 public class Collectable_Tracker : MonoBehaviour
 {
-    [SerializeField] public static int m_pickupsCollected;
-
-    public void CollectUSB()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        m_pickupsCollected += 1;
-        Debug.Log(m_pickupsCollected);
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }
