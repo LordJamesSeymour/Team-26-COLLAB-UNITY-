@@ -557,52 +557,53 @@ namespace Group26.Player.Movement
             TryConsumeJumpBuffer();
         }
 
-		private void TryConsumeJumpBuffer()
-		{
-			if (!readyToJump) return;
-			if (jumpBufferTimer <= 0f) return;
-			if (!m_bIsGrounded) return;
-			if (m_bOnRail) return;
+        private void TryConsumeJumpBuffer()
+        {
+            if (!readyToJump) return;
+            if (jumpBufferTimer <= 0f) return;
+            if (!m_bIsGrounded) return;
+            if (m_bOnRail) return;
 
-			jumpBufferTimer = 0f;
-			readyToJump = false;
-			Invoke(nameof(ResetJump), jumpCooldown);
+            // Consume the jump BEFORE applying force or playing audio.
+            // This prevents one input from applying multiple jump impulses if another system throws an exception.
+            jumpBufferTimer = 0f;
+            readyToJump = false;
+            Invoke(nameof(ResetJump), jumpCooldown);
 
-			ExecuteJump();
-		}
+            ExecuteJump();
+        }
 
-		private void ExecuteJump()
-		{
-			if (m_bSliding && slidingComp != null)
-				slidingComp.ForceEndSlide();
+        private void ExecuteJump()
+        {
+            if (m_bSliding && slidingComp != null)
+                slidingComp.ForceEndSlide();
 
-			exitingSlope = true;
+            exitingSlope = true;
 
-			rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-			try
-			{
-				if (AudioManager.instance != null)
-				{
-					AudioManager.instance.PlaySoundAtPoint(
-						JumpSFX.sound,
-						transform.position,
-						JumpSFX.volume,
-						JumpSFX.volumeRange,
-						JumpSFX.pitch,
-						JumpSFX.pitchRange,
-						JumpSFX.spatialBlend
-					);
-				}
-			}
-			catch (System.Exception e)
-			{
-				Debug.LogWarning("Jump sound failed, but jump was allowed to continue: " + e.Message);
-			}
-		}
+            try
+            {
+                if (AudioManager.instance != null)
+                {
+                    AudioManager.instance.PlaySoundAtPoint(
+                        JumpSFX.sound,
+                        transform.position,
+                        JumpSFX.volume,
+                        JumpSFX.volumeRange,
+                        JumpSFX.pitch,
+                        JumpSFX.pitchRange,
+                        JumpSFX.spatialBlend);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Jump sound failed, but jump continued: " + e.Message);
+            }
+        }
 
-		private void ResetJump()
+        private void ResetJump()
         {
             readyToJump = true;
             exitingSlope = false;
@@ -661,10 +662,20 @@ namespace Group26.Player.Movement
             if (m_bSliding && slidingComp != null)
                 slidingComp.ForceEndSlide();
 
-            AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+            // Gameplay state first. Audio must never be able to cancel the dash setup.
             m_bDashing = true;
             m_bDashMovementLocked = lockMovement;
             maxYSpeed = dashMaxYSpeed;
+
+            try
+            {
+                if (AudioManager.instance != null)
+                    AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.DASH, transform.position, .05f, .01f, 2, .1f, 0);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Dash sound failed, but dash continued: " + e.Message);
+            }
         }
 
         public void ReleaseDashMovementLock()

@@ -101,7 +101,7 @@ public class Death : MonoBehaviour
         Collectable_Tracker collectableTracker = GetComponent<Collectable_Tracker>();
         if (collectableTracker != null)
         {
-            collectableTracker.ResetCollectables();
+            collectableTracker.ResetPickups();
         }
 
         if (m_checkpoints != null)

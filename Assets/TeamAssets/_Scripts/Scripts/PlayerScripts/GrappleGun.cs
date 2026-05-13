@@ -10,6 +10,7 @@ namespace Group26.Player.Movement
 		private InputManager InputManager;
 		private PlayerController PlayerController;
 		private PlayerModeSwitcher PlayerModeSwitcher;
+		private Dashing dashing;
 
 		[SerializeField] private Transform grappleCamera;
 		[SerializeField] private Transform firePoint;
@@ -53,6 +54,7 @@ namespace Group26.Player.Movement
 			if (InputManager == null) InputManager = GetComponent<InputManager>();
 			if (PlayerController == null) PlayerController = GetComponent<PlayerController>();
 			if (PlayerModeSwitcher == null) PlayerModeSwitcher = GetComponent<PlayerModeSwitcher>();
+			if (dashing == null) dashing = GetComponent<Dashing>();
 
 			if (predictionPoint != null)
 				predictionPoint.gameObject.SetActive(false);
@@ -73,6 +75,16 @@ namespace Group26.Player.Movement
 
 			ClearCurrentHighlight();
 			CancelInvoke();
+
+			m_bGrappling = false;
+			_grappleToken++;
+			predictionHit = default;
+
+			if (predictionPoint != null)
+				predictionPoint.gameObject.SetActive(false);
+
+			if (PlayerController != null)
+				PlayerController.m_bFreeze = false;
 		}
 
 		private void FixedUpdate()
@@ -302,6 +314,12 @@ namespace Group26.Player.Movement
 			if (swingGun != null)
 				swingGun.StopSwing();
 
+			// Grapple is allowed to interrupt dash.
+			// This clears the dash startup Invoke so it cannot zero velocity or reset gravity
+			// while the grapple is starting.
+			if (dashing != null && dashing.IsDashingActive())
+				dashing.ForceCancelDash(true);
+
 			m_bGrappling = true;
 			_grappleToken++;
 
@@ -324,9 +342,29 @@ namespace Group26.Player.Movement
 		{
 			if (token != _grappleToken) return;
 
-			AudioManager.instance.PlaySoundAtPoint(AudioManager.SoundType.GRAPPLE, transform.position, volume: .7f, pitchRange: .2f, spatialBlend: 0);
-			PlayerController.m_bFreeze = false;
-			PlayerController.GrappleToPositionStraight(grapplePoint, straightGrappleSpeed);
+			// Gameplay first. Audio is allowed to fail without killing grapple movement.
+			if (PlayerController != null)
+			{
+				PlayerController.m_bFreeze = false;
+				PlayerController.GrappleToPositionStraight(grapplePoint, straightGrappleSpeed);
+			}
+
+			try
+			{
+				if (AudioManager.instance != null)
+				{
+					AudioManager.instance.PlaySoundAtPoint(
+						AudioManager.SoundType.GRAPPLE,
+						transform.position,
+						volume: .7f,
+						pitchRange: .2f,
+						spatialBlend: 0);
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogWarning("Grapple sound failed, but grapple continued: " + e.Message);
+			}
 
 			float distanceToTarget = Vector3.Distance(transform.position, grapplePoint);
 			float autoStopDelay = (straightGrappleSpeed > 0.01f)
@@ -345,7 +383,9 @@ namespace Group26.Player.Movement
 		{
 			if (token != _grappleToken) return;
 
-			PlayerController.m_bFreeze = false;
+			if (PlayerController != null)
+				PlayerController.m_bFreeze = false;
+
 			m_bGrappling = false;
 			grappleCooldownTimer = grappleCooldown;
 		}
